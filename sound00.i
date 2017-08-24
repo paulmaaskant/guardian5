@@ -7,7 +7,7 @@ sound00:
   .db #$80                              ; channel (sq1)
   .db #$B0                              ; initial duty
   .db #$40                              ; initial tempo
-  .db eConstant                  ; initial volume envelope
+  .db eShortStaccato                        ; initial volume envelope
   .dw sound00_stream00                  ; stream address
 
   .db #$00                              ; stream #

@@ -12,9 +12,7 @@ calculateAttack:
 	CMP list3+1								; compare to the hit probability
 	BCC +hit
 	BEQ +hit
-
-	; --- miss ---
-	LDA #$02
+	LDA #$02									; miss
 	BNE +done
 
 	; --- hit, apply damage ---
@@ -24,39 +22,54 @@ calculateAttack:
 	SBC list3+2								; damage value
 	BEQ +destroyed
 	BCC +destroyed
+	ASL												; if not destroyed
+	ASL												; write back new target dial value
 	ASL
-	ASL
-	ASL
-	PHA
+	PHA												; new value on stack
 	LDY targetObjectIndex
 	LDA object+1, Y
-	AND #$07
+	AND #$07									; clear old value, keep heat value
 	TAX
 	PLA
 	CLC
 	ADC identity, X
 	STA object+1, Y
-	LDA #$01										; value 1 means HIT
+	LDA #$01									; value 1 means HIT
 	BNE +done
 
 +destroyed:
 	LDY #$80
 	STY list3+4
-	LDY #$05										; Unit destroyed
+	LDY #$05									; Target Unit destroyed
 	STY list3+5
-	LDA #$01										; value 1 means HIT
+	LDA #$01									; value 1 means HIT
 
 +done:
-	STA list3+3									; stream 1: (01) for hit, (02) for miss
+	STA list3+3								; stream 1: (01) for hit, (02) for miss
+	LDX list3+21							; charge damage?
+	BEQ +continue							; no -> continue
+	LDA #$06									; yes
+	STA list3+6								; set result message
 
-	LDA list3+21
-	BEQ +continue
-	LDA #$06
-	STA list3+6
+	LDA activeObjectStats+6		; active unit armor value
+	SEC
+	SBC list3+21							; charge damage
 
+	LDY activeObjectIndex
+	ASL
+	ASL
+	ASL
+	PHA
+	LDA object+1, Y
+	AND #$07									; clear old value, keep heat value
+	TAX
+	PLA
+	CLC
+	ADC identity, X
+	STA object+1, Y
 
 +continue:
-	LDA #$03										; stream 2: temp stable!
+	LDA #$03									; stream 2: temp stable!
 	STA list3+7
 
 	RTS

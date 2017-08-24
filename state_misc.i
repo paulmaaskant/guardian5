@@ -612,7 +612,6 @@ state_setNextActiveObject:
 +setNext:
 	LDA objectTypeAndNumber, X
 	STA	activeObjectTypeAndNumber
-	;PHA
 
 	; --- retrieve object data ---
 	AND #$07
@@ -629,7 +628,7 @@ state_setNextActiveObject:
 	; --- retrieve type data ---
 	LDA activeObjectTypeAndNumber
 	JSR getStatsAddress
-
+	STA activeObjectStats+6
 	LDA (pointer1), Y				; attack & defence
 	STA activeObjectStats+5
 	INY								; damage & movement

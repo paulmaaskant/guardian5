@@ -21,15 +21,14 @@
 	.db $10			; left nyble = mapper high nyble
 	.db $00, $00, $00, $00, $00, $00, $00, $00	; filler
 
-
 ;; 2 - constants and variables
 	.enum $0000 ; sets what is known as the zero page
 
-	nmiVar0					.dsb 1
-	nmiVar1					.dsb 1
-	nmiVar2					.dsb 1
-	nmiVar3					.dsb 1
-	nmiVar4					.dsb 1
+	nmiVar0										.dsb 1
+	nmiVar1										.dsb 1
+	nmiVar2										.dsb 1
+	nmiVar3										.dsb 1
+	nmiVar4										.dsb 1
 
 	; ---------------------------------
 	; The following are variables that have a lifespan limited to a single frame
@@ -118,10 +117,10 @@
 														.dsb 1  ; 3 weapon 1 damage
 														.dsb 1 	; 4 weapon 2 damage
 														.dsb 1 	; 5 accuracy & defence (b7-4) acc, (b3-0) def
-														.dsb 1	; 6 heat modifiers
-														.dsb 1	; 7 heat modifiers
-														.dsb 1	; 8 special abilities
-														.dsb 1	; 9 special abilities
+														.dsb 1	; 6 armor (dail)
+														.dsb 1	; 7 heat modifiers?
+														.dsb 1	; 8 special abilities?
+														.dsb 1	; 9 special abilities?
 
 	; stored memory objects
 	; object grid position is stored separately as it will be sorted regularly

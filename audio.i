@@ -193,6 +193,8 @@ soundLoad:
   STA soundStreamChannel, X
   INY
   LDA (pointer1), Y                     ; duty
+  AND #%11000000                        ; b7,b6
+  ORA #%00110000                        ; disable hardwarde envelope
   STA soundStreamDutyVolume, X
   LDA #$00
   STA soundStreamNoteOffset, X          ; note adjustment
@@ -333,6 +335,9 @@ seNextByte:
 + CMP #noteOffset
   BNE +
   JMP seNoteOffset
++ CMP #setDutyCycle
+  BNE +
+  JMP seSetDutyCycle
 + RTS
 
 +noteLength:
@@ -456,6 +461,19 @@ seNoteOffset:
   LDA #$02
   BNE -updatePointerGetNextByte
 
+; opCode F9
+seSetDutyCycle:
+  LDA (nmiVar0), Y
+  AND #%11000000
+  STA nmiVar0
+  LDA soundStreamDutyVolume, X
+  AND #%00111111
+  ORA nmiVar0
+  STA soundStreamDutyVolume, X
+  LDA #$02
+  BNE -updatePointerGetNextByte
+  RTS
+
 ; --------------------------------------
 ; seWriteToSoftApu, write sound stream X to soft APU ports
 ; IN X, sound stream index
@@ -466,7 +484,6 @@ seWriteToSoftApu:
   ASL
   ASL
   TAY
-
   STY nmiVar2                          ; save Y
 
 -getVolume:
@@ -673,3 +690,4 @@ restFlag:
   setCountLoop1 = $FC
   repeatLoop1 = $FB
   transposeLoop1 = $FA
+  setDutyCycle = $F9

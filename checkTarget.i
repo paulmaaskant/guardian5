@@ -13,6 +13,7 @@
 
 ; list3+20		target dial
 ; list3+21		damage sustained by attacker
+; list3+22		attacker dail
 
 
 
@@ -57,10 +58,10 @@ checkTarget:
 	BCC +checksDone
 
 	LDA effects
-	ORA #%00100000						; active block marker
+	ORA #%00100000							; active block marker
 	STA effects
 
-	LDA #$85									; deny (b7) + no line of sight (b6-b0)
+	LDA #$85										; deny (b7) + no line of sight (b6-b0)
 	STA actionMessage
 	RTS
 
@@ -93,7 +94,6 @@ checkTarget:
 	; TODO
 	; condition for charge: adjacent to exactly 1 hostile
 	; JSR isChargePossible
-
 
 	LDA #$01
 	STA list3+21																																	; 1 charge damage sustained

@@ -58,20 +58,15 @@ showSystemInfo:
 	LDA #$23
 	STA systemMenuLine1+5
 
-	LDY activeObjectIndex
-	LDA object+1, Y
-	PHA
-	LSR
-	LSR
-	LSR
+	LDA activeObjectStats+6
 	JSR toBCD
-
 	LDA par2
 	STA systemMenuLine1+1
 	LDA par3
 	STA systemMenuLine1+2
 
-	PLA
+	LDY activeObjectIndex
+	LDA object+1, Y
 	AND #%00000111
 	JSR toBCD
 
@@ -249,7 +244,7 @@ writeMenuToBuffer:
 	DEX
 	BPL -loop2
 +done:
-	
+
 	; --- line 1 tile 21 ---
 	LDA menuFlags
 	BPL +set
