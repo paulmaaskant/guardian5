@@ -111,7 +111,9 @@ soundsLo:
   .db #< sound16
   .db #< sound17
   .db #< sound18
-  .dsb 7, #< sound15
+  .db #< sound19
+  .db #< sound1A
+  .dsb 5, #< sound15
 
 soundsHi:
   .db #> sound00
@@ -127,7 +129,9 @@ soundsHi:
   .db #> sound16
   .db #> sound17
   .db #> sound18
-  .dsb 7, #> sound15
+  .db #> sound19
+  .db #> sound1A
+  .dsb 5, #> sound15
 
 ; sound streams
   .include sound00.i
@@ -194,7 +198,7 @@ soundLoad:
   INY
   LDA (pointer1), Y                     ; duty
   AND #%11000000                        ; b7,b6
-  ORA #%00110000                        ; disable hardwarde envelope
+  ORA #%00110000                        ; disable loop & envelope
   STA soundStreamDutyVolume, X
   LDA #$00
   STA soundStreamNoteOffset, X          ; note adjustment
@@ -207,9 +211,9 @@ soundLoad:
   PLA
   STX locVar4
   STY locVar5
-	LDX #$D5
+	LDX #$D5                              ; * (5/6) = * ($D5/$100)
 	JSR multiply
-  LDA par1
+  LDA par1                              ; use the HI byte as the LO, effectively dividing by $100
   LDX locVar4
   LDY locVar5
   BNE +store
@@ -235,20 +239,18 @@ soundLoad:
   STA soundStreamEnvelope, X            ; initial volume envelope
   LDA #$02
   STA soundStreamEnvelopeCounter, X     ; start at the beginning of the volume envelope
-
   INY
   LDA (pointer1), Y                     ; pointer lo
   STA soundStreamPointerLo, X
   INY
   LDA (pointer1), Y                     ; pointer hi
   STA soundStreamPointerHi, X
-
   LDA #$01
   STA soundStreamNoteLengthCounter, X
-
   LDA #$02
   STA soundStreamNoteLength, X
-
+  LDA #$08                              ; disabled, but also set the negate flag to prevent static on pulse channels
+  STA soundStreamSweepControl, X
   DEC locVar3
   BNE -loop
   RTS
@@ -317,12 +319,12 @@ seNextByte:
 
   INY
   ; --- Opcode ----
-  CMP #repeatLoop1
-  BNE +
-  JMP seRepeatLoop1
+  CMP #repeatLoop1                                                              ; 2 cycles
+  BNE +                                                                         ; 3 cycles (2 if no branche)
+  JMP seRepeatLoop1                                                             ; 7 cycles to get here
 + CMP #transposeLoop1
   BNE +
-  JMP seTransposeLoop1
+  JMP seTransposeLoop1                                                          ; 12 cycles to get here
 + CMP #setCountLoop1
   BNE +
   JMP seSetCountLoop1
@@ -338,6 +340,9 @@ seNextByte:
 + CMP #setDutyCycle
   BNE +
   JMP seSetDutyCycle
++ CMP #setSweep
+  BNE +
+  JMP seSetSweep                                                                ; 47 cycles to get here
 + RTS
 
 +noteLength:
@@ -387,6 +392,9 @@ seNextByte:
   STA soundStreamPeriodHi, X
 
 +resetEnvelope:
+  LDA #$FF
+  STA currentPortValue+0
+  STA currentPortValue+1
   LDA #$00
   STA soundStreamEnvelopeCounter, X
   INC soundStreamPointerLo, X             ; move pointer to next byte
@@ -404,14 +412,6 @@ seNextByte:
   ADC #$00
   STA soundStreamPointerHi, X
   JMP seNextByte
-
-; opCode FF
-seEndSound:
-  LDA soundStreamChannel, X
-  AND #$03                       ; mask the channel (b1-0)
-  ORA #$40                       ; switch of stream (b7) and set rest (b6)
-  STA soundStreamChannel, X
-  RTS
 
 ; opCode FC
 seSetCountLoop1:
@@ -443,15 +443,6 @@ seRepeatLoop1:
   LDA #$03
   BNE -updatePointerGetNextByte
 
-; opCode FE
-seLoopSound:
-  LDA (nmiVar0), Y
-  STA soundStreamPointerLo, X
-  INY
-  LDA (nmiVar0), Y
-  STA soundStreamPointerHi, X
-  JMP seNextByte                  ; (recursion) get next byte
-
 ; opCode FD
 seNoteOffset:
   LDA (nmiVar0), Y
@@ -473,6 +464,35 @@ seSetDutyCycle:
   LDA #$02
   BNE -updatePointerGetNextByte
   RTS
+
+; opCode F8
+seSetSweep:
+  LDA (nmiVar0), Y
+  STA soundStreamSweepControl, X
+  LDA #$02
+;  LDA soundStreamDutyVolume, X
+;  AND #%11011111                    ; enable loop
+;  STA soundStreamDutyVolume, X
+  LDA #$02
+  BNE -updatePointerGetNextByte
+  RTS
+
+; opCode FF
+seEndSound:
+  LDA soundStreamChannel, X
+  AND #$03                       ; mask the channel (b1-0)
+  ORA #$40                       ; switch of stream (b7) and set rest (b6)
+  STA soundStreamChannel, X
+
+  RTS
+; opCode FE
+seLoopSound:
+  LDA (nmiVar0), Y
+  STA soundStreamPointerLo, X
+  INY
+  LDA (nmiVar0), Y
+  STA soundStreamPointerHi, X
+  JMP seNextByte                  ; (recursion) get next byte
 
 ; --------------------------------------
 ; seWriteToSoftApu, write sound stream X to soft APU ports
@@ -535,10 +555,9 @@ seWriteToSoftApu:
   STA softApuPorts+0, Y
 
 +continue:
-  CPY #$08                        ; negate sweep to prevent noise on square 1 & 2
-  BCS +done
-  LDA #$08
+  LDA soundStreamSweepControl, X
   STA softApuPorts+1, Y
+
 +done:
   RTS
 
@@ -549,11 +568,10 @@ seWriteToApu:
   LDY #$0F                    ; port $400F is not used
 
 -loop:
-  CPY #$09                    ; port $4009 is not used
+  CPY #$09                    ; port $4009 is not used (no sweep on TRI)
   BEQ +nextPort
-  CPY #$0D                    ; port $400D is not used
+  CPY #$0D                    ; port $400D is not used (no sweep on NOI)
   BEQ +nextPort
-
   LDA softApuPorts, Y
 
   CPY #$03                    ; don't write to $4003
@@ -691,3 +709,4 @@ restFlag:
   repeatLoop1 = $FB
   transposeLoop1 = $FA
   setDutyCycle = $F9
+  setSweep = $F8

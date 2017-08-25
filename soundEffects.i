@@ -4,7 +4,7 @@ sound10:
 
   .db #$04                              ; stream #
   .db #$80                              ; channel (suare 1)
-  .db #$70                              ; initial duty
+  .db #$40                              ; initial duty
   .db #$80                              ; initial tempo
   .db #eConstant                        ; initial volume envelope
   .dw sound10_stream00                  ; stream address
@@ -150,4 +150,34 @@ sound18_stream00:
   .db noteOffset, 1
   .db repeatLoop1
   .dw -loop
+  .db endSound
+
+sound19:
+  .db #$01                              ; number of streams
+
+  .db #$04                              ; stream #
+  .db #$80                              ; channel (pulse 1)
+  .db #$80                              ; initial duty
+  .db #$10                              ; initial tempo
+  .db eConstant                         ; initial volume envelope
+  .dw sound19_stream00                  ; stream address
+sound19_stream00:
+  .db L8th
+  .db setSweep, %11000011
+  .db A4
+  .db endSound
+
+sound1A:
+  .db #$01                              ; number of streams
+
+  .db #$04                              ; stream #
+  .db #$80                              ; channel (pulse 1)
+  .db #$80                              ; initial duty
+  .db #$40                              ; initial tempo
+  .db eConstant                         ; initial volume envelope
+  .dw sound1A_stream00                  ; stream address
+sound1A_stream00:
+  .db L8th
+  .db setSweep, %11010011
+  .db A4
   .db endSound

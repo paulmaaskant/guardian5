@@ -175,10 +175,11 @@
 	soundStreamEnvelopeCounter		.dsb 6
 	soundStreamEnvelope						.dsb 6
 	soundStreamNoteOffset					.dsb 6
-	soundStreamLoop1Counter				.dsb 6			;
+	soundStreamLoop1Counter				.dsb 6
+	soundStreamSweepControl				.dsb 6			;
 
 	softApuPorts									.dsb 16
-	currentPortValue							.dsb 2
+	currentPortValue							.dsb 4
 
 	.ende
 	.enum $0400
