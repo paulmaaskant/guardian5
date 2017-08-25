@@ -98,12 +98,14 @@ state_titleScreen:
 	JMP +setTimer
 
 +next:
+	LSR									; startGame
+	BCS +confirm
 	LSR
-	LSR
-	LSR
+	LSR									; B
 	LSR
 	BCC +setTimer				; A button
 
++confirm:
 	LDA list1+1
 	BEQ +startGame
 
