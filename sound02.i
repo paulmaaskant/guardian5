@@ -1,3 +1,12 @@
+; opcodes         argument
+;
+; endSound                              ; end of sound
+; loopSound       address:word          ; stream continues at specified address
+; noteOffset      offset:byte           ; raise / lower tone by 'offset'  -128 to + 127
+; setCountLoop1   count:byte            ; set loop1 count
+; repeatLoop1     address:word          ; decrement loop 1 count, if not zero then stream continues at specified address
+; transposeLoop1  address:word          ; apply note offset as found in table at specified addres, using the current loop 1 count as the index
+; setDutyCycle    dutyCycle:byte        ; set duty cycle ($00, $40, $80 or $C0)
 
 sound02:
   .db $01                               ; number of streams in sound
