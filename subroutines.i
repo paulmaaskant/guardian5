@@ -557,13 +557,14 @@ updateTargetMenu:
 ; --- action attributes ----
 ; byte1: game state, byte2: char string
 actionTable:
-	.db #$10, #$02				; 00 MOVE
-	.db #$12, #$00				; 01 RANGED ATK 1
-	.db #$12, #$01				; 02 RANGED ATK 2
-	.db #$14, #$04				; 03 COOL DOWN
-	.db #$17, #$07				; 04 CLOSE COMBAT
-	.db #$1B, #$03				; 05 CHARGE
-	.db #$19, #$13				; 06 PIVOT TURN
+	.db $10, $02				; 00 MOVE
+	.db $12, $00				; 01 RANGED ATK 1
+	.db $12, $01				; 02 RANGED ATK 2
+	.db $14, $04				; 03 COOL DOWN
+	.db $17, $07				; 04 CLOSE COMBAT
+	.db $1B, $03				; 05 CHARGE
+	.db $19, $13				; 06 PIVOT TURN
+	.db $10, $18				; 07 RUN
 
 	aMOVE = $00
 	aRANGED1 = $01
@@ -572,6 +573,7 @@ actionTable:
 	aCLOSECOMBAT = $04
 	aCHARGE = $05
 	aPIVOT = $06
+	aRUN = $07
 
 updateActionList:
 	; --- clear message ---
@@ -597,7 +599,8 @@ updateActionList:
 	LDA #aPIVOT								; PIVOT TURN
 	JSR addPossibleAction
 	LDA #aCOOLDOWN						; COOL DOWN
-	JMP addPossibleAction			; tail chain
+	JSR addPossibleAction
+	JMP prepareAction					; tail chain
 
 +continue:
 	LDA targetObjectTypeAndNumber		; Cursor on other UNIT?
@@ -631,9 +634,6 @@ updateActionList:
 	; Cursor on EMPTY SPACE
 	; ----------------------------------
 +continue:
-	LDA #aMOVE
-	JSR addPossibleAction
-
 	; --- find path ---
 	LDA cursorGridPos
 	STA par1										; par1 = destination node
@@ -645,19 +645,26 @@ updateActionList:
 	BPL +notBlocked
 	LDA #$89										; deny (b7) + impassable (b6-b0)
 	STA actionMessage
-	RTS
+	BNE +walk
 
 +notBlocked:
-	LDA activeObjectGridPos			; A =  start node
+	LDA activeObjectGridPos			; A = start node
 	JSR findPath								; A* search path, may take more than 1 frame
-
 	LDA actionMessage						; if move is allowed
-	BMI +done
+	BMI +done																																		; move > 1 heat
 	LDA activeObjectStats+2			; movement stat
 	CMP list1										; compare to used number of moves (list1)
-	BCS +done
-	LDA #$0D										; info message: top speed
-	STA actionMessage
+	BCS +walk
+	LDA #$02
+	STA list3+0
+	LDA #aRUN
+	JMP addPossibleAction																																	; top spread > 1 exra heat
+
++walk:
+	LDA #$01
+	STA list3+0
+	LDA #aMOVE
+	JMP addPossibleAction
 
 +done:
 	RTS

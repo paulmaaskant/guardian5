@@ -1,19 +1,22 @@
 ; --------------------------
 ; calculate attack hit or miss and apply damage
 ; --------------------------
-;
+; IN list3+0, heat
 ; IN list3+1, hit probability
 ; IN list3+2, adjusted damage value
 ; IN list3+20, target life points
-;
 
 calculateAttack:
+	LDA #$03										; clear from list3+3
+	LDX #$09										; up to and including list3+9
+	JSR clearList3
+
 	JSR random100							; random number in A between 0 and 99
 	CMP list3+1								; compare to the hit probability
 	BCC +hit
 	BEQ +hit
 	LDA #$02									; miss
-	BNE +done
+	BNE +continue
 
 	; --- hit, apply damage ---
 +hit:
@@ -35,7 +38,7 @@ calculateAttack:
 	ADC identity, X
 	STA object+1, Y
 	LDA #$01									; value 1 means HIT
-	BNE +done
+	BNE +continue
 
 +destroyed:
 	LDY #$80
@@ -44,17 +47,15 @@ calculateAttack:
 	STY list3+5
 	LDA #$01									; value 1 means HIT
 
-+done:
-	STA list3+3								; stream 1: (01) for hit, (02) for miss
-	LDX list3+21							; charge damage?
-	BEQ +continue							; no -> continue
-	LDA #$06									; yes
-	STA list3+6								; set result message
-
++continue:																																			; check charge damage next
+	STA list3+3																																		; stream 1: (01) for hit, (02) for miss
+	LDX list3+21																																	; charge damage?
+	BEQ +continue																																	; no -> continue
+	LDA #$06																																			; yes
+	STA list3+6																																		; set result message
 	LDA activeObjectStats+6		; active unit armor value
 	SEC
 	SBC list3+21							; charge damage
-
 	LDY activeObjectIndex
 	ASL
 	ASL
@@ -68,8 +69,26 @@ calculateAttack:
 	ADC identity, X
 	STA object+1, Y
 
-+continue:
-	LDA #$03									; stream 2: temp stable!
++continue:																																			; heat stuff
+	LDA list3+0
+	BNE +notStable
+	LDA #$03																																			; msg temp stable!
+	STA list3+7
+	BNE +continue
+
++notStable:
+	BMI +tempDecrease
+	LDA #$07																																			; msg temp increase
+	STA list3+7
+	BNE +continue
+
++tempDecrease:
+	EOR #$FF
+	CLC																																						; negate to make positive
+	ADC #$01
+	STA list3+0
+	LDA #$04																																			; msg temp decrease
 	STA list3+7
 
++continue:
 	RTS

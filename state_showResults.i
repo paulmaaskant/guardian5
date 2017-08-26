@@ -29,22 +29,22 @@ state_showResults:
 	RTS
 
 +continue:
-	BPL +startDialog			; any opcode with b7=1 triggers a flash
-	LDA #$00							; opcode processed
+	BPL +startDialog																															; any opcode with b7=1 triggers a flash
+	LDA #$00																																			; opcode processed
 	STA list3+3, X
-	LDA #$16							; --- set light FLASH parameters ---
-	STA list1+0						; return to this game state when done
+	LDA #$16																																			; --- set light FLASH parameters ---
+	STA list1+0																																		; return to this game state when done
 	LDA #$00
-	STA list1+1						; flash toggle
-	LDA #$1C							; game state "light flash"
-	STA gameState					; next gamestate
+	STA list1+1																																		; flash toggle
+	LDA #$1C																																			; game state "light flash"
+	STA gameState																																	; next gamestate
 	LDA targetObjectTypeAndNumber
-	JMP deleteObject			; tail chain
+	JMP deleteObject																															; tail chain
 
 +startDialog:
 	TAY
-	LDA #$00							; opcode processed
-	STA list3+3, X				;
+	LDA #$00																																			; opcode processed
+	STA list3+3, X																																;
 	LDA streamHi-1, Y
 	STA bytePointer+0
 	LDA streamLo-1, Y
@@ -74,6 +74,7 @@ streamHi:
 	.db #< resultTempDecrease								; 4
 	.db #< resultUnitDestroyed							; 5
 	.db #< resultChargeDamageSustained			; 6
+	.db #< resultTempIncrease								; 7
 streamLo:
 	.db #> resultTargetHit
 	.db #> resultTargetMiss
@@ -81,3 +82,4 @@ streamLo:
 	.db #> resultTempDecrease
 	.db #> resultUnitDestroyed
 	.db #> resultChargeDamageSustained
+	.db #> resultTempIncrease	

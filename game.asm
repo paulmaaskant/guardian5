@@ -585,6 +585,7 @@ gameStateJumpTable:
 ; -------------------------
 
 	.include state_misc.i
+	.include state_selectAction.i
 	.include state_titleScreen.i
 	.include state_resolveMove.i
 	.include state_resolveSpin.i
@@ -593,6 +594,8 @@ gameStateJumpTable:
 	.include state_resolveClose.i
 	.include state_showResults.i
 	.include subroutines.i
+	.include prepareAction.i
+	.include calculateHeat.i
 	.include calculateAttack.i
 	.include findPath.i
 	.include reset.i
@@ -667,6 +670,7 @@ stringListL:
 	.db #< str_START_GAME								; 15
 	.db #< str_PLAY_SOUND								; 16
 	.db #< str_INSTRUCTIONS							; 17
+	.db #< str_RUN											; 18
 stringListH:
 	.db #> str_RANGED_ATK_1
 	.db #> str_RANGED_ATK_2
@@ -692,6 +696,7 @@ stringListH:
 	.db #> str_START_GAME
 	.db #> str_PLAY_SOUND
 	.db #> str_INSTRUCTIONS
+	.db #> str_RUN
 
 str_LOS_BLOCKED:
 	.db $14, $1B, $18, $1D, $14, $0B, $1E, $15, $0B, $22, $18, $16, $17, $23, $11, $1B, $1E, $12, $1A, $14, $13
@@ -741,6 +746,8 @@ str_PLAY_SOUND:
 	.db $0A, $1F, $1B, $10, $28, $0F, $22, $1E, $24, $1D, $13
 str_INSTRUCTIONS:
 	.db $0C, $18, $1D, $22, $23, $21, $24, $12, $23, $18, $1E, $1D, $22
+str_RUN
+	.db $03, $21, $24, $1D
 
 
 ; --- unit type attribute tables ---

@@ -29,13 +29,6 @@
 state_initializeCharge:
 	DEC list1										; remove the final node from the path (defending unit position)
 
-	LDA #$04										; clear from list3+4
-	LDX #$09										; up to and including list3+9
-	JSR clearList3
-
-	LDA #$01
-	STA list3+3									; stream 1: target hit!
-
 	JSR calculateAttack
 
 	LDA #$80
@@ -47,11 +40,11 @@ state_initializeCharge:
 ; initialize action resolution: MOVE
 ;-------------------------------------
 state_initializeMove:
-	LDA #$04										; clear from list3+4
+	LDA #$03										; clear from list3+4
 	LDX #$09										; up to and including list3+9
 	JSR clearList3
 
-	LDA #$03
+	LDA #$07
 	STA list3+3									; stream 1: temp stable
 
 	LDA #$00

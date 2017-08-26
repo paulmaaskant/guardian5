@@ -2,10 +2,6 @@
 ; game state 12: start ranged attack (laser)
 ; -----------------------------------------------
 state_initializeRanged:
-	LDA #$04										; clear from list3+4
-	LDX #$09										; up to and including list3+9
-	JSR clearList3
-
 	LDY #sGunFire
 	JSR soundLoad
 	JSR calculateAttack

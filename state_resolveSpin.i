@@ -16,7 +16,7 @@ state_initializeFreeSpin:
 
 	JSR clearActionMenu
 
-	LDA #$0A						; state := init set direction
+	LDA #$0A							; state := init set direction
 	STA gameState					;
 
 	RTS

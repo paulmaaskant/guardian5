@@ -29,6 +29,9 @@ checkTarget:
 	LDA #$00																																			; set charge damage to 0
 	STA list3+21
 
+	LDA #$01																																			; default heat increase
+	STA list3+0
+
 	; --- retrieve action ---
 	LDY selectedAction
 	LDX actionList, Y
@@ -97,6 +100,8 @@ checkTarget:
 
 	LDA #$01
 	STA list3+21																																	; 1 charge damage sustained
+	LDA #$03
+	STA list3+0																																		; charge increases heat by 3
 
 +checksDone:
 	LDA activeObjectStats+5																												; calculate hit chance

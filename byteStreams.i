@@ -259,6 +259,14 @@ resultChargeDamageSustained:
 	.db $22, $24, $22, $23, $10, $18, $1D, $14, $13																; SUSTAINED
 	.db $F3																																				; A button
 	.db $F4
+resultTempIncrease:
+	.db $F2																																				; clear dialog
+	.db	$FC, $10																																	; [TEMP LEVEL]
+	.db $F1																																				; next line
+	.db $21, $1E, $22, $14, $0F, $11, $28, $0F																		; ROSE BY
+	.db $FD, $00																																	; X (list3+0)
+	.db $F3																																				; A button
+	.db $F4																																				; done
 
 	; EXPLOSION
 																																								; 1 DAMAGE

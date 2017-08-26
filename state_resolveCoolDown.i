@@ -10,9 +10,6 @@ state_initializeCoolDown:
 	LDA #$04
 	STA list3+3						; stream 1: temp level decrease of X
 
-	LDA #$02
-	STA list3+0						; cool down value
-
 	; -----
 
 
