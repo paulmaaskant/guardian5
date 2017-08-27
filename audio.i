@@ -101,7 +101,8 @@ soundsLo:
   .db #< sound00
   .db #< sound01
   .db #< sound02
-  .dsb 13, #< sound15
+  .db #< sound03
+  .dsb 12, #< sound15
   .db #< sound10
   .db #< sound11
   .db #< sound12
@@ -119,7 +120,8 @@ soundsHi:
   .db #> sound00
   .db #> sound01
   .db #> sound02
-  .dsb 13, #> sound15
+  .db #> sound03
+  .dsb 12, #> sound15
   .db #> sound10
   .db #> sound11
   .db #> sound12
@@ -137,6 +139,7 @@ soundsHi:
   .include sound00.i
   .include sound01.i
   .include sound02.i
+  .include sound03.i
   .include soundEffects.i
 
 
