@@ -560,6 +560,7 @@ getStatsAddress:
 	TAY
 
 	PLA
+	AND #%01111000
 	LSR
 	LSR
 	LSR

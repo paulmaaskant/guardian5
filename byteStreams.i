@@ -275,6 +275,11 @@ resultShutdown:
 	.db $24, $1D, $18, $23, $0F, $22, $17, $24, $23, $13, $1E, $26, $1D						; UNIT SHUTDOWN
 	.db $F3																																				; A button
 	.db $F4																																				; done
+resultUnitOffline:
+	.db $F2																																				; clear dialog
+	.db $24, $1D, $18, $23, $0F, $1E, $15, $15, $1B, $18, $1D, $14								; UNIT OFFLINE
+	.db $F3																																				; A button
+	.db $F4																																				; done
 
 levelOne:																																				; --- blocked nodes (1 bit for movement + 1 bit for line of sight) ---
 	.db #$00, #$00, #$80																													; row 0
@@ -289,7 +294,7 @@ levelOne:																																				; --- blocked nodes (1 bit for move
 	.db	#$02																																			; number of objects (2)
 	.db #$03																																			; object 0 type
 	.db #$02																																			; object 0 grid position
-	.db #$03																																			; object 0 pilot 0 & facing RD
-	.db #$03																																			; object 1 type
+	.db #$03																																			; object 0 pilot f0 & facing RD
+	.db #$13																																			; object 1 type
 	.db #$07																																			; object 1 grid position
-	.db #$95																																			; object 1 pilot 8 & facing LD
+	.db #$15																																			; object 1 pilot h1 & facing LD

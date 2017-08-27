@@ -21,8 +21,11 @@ calculateHeat:
   BMI +heatSinksRestore
   CMP locVar1
   BCC +less
-  LDA #$08
+  LDA #$08                                                                      ; msg shutdown
   STA list3+8
+  LDA object+0, Y                                                               ; set shutdown flag
+  ORA #$80
+  STA object+0, Y
   LDA locVar1                                                                   ; make sure no more heat sinks
   STA list3+0                                                                   ; go offline than are available
 

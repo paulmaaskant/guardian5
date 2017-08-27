@@ -138,17 +138,16 @@ state_initializeMap:
 	ASL
 	TAX
 
-	PLA												; pull init stats
-	STA object+1, X
+	PLA
+	STA object+1, X						; set health and heatsinks
 
 	JSR getNextByte
-	STA object+3, X
-
-	TAY							;
+	STA object+3, X						; set grid position
+	TAY												; and block it in the node map
 	LDA #$C0
 	STA nodeMap, Y
 
-	JSR getNextByte
+	JSR getNextByte						; get pilot & initial facing direction
 	STA object+0, X
 
 	PLA							; pull X
@@ -307,97 +306,7 @@ state_setDirection:
 	RTS
 
 
-; ------------------------------------------
-; gamesState 08: Selects the object that is up next
-;------------------------------------------
-; looks up the active object's index and tries to find the object with index+1
-; if no such object exits it looks for index+2 etc
-; when index+n is equal to the number of objects in memory, the index is reset to 0
-state_setNextActiveObject:
-	LDA activeObjectTypeAndNumber
-	AND #$07
-	STA locVar1
-	INC locVar1
-	LDX #$00
--loop:
-	LDA objectTypeAndNumber, X
-	AND #$07
-	CMP locVar1
-	BEQ +setNext
-	INX
-	CPX objectCount
-	BNE -loop:
 
-	LDX #$00								; increase index and try again
-	INC locVar1
-	CMP #$06								; cycle between 0 and 5
-	BNE -loop
-	STX locVar1							; reset index to 0
-	BEQ -loop								; JMP
-
-+setNext:
-	LDA objectTypeAndNumber, X
-	STA	activeObjectTypeAndNumber
-
-	; --- retrieve object data ---
-	AND #$07
-	ASL
-	ASL
-	STA activeObjectIndex
-	TAY
-	LDA object+3, Y
-	STA activeObjectGridPos
-
-	LDA object+0, Y
-	JSR showPilot
-
-	; --- retrieve type data ---
-	LDA activeObjectTypeAndNumber
-	JSR getStatsAddress
-	STA activeObjectStats+6
-	LDA (pointer1), Y				; attack & defence
-	STA activeObjectStats+5
-	INY								; damage & movement
-	LDA (pointer1), Y
-	STA locVar1
-	AND #$07
-	STA activeObjectStats+3			; weapon damage 1
-	LSR locVar1
-	LSR locVar1
-	LSR locVar1
-	LDA locVar1
-	AND #$07
-	STA activeObjectStats+4			; weapon damage 2
-	LDA locVar1
-	LSR
-	LSR
-	LSR
-	CLC
-	ADC #$02
-	STA activeObjectStats+2			; movement
-
-	LDY #$01
-	LDA (pointer1), Y				; wpn range 1
-	STA activeObjectStats+0
-	INY
-	LDA (pointer1), Y
-	STA activeObjectStats+1			; wpn range 2
-
-	LDA #$C0						; switch on cursor and active marker
-	STA effects
-
-	LDA activeObjectGridPos
-	STA cursorGridPos
-
-	LDA events
-	ORA event_updateTarget
-	STA events
-
-	LDA #$0B						; center camera
-	STA gameState
-
-	JSR clearSystemMenu
-	JMP showSystemInfo				; tail chain
 
 
 ; ------------------------------------------
@@ -573,7 +482,7 @@ state_initializeSetDirection:
 	STA menuIndicator+0
 	STA menuIndicator+1
 
-	LDA menuFlags					; switch on blinking for line 1 and 2
+	LDA menuFlags							; switch on blinking for line 1 and 2
 	ORA menuFlag_line1				; set flag
 	ORA menuFlag_line2				; set flag
 	STA menuFlags
@@ -590,7 +499,6 @@ state_initializeSetDirection:
 ; gameState 0B: sets the camera destination so that it centres on the active object
 ; ------------------------------------------
 state_centerCamera:
-
 	LDA activeObjectGridPos
 	JSR gridPosToScreenPos
 
@@ -619,8 +527,6 @@ state_centerCamera:
 	LDA #$0C					; wait for camera to center
 	STA gameState
 
-	RTS
-
 ; ------------------------------------------
 ; gameState 0C: Wait for the camera to reach its destination
 ; ------------------------------------------
@@ -628,21 +534,36 @@ state_waitForCamera:
 
 	LDA cameraXDest+0
 	CMP cameraX+0
-	BNE +
+	BNE +wait
 	LDA cameraXDest+1
 	CMP cameraX+1
-	BNE +
+	BNE +wait
 
 	LDA cameraYDest+0
 	CMP cameraY+0
-	BNE +
+	BNE +wait
 	LDA cameraYDest+1
 	CMP cameraY+1
-	BNE +
+	BNE +wait
+
+	LDY activeObjectIndex
+	LDA object+0, Y
+	BMI +shutdown
+
+	LDA events
+	ORA event_updateTarget
+	STA events
 
 	LDA #$06					; user to select action
+	BNE +store
+
++shutdown:
+	LDA #$1F
+
++store:
 	STA gameState
-+
+
++wait:
 	RTS
 
 ; ------------------------------------------

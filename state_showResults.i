@@ -76,6 +76,7 @@ streamHi:
 	.db #< resultChargeDamageSustained			; 6
 	.db #< resultHeatSinksSaturated					; 7
 	.db #< resultShutdown										; 8
+	.db #< resultUnitOffline								; 9
 streamLo:
 	.db #> resultTargetHit
 	.db #> resultTargetMiss
@@ -85,3 +86,4 @@ streamLo:
 	.db #> resultChargeDamageSustained
 	.db #> resultHeatSinksSaturated
 	.db #> resultShutdown
+	.db #> resultUnitOffline

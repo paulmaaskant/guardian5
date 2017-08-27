@@ -125,9 +125,9 @@
 	; stored memory objects
 	; object grid position is stored separately as it will be sorted regularly
 	objectCount								.dsb 1	; number of objects presently in memory
-	objectTypeAndNumber				.dsb 6	; objectType (b7-3), object number (b2-0)
+	objectTypeAndNumber				.dsb 6	; (b7) hostile (b6-3) objectType (b2-0) object number
 	; the rest of the object information is stored (4 bytes each) so that it does not require sorting whenever the object's position changes
-	object										.dsb 1	; +0: (b7) hostile, (b6-4) pilot, (b3) move/still, (b2-0) direction
+	object										.dsb 1	; +0: (b7) shutdown (b6-4) pilot, (b3) move/still, (b2-0) direction
 														.dsb 1	; +1: health dial (b7-3), heat dial (b2-0)
 														.dsb 1	; +2: frame count (b7-0)
 														.dsb 1	; +3: grid pos
@@ -362,6 +362,7 @@ mainGameLoop:
 -loopObjects
 	; --- set current object attributes ---
 	LDA objectTypeAndNumber, X
+	AND #%01111000
 	LSR
 	LSR
 	LSR
@@ -389,8 +390,11 @@ mainGameLoop:
 	JSR gridPosToScreenPos					; get and set screen X & Y
 	BCC +done												; off screen -> done
 
+	LDA objectTypeAndNumber, X
+	PHP
+
 	LDA object, Y
-	AND #%0001000										; object move bit (b3) ON
+	AND #%00001000										; object move bit (b3) ON
 	BEQ +next
 	CLC															; THEN add displacement
 	LDA currentObjectYPos						; displacement is updated every frame
@@ -405,7 +409,6 @@ mainGameLoop:
 +next:
 	LDX #$00										; default value for par4 (no mirror, no palette change)
 	LDA object+0, Y
-	PHA
 	AND rightNyble							; right nyble (b3) moving? (b2-0) direction?
 	TAY													; set animation sequence (Y)
 	AND #%00000110							; mirror if direction is 2 or 3
@@ -414,7 +417,7 @@ mainGameLoop:
 	LDX #%01000000							; set mirror bit
 
 +next:												; palette 0 for friendly, palette 1 for hostile
-	PLA													; object status
+	PLP													; object type flags
 	BPL +next										; if hostile (b7) then do unit palette switch
 	INX													; palette switch
 
@@ -578,6 +581,7 @@ gameStateJumpTable:
 	.dw state_lightFlash-1							; 1C
 	.dw state_closeCombatAnimation-1		; 1D
 	.dw state_initializeTitleMenu-1			; 1E
+	.dw state_shutDown-1								; 1F
 
 
 ; -------------------------
@@ -585,6 +589,7 @@ gameStateJumpTable:
 ; -------------------------
 
 	.include state_misc.i
+	.include state_setNextActiveObject.i
 	.include state_selectAction.i
 	.include state_titleScreen.i
 	.include state_resolveMove.i
@@ -593,6 +598,7 @@ gameStateJumpTable:
 	.include state_resolveRanged.i
 	.include state_resolveClose.i
 	.include state_showResults.i
+	.include state_shutDown.i
 	.include subroutines.i
 	.include updateActionList.i
 	.include prepareAction.i
