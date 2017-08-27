@@ -44,8 +44,7 @@ state_initializeMove:
 	LDX #$09										; up to and including list3+9
 	JSR clearList3
 
-	LDA #$07
-	STA list3+3									; stream 1: temp stable
+	JSR calculateHeat
 
 	LDA #$00
 	STA selectedAction

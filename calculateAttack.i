@@ -69,26 +69,6 @@ calculateAttack:
 	ADC identity, X
 	STA object+1, Y
 
-+continue:																																			; heat stuff
-	LDA list3+0
-	BNE +notStable
-	LDA #$03																																			; msg temp stable!
-	STA list3+7
-	BNE +continue
-
-+notStable:
-	BMI +tempDecrease
-	LDA #$07																																			; msg temp increase
-	STA list3+7
-	BNE +continue
-
-+tempDecrease:
-	EOR #$FF
-	CLC																																						; negate to make positive
-	ADC #$01
-	STA list3+0
-	LDA #$04																																			; msg temp decrease
-	STA list3+7
-
 +continue:
-	RTS
+	JMP calculateHeat																															; tail chain
+																																	

@@ -231,17 +231,17 @@ resultTargetMiss:
 	.db $F4																																				; end
 resultTempStable:
 	.db $F2																																				; clear dialog
-	.db	$FC, $10																																	; [TEMP LEVEL]
+	.db	$FC, $10																																	; [HEATSINKS]
 	.db $F1																																				; next line
 	.db $22, $23, $10, $11, $1B, $14																							; STABLE
 	.db $F3																																				; A button
 	.db $F4																																				; done
-resultTempDecrease:
+resultHeatSinksRestored:
 	.db $F2																																				; clear dialog
-	.db	$FC, $10																																	; [TEMP LEVEL]
+	.db $FD, $00, $0F																															; X (list3+0)
+	.db	$FC, $10																																	; [HEATSINKS]
 	.db $F1																																				; next line
-	.db $13, $21, $1E, $1F, $1F, $14, $13, $0F, $11, $28, $0F											; DROPPED BY
-	.db $FD, $00																																	; X (list3+0)
+	.db $21, $14, $22, $23, $1E, $21, $14, $13																		; RESTORED
 	.db $F3																																				; A button
 	.db $F4																																				; done
 resultUnitDestroyed:
@@ -259,18 +259,22 @@ resultChargeDamageSustained:
 	.db $22, $24, $22, $23, $10, $18, $1D, $14, $13																; SUSTAINED
 	.db $F3																																				; A button
 	.db $F4
-resultTempIncrease:
+resultHeatSinksSaturated:
 	.db $F2																																				; clear dialog
-	.db	$FC, $10																																	; [TEMP LEVEL]
+	.db $FD, $00, $0F																															; X (list3+0)
+	.db	$FC, $10																																	; [HEATSINKS]
 	.db $F1																																				; next line
-	.db $21, $1E, $22, $14, $0F, $11, $28, $0F																		; ROSE BY
-	.db $FD, $00																																	; X (list3+0)
+	.db $1E, $15, $15, $1B, $18, $1D, $14																					; OFFLINE
+	;.db $22, $10, $23, $24, $21, $10, $23, $14, $13															; SATURATED
 	.db $F3																																				; A button
 	.db $F4																																				; done
-
-	; EXPLOSION
-																																								; 1 DAMAGE
-																																								; CAUSED BY
+resultShutdown:
+	.db $F2																																				; clear dialog
+	.db $17, $14, $10, $23, $0F, $12, $21, $18, $23, $18, $12, $10, $1B						; HEAT CRITICAL
+	.db $F1, $F1																																			; next line
+	.db $24, $1D, $18, $23, $0F, $22, $17, $24, $23, $13, $1E, $26, $1D						; UNIT SHUTDOWN
+	.db $F3																																				; A button
+	.db $F4																																				; done
 
 levelOne:																																				; --- blocked nodes (1 bit for movement + 1 bit for line of sight) ---
 	.db #$00, #$00, #$80																													; row 0

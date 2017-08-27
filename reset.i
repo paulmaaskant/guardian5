@@ -39,8 +39,6 @@ RESET:
 -count:
 	BIT $2002
 	BPL +notYet
-
-	STY debug
 	CPY #$0A
 	BCS +continue
 	LDA sysFlag_NTSC

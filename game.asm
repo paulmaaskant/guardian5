@@ -594,6 +594,7 @@ gameStateJumpTable:
 	.include state_resolveClose.i
 	.include state_showResults.i
 	.include subroutines.i
+	.include updateActionList.i
 	.include prepareAction.i
 	.include calculateHeat.i
 	.include calculateAttack.i
@@ -662,7 +663,7 @@ stringListL:
 	.db #< str_AT_TOP_SPEED							; 0D
 	.db #< str_TARGET										; 0E
 	.db #< str_DAMAGE										; 0F
-	.db #< str_TEMP_LEVEL								; 10
+	.db #< str_HEATSINKS								; 10
 	.db #< str_FFW											; 11
 	.db #< str_NOT_POSSIBLE							; 12
 	.db #< str_PIVOT_TURN								; 13
@@ -688,7 +689,7 @@ stringListH:
 	.db #> str_AT_TOP_SPEED
 	.db #> str_TARGET
 	.db #> str_DAMAGE
-	.db #> str_TEMP_LEVEL
+	.db #> str_HEATSINKS
 	.db #> str_FFW
 	.db #> str_NOT_POSSIBLE
 	.db #> str_PIVOT_TURN
@@ -730,8 +731,8 @@ str_TARGET:
 	.db $06, $23, $10, $21, $16, $14, $23
 str_DAMAGE:
 	.db $06, $13, $10, $1C, $10, $16, $14
-str_TEMP_LEVEL:
-	.db $0A, $23, $14, $1C, $1F, $0F, $1B, $14, $25, $14, $1B
+str_HEATSINKS:
+	.db $09, $17, $14, $10, $23, $22, $18, $1D, $1A, $22
 str_FFW:
 	.db $01, $2F
 str_NOT_POSSIBLE:
@@ -777,9 +778,9 @@ typeRamulen1:
 	.db #$11 ; 3 animation: facing RD, walking
 	.db #$15 ; 4 animation: facing D, walking
 	.db #$11 ; 5 animation: facing LD, walking
-    .db #$13 ; 6 animation: facing LU, walking
+  .db #$13 ; 6 animation: facing LU, walking
 	; fixed stats (3 bytes)
-	.db #%00110000					; Dail starting positions: (b7-b3) main dial, (b2-b1) heat dial, and cool down (b0)
+	.db #%00110110					; Dail starting positions: (b7-b3) main dial, (b2-b1) heat dial, and cool down (b0)
 	.db #%01100101					; Ranged weapon 1 max range (b7-4), min range (b3-2) and type  (b1-0)
 	.db #%01101011					; Ranged weapon 2 max range (b7-4), min range (b3-2) and type  (b1-0)
 	; dail stats

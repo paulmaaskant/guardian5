@@ -11,8 +11,7 @@ state_initializeFreeSpin:
 	LDX #$09						; up to and including list3+9
 	JSR clearList3
 
-	LDA #$03
-	STA list3+3						; stream 1: temp stable
+	JSR calculateHeat
 
 	JSR clearActionMenu
 

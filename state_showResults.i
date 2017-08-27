@@ -71,15 +71,17 @@ streamHi:
 	.db #< resultTargetHit									; 1
 	.db #< resultTargetMiss									; 2
 	.db #< resultTempStable									; 3
-	.db #< resultTempDecrease								; 4
+	.db #< resultHeatSinksRestored					; 4
 	.db #< resultUnitDestroyed							; 5
 	.db #< resultChargeDamageSustained			; 6
-	.db #< resultTempIncrease								; 7
+	.db #< resultHeatSinksSaturated					; 7
+	.db #< resultShutdown										; 8
 streamLo:
 	.db #> resultTargetHit
 	.db #> resultTargetMiss
 	.db #> resultTempStable
-	.db #> resultTempDecrease
+	.db #> resultHeatSinksRestored
 	.db #> resultUnitDestroyed
 	.db #> resultChargeDamageSustained
-	.db #> resultTempIncrease	
+	.db #> resultHeatSinksSaturated
+	.db #> resultShutdown
