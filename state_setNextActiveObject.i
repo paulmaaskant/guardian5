@@ -10,6 +10,7 @@ state_setNextActiveObject:
 	STA locVar1
 	INC locVar1
 	LDX #$00
+
 -loop:
 	LDA objectTypeAndNumber, X
 	AND #$07
@@ -18,7 +19,6 @@ state_setNextActiveObject:
 	INX
 	CPX objectCount
 	BNE -loop:
-
 	LDX #$00								; increase index and try again
 	INC locVar1
 	CMP #$06								; cycle between 0 and 5
@@ -55,16 +55,17 @@ state_setNextActiveObject:
 	STA activeObjectStats+5
 	INY								; damage & movement
 	LDA (pointer1), Y
-	STA locVar1
+	PHA
 	AND #$07
 	STA activeObjectStats+3			; weapon damage 1
-	LSR locVar1
-	LSR locVar1
-	LSR locVar1
-	LDA locVar1
+	PLA						; 3c, 1b
+	LSR						; 6c, 3b
+	LSR
+	LSR
+	PHA						; 3c, 1b
 	AND #$07
 	STA activeObjectStats+4			; weapon damage 2
-	LDA locVar1
+	PLA
 	LSR
 	LSR
 	LSR
@@ -87,6 +88,13 @@ state_setNextActiveObject:
 
 	LDA #$0B									; center camera
 	STA gameState
+
+	LDA #$00
+	STA targetObjectTypeAndNumber
+
+	LDA #$0F ;
+	STA menuIndicator+0
+	STA menuIndicator+1
 
 	JSR clearSystemMenu
 	JMP showSystemInfo				; tail chain

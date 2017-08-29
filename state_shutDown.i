@@ -7,7 +7,11 @@ state_shutDown:
   JSR clearList3
 
   LDA #$09                                                                      ; msg shutdown
-  STA list3+8
+  STA list3+3
+  LDA #$03
+  STA list3+0
+  LDA #$04
+  LDA list3+4
 
   LDA #$16						; show results
   STA gameState

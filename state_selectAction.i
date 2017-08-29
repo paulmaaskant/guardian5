@@ -3,7 +3,6 @@
 ; ------------------------------------------
 state_selectAction:
 	JSR random																																		; introduce entropy
-
 	LDA blockInputCounter
 	BEQ +continue																																	; if timer is still running,
 	DEC blockInputCounter																													; then dec the counter and skip input processing
@@ -15,9 +14,8 @@ state_selectAction:
 	RTS										; then skip input processing
 
 +continue:
-	; --- process cursor input ---
 	LDA cursorGridPos
-	AND #$0F						;
+	AND #$0F							;
 	STA locVar2						; grid X coor
 	LDA cursorGridPos
 	LSR
@@ -158,7 +156,6 @@ state_selectAction:
 	BEQ +nextEvent
 	EOR event_confirmAction
 	STA events
-
 	LDA sysFlags
 	BIT sysFlag_lock					; action locked?
 	BEQ +tryLockAction				; no -> lock action
@@ -166,7 +163,6 @@ state_selectAction:
 	STA sysFlags							; unlock and move to next game state
 
 	; --- action confirmed ---
-
 	LDX selectedAction
 	LDA actionList, X
 	ASL
@@ -238,11 +234,8 @@ state_selectAction:
 	STA menuIndicator+0
 	LDA #$2F ;
 	STA menuIndicator+1
-
-	;BNE +nextEvent				; JMP
 	RTS
 
-	; --- toggle ---
 +toggle:
 	LDY #sSimpleBlip
 	JSR soundLoad
@@ -258,16 +251,16 @@ state_selectAction:
 	LDA #$00																																			; clear action message
 	STA actionMessage																															;
 	LDA targetObjectTypeAndNumber																									; cursor is on unit?
-	BEQ +nextEvent																																; no -> done
+	BEQ +heatCost																																	; no -> heat cost
 	CMP activeObjectTypeAndNumber																									; yes -> on self?
-	BNE +hostileTarget																														; no -> hostile target
-	JMP prepareAction
-
-+hostileTarget:
-	LDA effects
-	AND #%11000000									; cursor and active unit marker stay on, rest turned off
+	BEQ +heatCost																																	; no -> heat cost
+	LDA effects																																		; clear possible LOS block effect
+	AND #%11000000																																; cursor and active unit marker stay on, rest turned off
 	STA effects
-	JMP checkTarget									; possibly different weapon, so re-check range, damage etc
+	JSR checkTarget																																; possibly different weapon, so re-check range, damage etc
+
++heatCost:
+	JMP prepareHeatsinkCost
 
 +nextEvent:
 	RTS

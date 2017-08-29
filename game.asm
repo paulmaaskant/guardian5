@@ -467,6 +467,7 @@ mainGameLoop:
 
 	JSR updateTargetObject				; load target based on cursor position
 	JSR updateActionList					; heavy subroutine: may take more than a single frame
+	JSR prepareHeatsinkCost				;
 
 	LDA frameCounter							; wait for next frame
 -	CMP frameCounter							; to prevent game from freezing (due to half completed stack operations)
@@ -517,7 +518,7 @@ mainGameLoop:
 	; ------------------------------
 +nextEvent:
 	LDA stackPointer2					; only flush status bar buffer
-	CMP #$99							; if buffer is empty
+	CMP #$99									; if buffer is empty
 	BNE +nextEvent						; otherwise event flag remains set and tries again next frame
 
 	LDA events
@@ -601,7 +602,7 @@ gameStateJumpTable:
 	.include state_shutDown.i
 	.include subroutines.i
 	.include updateActionList.i
-	.include prepareAction.i
+	.include prepareHeatsinkCost.i
 	.include calculateHeat.i
 	.include calculateAttack.i
 	.include findPath.i

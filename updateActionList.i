@@ -38,10 +38,9 @@ updateActionList:
 	LDA #$01
 	STA selectedAction																														; list cleared
 
-	LDA cursorGridPos					; cursor on self?
-	CMP activeObjectGridPos		; cursor on self?
-	BNE +continue							; no -> continue
-														; yes ->
+	LDA cursorGridPos																															; cursor on self?
+	CMP activeObjectGridPos																												; cursor on self?
+	BNE +continue																																	; no -> continue																																							; yes ->
 
 	; ----------------------------------
 	; Cursor on SELF
@@ -49,13 +48,13 @@ updateActionList:
 	LDA #aPIVOT								; PIVOT TURN
 	JSR addPossibleAction
 	LDA #aCOOLDOWN						; COOL DOWN
-	JSR addPossibleAction
-	JMP prepareAction					; tail chain
+	JMP addPossibleAction			; tail chain
+
 
 +continue:
-	LDA targetObjectTypeAndNumber		; Cursor on other UNIT?
-	BEQ +continue										; no -> continue
-																	; yes ->
+	LDA targetObjectTypeAndNumber																									; Cursor on other UNIT?
+	BEQ +continue																																	; no -> continue
+																																								; yes ->
 	; ----------------------------------
 	; Cursor on OTHER UNIT
 	; ----------------------------------
@@ -98,21 +97,21 @@ updateActionList:
 	BNE +walk
 
 +notBlocked:
-	LDA activeObjectGridPos			; A = start node
-	JSR findPath								; A* search path, may take more than 1 frame
-	LDA actionMessage						; if move is allowed
-	BMI +done																																		; move > 1 heat
-	LDA activeObjectStats+2			; movement stat
-	CMP list1										; compare to used number of moves (list1)
+	LDA activeObjectGridPos																												; A = start node
+	JSR findPath																																	; A* search path, may take more than 1 frame
+	LDA actionMessage																															; if move is allowed
+	BMI +done																																			; move > 1 heat
+	LDA activeObjectStats+2																												; movement stat
+	CMP list1																																			; compare to used number of moves (list1)
 	BCS +walk
-	LDA #$02
-	STA list3+0
+	;LDA #$02
+	;STA list3+0
 	LDA #aRUN
-	JMP addPossibleAction																																	; top spread > 1 exra heat
+	JMP addPossibleAction
 
 +walk:
-	LDA #$01
-	STA list3+0
+	;LDA #$01
+	;STA list3+0
 	LDA #aMOVE
 	JMP addPossibleAction
 
