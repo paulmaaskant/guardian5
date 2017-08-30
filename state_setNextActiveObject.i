@@ -96,5 +96,11 @@ state_setNextActiveObject:
 	STA menuIndicator+0
 	STA menuIndicator+1
 
+	LDA events
+	ORA event_refreshStatusBar
+	STA events
+
 	JSR clearSystemMenu
-	JMP showSystemInfo				; tail chain
+	JSR clearActionMenu
+	JMP clearTargetMenu
+	;				; tail chain

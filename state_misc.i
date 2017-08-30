@@ -554,6 +554,8 @@ state_waitForCamera:
 	ORA event_updateTarget
 	STA events
 
+	JSR showSystemInfo
+
 	LDA #$06					; user to select action
 	BNE +store
 

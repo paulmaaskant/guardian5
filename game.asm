@@ -1,9 +1,11 @@
 ;; List
 ;
-; - calculate charge damage
 ; - miss animations
+; - shutdown animation
+; - cooldown animation
+; - restart shutdown unit
+; - heat and damage prognosis
 ; - free spin when attacked in close combat
-; - heat dial
 ;	- mission introduction screen
 ;	- mission result screen
 ;	- pause menu

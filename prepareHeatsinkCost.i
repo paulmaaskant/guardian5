@@ -9,6 +9,14 @@ heatsinkCostTable:
 	.db $02                                                                       ; 07 RUN
 
 prepareHeatsinkCost:
+	BIT actionMessage
+	BPL +continue
+	LDA #$0F
+	STA systemMenuLine2+4
+	STA systemMenuLine2+3
+	RTS
+
++continue:
   LDY activeObjectIndex
   LDA object+1, Y
   AND #$07
@@ -16,21 +24,22 @@ prepareHeatsinkCost:
 
   LDY selectedAction
   LDX actionList, Y
+	LDA heatsinkCostTable, X
   CPX #aCOOLDOWN
   BEQ +restoreHeatsinks
-  LDA heatsinkCostTable, X
   CMP locVar1
   BCC +less
   LDA locVar1                                                                   ; make sure no more heat sinks                                                                 ; go offline than are available
 
 +less:
   STA list3+0
-  STA systemMenuLine2+4
+	STA systemMenuLine2+4
   LDA #$0C
   STA systemMenuLine2+3
   RTS
 
 +restoreHeatsinks:
+	STA list3+0
   LDA activeObjectTypeAndNumber
   JSR getStatsAddress
   LDY #$00                                                                      ; type max health / heatsinks
@@ -43,7 +52,7 @@ prepareHeatsinkCost:
   STA list3+0
 
 +notLess:
-  STA list3+0
+  LDA list3+0
   STA systemMenuLine2+4
   LDA #$0D
   STA systemMenuLine2+3

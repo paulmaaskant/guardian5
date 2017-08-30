@@ -81,7 +81,7 @@ volumeEnvelope04:
 
 eShortBlip = $05
 volumeEnvelope05:
-  .db #$0C, #$09, #$06, #$06
+  .db #$0C, #$09, #$06, #$06, #$00
   .db #$FF
 
 eSoftStaccato = $06

@@ -27,6 +27,7 @@ calculateHeat:
   BCC +less
   LDA #$08                                                                      ; msg shutdown
   STA list3+8
+  LDY activeObjectIndex
   LDA object+0, Y                                                               ; set shutdown flag
   ORA #$80
   STA object+0, Y
