@@ -197,11 +197,11 @@
 	; |+------ this node blocks line of sight
 	; +------- this node is blocks movement
 	; ------------------------------------------------------------
-	nodeMap						.dsb 256
+	nodeMap								.dsb 256
 
 	; path finding and dialog control
-	list3							.dsb 64
-	list4							.dsb 64
+	list3									.dsb 64
+	list4									.dsb 64
 
 	; Buffers used to render the status menu
 	actionMenuLine1				.dsb 13
@@ -342,6 +342,7 @@ mainGameLoop:
 	STA currentEffects+3, X
 	INC currentEffects+3, X
 	TXA
+
 +skip:
 	BNE -loopEffects
 
@@ -379,7 +380,6 @@ mainGameLoop:
 	ASL
 	ASL
 	TAY									; object index
-
 	PHA									; save Y
 	TXA
 	PHA									; save X
@@ -449,8 +449,8 @@ mainGameLoop:
 	CPX objectCount							; number of objects presently in memory
 	BNE -loopObjects						;
 
-	LDA #$3F							; clear remaining unused sprites up to and including sprite 63 (last sprite)
-	JSR clearSprites					;
+	LDA #$3F										; clear remaining unused sprites up to and including sprite 63 (last sprite)
+	JSR clearSprites						;
 
 	;---------------------------
 	; update target / available actions
@@ -469,7 +469,7 @@ mainGameLoop:
 
 	JSR updateTargetObject				; load target based on cursor position
 	JSR updateActionList					; heavy subroutine: may take more than a single frame
-	JSR prepareHeatsinkCost				;
+	JSR calculateActionCost				;
 
 	LDA frameCounter							; wait for next frame
 -	CMP frameCounter							; to prevent game from freezing (due to half completed stack operations)
@@ -509,7 +509,7 @@ mainGameLoop:
 	AND #$7F
 	TAY
 	LDX #$0D
-	JSR writeToActionMenu				;
+	JSR writeToActionMenu						;
 
 +actionMenuDone:
 	JSR clearTargetMenu
@@ -519,9 +519,9 @@ mainGameLoop:
 	; refresh status bar
 	; ------------------------------
 +nextEvent:
-	LDA stackPointer2					; only flush status bar buffer
-	CMP #$99									; if buffer is empty
-	BNE +nextEvent						; otherwise event flag remains set and tries again next frame
+	LDA stackPointer2								; only flush status bar buffer
+	CMP #$99												; if buffer is empty
+	BNE +nextEvent									; otherwise event flag remains set and tries again next frame
 
 	LDA events
 	BIT event_refreshStatusBar
@@ -604,7 +604,7 @@ gameStateJumpTable:
 	.include state_shutDown.i
 	.include subroutines.i
 	.include updateActionList.i
-	.include prepareHeatsinkCost.i
+	.include calculateActionCost.i
 	.include calculateHeat.i
 	.include calculateAttack.i
 	.include findPath.i
@@ -789,7 +789,7 @@ typeRamulen1:
 	.db #$11 ; 5 animation: facing LD, walking
   .db #$13 ; 6 animation: facing LU, walking
 	; fixed stats (3 bytes)
-	.db #%00110110					; Dail starting positions: (b7-b3) main dial, (b2-b1) heat dial, and cool down (b0)
+	.db #%00110011					; Dail starting positions: (b7-b3) main dial, (b2-b1) heat dial, and cool down (b0)
 	.db #%01100101					; Ranged weapon 1 max range (b7-4), min range (b3-2) and type  (b1-0)
 	.db #%01101011					; Ranged weapon 2 max range (b7-4), min range (b3-2) and type  (b1-0)
 	; dail stats

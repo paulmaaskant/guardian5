@@ -260,7 +260,7 @@ state_selectAction:
 	JSR checkTarget																																; possibly different weapon, so re-check range, damage etc
 
 +heatCost:
-	JMP prepareHeatsinkCost
+	JMP calculateActionCost																												; tail chain
 
 +nextEvent:
 	RTS

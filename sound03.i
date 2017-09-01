@@ -51,6 +51,8 @@ sound03_stream00:
   .db $00
   .db repeatLoop1
   .dw -loop
+  .db setDutyCycle
+  .db $80
 -restart:
   .db L8th, E4, L16th, E4, A3, REST, REST
   .db L8th, A4, L16th, A4, A3, REST, REST
@@ -83,17 +85,19 @@ sound03_stream01:
 
 sound03_stream02:
   .db L1, REST
+
 -restart:
-  .db L8th
-  .db setCountLoop1, 6
--loop:
-  .db A4, A4, A4, A4, A4, A4, A4, A4
-  .db transposeLoop1
-  .dw +transposeTable
-  .db repeatLoop1
-  .dw -loop
+  .db L1, A4, G4, A4, L2, D5, E5, L1, C5, L2, A4 , G4
+;  .db L8th
+;  .db setCountLoop1, 6
+;-loop:
+;  .db A4, A4, A4, A4, A4, A4, A4, A4
+;  .db transposeLoop1
+;  .dw +transposeTable
+;  .db repeatLoop1
+;  .dw -loop
   .db loopSound
   .dw -restart
 
-+transposeTable:
-  .db 0, -3, -2, 5, 2, -2
+;+transposeTable:
+;  .db 0, -3, -2, 5, 2, -2

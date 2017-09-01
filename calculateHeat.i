@@ -1,19 +1,12 @@
 calculateHeat:
-  LDA activeObjectTypeAndNumber
-  JSR getStatsAddress
-  LDY #$00                                                                      ; type max health / heatsinks
-  LDA (pointer1), Y
-  AND #$07
-  STA locVar2                                                                   ; max # active heatsinks
-
   LDY activeObjectIndex
   LDA object+1, Y
   AND #$07
   STA locVar1                                                                   ; current # active heatsinks
 
-  LDY selectedAction
-  LDX actionList, Y
-  CPX #aCOOLDOWN
+  LDX selectedAction
+  LDA actionList, X
+  CMP #aCOOLDOWN
   BEQ +heatSinksRestore
 
   LDA list3+0
@@ -27,10 +20,11 @@ calculateHeat:
   BCC +less
   LDA #$08                                                                      ; msg shutdown
   STA list3+8
-  LDY activeObjectIndex
+  ;LDY activeObjectIndex
   LDA object+0, Y                                                               ; set shutdown flag
   ORA #$80
   STA object+0, Y
+  LDA locVar1
 
 +less:
   EOR #$FF                                                                      ; calculate remaining heatsinks
@@ -42,16 +36,24 @@ calculateHeat:
   BNE +continue
 
 +heatSinksRestore:
-  EOR #$FF
-  CLC
-  ADC #$01
-  TAX
   LDA locVar1
   CLC
-  ADC identity, X
+  ADC list3+0                                                                   ; A is currently active heat sinks
   STA locVar1
   LDA #$04																																			; msg heatsinks restore
   STA list3+7
+
+  LDA activeObjectTypeAndNumber
+  JSR getStatsAddress
+  LDY #$00                                                                      ; type max health / heatsinks
+  LDA (pointer1), Y
+	AND #$06
+  CMP locVar1
+	BNE +continue
+  LDY activeObjectIndex
+  LDA object+0, Y                                                               ; unset shutdown flag
+  AND #$7F
+  STA object+0, Y
 
 +continue:
   LDY activeObjectIndex
