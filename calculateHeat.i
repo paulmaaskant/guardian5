@@ -51,9 +51,12 @@ calculateHeat:
   CMP locVar1
 	BNE +continue
   LDY activeObjectIndex
-  LDA object+0, Y                                                               ; unset shutdown flag
-  AND #$7F
+  LDA object+0, Y                                                               ;
+  BPL +continue                                                                 ; if shut down
+  AND #$7F                                                                      ; unset shutdown flag
   STA object+0, Y
+  LDA #$0A
+  STA list3+8
 
 +continue:
   LDY activeObjectIndex

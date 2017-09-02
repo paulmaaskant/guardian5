@@ -635,26 +635,26 @@ gameStateJumpTable:
 ; 17 pilot 15
 
 paletteColor1:
-	.db #$10, #$09, #$10, #$08, #$08, #$06, #$10, #$30
-	.db #$08
-	.dsb 7
-	.db #$08, #$15
+	.db $10, $09, $10, $08, $08, $06, $10, $30
+	.db $08, $18
+	.dsb 6
+	.db $08, $15
 	.dsb 6
 paletteColor2:
-	.db #$00, #$18, #$00, #$18, #$18, #$16, #$1B, #$27
-	.db #$18
-	.dsb 7
-	.db #$15, #$30
+	.db $00, $18, $00, $18, $18, $16, $1B, $27
+	.db $18, $28
+	.dsb 6
+	.db $15, $30
 	.dsb 6
 paletteColor3:
-	.db #$30, #$37, #$2B, #$37, #$28, #$36, #$2B, #$37
-	.db #$37
-	.dsb 7
-	.db #$35, #$35
+	.db $30, $37, $2B, $37, $28, $36, $2B, $37
+	.db $37, $30
+	.dsb 6
+	.db $35, $35
 	.dsb 6
 identity:
-	.db #$00, #$01, #$02, #$03, #$04, #$05, #$06, #$07, #$08, #$09, #$0A, #$0B, #$0C, #$0D, #$0E, #$0F
-	.db #$10, #$11, #$12, #$13, #$14, #$15, #$16, #$17, #$18, #$19, #$1A, #$1B, #$1C, #$1D, #$1E, #$1F
+	.db $00, $01, $02, $03, $04, $05, $06, $07, $08, $09, $0A, $0B, $0C, $0D, $0E, $0F
+	.db $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $1A, $1B, $1C, $1D, $1E, $1F
 stringListL:
 	.db #< str_RANGED_ATK_1							; 00
 	.db #< str_RANGED_ATK_2							; 01
@@ -695,7 +695,7 @@ stringListH:
 	.db #> str_OUTSIDE_ARC
 	.db #> str_CHOOSE_FACING_DIRECTION
 	.db #> str_TARGET_TOO__CLOSE
-	.db #> str_AT_TOP_SPEED
+	.db #> str_AT_TOP_SPEED   ; not used
 	.db #> str_TARGET
 	.db #> str_DAMAGE
 	.db #> str_HEATSINKS
@@ -789,7 +789,7 @@ typeRamulen1:
 	.db #$11 ; 5 animation: facing LD, walking
   .db #$13 ; 6 animation: facing LU, walking
 	; fixed stats (3 bytes)
-	.db #%00110011					; Dail starting positions: (b7-b3) main dial, (b2-b1) heat dial, and cool down (b0)
+	.db #%00110110					; Dail starting positions: (b7-b3) main dial, (b2-b1) heat dial, and cool down (b0)
 	.db #%01100101					; Ranged weapon 1 max range (b7-4), min range (b3-2) and type  (b1-0)
 	.db #%01101011					; Ranged weapon 2 max range (b7-4), min range (b3-2) and type  (b1-0)
 	; dail stats

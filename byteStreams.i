@@ -271,13 +271,22 @@ resultHeatSinksSaturated:
 resultShutdown:
 	.db $F2																																				; clear dialog
 	.db $17, $14, $10, $23, $0F, $12, $21, $18, $23, $18, $12, $10, $1B						; HEAT CRITICAL
-	.db $F1, $F1																																			; next line
-	.db $24, $1D, $18, $23, $0F, $22, $17, $24, $23, $13, $1E, $26, $1D						; UNIT SHUTDOWN
+	.db $F1																																				; next line
+	.db $24, $1D, $18, $23, $0F, $22, $17, $24, $23, $23, $18, $1D, $16						; UNIT SHUTTING
+	.db $F1																																				;
+	.db $13, $1E, $26, $1D																												; DOWN
 	.db $F3																																				; A button
 	.db $F4																																				; done
 resultUnitOffline:
 	.db $F2																																				; clear dialog
 	.db $24, $1D, $18, $23, $0F, $1E, $15, $15, $1B, $18, $1D, $14								; UNIT OFFLINE
+	.db $F3																																				; A button
+	.db $F4																																				; done
+resultUnitRestart:
+	.db $F2																																				; clear dialog
+	.db $17, $14, $10, $23, $0F, $22, $23, $10, $11, $1B, $14											; HEAT STABLE
+	.db $F1																																				; next line
+	.db $24, $1D, $18, $23, $0F, $1E, $1D, $1B, $18, $1D, $14											; UNIT ONLINE
 	.db $F3																																				; A button
 	.db $F4																																				; done
 
@@ -294,7 +303,7 @@ levelOne:																																				; --- blocked nodes (1 bit for move
 	.db	#$02																																			; number of objects (2)
 	.db #$03																																			; object 0 type
 	.db #$02																																			; object 0 grid position
-	.db #$03																																			; object 0 pilot f0 & facing RD
+	.db #$13																																			; object 0 pilot f0 & facing RD
 	.db #$13																																			; object 1 type
 	.db #$07																																			; object 1 grid position
 	.db #$15																																			; object 1 pilot h1 & facing LD
