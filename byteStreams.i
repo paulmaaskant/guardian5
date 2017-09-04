@@ -147,6 +147,16 @@ storyScreen:
 	.db $FF, $C0			; 6 rows
 	; --- palettes ---
 	.db $FE, $40, $00	; 2 rows, palette 0
+briefScreen:
+	.db $FF, $00			; 8 rows
+	.db $FF, $E0			; 7 rows
+	.db $FE, $20, $2F
+	.db $FF, $00			; 8 rows
+	.db $FF, $C0			; 6 rows
+	; --- palettes ---
+	.db $FE, $40, $00	; 2 rows, palette 0
+
+
 storyStream:
 	; >RAMULEN LOG ENTRY 43639
 	;
@@ -208,6 +218,13 @@ storyStream:
 	.db $1E, $1D, $1B, $28, $0F, $1E, $1D, $14, $0F, $21, $14, $1C, $10, $18, $1D, $22
 	.db $F3	; wait for A button
 	.db $F4	; move to next game state
+
+brief1Stream:
+	.db $1C, $18, $22, $22, $18, $1E, $1D
+	.db $F3
+	.db $F4
+
+
 
 resultTargetHit:
 	.db $F2																																				; clear dialog

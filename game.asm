@@ -585,6 +585,9 @@ gameStateJumpTable:
 	.dw state_closeCombatAnimation-1		; 1D
 	.dw state_initializeTitleMenu-1			; 1E
 	.dw state_shutDown-1								; 1F
+	.dw state_initializeBriefScreen-1		; 20
+	.dw state_initializeBriefDialog-1		; 21
+	.dw state_initializeMissionScreen-1	; 22
 
 
 ; -------------------------
@@ -602,7 +605,11 @@ gameStateJumpTable:
 	.include state_resolveClose.i
 	.include state_showResults.i
 	.include state_shutDown.i
+	.include state_initializeBriefScreen.i
+	.include state_initializeBriefDialog.i
+	.include state_initializeMissionScreen.i
 	.include subroutines.i
+	.include initializeScreen.i
 	.include updateActionList.i
 	.include calculateActionCost.i
 	.include calculateHeat.i

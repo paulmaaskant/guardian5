@@ -124,25 +124,14 @@ state_titleScreen:
 +setTimer:
 	LDA #$08
 	STA blockInputCounter
+	JMP writeStartMenuToBuffer
 
-	JSR writeStartMenuToBuffer
++startGame:
+;	JMP state_initializeMissionScreen
+	JMP state_initializeBriefScreen
 
 +done:
 	RTS
-
-	; --- start button pressed ---
-+startGame:
-	LDA #$04								; load level map
-	STA list1+1							; is the game state we want to get to
-	LDA #< statusBar				; title screen byte stream hi
-	STA list1+2
-	LDA #> statusBar				; title screen byte stream lo
-	STA list1+3
-	LDA #$40								; fade control: fade out, but no fade in
-	STA list1+4
-
-	JSR soundSilence
-	JMP initializeScreen		; tail chain
 
 faceTiles:
 	.db #$4B, #$57, #$67, #$49, #$78, #$4A, #$77, #$4A
