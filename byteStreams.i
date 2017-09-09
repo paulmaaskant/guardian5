@@ -7,13 +7,11 @@
 ; bytePointer,			current position in the byte stream
 ; -----------------------------------------
 getNextByte:
-	LDA byteStreamVar+0					; repeat counter non 0?
-	BEQ +newByte						; no -> next byte
-
-	LDA	byteStreamVar+2					; yes -> next question: library string?
-	BNE +readString						; yes -> read string
-
-	LDA byteStreamVar+1					; yes -> stay on repeat byte
+	LDA byteStreamVar+0																														; repeat counter non 0?
+	BEQ +newByte																																	; no -> next byte
+	LDA	byteStreamVar+2																														; yes-> next question: dictionary string?
+	BNE +readString																																; yes-> read string from dictionary
+	LDA byteStreamVar+1																														; no -> stay on the repeat byte
 	DEC byteStreamVar+0
 	RTS
 
@@ -26,15 +24,23 @@ getNextByte:
 	RTS
 
 +opCode:
-	CMP #$FF					; opCode: repeat blank space
+	CMP #repeatBlank
 	BEQ +repeatBlank
-	CMP #$FE					; opCode: repeat character
+	CMP #repeatChar
 	BEQ +repeatChar
-	CMP #$FD					; opCode: numberValue
+	CMP #setNumberValue
 	BEQ +numberValue
-	CMP #$FC					; opCode: setString
-	BEQ +setString
+	CMP #setDictionaryString
+	BEQ +setDictionaryString
+	CMP #setPortrait
+	BEQ +setPortrait
 	RTS
+
+repeatBlank = $FF
+repeatChar = $FE
+setNumberValue = $FD
+setDictionaryString = $FC
+setPortrait = $FB
 
 +repeatBlank:
 	LDA (bytePointer), Y		; number of repeats
@@ -43,7 +49,6 @@ getNextByte:
 	LDA #$0F
 	STA byteStreamVar+1
 	JMP incrementBytePointer	; tail chain
-
 
 +repeatChar:
 	LDA (bytePointer), Y		; number of repeats
@@ -62,36 +67,42 @@ getNextByte:
 	LDA par3
 	JMP incrementBytePointer	; tail chain
 
-+setString:
++setPortrait:
+	LDA (bytePointer), Y		; portrait index
+	AND #$F0
+	LDY #$A4
+	JSR showPilot
+	JSR incrementBytePointer
+	JMP getNextByte
+
++setDictionaryString:
 	LDA (bytePointer), Y		; string index
 	STA byteStreamVar+2
 	TAY
-
 	JSR incrementBytePointer
-
 	LDA stringListL, Y
 	STA pointer1+0
 	LDA stringListH, Y
 	STA pointer1+1
-
 	LDY #$00
 	LDA (pointer1), Y			; length
 	STA byteStreamVar+0
+	BNE +next
 
-	JMP +next
 +readString:
 	TAY
 	LDA stringListL, Y
 	STA pointer1+0
 	LDA stringListH, Y
 	STA pointer1+1
+
 +next:
 	LDY #$00
 	LDA (pointer1), Y			; length
 	SEC
 	SBC byteStreamVar+0
 	TAY
-	INY							; shift one to account for the length byte
+	INY										; shift one to account for the length byte
 	LDA (pointer1), Y			; current byte
 	DEC byteStreamVar+0
 	BNE +
@@ -137,25 +148,32 @@ titleScreen:
 	.db $FF, $00			; 8 blank rows
 	; --- palettes ---
 	.db $FE, $20, $00	; 1 rows, palette
-
 	.db $FE, $18, $00	; 1 rows, palette
 	.db $FE, $08, $05	;
-storyScreen:
-	.db $FF, $00			; 8 rows
-	.db $FF, $00			; 8 rows
-	.db $FF, $00			; 8 rows
-	.db $FF, $C0			; 6 rows
-	; --- palettes ---
-	.db $FE, $40, $00	; 2 rows, palette 0
-briefScreen:
-	.db $FF, $00			; 8 rows
-	.db $FF, $E0			; 7 rows
-	.db $FE, $20, $2F
-	.db $FF, $00			; 8 rows
-	.db $FF, $C0			; 6 rows
-	; --- palettes ---
-	.db $FE, $40, $00	; 2 rows, palette 0
 
+storyScreen:
+	.db repeatBlank, $00			; 8 rows
+	.db repeatBlank, $00			; 8 rows
+	.db repeatBlank, $00			; 8 rows
+	.db repeatBlank, $C0			; 6 rows
+	; --- palettes ---
+	.db repeatChar, $40, $00	; 2 rows, palette 0
+
+briefScreen:
+	.db $FF, $97																																	; 7 rows and 23 tiles
+	.db $2B, $FF, $04, $2A 																												; 0 rows and 6 tiles
+	.db $FF, $7A																																	; 3 rows and 26 tiles
+	.db $2D, $FF, $04, $2C 																												; 0 rows and 6 tiles
+	.db $FF, $06, $2B, $FF, $18, $2A
+	.db $FF, $C6			; 3 rows
+	.db $FF, $00			; 8 rows
+	.db $2D, $FF, $18, $2C
+	.db $FF, $A3			; 5 rows
+	; --- palettes ---
+	.db $FE, $16, $AA
+	.db $FE, $01, $FF 				; pilot face attributes
+	.db $FE, $09, $AA
+	.db $FE, $20, $AA
 
 storyStream:
 	; >RAMULEN LOG ENTRY 43639
@@ -220,11 +238,10 @@ storyStream:
 	.db $F4	; move to next game state
 
 brief1Stream:
-	.db $1C, $18, $22, $22, $18, $1E, $1D
+	.db setPortrait, $00
+	.db $22, $23, $10, $21, $23, $0F, $1C, $18, $22, $22, $18, $1E, $1D, $0F, $01
 	.db $F3
 	.db $F4
-
-
 
 resultTargetHit:
 	.db $F2																																				; clear dialog
@@ -320,7 +337,7 @@ levelOne:																																				; --- blocked nodes (1 bit for move
 	.db	#$02																																			; number of objects (2)
 	.db #$03																																			; object 0 type
 	.db #$02																																			; object 0 grid position
-	.db #$13																																			; object 0 pilot f0 & facing RD
+	.db #$03																																			; object 0 pilot f0 & facing RD
 	.db #$13																																			; object 1 type
 	.db #$07																																			; object 1 grid position
 	.db #$15																																			; object 1 pilot h1 & facing LD

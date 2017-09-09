@@ -8,7 +8,7 @@ clearActionMenu:
 
 clearTargetMenu:
 	LDA #$0F					; clear tile
-	LDX #$11
+	LDX #$14
 -	STA targetMenuLine1, X
 	DEX
 	BPL -
@@ -21,7 +21,6 @@ clearSystemMenu:
 	DEX
 	BPL -
 	RTS
-
 
 showTargetMech:
 	LDA #$30
@@ -81,6 +80,7 @@ showSystemInfo:
 ; ----------------------------
 ; IN A (b7-b4) pilot ID
 showPilot:
+	STY locVar2			; controls position
 	PHA							; for bank
 	LSR
 	LSR
@@ -91,6 +91,7 @@ showPilot:
 	ADC #$08
 	STA currentPalettes+3
 	STA currentPalettes+6
+
 	LDA #$00
 	JSR updatePalette
 
@@ -114,8 +115,10 @@ showPilot:
 	TXS
 
 	LDY #$00
+
 -outerLoop:
 	LDX #$03
+
 -innerLoop:
 	LDA identity, Y
 	ASL
@@ -134,9 +137,10 @@ showPilot:
 	ROR
 	ROR
 	CLC
-	ADC #$40
+	ADC locVar2
 	PHA
 	LDA #$24
+	ADC #$00
 	PHA
 	LDA #$08
 	PHA

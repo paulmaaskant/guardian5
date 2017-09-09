@@ -9,7 +9,7 @@ state_initializeBriefScreen:
   LDA #$C0									; fade in, but no fade out
   STA list1+4
 
-  LDY #$03
-  JSR soundLoad
+  ;LDY #$03
+  ;JSR soundLoad
 
   JMP initializeScreen			; tail chain

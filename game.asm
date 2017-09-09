@@ -158,28 +158,23 @@
 	pal_color3								.dsb 8
 
 	.ende
-	.enum $0300
-
-	; sound variables
+	.enum $0300																																		; sound variables
 	soundFlags										.dsb 1
-	;soundStreamCurrent						.dsb 6
-	;soundStreamStatus						.dsb 6
-	soundStreamChannel						.dsb 6			; (b7) stream active? (b1-0) APU channel that the stream using
-	soundStreamDutyVolume					.dsb 6			; (b7-6) Duty (b4-0) Volume
-	soundStreamPeriodLo						.dsb 6			; note currently being played
-	soundStreamPeriodHi						.dsb 6			;
-	soundStreamPointerLo					.dsb 6			; current locaiton in the sound stream
-	soundStreamPointerHi					.dsb 6			;
-	soundStreamTempo							.dsb 6			; this streams tempo
-	soundStreamTickerTotal				.dsb 6			; ticker to control tempo
-	soundStreamNoteLengthCounter	.dsb 6			;
-	soundStreamNoteLength					.dsb 6			; number of ticks a note is playing
+	soundStreamChannel						.dsb 6																					; (b7) stream active? (b1-0) APU channel that the stream using
+	soundStreamDutyVolume					.dsb 6																					; (b7-6) Duty (b4-0) Volume
+	soundStreamPeriodLo						.dsb 6																					; note currently being played
+	soundStreamPeriodHi						.dsb 6																					;
+	soundStreamPointerLo					.dsb 6																					; current locaiton in the sound stream
+	soundStreamPointerHi					.dsb 6																					;
+	soundStreamTempo							.dsb 6																					; this streams tempo
+	soundStreamTickerTotal				.dsb 6																					; ticker to control tempo
+	soundStreamNoteLengthCounter	.dsb 6																					;
+	soundStreamNoteLength					.dsb 6																					; number of ticks a note is playing
 	soundStreamEnvelopeCounter		.dsb 6
 	soundStreamEnvelope						.dsb 6
 	soundStreamNoteOffset					.dsb 6
 	soundStreamLoop1Counter				.dsb 6
-	soundStreamSweepControl				.dsb 6			;
-
+	soundStreamSweepControl				.dsb 6																					;
 	softApuPorts									.dsb 16
 	currentPortValue							.dsb 4
 
@@ -294,34 +289,31 @@ mainGameLoop:
 	LDY #$01													; cursor animation #
 	JSR loadAnimationFrame						; set sprites!
 
-+nextEffect:
-	; --- blocking node marker, sprite 5 ---
++nextEffect:																																		; blocking node marker, sprite 5
 	LDA effects
 	AND #%00100000
 	BEQ +nextEffect
-	LDA list1+9												; node that is blocking line of sight
-	JSR gridPosToScreenPos						; get the screen coordinates
-	BCC +nextEffect										; off screen!
-	LDY #$02													; cursor animation #
-	JSR loadAnimationFrame						; set sprites!
+	LDA list1+9																																		; node that is blocking line of sight
+	JSR gridPosToScreenPos																												; get the screen coordinates
+	BCC +nextEffect																																; off screen!
+	LDY #$02																																			; cursor animation #
+	JSR loadAnimationFrame																												; set sprites!
 
-+nextEffect:
-	; --- manage counter for all embedded effects ---
-	LDA currentObjectFrameCount				; FIX
-	CMP #$40													; when all effects are off screen, the count continues and does not get reset
-	BEQ +nextEffect										; so here we have hard check to make sure the effect never exceeds 64
-	ADC #$01													; guarnteed CLC
++nextEffect:																																		; manage counter for all embedded effects
+	LDA currentObjectFrameCount																										; FIX
+	CMP #$40																																			; when all effects are off screen, the count continues and does not get reset
+	BEQ +nextEffect																																; so here we have hard check to make sure the effect never exceeds 64
+	ADC #$01																																			; guarnteed CLC
 	STA effectCounter
 
-	; --- cycle through all non-embedded effects ---
-+nextEffect:
++nextEffect:																																		; cycle through all non-embedded effects
 	LDA effects
-	AND #%00000111										; mask to get number of effect animations
+	AND #%00000111																																; mask to get number of effect animations
 	BEQ +nextEvent
 	ASL
 	ASL
 
--loopEffects
+-loopEffects:
 	SEC
 	SBC #$04
 	TAX
@@ -358,12 +350,11 @@ mainGameLoop:
 +next:
 	EOR event_updateSprites
 	STA events
-	LDA #$10							; sprite 0-15 are reserved for effects, start with sprite 16
-	STA par3							; first available sprite
+	LDA #$10																																			; sprite 0-15 are reserved for effects, start with sprite 16
+	STA par3																																			; first available sprite
 	LDX #$00
 
 -loopObjects
-	; --- set current object attributes ---
 	LDA objectTypeAndNumber, X
 	AND #%01111000
 	LSR
@@ -374,83 +365,73 @@ mainGameLoop:
 	STA currentObjectType+0
 	LDA objectTypeH, Y
 	STA currentObjectType+1
-
 	LDA objectTypeAndNumber, X
 	AND #%00000111
 	ASL
 	ASL
-	TAY									; object index
-	PHA									; save Y
+	TAY																																						; object index
+	PHA																																						; save Y
 	TXA
-	PHA									; save X
-
-	LDA object+2, Y  					;
-	STA currentObjectFrameCount			;
-
-	; --- on screen check ---
-	LDA object+3, Y
-	JSR gridPosToScreenPos					; get and set screen X & Y
-	BCC +done												; off screen -> done
-
-	LDA objectTypeAndNumber, X
-	PHP
-
+	PHA																																						; save X
+	LDA object+2, Y
+	STA currentObjectFrameCount
+	LDA object+3, Y																																; on screen check
+	JSR gridPosToScreenPos																												; get and set screen X & Y
+	BCC +done																																			; off screen -> done
+	LDA objectTypeAndNumber, X																										; get B7 (neg flag)
+	PHP																																						; store neg flag
 	LDA object, Y
-	AND #%00001000										; object move bit (b3) ON
+	AND #%00001000																																; object move bit (b3) ON
 	BEQ +next
-	CLC															; THEN add displacement
-	LDA currentObjectYPos						; displacement is updated every frame
-	ADC actionList+2								; by the 'resolve move' game state
-	STA currentObjectYPos
+	CLC																																						; if moving, then add displacement
+	LDA currentObjectYPos																													; displacement is updated every frame
+	ADC actionList+2																															; by the 'resolve move' game state
+	STA currentObjectYPos																													; FIX account for the wrap around
 	CLC
 	LDA currentObjectXPos
 	ADC actionList+1
 	STA currentObjectXPos
 
-	; --- determine mirror, palette & animation ---
-+next:
-	LDX #$00										; default value for par4 (no mirror, no palette change)
++next:																																					; next, determine mirror, palette & which animation
+	LDX #$00																																			; default value for par4 (no mirror, no palette change)
 	LDA object+0, Y
-	AND rightNyble							; right nyble (b3) moving? (b2-0) direction?
-	TAY													; set animation sequence (Y)
-	AND #%00000110							; mirror if direction is 2 or 3
+	AND rightNyble																																; right nyble (b3) moving? (b2-0) direction?
+	TAY																																						; set animation sequence (Y)
+	AND #%00000110																																; mirror if direction is 2 or 3
 	CMP	#%00000010
 	BNE +next
-	LDX #%01000000							; set mirror bit
+	LDX #%01000000																																; set mirror bit
 
-+next:												; palette 0 for friendly, palette 1 for hostile
-	PLP													; object type flags
-	BPL +next										; if hostile (b7) then do unit palette switch
-	INX													; palette switch
++next:																																					; palette 0 for friendly, palette 1 for hostile
+	PLP																																						; object type flags
+	BPL +next																																			; if hostile (b7) then do unit palette switch
+	INX																																						; palette switch
 
 +next:
 	STX par4
-	CPY #$07										; 'moving' animation is required
-	BCC +next										; the animation's sequence location is Y - 2
-	DEY													;
+	CPY #$07																																			; 'moving' animation is required
+	BCC +next																																			; the animation's sequence location is Y - 2
+	DEY																																						;
 	DEY
 
 +next:
-	LDA (currentObjectType), Y 	; retrieve sequence from the type
-	TAY													; IN parameter Y = animation sequence
+	LDA (currentObjectType), Y 																										; retrieve sequence from the type
+	TAY																																						; IN parameter Y = animation sequence
 	JSR loadAnimationFrame
-	INC currentObjectFrameCount	;
+	INC currentObjectFrameCount																										;
 
 +done:
-	PLA													; restore X
-	TAX													; from the stack
-	PLA													; restore Y
-	TAY													; in order to save the object's updated frame count
-
-	LDA currentObjectFrameCount	; object frame count
-	STA object+2, Y							;
-
-	INX													; next object
-	CPX objectCount							; number of objects presently in memory
-	BNE -loopObjects						;
-
-	LDA #$3F										; clear remaining unused sprites up to and including sprite 63 (last sprite)
-	JSR clearSprites						;
+	PLA																																						; restore X
+	TAX																																						; from the stack
+	PLA																																						; restore Y
+	TAY																																						; in order to save the object's updated frame count
+	LDA currentObjectFrameCount																										; object frame count
+	STA object+2, Y																																;
+	INX																																						; next object
+	CPX objectCount																																; number of objects presently in memory
+	BNE -loopObjects																															;
+	LDA #$3F																																			; clear remaining unused sprites up to and including sprite 63 (last sprite)
+	JSR clearSprites																															;
 
 	;---------------------------
 	; update target / available actions

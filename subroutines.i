@@ -50,73 +50,60 @@ write32Tiles:
 ; LOCAL		locVar4
 ;------------------------------------------
 gridPosToScreenPos:
-	STA locVar1
-	LDA #$00
-	STA locVar4
+	STA locVar1																																		; store to retrieve X later
+	AND	#$F0																																			; Y mask
+	LSR
+	STA locVar2																																		; store YYYY * 8
 
-	; determine grid origin position
-	; if camera = (0,0) then node 00 is screen pos (X, Y)  = ($20, $BF)
-	SEC
-	LDA #$BF				;
-	SBC cameraY+1			; offset to account for camera
-	STA currentObjectYPos
-	LDA #$00
+	SEC																																						; start by calculating
+	LDA #$BF																																			; the screen position of grid 0,0
+	SBC cameraY+1																																	; given the current camera position
+	STA currentObjectYPos																													; w/o scrolling this would be (X=$20, Y=$BF)
+	LDA #$00																																			; store it in the current coordinates
+	STA locVar4																																		; reset variable 4 (has nothing to with SBC)
 	SBC cameraY+0
 	STA currentObjectYScreen
-
 	SEC
-	LDA #$20				;
-	SBC cameraX+1			; offset to account for camera
+	LDA #$20																																			;
+	SBC cameraX+1																																	; offset to account for camera
 	STA currentObjectXPos
 	LDA #$00
 	SBC cameraX+0
 	STA currentObjectXScreen
 
-	; --- pre calculate temp variables---
-	LDA locVar1
-	AND	#$F0				; y mask
-	LSR
-	STA locVar2				; YYYY * 8
-
-	LDA locVar1
-	AND #$0F				; x mask
+	LDA locVar1																																		; determine X
+	AND #$0F																																			; x mask
 	ASL
 	ASL
 	ASL
-	STA locVar1				; XXXX * 8
-
-
-	; --- calculate Y position ---
-	SEC
-	SBC locVar2				; (XXXX - YYYY) * 8
-	BPL +pos
+	STA locVar1																																		; XXXX * 8, store for use later
+	SEC																																						; calculate Y screen offset relative to grid 0,0
+	SBC locVar2																																		; (XXXX - YYYY) * 8
+	BPL +continue
 	DEC currentObjectYScreen
-+pos:
-	STA locVar3					; remove
+
++continue:
 	CLC
-	LDA currentObjectYPos		; remove
-	ADC locVar3					; ADC currentObjectYPos
-	STA currentObjectYPos
+	ADC currentObjectYPos
+	STA currentObjectYPos																													; final Y screen position
 	LDA currentObjectYScreen
 	ADC #$00
-	STA currentObjectYScreen
+	STA currentObjectYScreen																											; final Y screen
 
-	; --- calculate X position ---
-	LDA locVar1
+	LDA locVar1																																		; X screen is next
 	CLC
 	ADC locVar2
-	STA locVar3			; (X+Y) * 8
-	ASL locVar3
-	ROL locVar4
-	CLC
-	ADC locVar3
+	STA locVar3																																		; (X+Y) * 8 (max value is 240)
+	ASL 																																					; multiply locvar3 by 3
+	ROL locVar4																																		; and store result in locvar3 (lo) and locVar4 (hi)
+	ADC locVar3																																		; this is the X screen offset relative to grid 0,0
 	STA locVar3
 	LDA locVar4
 	ADC #$00
-	STA locVar4			; (X+Y) * 24 + current X
+	STA locVar4																																		; add the offset to current
 	LDA locVar3
 	ADC currentObjectXPos
-	STA currentObjectXPos
+	STA currentObjectXPos																													; final X screen position
 	LDA currentObjectXScreen
 	ADC locVar4
 	STA currentObjectXScreen
@@ -385,18 +372,20 @@ updateCamera:
 	BCC +downScrollDone				; then skip scroll
 	LDA #$10						; +16
 	JSR updateCameraYPos
+
 +downScrollDone:
 	LDA currentObjectXPos			; if screen pos > 224 = 128+64+32
 	CMP #$E0
 	BCC +rightScrollDone			; then skip scroll
 	LDA #$18						; + 24
 	JSR updateCameraXPos
+
 +rightScrollDone:
 	LDA currentObjectXPos			; if screen pos < 40
 	CMP #$28
 	BCS +
 	LDA #$E8						; -24							; A is signed
-	JSR updateCameraXPos
+	JMP updateCameraXPos						; tail chain
 +	RTS
 
 ; -------------------------------------------
@@ -405,7 +394,7 @@ updateCamera:
 ; IN 	A				number of pixels to be added
 ; OUT	cameraYDest
 ; -------------------------------------------
-updateCameraXPos
+updateCameraXPos:
 	BPL +
 	DEC cameraXDest+0
 +	CLC
@@ -438,7 +427,7 @@ updateCameraXPos
 ; IN 	A				number of pixels to be added
 ; OUT	cameraYDest
 ; -------------------------------------------
-updateCameraYPos
+updateCameraYPos:
 	BPL +
 	DEC cameraYDest+0
 +	CLC

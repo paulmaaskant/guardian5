@@ -45,6 +45,7 @@ state_setNextActiveObject:
 	ASL
 	PLP
 	ROR
+	LDY #$40
 	JSR showPilot
 
 	; --- retrieve type data ---

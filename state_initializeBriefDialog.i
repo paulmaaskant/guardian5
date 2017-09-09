@@ -8,11 +8,11 @@ state_initializeBriefDialog:
   LDA #$25
   STA list1+0					; start address hi
   STA list1+2
-  LDA #$44
+  LDA #$64
   STA list1+1					; start address lo
   STA list1+3
 
-  LDA #$04
+  LDA #$05
   STA list1+4					; # tiles: offset
   LDA #$1C
   STA list1+5					; # tiles: last pos
