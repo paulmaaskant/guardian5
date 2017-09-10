@@ -115,7 +115,8 @@ soundsLo:
   .db #< sound18
   .db #< sound19
   .db #< sound1A
-  .dsb 5, #< sound15
+  .db #< sound1B
+  .dsb 4, #< sound15
 
 soundsHi:
   .db #> sound00
@@ -134,7 +135,8 @@ soundsHi:
   .db #> sound18
   .db #> sound19
   .db #> sound1A
-  .dsb 5, #> sound15
+  .db #> sound1B
+  .dsb 4, #> sound15
 
 ; sound streams
   .include sound00.i
@@ -319,49 +321,36 @@ seNextByte:
   CMP #$A0
   BCC +noteLength
 
-  ; CMP $F0
-  ; BCS +opCode
-  ; RTS
-
-;+opCode
-    INY                                                                           ; ready to read opcode argument
-  ; EOR #$FF            ; 2
-  ; CLC                 ; 2
-  ; ADC #$00            ; 2
-  ; TAX                 ; 2
-  ; LDA jumpLo, X       ; 4
-  ; PHA                 ; 3
-  ; LDA jumpHi, X       ; 4
-  ; PHA                 ; 3
-  ; RTS                 ; 3 more than JMP
-  ; total               ; 25 cycles
+  CMP $F0
+  BCS +opCode
+  RTS
 
   ; --- Opcode ----
-  CMP #repeatLoop1                                                              ; 2 cycles
-  BNE +                                                                         ; 3 cycles (2 if no branche)
-  JMP seRepeatLoop1                                                             ; 7 cycles to get here
-+ CMP #transposeLoop1
-  BNE +
-  JMP seTransposeLoop1                                                          ; 12 cycles to get here
-+ CMP #setCountLoop1
-  BNE +
-  JMP seSetCountLoop1
-+ CMP #endSound
-  BNE +
-  JMP seEndSound
-+ CMP #loopSound
-  BNE +
-  JMP seLoopSound
-+ CMP #noteOffset
-  BNE +
-  JMP seNoteOffset
-+ CMP #setDutyCycle
-  BNE +
-  JMP seSetDutyCycle
-+ CMP #setSweep
-  BNE +
-  JMP seSetSweep                                                                ; 47 cycles to get here
-+ RTS
+;  CMP #repeatLoop1                                                              ; 2 cycles
+;  BNE +                                                                         ; 3 cycles (2 if no branche)
+;  JMP seRepeatLoop1                                                             ; 7 cycles to get here
+;+ CMP #transposeLoop1
+;  BNE +
+;  JMP seTransposeLoop1                                                          ; 12 cycles to get here
+;+ CMP #setCountLoop1
+;  BNE +
+;  JMP seSetCountLoop1
+;+ CMP #endSound
+;  BNE +
+;  JMP seEndSound
+;+ CMP #loopSound
+;  BNE +
+;  JMP seLoopSound
+;+ CMP #noteOffset
+;  BNE +
+;  JMP seNoteOffset
+;+ CMP #setDutyCycle
+;  BNE +
+;  JMP seSetDutyCycle
+;+ CMP #setSweep
+;  BNE +
+;  JMP seSetSweep                                                                ; 47 cycles to get here
+;+ RTS
 
 +noteLength:
   AND #%01111111
@@ -421,6 +410,38 @@ seNextByte:
 
 +noCarry:
   RTS
+
++opCode:
+   STX nmiVar2
+   INY                                                                           ; ready to read opcode argument
+   EOR #$FF
+   ASL
+   TAX
+   LDA soundJumpOpCode+1, X
+   PHA
+   LDA soundJumpOpCode+0, X
+   PHA
+   LDX nmiVar2
+   RTS               
+
+   endSound = $FF
+   loopSound = $FE
+   noteOffset = $FD
+   setCountLoop1 = $FC
+   repeatLoop1 = $FB
+   transposeLoop1 = $FA
+   setDutyCycle = $F9
+   setSweep = $F8
+
+soundJumpOpCode:
+  .dw seEndSound-1
+  .dw seLoopSound-1
+  .dw seNoteOffset-1
+  .dw seSetCountLoop1-1
+  .dw seRepeatLoop1-1
+  .dw seTransposeLoop1-1
+  .dw seSetDutyCycle-1
+  .dw seSetSweep-1
 
 -updatePointerGetNextByte:
   CLC
@@ -497,6 +518,9 @@ seSetSweep:
 
 ; opCode FF
 seEndSound:
+  LDA #$30
+  STA debug
+
   LDA soundStreamChannel, X
   AND #$03                       ; mask the channel (b1-0)
   ORA #$40                       ; switch of stream (b7) and set rest (b6)
@@ -730,12 +754,3 @@ restFlag:
   B6  = $3E
 
   REST = $50
-
-  endSound = $FF
-  loopSound = $FE
-  noteOffset = $FD
-  setCountLoop1 = $FC
-  repeatLoop1 = $FB
-  transposeLoop1 = $FA
-  setDutyCycle = $F9
-  setSweep = $F8

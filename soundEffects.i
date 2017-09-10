@@ -181,3 +181,17 @@ sound1A_stream00:
   .db setSweep, %11010011
   .db A4
   .db endSound
+
+sound1B:
+  .db #$01                              ; number of streams
+
+  .db #$00                              ; stream #
+  .db #$80                              ; channel (pulse 1)
+  .db #$C0                              ; initial duty
+  .db #$10                              ; initial tempo
+  .db eConstant                         ; initial volume envelope
+  .dw sound1B_stream00                  ; stream address
+sound1B_stream00:
+  .db L8th
+  .db A4,A4,A4,A4,A4,A4,A4,A4,A4,A4,A4,A4,A4,A4,A4,A4,A4
+  .db endSound
