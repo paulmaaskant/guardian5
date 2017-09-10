@@ -184,23 +184,23 @@ soundSilence:
 ; IN Y, sound index
 ; --------------------------------------
 soundLoad:
-  LDA soundsLo, Y
+  LDA soundsLo, Y                       ; set pointer 1 to sound header
   STA pointer1+0
   LDA soundsHi, Y
   STA pointer1+1
-  LDY #$00
+  LDY #$00                              ; start pulling bytes from the header
   LDA (pointer1), Y
-  STA locVar3                           ; number of streams in sound
+  STA locVar3                           ; byte 0: number of stream headers
 
--loop:
+-loop:                                  ; for every stream header
   INY
-  LDA (pointer1), Y                     ; stream #
+  LDA (pointer1), Y                     ; byte 0: stream #
   TAX
   INY
-  LDA (pointer1), Y                     ; channel #
+  LDA (pointer1), Y                     ; byte 1: channel #
   STA soundStreamChannel, X
   INY
-  LDA (pointer1), Y                     ; duty
+  LDA (pointer1), Y                     ; byte 2: duty
   AND #%11000000                        ; b7,b6
   ORA #%00110000                        ; disable loop & envelope
   STA soundStreamDutyVolume, X
@@ -298,11 +298,9 @@ soundNextFrame:
 
 +done:
   JSR seWriteToApu                        ; write soft APU to real APU
-
-  LDA soundFlags
+  LDA soundFlags                          ; reset silence event
   AND #%10111111
   STA soundFlags
-
   RTS
 
 ; --------------------------------------
@@ -321,7 +319,23 @@ seNextByte:
   CMP #$A0
   BCC +noteLength
 
-  INY
+  ; CMP $F0
+  ; BCS +opCode
+  ; RTS
+
+;+opCode
+    INY                                                                           ; ready to read opcode argument
+  ; EOR #$FF            ; 2
+  ; CLC                 ; 2
+  ; ADC #$00            ; 2
+  ; TAX                 ; 2
+  ; LDA jumpLo, X       ; 4
+  ; PHA                 ; 3
+  ; LDA jumpHi, X       ; 4
+  ; PHA                 ; 3
+  ; RTS                 ; 3 more than JMP
+  ; total               ; 25 cycles
+
   ; --- Opcode ----
   CMP #repeatLoop1                                                              ; 2 cycles
   BNE +                                                                         ; 3 cycles (2 if no branche)
@@ -518,16 +532,16 @@ seWriteToSoftApu:
   STA nmiVar0+1
   LDY soundStreamEnvelopeCounter, X
   LDA (nmiVar0), Y
-  BPL +setVolume
-  DEC soundStreamEnvelopeCounter, X
-  JMP -getVolume
+  BPL +setVolume                      ; is this the end $FF byte in the envelope?
+  DEC soundStreamEnvelopeCounter, X   ; yes ->
+  JMP -getVolume                      ; then retrieve the volume of the prev byte
 
 +setVolume:
   INC soundStreamEnvelopeCounter, X
-  STA nmiVar3                         ; current volume
-  LDY nmiVar2                         ; restore Y
-  CPY #$12                            ; triangle ?
-  BNE +continue                       ; no > contuine
+  STA nmiVar3                         ; current volume from envelope
+  LDY nmiVar2                         ; restore Y (soft port index)
+  CPY #$12                            ; channel = triangle? (volume control for triangle is different)
+  BNE +continue                       ; no > continue
   LDA nmiVar3                         ; yes > volume greater than 0?
   BNE +continue                       ; no > continue
   LDA #$80                            ; if volume is 0, silence the triangle
@@ -535,7 +549,18 @@ seWriteToSoftApu:
 
 +continue:
   LDA soundStreamDutyVolume, X
-  AND #$F0
+  AND rightNyble
+  STA nmiVar4
+  LDA nmiVar3
+  SEC
+  SBC nmiVar4
+  BCS +positive
+  LDA #$00
+
++positive:
+  STA nmiVar3
+  LDA soundStreamDutyVolume, X
+  AND leftNyble
   ORA nmiVar3
 
 +storeVolume:

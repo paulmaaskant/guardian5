@@ -159,13 +159,13 @@
 
 	.ende
 	.enum $0300																																		; sound variables
-	soundFlags										.dsb 1
+	soundFlags										.dsb 1																					; (b7) sound enabled (b6) silence event raised
 	soundStreamChannel						.dsb 6																					; (b7) stream active? (b1-0) APU channel that the stream using
-	soundStreamDutyVolume					.dsb 6																					; (b7-6) Duty (b4-0) Volume
-	soundStreamPeriodLo						.dsb 6																					; note currently being played
-	soundStreamPeriodHi						.dsb 6																					;
-	soundStreamPointerLo					.dsb 6																					; current locaiton in the sound stream
-	soundStreamPointerHi					.dsb 6																					;
+	soundStreamDutyVolume					.dsb 6																					; (b7-6) Duty (b4-0) Volume Offset
+	soundStreamPeriodLo						.dsb 6																					; (b7-0) Note current (lo)
+	soundStreamPeriodHi						.dsb 6																					;	(b2-0) Note current (hi)
+	soundStreamPointerLo					.dsb 6																					; (b7-0) Stream index (lo)
+	soundStreamPointerHi					.dsb 6																					; (b7-0) Stream index (hi)
 	soundStreamTempo							.dsb 6																					; this streams tempo
 	soundStreamTickerTotal				.dsb 6																					; ticker to control tempo
 	soundStreamNoteLengthCounter	.dsb 6																					;
