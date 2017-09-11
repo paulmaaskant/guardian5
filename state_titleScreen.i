@@ -134,4 +134,4 @@ state_titleScreen:
 	RTS
 
 faceTiles:
-	.db #$4B, #$57, #$67, #$49, #$78, #$4A, #$77, #$4A
+	.db $4B, $4C, $5C, $49, $78, $4A, $77, $4A
