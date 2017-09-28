@@ -1,0 +1,199 @@
+;------------------------------------------
+; writeNextRowToBuffer
+; used for scrolling, writes a row of tiles to the buffer
+;
+; IN		nmiVar0,1 = current level meta tile map
+; IN    	cameraY+1 = used to derive which row to buffer
+; IN 		cameraX+1 = used to derive row offset
+; IN 		sysFlags = used to derive which row to buffer + offset
+; LOCAL 	nmiVar2 = tile row # to load
+; LOCAL 	nmiVar3 = upper/lower side of meta tile
+; LOCAL 	nmiVar4 = used to loop
+; OUT 		stack
+;------------------------------------------
+writeNextRowToBuffer:
+	LDA #< level1																																	; stub (always map 1)
+	STA nmiVar0
+	LDA #> level1
+	STA nmiVar1
+	LDA #$00																																			; init temp parameters
+	STA nmiVar3
+	STA nmiVar4
+
+	LDA cameraY+1																																	; determine meta tile row number in top of screen
+	LSR																																						; by dividing camera Y by 8
+	LSR
+	LSR																																						; tile row
+	LSR																																						; meta tile row
+	ROR nmiVar3																																		; set bit 7 (upper/lower) and also clears carry flag
+
+	STA nmiVar2																																		; calculate the meta tile (metatile row nr x 48)
+	ASL																																						;
+	ADC nmiVar2																																		; x 3
+	ASL																																						; x 2
+	ASL																																						; x 2
+	ASL																																						; x 2
+	ROL nmiVar4																																		; meta tile row # high byte
+	ASL																																						; x 2
+	ROL nmiVar4
+	ADC nmiVar0																																		; set meta tile map pointer to top row on screen
+	STA nmiVar0																																		; set the pointer to the top most visible meta tile map row
+	LDA nmiVar1																																		;
+	ADC nmiVar4																																		;
+	STA nmiVar1																																		;
+
+	LDA sysFlags																																	; adjust the tile map pointer for scroll direction ---
+	AND #%01000000
+	BNE +scrollDown
+																																								; --- when scrolling UP ---
+	SEC
+	LDA nmiVar0																																		;
+	SBC #$81																																			; subtract 3 meta tile rows (3*48) and add 15 = 144-15 = 129 = $81
+	STA nmiVar0																																		; (the 15 is to start at the end of the row)
+	LDA nmiVar1																																		; (remember we're loading right to left because we use the stack for buffering tiles!)
+	SBC #$00																																			;
+	STA nmiVar1																																		;
+	JMP +offsetSet																																;
+
+	; --- when scrolling DOWN ---
++scrollDown:
+	CLC								;
+	LDA nmiVar0				; and then move down 12 rows in meta tile map
+	ADC #$4F					; add 12 rows (12 * 48), add 15 = 576+15 = 591 = $024F
+	STA nmiVar0				; the 15 is to start at the end of the row
+	LDA nmiVar1				;
+	ADC #$02					;
+	STA nmiVar1				;
+
++offsetSet:
+	; --- adjust for each full screen X ---
+	LDA cameraX+0			; add 16 for each screen X
+	ASL
+	ASL
+	ASL
+	ASL
+	ADC nmiVar0
+	STA nmiVar0				;
+	LDA nmiVar1				;
+	ADC #$00				;
+	STA nmiVar1				;
+
+	; --- prepare loop ---
+	LDA cameraX+1			; now determine the first meta tile
+	LSR								; from the meta tile map to buffer
+	LSR
+	LSR
+	STA nmiVar2				; # of tiles after which wrap around occurs
+
+	LDA #$20				; initialize loop count
+	STA nmiVar4				; to 32 tile
+	SEC
+	SBC nmiVar2
+	STA nmiVar2				; wrap count
+
+	TSX						; switch stack pointers
+	STX	stackPointer1
+	LDX stackPointer2
+	TXS
+
+	; --- loop ---
+-loop:
+	; --- wrap around? ---
+	LDA nmiVar2				;
+	BNE +skipOffset			; on name table edge
+	LDA nmiVar0				; reset meta tile map pointer 16 meta tiles to the right
+	CLC
+	ADC #$10
+	STA nmiVar0				;
+	LDA nmiVar1				;
+	ADC #$00
+	STA nmiVar1				;
+
++skipOffset:
+	DEC nmiVar2
+
+	; --- retrieve meta tile ---
+	LDY #$00
+	LDA (nmiVar0), Y					; retrieve the metaTile # from meta tile map ( nmiVar is the row, Y is the col)
+	TAX												; move the meta tile # to X
+
+	; --- get the right tile ---
+	LDA nmiVar4
+	LSR 											; set carry flag; invert carry flag for diagonal scroll
+	BIT nmiVar3								; up or down side of the meta tile
+	BPL +up
+	BCC +lowerRight						; left or right
+
+	LDA metaTileBlock02, X
+	JMP +done
+
++lowerRight:
+	LDA metaTileBlock03, X
+	JMP +done
+
++up:
+	BCC +upperRight
+	LDA metaTileBlock00, X
+	JMP +done
+
++upperRight:
+	LDA metaTileBlock01, X
+	JMP +done
+
++done:
+	PHA						; push tile to buffer
+
+	; --- move to next meta tile? ---
+	LDA nmiVar4
+	LSR
+	BCC +stayOnMetaTile		; move to new meta tile once every two iterations
+
+	LDA nmiVar0
+	BNE +noDec
+	DEC nmiVar1
++noDec:
+	DEC nmiVar0
+
++stayOnMetaTile:
+	; --- loop back ---
+	DEC nmiVar4
+	BNE -loop
+
+	; --- done ---
+	LDA #$00
+	STA nmiVar2
+
+	LDA cameraY+1			; first determine the VRAM address = $2000 + MOD(($0020 * (y camera row + offset 24)), $03C0)
+	AND #%11111000		; the offset 24 is to make sure the new row is drawn behind the status bar
+	LSR								;
+	LSR								;
+	ADC #$30					; 24*2 = 48 = $30
+	CMP #$3C
+	BCC +skip
+	SEC								; MOD (fast & simple) for map of max 2 screens wide
+	SBC #$3C
++skip:
+	ASL								; $2[XX]0 -> $[2X][X0]
+	ROL nmiVar2
+	ASL
+	ROL nmiVar2
+	ASL
+	ROL nmiVar2
+	ASL
+	ROL nmiVar2
+	PHA						; addres (L)
+
+	LDA #$20			;
+	CLC
+	ADC nmiVar2
+	PHA						; address (H)
+
+	LDA #$40			; length
+	PHA
+
+	TSX						; switch stack pointers
+	STX	stackPointer2
+	LDX stackPointer1
+	TXS
+
+	RTS

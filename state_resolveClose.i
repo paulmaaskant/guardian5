@@ -41,6 +41,19 @@ state_closeCombatAnimation:
 	STA currentEffects+3
 	TAX
 
+	LDA #$05																																			; $05 hit (explosion) or $08 miss (shield)
+	STA list3+22
+	LDA #sExplosion
+	STA list3+23
+	LDA list3+3																																		; value: (01) for hit, (02) for miss
+	CMP #$01
+	BEQ +continue
+	LDA #$08																																			; $05 hit (explosion) or $08 miss (shield)
+	STA list3+22
+	LDA #$1B
+	STA list3+23
+
++continue:
 	LDA activeObjectGridPos
 	SEC
 	SBC cursorGridPos
@@ -74,11 +87,15 @@ state_closeCombatAnimation:
 	ADC list1+1
 	SBC #$08
 	STA currentEffects+1
-	LDA #$05
+
+	LDA list3+22
 	STA currentEffects+2
 
-	LDA #$18														; game state: resolve close combat
-	STA gameState
+	JSR pullAndBuildStateStack
+	.db $02							; 2 states
+	.db $18 						; resolve close combat
+	.db $16							; show results
+	; built in RTS
 
 ; --------------------------------------------------
 ; game state 18: close combat animation
@@ -87,9 +104,11 @@ state_resolveClose:
 	LDA events
 	ORA event_updateSprites
 	STA events
+
 	LDA actionCounter
 	AND #%00001111
 	TAX
+
 	LDY #$00
 	LDA actionCounter
 	AND #%00010000
@@ -99,8 +118,10 @@ state_resolveClose:
 	BIT rightNyble
 	BNE +noSound
 	PHA
-	LDY #sExplosion
+
+	LDY list3+23								; sound
 	JSR soundLoad
+
 	PLA
 
 +noSound:
@@ -130,9 +151,7 @@ state_resolveClose:
 	LDA #$00
 	STA effects
 
-	LDA #$16													; game state: show results
-	STA gameState
-	RTS
+	JMP pullState
 
 
 interpolate:

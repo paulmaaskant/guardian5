@@ -12,7 +12,7 @@ sound00:
 
   .db #$00                              ; stream #
   .db #$81                              ; channel (sq2)
-  .db #$B0                              ; initial duty / volume
+  .db #$C0                              ; initial duty / volume
   .db #$40                              ; initial tempo
   .db eConstant                         ; initial volume envelope
   .dw sound00_stream01                  ; stream address

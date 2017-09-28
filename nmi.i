@@ -46,19 +46,19 @@ NMI:
 	STA #$2007					;
 	PLA							; 21
 	STA #$2007					;
-    PLA							; 20
+  PLA							; 20
 	STA #$2007					;
-    PLA							; 19
+  PLA							; 19
 	STA #$2007					;
-    PLA							; 18
+  PLA							; 18
 	STA #$2007					;
-    PLA							; 17
+  PLA							; 17
 	STA #$2007					;
-    PLA							; 16
+  PLA							; 16
 	STA #$2007					;
-    PLA							; 15
+  PLA							; 15
 	STA #$2007					;
-    PLA							; 14
+  PLA							; 14
 	STA #$2007					;
 	PLA							; 13
 	STA #$2007					;
@@ -66,73 +66,79 @@ NMI:
 	STA #$2007					;
 	PLA							; 11
 	STA #$2007					;
-    PLA							; 10
+  PLA							; 10
 	STA #$2007					;
-    PLA							; 09
+  PLA							; 09
 	STA #$2007					;
-    PLA							; 08
+  PLA							; 08
 	STA #$2007					;
-    PLA							; 07
+  PLA							; 07
 	STA #$2007					;
-    PLA							; 06
+  PLA							; 06
 	STA #$2007					;
-    PLA							; 05
+  PLA							; 05
 	STA #$2007					;
-    PLA							; 04
+  PLA							; 04
 	STA #$2007					;
 	PLA							; 03
 	STA #$2007					;
 	PLA							; 02
 	STA #$2007					;
-	PLA							; 01
-	STA #$2007					;
+	PLA							; 01 4cycles
+	STA #$2007					; 4cycles
 
-	nextTileString:
+	nextTileString:		; +/- 90 cycles to jump and 8 cycles per tile
 	; --- start of loop ---
-	PLA							; contains cols/rows (b0) and length (b7-b1)
-	BEQ +done					; if length == 0 then the buffer is empty, tile loading is done
-	LSR							; b0 into carry: 1-> tile column, 0-> tile row
-	STA nmiVar2					; store the length of the buffer string
+	PLA								; contains cols/rows (b0) and length (b7-b1) (4 cycles)
+	BEQ +done					; if length == 0 then the buffer is empty, tile loading is done (2 cycles on fail)
+	LSR								; b0 into carry: 1-> tile column, 0-> tile row (2 cycles)
+	STA nmiVar2				; store the length of the buffer string (3 cycles)
+										; subtotal 11 cycles
 
 	; --- tile rows or columns? ---
-	LDA #%10010000 				; $2000 value that writes rows (b2 is 0)
-	BCC +rows					; if carry is set then
+	LDA #%10010000 		; $2000 value that writes rows (b2 is 0)(2 cycles)
+	BCC +rows					; if carry is set then (3 cycles for rows)
 	ADC #$03					; set b2 to 1
-+rows:
-	STA $2000
 
++rows:
+	STA $2000					; 4 cycles
+										; subtotal 20 cycles
 	; --- select name table ---
-	PLA
-	CMP #$24					; tiles with address $2400 or higher
-	PHA							; are written to NT 1
-	LDA #%00000001				; tiles with address lower than $2400
-	ROL							; are written to NT 0
-	STA $9000					;
+	PLA								; (4 cycles)
+	CMP #$24					; tiles with address $2400 or higher (2 cycles)
+	STA nmiVar0				; are written to NT 1 (3 cycles)
+	LDA #%00000001		; tiles with address lower than $2400 (2 cycles)
+	ROL								; are written to NT 0	(2 cycles)
+	STA $9000					; (4cycles)
+
+										; subtotal 35 cycles
 
 	; --- read tile address from buffer and write to VRAM ---
-	LDA $2002					; prepare to set PPU address
-	PLA
-	STA	$2006					; set PPU address H byte
-	PLA
-	STA $2006					; set PPU address L byte
+	LDA $2002					; prepare to set PPU address (4 cycles)
+	LDA nmiVar0				; 3 cycles
+	STA	$2006					; set PPU address H byte (4 cycles)
+	PLA								; 4 cycles
+	STA $2006					; set PPU address L byte (4 cycles)
+
+											; subtotal 54 cycles
 
 	; --- prep unrolled loop jump address ---
-	ASL nmiVar2					; each unrolled loop consists of 4 bytes of code
-	ASL nmiVar2					; bytes of code to jump back from the jump point
-	LDA #< nextTileString
-	SEC
-	SBC nmiVar2
-	STA nmiVar0
-	LDA #> nextTileString
-	SBC #$00
-	STA nmiVar1					; nmiVar0, nmiVar1 contain the jump point
+	ASL nmiVar2					; each unrolled loop consists of 4 bytes of code (5 cycles)
+	ASL nmiVar2					; bytes of code to jump back from the jump point (5 cycles)
+	LDA #< nextTileString				; (4 cycles)
+	SEC													; (2 cycles)
+	SBC nmiVar2									; (3 cycles)
+	STA nmiVar0									; (3 cycles)
+	LDA #> nextTileString				; (4 cycles)
+	SBC #$00										; (2 cycles)
+	STA nmiVar1																																		; nmiVar0, nmiVar1 contain the jump point (3 cycles)
 
 	; --- and jump ---
-	JMP (nmiVar0)
+	JMP (nmiVar0)																																	; 5 cycles / 90 cycles total
 
 	; --- nothing left in buffer ---
 +done:
-	PHA							; reset stack pointer (to account for the 'empty' read)
+	PHA										; reset stack pointer (to account for the 'empty' read)
 	LDA #%10010000 				; back to +1 tile increments for the pallettes
 	STA $2000
 
@@ -187,61 +193,31 @@ NMI:
 	; -------------------------------------------
 	; scrolling
 	; -------------------------------------------
-	LDA #%10010000 				; turn on NMI
+	LDA #%10010000 		; turn on NMI
 	STA $2000					;
-	LDA #%00011110 				; turn on rendering
+	LDA #%00011110 		; turn on rendering
 	STA $2001					;
 
 	LDA $2002					; Set scroll for the status bar
-	LDA #$00					;
+	LDA #$00					; X
 	STA $2005					; 0,0
+	LDA cameraYStatus	; Y
 	STA $2005					;
 
 	LDA #$03					; switch mapper to name table 1 (status bar)
 	STA $9000
 
-	; --- update camera position & buffer the next row / column if needed ---
+	LDA cameraY+1			; detect if vertical scrolling is needed
+	AND #%00000111
+	CMP #$04
+	BNE +continue
+
 	LDA sysFlags
-	AND #%00111111				; reset scroll direction flags
+	ORA #$01
 	STA sysFlags
 
-	LDA cameraX+0
-	CMP cameraXDest+0
-	BCC +addX					; camera < dest
-	BNE +decX					; camera > dest
-	LDA cameraX+1
-	CMP cameraXDest+1
-	BCC +addX
-	BNE +decX
-	JMP +doneX					; camera == dest
 
-+addX:
-	LDA cameraX+1				; CLC guarantee
-	ADC #$02
-	STA cameraX+1
-	LDA cameraX+0
-	ADC #$00
-	STA cameraX+0
-
-	LDA sysFlags			; store the direction (right)
-	ORA #%10000000
-	STA sysFlags
-
-	JMP +setFlag
-+decX:
-	SEC						; 2 cycles
-	LDA cameraX+1			; 3
-	SBC #$02				; 3
-	STA cameraX+1			; 3
-	LDA cameraX+0			; 3
-	SBC #$00				; 3
-	STA cameraX+0			; 3
-
-+setFlag:
-	LDA events				; set flag
-	ORA event_updateSprites
-	STA events
-
++continue:
 	LDA cameraX+1			; detect if horizontal scrolling is needed
 	AND #%00000111
 	CMP #$04
@@ -249,47 +225,16 @@ NMI:
 	JSR writeNextColumnToBuffer
 
 +doneX:
-	LDA cameraY+0
-	CMP cameraYDest+0
-	BCC +addY					; camera < dest
-	BNE +decY					; camera > dest
-	LDA cameraY+1
-	CMP cameraYDest+1
-	BCC +addY
-	BNE +decY
-	JMP +doneY:
-+addY:
-	LDA cameraY+1
-	ADC #$02
-	STA cameraY+1
-	LDA cameraY+0
-	ADC #$00
-	STA cameraY+0
-
-	LDA sysFlags			; store the direction (down)
-	ORA #%01000000
-	STA sysFlags
-
-	JMP +setFlag
-+decY:
-	SEC
-	LDA cameraY+1
-	SBC #$02
-	STA cameraY+1
-	LDA cameraY+0
-	SBC #$00
-	STA cameraY+0
-+setFlag:
-	LDA events					; set flag
-	ORA event_updateSprites
-	STA events
-
-	LDA cameraY+1			; detect if vertical scrolling is needed
-	AND #%00000111
-	CMP #$06
-	BNE +doneY
+	LDA sysFlags
+	LSR
+	BCC +doneY
 	JSR writeNextRowToBuffer
+
 +doneY:
+
+
+
+
 
 	; --- wait for vBlank to end (and rendering to start) ---
 -	BIT $2002				; need to make sure v-blank has ended, otherwise code to wait for h-blank won't work
@@ -333,9 +278,23 @@ NMI:
 	BIT sysFlag_splitScreen
 	BEQ +skip
 
+	; add statys bar Y scroll?
+	LDA cameraYStatus
+	BEQ +storeOffset
+	CLC
+	ADC #$10
+	EOR #$FF
+	ADC #$01
+
++storeOffset:
+	STA nmiVar0
+
 	; --- prepare scroll register values and store in X & Y ---
 	LDA cameraY+1			; prepare the final write to $2006 and store in X
-	TAY						; save camera Y in Y register
+	STA nmiVar1				; save camera Y in Y register
+	CLC
+	ADC nmiVar0
+	TAY								; save camera Y + offset in Y register
 	AND #%00111000			; mask coarse Y scroll
 	ASL						; and move to
 	ASL						; the most significant bits
@@ -360,15 +319,108 @@ NMI:
 	STA $2005
 	LDA cameraX+1				; ----.-xxx
 	STA $2005
-	TXA						; YYYX.XXXX (YYY= least significant)
+	TXA									; YYYX.XXXX (YYY= least significant)
 	STA $2006
 
 	LDA #$02
-	STA $9000				; switch the name table to NT 0 (level map)
+	STA $9000						; switch the name table to NT 0 (level map)
 
 	; --- end of h-blank code ---
+	LDA nmiVar1					; restore Camera Y
+	STA cameraY+1
 
 +skip:
+
+
+
+
+
+
+
+; --- update camera position ---
+	LDA sysFlags
+	AND #%00111110				; reset scroll direction  and adjustment flags
+	STA sysFlags
+	LDA cameraX+0
+	CMP cameraXDest+0
+	BCC +addX					; camera < dest
+	BNE +decX					; camera > dest
+	LDA cameraX+1
+	CMP cameraXDest+1
+	BCC +addX
+	BNE +decX
+	JMP +doneX					; camera == dest
+
++addX:
+	LDA cameraX+1				; CLC guarantee
+	ADC #$02
+	STA cameraX+1
+	LDA cameraX+0
+	ADC #$00
+	STA cameraX+0
+
+	LDA sysFlags			; store the direction (right)
+	ORA #%10000000
+	STA sysFlags
+
+	JMP +setFlag
++decX:
+	SEC						; 2 cycles
+	LDA cameraX+1			; 3
+	SBC #$02				; 3
+	STA cameraX+1			; 3
+	LDA cameraX+0			; 3
+	SBC #$00				; 3
+	STA cameraX+0			; 3
+
++setFlag:
+	LDA events				; set flag
+	ORA event_updateSprites
+	STA events
+
++doneX:
+	LDA cameraY+0
+	CMP cameraYDest+0
+	BCC +addY					; camera < dest
+	BNE +decY					; camera > dest
+	LDA cameraY+1
+	CMP cameraYDest+1
+	BCC +addY
+	BNE +decY
+	JMP +doneY:
+
++addY:
+	LDA cameraY+1
+	ADC #$02
+	STA cameraY+1
+	LDA cameraY+0
+	ADC #$00
+	STA cameraY+0
+
+	LDA sysFlags			; store the direction (down)
+	ORA #%01000000
+	STA sysFlags
+
+	JMP +setFlag
++decY:
+	SEC
+	LDA cameraY+1
+	SBC #$02
+	STA cameraY+1
+	LDA cameraY+0
+	SBC #$00
+	STA cameraY+0
+
++setFlag:
+	LDA events					; set flag
+	ORA event_updateSprites
+	STA events
+
++doneY:
+
+
+
+
 								; restore A, X & Y to values before NMI
 	PLA 					; pull 1st value of the stack
 	TAY						; transfer value back into Y

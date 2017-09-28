@@ -19,7 +19,4 @@ state_shutDown:
   JSR calculateActionCost
   JSR calculateHeat
 
-  LDA #$16						; show results
-  STA gameState
-
-  RTS
+  JMP pullState

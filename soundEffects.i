@@ -139,9 +139,9 @@ sound18:
   .dw sound18_stream00                  ; stream address
 sound18_stream00:
   .db L32th
-  .db setCountLoop1, $12
+  .db setCountLoop1, $24
 -loop:
-  .db $1B, REST
+  .db $1D
   .db repeatLoop1
   .dw -loop
   .db setCountLoop1, $04
@@ -185,13 +185,19 @@ sound1A_stream00:
 sound1B:
   .db #$01                              ; number of streams
 
-  .db #$00                              ; stream #
-  .db #$80                              ; channel (pulse 1)
-  .db #$C0                              ; initial duty
-  .db #$10                              ; initial tempo
-  .db eConstant                         ; initial volume envelope
+  .db #$04                              ; stream #
+  .db #$83                              ; channel (noise 1)
+  .db #$B0                              ; initial duty
+  .db #$80                              ; initial tempo
+  .db eSoftStaccato                      ; initial volume envelope
   .dw sound1B_stream00                  ; stream address
+
 sound1B_stream00:
-  .db L8th
-  .db A4,A4,A4,A4,A4,A4,A4,A4,A4,A4,A4,A4,A4,A4,A4,A4,A4
+  .db L32th
+  .db setCountLoop1, $0A
+-loop:
+  .db $1B
+  .db noteOffset, -1
+  .db repeatLoop1
+  .dw -loop
   .db endSound

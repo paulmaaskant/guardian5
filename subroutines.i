@@ -1,135 +1,3 @@
-; -----------------------------------------
-; write 32 tiles
-; -----------------------------------------
-write32Tiles:
-	TSX						; switch stack pointers
-	STX	stackPointer1
-	LDX stackPointer2
-	TXS
-
-	LDX #$20
--	JSR getNextByte
-	PHA
-	DEX
-	BNE -
-
-	LDA pointer2+1
-	PHA
-	LDA pointer2+0
-	PHA
-	LDA #$40
-	PHA
-
-	LDA pointer2+1			; increment pointer to tile position by 32
-	CLC
-	ADC #$20
-	STA pointer2+1
-	LDA pointer2+0
-	ADC #$00
-	STA pointer2+0
-
-	TSX						; switch stack pointers back
-	STX	stackPointer2
-	LDX stackPointer1
-	TXS
-
-	RTS
-
-
-
-;------------------------------------------
-; grid coordinates to screen position
-;
-; IN		A = hexagon = YYYYXXXX
-; OUT 		currentObjectXPos = X screen position
-; OUT 		currentObjectYPos = Y screen position
-; OUT		carry flag, 1 set when on screen
-; LOCAL 	locVar1
-; LOCAL		locVar2
-; LOCAL 	locVar3
-; LOCAL		locVar4
-;------------------------------------------
-gridPosToScreenPos:
-	STA locVar1																																		; store to retrieve X later
-	AND	#$F0																																			; Y mask
-	LSR
-	STA locVar2																																		; store YYYY * 8
-
-	SEC																																						; start by calculating
-	LDA #$BF																																			; the screen position of grid 0,0
-	SBC cameraY+1																																	; given the current camera position
-	STA currentObjectYPos																													; w/o scrolling this would be (X=$20, Y=$BF)
-	LDA #$00																																			; store it in the current coordinates
-	STA locVar4																																		; reset variable 4 (has nothing to with SBC)
-	SBC cameraY+0
-	STA currentObjectYScreen
-	SEC
-	LDA #$20																																			;
-	SBC cameraX+1																																	; offset to account for camera
-	STA currentObjectXPos
-	LDA #$00
-	SBC cameraX+0
-	STA currentObjectXScreen
-
-	LDA locVar1																																		; determine X
-	AND #$0F																																			; x mask
-	ASL
-	ASL
-	ASL
-	STA locVar1																																		; XXXX * 8, store for use later
-	SEC																																						; calculate Y screen offset relative to grid 0,0
-	SBC locVar2																																		; (XXXX - YYYY) * 8
-	BPL +continue
-	DEC currentObjectYScreen
-
-+continue:
-	CLC
-	ADC currentObjectYPos
-	STA currentObjectYPos																													; final Y screen position
-	LDA currentObjectYScreen
-	ADC #$00
-	STA currentObjectYScreen																											; final Y screen
-
-	LDA locVar1																																		; X screen is next
-	CLC
-	ADC locVar2
-	STA locVar3																																		; (X+Y) * 8 (max value is 240)
-	ASL 																																					; multiply locvar3 by 3
-	ROL locVar4																																		; and store result in locvar3 (lo) and locVar4 (hi)
-	ADC locVar3																																		; this is the X screen offset relative to grid 0,0
-	STA locVar3
-	LDA locVar4
-	ADC #$00
-	STA locVar4																																		; add the offset to current
-	LDA locVar3
-	ADC currentObjectXPos
-	STA currentObjectXPos																													; final X screen position
-	LDA currentObjectXScreen
-	ADC locVar4
-	STA currentObjectXScreen
-
-	; --- check if object is within camera rectangle ---
-	LDA currentObjectXScreen
-	BNE +offScreen
-	LDA currentObjectYScreen
-	BNE +offScreen
-	LDA currentObjectYPos
-	CMP #$30
-	BCC +offScreen
-	CMP #$E0
-	BCS +offScreen
-	LDA currentObjectXPos
-	CMP #$08
-	BCC +offScreen
-	CMP #$F8
-	BCS +offScreen
-	SEC
-	RTS
-
-+offScreen:
-	CLC
-	RTS
-
 ;------------------------------------------
 ; random 255
 ;
@@ -159,36 +27,7 @@ random100:
 
 
 
-;------------------------------------------
-; multiply
-; M * N = MN
-;
-; M (1 byte) A
-; N (1 byte) X
-; MN (2 Bytes) par 1 hi, par 2 lo
-;-----------------------------------------
-multiply:
-	EOR #$FF		; flip bits of M
-	STA locVar1		; M
-	STX locVar2		; N
-	LDA #$00
-	STA par1
-	STA par2
-	LDY #$08
--	ASL par2
-	ROL par1
-	ASL locVar1
-	BCS +			; leverage M flipped bits to prevent CLC
-	;CLC
-	LDA par2
-	ADC locVar2
-	STA par2
-	LDA par1
-	ADC #$00
-	STA par1
-+	DEY
-	BNE -
-	RTS
+
 
 
 
@@ -361,29 +200,42 @@ toBCD:
 ;-----------------------------------------
 updateCamera:
 	LDA cursorGridPos
-	JSR gridPosToScreenPos			; sets currentObject_Pos
-	LDA currentObjectYPos			; if cursor screen pos < 70
+	JSR gridPosToScreenPos																												; sets currentObject_Pos
+	LDA currentObjectYPos																													; if cursor screen pos < 70
 	CMP #$46
 	BCS +
-	LDA #$F0						; - 16
+	LDA #$F0																																			; move camera Y up by 16 px
 	JSR updateCameraYPos
-+	LDA currentObjectYPos			; if cursor screen pos > 200
++	LDA currentObjectYPos																													; if cursor screen pos > 200
 	CMP #$A8
-	BCC +downScrollDone				; then skip scroll
-	LDA #$10						; +16
-	JSR updateCameraYPos
+	BCC +downScrollDone																														; then skip scroll
+	LDA #$10																																			;
+	JSR updateCameraYPos																													; move camera Y down by 16 px
 
 +downScrollDone:
 	LDA currentObjectXPos			; if screen pos > 224 = 128+64+32
 	CMP #$E0
 	BCC +rightScrollDone			; then skip scroll
-	LDA #$18						; + 24
+
+
+	LDA blockInputCounter
+	CLC
+	ADC #$04
+	STA blockInputCounter
+
+	LDA #$18									; + 24
 	JSR updateCameraXPos
 
 +rightScrollDone:
 	LDA currentObjectXPos			; if screen pos < 40
 	CMP #$28
 	BCS +
+
+	LDA blockInputCounter
+	CLC
+	ADC #$04
+	STA blockInputCounter
+
 	LDA #$E8						; -24							; A is signed
 	JMP updateCameraXPos						; tail chain
 +	RTS
@@ -444,12 +296,12 @@ updateCameraYPos:
 	BCC +done
 	BNE +limit
 	LDA cameraYDest+1
-	CMP #$78
+	CMP #$70
 	BCC +done
 +limit:
 	LDA #$00
 	STA cameraYDest+0
-	LDA #$78
+	LDA #$70
 	STA cameraYDest+1
 +done:
 	RTS
@@ -588,59 +440,6 @@ clearList3:
 	BCS -loop
 	RTS
 
-; --------------------------
-; A brightness (-40 +40
-; --------------------------
-updatePalette:
-	STA locVar1								; adjustment value
-	LDY #$07
--loop:
-	LDX currentPalettes, Y
-
-	LDA paletteColor1, X
-	CLC
-	ADC locVar1
-	BPL +											; if color value becomes negative
-	LDA #$0F									; make it BLACK (0F)
-+	CMP #$3E
-	BCC +											; if color vale becomes bigger than 60
-	LDA #$30									; make it white
-+	STA pal_color1, Y
-
-	LDA paletteColor2, X
-	CLC
-	ADC locVar1
-	BPL +
-	LDA #$0F
-+	CMP #$3E
-	BCC +
-	LDA #$30
-+	STA pal_color2, Y
-
-	LDA paletteColor3, X
-	CLC
-	ADC locVar1
-	BPL +
-	LDA #$0F
-+	CMP #$3E
-	BCC +
-	LDA #$30
-+	STA pal_color3, Y
-
-	DEY
-	BPL -loop
-
-	LDA currentTransparant
-	CLC
-	ADC locVar1
-	BPL +
-	LDA #$0F
-+	CMP #$3E
-	BCC +
-	LDA #$30
-+	STA pal_transparant
-
-	RTS
 
 ; --------------------------
 ; deleteObject A

@@ -14,7 +14,7 @@
 ; IN list2, directions corresponding to the nodes in path
 ;
 ;
-; OUT selectedAction		b7 move (0) or charge (1)
+; OUT selectedAction
 ; OUT actionList+0, 		index for list1 and list2
 ; OUT actionList+1, 		X offset in pixels
 ; OUT actionList+2, 		Y offset in pixels
@@ -31,10 +31,16 @@ state_initializeCharge:
 
 	JSR calculateAttack
 
-	LDA #$80
-	STA selectedAction
+	JSR initializeMove					; tail chain
 
-	BNE initializeMove					; tail chain
+	JSR pullAndBuildStateStack
+	.db $03							; 3 states
+	.db $11 						; initialize move animation
+	.db $1C							; turn to face target
+	.db $1D							; close combat animation
+	.db $16							; show results
+	; built in RTS
+
 
 ;-------------------------------------
 ; initialize action resolution: MOVE
@@ -46,8 +52,14 @@ state_initializeMove:
 
 	JSR calculateHeat
 
-	LDA #$00
-	STA selectedAction
+	JSR initializeMove
+
+	JSR pullAndBuildStateStack
+	.db $03							; 3 states
+	.db $11 						; resolve move
+	.db $0A							; set direction
+	.db $16							; show results
+	; built in RTS
 
 initializeMove:
 	LDA effects
@@ -68,8 +80,7 @@ initializeMove:
 	STA actionCounter
 	STA actionList+0						; node number on path in list1
 
-	LDA #$11										; resolve move
-	STA gameState
+	RTS
 
 ; ----------------------------------------
 ; loop to resolve move
@@ -80,8 +91,9 @@ state_resolveMove:
 	STA events
 
 	LDA actionCounter
-	BEQ +continue:
+	BEQ +continue
 	JMP +calculateOffset			; frame 32-1? -> calculate
+
 +continue:							; frame 0 -> new node
 	;-------------------------------------
 	; New node
@@ -91,47 +103,95 @@ state_resolveMove:
 	;-------------------------------
 	; Move complete
 	;-------------------------------
-	LDX #$0A										; state := init set direction
+	LDA effects
+	AND #%11101111							; switch off obscure mask
+	STA effects
+
 	LDY activeObjectIndex
+
 	LDA object, Y
 	EOR #%00001000							; object move bit (b3) OFF
-	BIT selectedAction
-	BPL +store
-	AND #%11111000
-	LDX actionList
-	INX
-	ORA list2, X
-	LDX #$1D										; state := show results
-
-+store:
 	STA object, Y
-	STX gameState								;
 
 	LDY activeObjectGridPos			; block final position, move (b7) and sight (b6)
 	LDA nodeMap, Y
 	ORA #$C0
 	STA nodeMap, Y
-	RTS
+	JMP pullState								; tail chain
 
+	; ---------------
+	; New node
+	; ---------------
 +continue:
-	LDA #$20						; 32 frames
+	LDA #$20										; 32 frames
 	STA actionCounter
 
 	INC actionList
-	LDX actionList						; X = index for 'list 1' and 'list2'
-	LDY activeObjectIndex			; Y = index	for 'objectTypeAndNumber'
+	LDX actionList							; X = index for 'list 1' and 'list2'
+	LDY activeObjectIndex				; Y = index	for 'objectTypeAndNumber'
 
-	LDA object, Y					; reset direction bits (b2-0) on active object
+	LDA object, Y								; reset direction bits (b2-0) on active object
 	AND #%11111000
 	ORA list2, X
 	STA object, Y
 
-	LDA list1, X					; update active object's grid position
-	STA activeObjectGridPos			;
-	STA object+3, Y					;
+	AND #%00000110																																; mirror sprite if direction is 2 or 3
+	CMP	#%00000010
+	BNE +next
+	LDA #%01100000
+	;LDA #%01000000
+	BNE +store
+
++next:
+	LDA #%00100000																																; used in embedded effect 4
+	;LDA #%00000000
+
++store:
+	STA currentEffects
+
+	LDA effects
+	AND #%11101111
+	STA effects
+
+	STX locVar1
+
+	LDX activeObjectGridPos
+	LDA nodeMap, X
+	AND #%00100000
+	BEQ +continue
+
+	LDA effects
+	ORA #%00010000
+	STA effects
+
+	LDA currentEffects
+	EOR #%01000000
+	STA currentEffects
+
+	STX currentEffects+1
+
++continue:
+
+	LDX locVar1
+
+	LDA list1, X							; update active object's grid position
+	STA activeObjectGridPos		;
+	STA object+3, Y						;
+
+	TAY
+	LDA nodeMap, Y
+	AND #%00100000
+	BEQ +continue
+	LDA effects
+	ORA #%00010000
+	STA effects
+
+	STY currentEffects+1
+
++continue:
 
 	LDA #$00
-	STA actionList+1				; reset X offset (Y offset is always overwritten)
+	STA actionList+1					; reset X offset (Y offset is always overwritten)
 
 	;-----------------------------------
 	; update action+3

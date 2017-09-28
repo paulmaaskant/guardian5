@@ -14,6 +14,8 @@
 ; list3+20		target dial
 ; list3+21		damage sustained by attacker
 ; list3+22		attacker dail
+; list3+22		close combat animation
+; list3+23		close combat sound
 
 
 
@@ -100,7 +102,7 @@ checkTarget:
 
 	LDA #$01
 	STA list3+21																																	; 1 charge damage sustained
-	
+
 +checksDone:
 	LDA activeObjectStats+5																												; calculate hit chance
 	AND #%00111000																																; first get attacker accuracy

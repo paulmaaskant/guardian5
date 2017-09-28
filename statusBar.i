@@ -81,6 +81,7 @@ showSystemInfo:
 ; IN A (b7-b4) pilot ID
 showPilot:
 	STY locVar2			; controls position
+
 	PHA							; for bank
 	LSR
 	LSR
@@ -91,9 +92,6 @@ showPilot:
 	ADC #$08
 	STA currentPalettes+3
 	STA currentPalettes+6
-
-	LDA #$00
-	JSR updatePalette
 
 	PLA							; set address
 	AND #%00001100
@@ -107,7 +105,7 @@ showPilot:
 	ROL
 	ROL							; Carry clear
 	ADC #$08
-	STA $E002
+	STA $E001
 
 	TSX							; switch stack pointers
 	STX	stackPointer1
@@ -120,7 +118,7 @@ showPilot:
 	LDX #$03
 
 -innerLoop:
-	LDA identity, Y
+	TYA
 	ASL
 	ASL
 	ASL
@@ -131,7 +129,7 @@ showPilot:
 	PHA
 	DEX
 	BPL -innerLoop
-	LDA identity, Y
+	TYA
 	ROR
 	ROR
 	ROR
@@ -154,8 +152,8 @@ showPilot:
 	LDX stackPointer1
 	TXS
 
-
-	RTS
+	LDA #$00
+	JMP updatePalette
 
 
 ; -------------------------------------

@@ -42,14 +42,18 @@ state_titleScreen:
 
 +continue:
 	LDA buttons
-	BEQ +done
+	BNE +continue
+	RTS
 
++continue:
 	LSR										; RIGHT
 	BCC +next
 	LDA list1+1
 	CMP #$02
-	BNE +done
+	BEQ +continue
+	RTS
 
++continue:
 	LDA list1+2
 	CMP #$1F
 	BCS +setTimer
@@ -61,7 +65,10 @@ state_titleScreen:
 	BCC +next
 	LDA list1+1
 	CMP #$02
-	BNE +done
+	BEQ +continue
+	RTS
+
++continue:
 	DEC list1+2
 	BPL +setTimer
 	INC list1+2
@@ -127,11 +134,25 @@ state_titleScreen:
 	JMP writeStartMenuToBuffer
 
 +startGame:
-;	JMP state_initializeMissionScreen
-	JMP state_initializeBriefScreen
+
+	; FIX pass along paramter for which brief
+	; FIX pass along a paramte for which level
+
+	JSR pullAndBuildStateStack
+	.db $10							; # items
+	.db $0D, 0					; change brightness 0: fade out
+	.db $00, 2					; load screen 2: mission brief screen
+	.db $0D, 1					; change brightness 1: fade in
+	.db $01, 1					; load stream 01: mission 1 brief
+	.db $0D, 0					; change brightness 0: fade out
+	.db $00, 3					; load screen 3: status bar
+	.db $04							; load level
+	.db $0D, 1					; change brightness 1: fade in
+	.db $08							; end / next turn
+	; built in RTS
 
 +done:
 	RTS
 
 faceTiles:
-	.db $4B, $4C, $5C, $49, $78, $4A, $77, $4A
+	.db $4B, $4C, $49, $5C, $4A, $78, $4A, $77

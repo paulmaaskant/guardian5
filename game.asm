@@ -1,25 +1,28 @@
 ;; List
 ;
-; - miss animations
+; - volume mute operation
+; - miss animations for gun fire
 ; - shutdown animation
 ; - cooldown animation
-; - restart shutdown unit
-; - heat and damage prognosis
 ; - free spin when attacked in close combat
-;	- mission introduction screen
-;	- mission result screen
-;	- pause menu
+;	- in game menu
+;
+; PARKING LOT
+; - obscured units (use settable effect sprites instead of embedded, so that more than one mask can be shown)
+; - obscured units (redesign map to not have transparant pixels on mask positions)
 ; - attribute table scrolling (switch between two palettets)
-; - show results state: expand to take opcodes for number reductions!
-; - diagonal scrolling (4 & 6 don't matter because it still looks as the same meta row / col)
+; - show results state: decrement heat sinks and armor when results are displayed (new opcode?)
+; - events (like mission fail / accomplished conditions and in game dialog triggers)
+;
+;
 
 
 ;; 1 - iNes header
-	.db "NES", $1a	; iNes Identifier
+	.db "NES", $1A	; iNes Identifier
 	.db $02			; number of PRG-Rom (16kb) blocks the game has
 	.db $02			; number of CHR-Rom (8kb) blocks the game has
-	; mapper 23
-	.db $70 		; left nyble = mapper low nyble
+	; mapper 25
+	.db $90 		; left nyble = mapper low nyble
 	.db $10			; left nyble = mapper high nyble
 	.db $00, $00, $00, $00, $00, $00, $00, $00	; filler
 
@@ -31,6 +34,7 @@
 	nmiVar2										.dsb 1
 	nmiVar3										.dsb 1
 	nmiVar4										.dsb 1
+	nmiVar5										.dsb 1
 
 	; ---------------------------------
 	; The following are variables that have a lifespan limited to a single frame
@@ -57,6 +61,9 @@
 	cameraX										.dsw 1	; upper left of camera in relation to background tiles
 	cameraYDest								.dsw 1	; upper left of camera in relation to background tiles
 	cameraXDest								.dsw 1	; upper left of camera in relation to background tiles
+	cameraYStatus							.dsb 1
+
+	oamVar										.dsb 10 ; use for sprite operations
 
 	; ---------------------------------
 	; The following are variables that have a life span that goes across frames
@@ -77,12 +84,12 @@
 	actionCounter							.dsb 1	; used to time action animations
 	blockInputCounter					.dsb 1  ; used to block input for specified time
 	effectCounter							.dsb 1  ; used to time cursor sprite animation
-	menuCounter								.dsb 1
+	menuCounter								.dsb 1	; used to time menu blinking
 
-	sysFlags									.dsb 1	; scroll direction (b7-6), action locked (b5), blank strings (b4)
+	sysFlags									.dsb 1	; scroll direction (b7-6), action locked (b5), screen split (b4), PAL vs NTSC (b3)
 	events										.dsb 1  ; flags that trigger specific subroutines
-	effects										.dsb 1  ; flags that indicate whether screen effects are active
-	menuFlags									.dsb 1	;
+	effects										.dsb 1  ; flags that trigger embedded sprite effects
+	menuFlags									.dsb 1	; flags that causes menu areas to blink
 	actionMessage							.dsb 1	;
 
 	; buffer to write tiles to VRAM
@@ -90,9 +97,10 @@
 	stackPointer2							.dsb 1
 
 	buttons 									.dsb 1	; used to store controller #1 status
-	gameState									.dsb 1	; used to indicate transitions in the game
+	gameProgress							.dsb 1  ; used to keep track of game progress
 	seed											.dsw 1	; used to generate random numbers
 	cursorGridPos							.dsb 1  ; grid coordinates of cursor XXXX YYYY
+	stateStack								.dsb 22 ; used to control state transitions in the game
 
 	; ---------------------------------
 	; The following are variables are dedicated to object management
@@ -199,6 +207,7 @@
 	list4									.dsb 64
 
 	; Buffers used to render the status menu
+	; 78 bytes
 	actionMenuLine1				.dsb 13
 	actionMenuLine2				.dsb 13
 	actionMenuLine3				.dsb 13
@@ -212,21 +221,31 @@
 	systemMenuLine3				.dsb 5
 
 	; effects
-	; 6 sprites, 4 bytes per sprite (X, Y, animation #, counter)
-	currentEffects				.dsb 24
+	; 6 sprites, 5 bytes per sprite (X, Y, animation #, counter, mirror pallette control)
+	currentEffects				.dsb 30
 
 	; indexes of the current palettes
 	currentPalettes				.dsb 8
 	currentTransparant		.dsb 1
+
+	;
+
 	.ende
 
 	; PRG page 0: tiles
 	.org $8000
-	.include tiles.i
+	.include sbr_nmi_writeNextRowToBuffer.i
+	.include sbr_nmi_writeNextColumnToBuffer.i
+	.include data_tiles.i
+	.include sbr_nmi_soundNextFrame.i
+	.include sbr_nmi_seNextByte.i
+	.include sbr_nmi_seWriteToSoftApu.i
+	.include sbr_nmi_seWriteToApu.i
 
 	; PRG page 1: byteStreams
 	.org $A000
-	.include byteStreams.i
+	.include data_byteStreams.i
+	.include sbr_getNextByte.i
 
 	; PRG page 2 and 3 (FIXED): main loop
 	.org $C000
@@ -299,6 +318,18 @@ mainGameLoop:
 	LDY #$02																																			; cursor animation #
 	JSR loadAnimationFrame																												; set sprites!
 
++nextEffect:																																		; blocking node marker, sprite 5
+	LDA effects
+	AND #%00010000
+	BEQ +nextEffect
+	LDA currentEffects+0													; mask
+	STA par4													; parameter to "loadAnimationFrame"
+	LDA currentEffects+1																																		; node that is blocking line of sight
+	JSR gridPosToScreenPos																												; get the screen coordinates
+	BCC +nextEffect																																; off screen!
+	LDY #$04																																			; cursor animation #
+	JSR loadAnimationFrame																												; set sprites!
+
 +nextEffect:																																		; manage counter for all embedded effects
 	LDA currentObjectFrameCount																										; FIX
 	CMP #$40																																			; when all effects are off screen, the count continues and does not get reset
@@ -310,33 +341,34 @@ mainGameLoop:
 	LDA effects
 	AND #%00000111																																; mask to get number of effect animations
 	BEQ +nextEvent
-	ASL
-	ASL
+	TAX
+	DEX
 
 -loopEffects:
-	SEC
-	SBC #$04
-	TAX
-	LDY currentEffects+2, X
+	LDY currentEffects+0, X					; pattern
 	BEQ +skip
-	LDA	currentEffects+0, X
+	LDA	currentEffects+6, X					; x pos
 	STA currentObjectXPos
-	LDA currentEffects+1, X
+	LDA currentEffects+12, X				; y pos
 	STA currentObjectYPos
-	LDA currentEffects+3, X
+	LDA currentEffects+18, X				; count
 	STA currentObjectFrameCount
+	LDA currentEffects+24, X				; mirror
+	STA par4
+
 	TXA
 	PHA
 	JSR loadAnimationFrame
 	PLA
 	TAX
+
 	LDA currentObjectFrameCount
-	STA currentEffects+3, X
-	INC currentEffects+3, X
-	TXA
+	STA currentEffects+18, X
+	INC currentEffects+18, X
 
 +skip:
-	BNE -loopEffects
+	DEX
+	BPL -loopEffects
 
 	;---------------------------
 	; event: update object sprites
@@ -350,34 +382,36 @@ mainGameLoop:
 +next:
 	EOR event_updateSprites
 	STA events
-	LDA #$10																																			; sprite 0-15 are reserved for effects, start with sprite 16
+	LDA #16																																				; sprite 0-15 are reserved for effects, start with sprite 16
 	STA par3																																			; first available sprite
-	LDX #$00
+	LDX #$00																																			; start with object on pos 0
 
 -loopObjects
-	LDA objectTypeAndNumber, X
-	AND #%01111000
-	LSR
-	LSR
-	LSR
-	TAY
-	LDA objectTypeL, Y
+	LDA objectTypeAndNumber, X																										; get next object
+	AND #%01111000																																; mask the Object Type
+	LSR																																						; (part of the object in CODE)
+	LSR																																						;
+	LSR																																						;
+	TAY																																						; and store it in Y
+	LDA objectTypeL, Y																														; get the object type data address
 	STA currentObjectType+0
 	LDA objectTypeH, Y
-	STA currentObjectType+1
-	LDA objectTypeAndNumber, X
-	AND #%00000111
-	ASL
-	ASL
-	TAY																																						; object index
-	PHA																																						; save Y
-	TXA
-	PHA																																						; save X
+	STA currentObjectType+1																												; and store it as the current object type
+
+	LDA objectTypeAndNumber, X																										; reload the object
+	AND #%00000111																																; and mask the object number
+	ASL																																						; mulitply by 4 to get the
+	ASL																																						; object index
+	TAY																																						; (part of the object stored in memory)
+	PHA																																						; save Y (object index) on stack
+	TXA																																						;
+	PHA																																						; save X (object list index)
 	LDA object+2, Y
 	STA currentObjectFrameCount
 	LDA object+3, Y																																; on screen check
 	JSR gridPosToScreenPos																												; get and set screen X & Y
-	BCC +done																																			; off screen -> done
+	BCC +done																																			; off screen -> done (no need to show sprites)
+
 	LDA objectTypeAndNumber, X																										; get B7 (neg flag)
 	PHP																																						; store neg flag
 	LDA object, Y
@@ -391,16 +425,38 @@ mainGameLoop:
 	LDA currentObjectXPos
 	ADC actionList+1
 	STA currentObjectXPos
+	JMP +notObscured
 
-+next:																																					; next, determine mirror, palette & which animation
-	LDX #$00																																			; default value for par4 (no mirror, no palette change)
-	LDA object+0, Y
-	AND rightNyble																																; right nyble (b3) moving? (b2-0) direction?
++next:
+	LDX object+3, Y
+	LDA nodeMap, X
+	AND #%00100000																																; is position obscured?
+	BEQ +notObscured
+	LDA #$20																																			; yes -> set up sprite mask to parially hide object
+	STA par4																																			; sprite priority 1
+	TYA																																						; store Y (object )
+	PHA
+	LDY #$03																																			; mask srpite to obscure part of the object sprite
+	JSR loadAnimationFrame
+	PLA
+	TAY
+	LDX #%00010000																																; restore Y
+	JMP +skip
+
++notObscured:																																		; next, determine mirror, palette & which animation
+	LDX #%00000000																																; default value for par4 (b7-6 no mirror, b5 no mask, b4 not obscured, b0 no palette flip)
+
++skip:
+	LDA object+0, Y																																; derive the animation # based on object's direction and move
+	AND rightNyble																																; (b3) moving? (b2-0) direction
 	TAY																																						; set animation sequence (Y)
-	AND #%00000110																																; mirror if direction is 2 or 3
+	AND #%00000110																																; mirror sprite if direction is 2 or 3
 	CMP	#%00000010
 	BNE +next
-	LDX #%01000000																																; set mirror bit
+	TXA																																						; set b6 in X
+	CLC
+	ADC #%01000000
+	TAX
 
 +next:																																					; palette 0 for friendly, palette 1 for hostile
 	PLP																																						; object type flags
@@ -429,7 +485,10 @@ mainGameLoop:
 	STA object+2, Y																																;
 	INX																																						; next object
 	CPX objectCount																																; number of objects presently in memory
-	BNE -loopObjects																															;
+	BEQ +continue
+	JMP -loopObjects																															;
+
++continue:
 	LDA #$3F																																			; clear remaining unused sprites up to and including sprite 63 (last sprite)
 	JSR clearSprites																															;
 
@@ -514,7 +573,6 @@ mainGameLoop:
 
 ; --- events have been handled, now launch game state subroutine ---
 +nextEvent:
-	LDA gameState
 	JSR launchStateSubroutine
 	JMP mainGameLoop					; restart loop
 ;-----------------------------------------
@@ -525,29 +583,34 @@ mainGameLoop:
 ; Subroutine to launch game state subroutine, use RTS to jump to address
 ; ------------------------------------------
 launchStateSubroutine:
+	LDX stateStack
+	LDA stateStack, X
+	;CMP #$FF
+	;BEQ +
 	ASL
   TAX
   LDA gameStateJumpTable+1, X
   PHA
   LDA gameStateJumpTable, X
   PHA
+; +
   RTS            											; launch!
 
 gameStateJumpTable:
-	.dw state_initializeTitleScreen-1		; 00
-	.dw state_initializeStoryScreen-1		; 01
+	.dw state_initializeScreen-1				; 00
+	.dw state_initializeDialog-1				; 01
 	.dw state_fadeInOut-1								; 02
 	.dw state_titleScreen-1							; 03
 	.dw state_initializeMap-1						; 04
 	.dw state_loadLevelMapTiles-1				; 05
 	.dw state_selectAction-1						; 06
 	.dw state_setDirection-1						; 07
-	.dw state_setNextActiveObject-1			; 08
+	.dw state_endTurn-1									; 08
 	.dw state_runDialog-1								; 09
 	.dw state_initializeSetDirection-1	; 0A
 	.dw state_centerCamera-1						; 0B
 	.dw state_waitForCamera-1						; 0C
-	.dw state_initializeIntroDialog-1		; 0D
+	.dw state_changeBrightness-1				; 0D
 	.dw state_loadScreen-1							; 0E
 	.dw state_clearDialog-1							; 0F
 	.dw state_initializeMove-1					; 10
@@ -562,21 +625,34 @@ gameStateJumpTable:
 	.dw state_initializePivotTurn-1			; 19
 	.dw state_initializeFreeSpin-1			; 1A
 	.dw state_initializeCharge-1				; 1B
-	.dw state_lightFlash-1							; 1C
+	.dw state_faceTarget-1							; 1C
 	.dw state_closeCombatAnimation-1		; 1D
 	.dw state_initializeTitleMenu-1			; 1E
 	.dw state_shutDown-1								; 1F
-	.dw state_initializeBriefScreen-1		; 20
-	.dw state_initializeBriefDialog-1		; 21
-	.dw state_initializeMissionScreen-1	; 22
+	.dw state_initializeGameMenu-1			; 20
+	.dw not_used												; 21
+	.dw state_loadGameMenu-1						; 22
+	.dw state_expandStatusBar-1					; 23
+	.dw state_statusBarOpened-1					; 24
+	.dw state_collapseStatusBar-1				; 25
 
+:not_used
 
 ; -------------------------
 ; includes
 ; -------------------------
 
 	.include state_misc.i
-	.include state_setNextActiveObject.i
+	.include state_initializeDialog.i
+	.include state_initializeMap.i
+	.include state_initializeTitleMenu.i
+	.include state_setDirection.i
+	.include state_initializeScreen.i
+	.include state_centerCamera.i
+	.include state_waitForCamera.i
+	.include state_runDialog.i
+	.include state_loadScreen.i
+	.include state_endTurn.i
 	.include state_selectAction.i
 	.include state_titleScreen.i
 	.include state_resolveMove.i
@@ -586,22 +662,43 @@ gameStateJumpTable:
 	.include state_resolveClose.i
 	.include state_showResults.i
 	.include state_shutDown.i
-	.include state_initializeBriefScreen.i
-	.include state_initializeBriefDialog.i
-	.include state_initializeMissionScreen.i
+	.include state_expandStatusBar.i
+	.include state_statusBarOpened.i
+	.include state_collapseStatusBar.i
+	.include state_changeBrightness.i
+	.include state_initializeGameMenu.i
+	.include state_loadGameMenu.i
+	.include state_faceTarget.i
+
 	.include subroutines.i
-	.include initializeScreen.i
-	.include updateActionList.i
-	.include calculateActionCost.i
-	.include calculateHeat.i
-	.include calculateAttack.i
-	.include findPath.i
+	.include sbr_pushState.i
+	.include sbr_pullState.i
+	.include sbr_replaceState.i
+	.include sbr_buildStateStack.i
+	.include sbr_write32Tiles.i
+	.include sbr_multiply.i
+	.include sbr_gridPosToScreenPos.i
+	.include sbr_updateActionList.i
+	.include sbr_calculateActionCost.i
+	.include sbr_calculateHeat.i
+	.include sbr_calculateAttack.i
+	.include sbr_checkTarget.i
+	.include sbr_findPath.i
+	.include sbr_soundLoad.i
+	.include sbr_updatePalette.i
+
+	.include sbr_loadSpriteFrame.i
+	.include sbr_loadSpriteMetaFrame.i
+	.include sbr_loadAnimationFrame.i
+	.include sbr_clearSprites.i
+
 	.include reset.i
 	.include nmi.i
-	.include sprites.i
+	.include data_sprites.i
 	.include statusBar.i
-	.include checkTarget.i
 	.include audio.i
+
+
 
 ; ---------------------------------------------------------------------------
 ; 8 - data tables
@@ -609,10 +706,10 @@ gameStateJumpTable:
 
 ; Palette index
 ;
-; 00 background
-; 01 background
+; 00 background  title screen
+; 01 background	 title screen
 ; 02 background  status bar
-; 03 ------
+; 03 not assigned
 ; 04 sprite desert mech
 ; 05 sprite fire mech
 ; 06 sprite tooltip & cursor
@@ -629,7 +726,7 @@ paletteColor1:
 	.db $08, $15
 	.dsb 6
 paletteColor2:
-	.db $00, $18, $00, $18, $18, $16, $1B, $27
+	.db $00, $18, $00, $18, $18, $16, $1B, $08
 	.db $18, $28
 	.dsb 6
 	.db $15, $30
@@ -643,6 +740,7 @@ paletteColor3:
 identity:
 	.db $00, $01, $02, $03, $04, $05, $06, $07, $08, $09, $0A, $0B, $0C, $0D, $0E, $0F
 	.db $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $1A, $1B, $1C, $1D, $1E, $1F
+	.db $20
 stringListL:
 	.db #< str_RANGED_ATK_1							; 00
 	.db #< str_RANGED_ATK_2							; 01
@@ -806,26 +904,28 @@ typeRamulen1:
 
 
 ; --- events are automatically unflagged after they are executed
-event_confirmAction:				.db #%10000000
-event_updateSprites:				.db #%01000000
-event_updateTarget:					.db #%00100000
-event_updateStatusBar:			.db #%00010000
-event_releaseAction:				.db #%00001000
-event_refreshStatusBar:			.db #%00000100
+event_confirmAction:				.db %10000000
+event_updateSprites:				.db %01000000
+event_updateTarget:					.db %00100000
+event_updateStatusBar:			.db %00010000
+event_releaseAction:				.db %00001000
+event_refreshStatusBar:			.db %00000100
+event_gameMenu:							.db %00000010
 
 ; --- system flags remain set ---
-sysFlag_scrollRight:				.db #%10000000
-sysFlag_scrollDown:					.db #%01000000
-sysFlag_lock:								.db #%00100000
-sysFlag_splitScreen:				.db #%00010000
-sysFlag_NTSC:								.db #%00001000
+sysFlag_scrollRight:				.db %10000000
+sysFlag_scrollDown:					.db %01000000
+sysFlag_lock:								.db %00100000
+sysFlag_splitScreen:				.db %00010000
+sysFlag_NTSC:								.db %00001000
+sysFlag_scrollAdjustment:		.db %00000001
 
 ; --- menu flags control menu tile animation ---
-menuFlag_blink:							.db #%10000000
-menuFlag_indicator:			.db #%01000000
-menuFlag_line1:				.db #%00100000
-menuFlag_line2:				.db #%00010000
-menuFlag_line3:				.db #%00001000
+menuFlag_blink:							.db %10000000
+menuFlag_indicator:					.db %01000000
+menuFlag_line1:							.db %00100000
+menuFlag_line2:							.db %00010000
+menuFlag_line3:							.db %00001000
 
 
 leftNyble:					.db #$F0

@@ -9,18 +9,26 @@ state_initializeCoolDown:
 
 	JSR calculateHeat
 
-	; -----
+	LDA #$00
+	STA list1+0
 
-
-	LDA #$15
-	STA gameState
-	RTS
+	JSR pullAndBuildStateStack
+	.db 2			; 2 items
+	.db $15
+	.db $16
+	; built in RTS
 
 ; -------------------------------------------------
 ; game state 15: resolve cool down
 ; -------------------------------------------------
 state_resolveCoolDown:
+	; animation here
+	LDA list1+0
+	CMP #$E0
+	BNE +continue
+	JMP pullState
 
-	LDA #$16						; show results
-	STA gameState
++continue:
+	INC list1+0
+
 	RTS

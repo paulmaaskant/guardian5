@@ -3,6 +3,7 @@
 ; pppp_FNL - (ffffffff) - xxxxxxxx - sprite pattern (* p)
 
 ; pppp = number of patterns in row
+; H = 1, not show if position is obscured
 ; F = 1, optional flip bit byte included
 ; N = 1, move one row down
 ; L = 1, last row
@@ -10,20 +11,23 @@
 ; xxxxxxxx = X offset from center vertical axis
 
 
-; m1 down diag left column
+; m1 down diag left column (stationary)
 O1F00:
 	.db #%00010000, #%11111100, #$82
 	.db #%00010010, #%11111100, #$92
-	.db #%00010011, #%11111100, #$84
-; m1 down diag right column
+	.db #%00011011, #%11111100, #$84
+
+; m1 down diag right column (stationary)
 O1F01:
 	.db #%00010000, #%00000100, #$83
 	.db #%00010010, #%00000100, #$93
-	.db #%00010011, #%00000001, #$84
+	.db #%00011011, #%00000001, #$84
+
 ; m1 down diag left column body
 O1F03:
 	.db #%00010000, #%11111100, #$82
 	.db #%00010011, #%11111100, #$92
+
 ; m1 down diag right column body frame 1
 O1F04:
 	.db #%00010000, #%00000100, #$83
@@ -41,7 +45,7 @@ O1F06:
 O1F07:
 	.db #%00010000, #%11111100, #$A2
 	.db #%00010010, #%11111111, #$B2
-	.db #%00010011, #%11111110, #$85
+	.db #%00011011, #%11111110, #$85
 ; m1 up diag right column body
 O1F08:
 	.db #%00010000, #%00000100, #$A3
@@ -60,17 +64,21 @@ O1F0B:
 	.db #%00010000, #%11111100, #$A2
 	.db #%00010011, #%11111110, #$56
 ; m1 down body
-O1F0C:
+
+O1F0C:  ; body front
 	.db #%00110110, #$10, #%11111000, #$80, #$81, #$80
 	.db #%00100111, #$04, #%11111100, #$90, #$90
-O1F0D:
-	.db #%00100111, #$04, #%11111100, #$91, #$91
+
+O1F0D:	; legs front
+	.db #%00101111, #$04, #%11111100, #$91, #$91
+
 ; m1 up body
 O1F0E:
 	.db #%00110110, #$10, #%11111000, #$A0, #$A1, #$A0
 	.db #%00100111, #$04, #%11111100, #$B0, #$B0
+
 O1F0F:
-	.db #%00100111, #$04, #%11111100, #$B1, #$B1
+	.db #%00101111, #$04, #%11111100, #$B1, #$B1
 
 
 ; m1 down diag front leg
@@ -136,31 +144,40 @@ CUR1	.db #%00010001, #$00, #$30
 CUR2	.db #%00010001, #$00, #$21
 CUR3	.db #%00010001, #$00, #$32
 
+CUR4	.db #%00100111, #$04, #%11111100, #$25, #$25
 
-CUR5	.db #%00100100, #%00000100, #%11111100, #$C0, #$C4
-		.db #%00100111, #%00001110, #%11111100, #$C4, #$C0
-CUR6	.db #%00100100, #%00000100, #%11111100, #$C1, #$C3
-		.db #%00100111, #%00001110, #%11111100, #$C3, #$C1
-CUR7	.db #%00100100, #%00000100, #%11111100, #$C2, #$C2
-		.db #%00100111, #%00001110, #%11111100, #$C2, #$C2
-CUR8	.db #%00100100, #%00000100, #%11111100, #$C3, #$C1
-		.db #%00100111, #%00001110, #%11111100, #$C1, #$C3
+CUR5 	.db #%00110110, #$14, #%11111100, $25, $25, $24
+			.db #%00110111, #$00, #%11111001, $00, $35, $35
 
-CUR9	.db #%00100001, #%11111011, #$31, #$0A, #$31, #$0B
+CUR9	; hit percentage
+	.db #%00100001, #%11111011, #$31, #$0A, #$31, #$0B
 
 
-FIR0
+
+
+EFF0	; explosion frame 1
 	.db #%00100110, #$0E, #%11111100, #$22, #$22
 	.db #%00100111, #$04, #%11111100, #$22, #$22
-
-FIR1	.db #%00010001, #$00, #$E3
-FIR2	.db #%00010001, #$00, #$F3
-FIR3	.db #%00010001, #$00, #$23
-
-FIR4
+EFF4  ; explosion frame 2
 	.db #%00100110, #$0E, #%11111100, #$33, #$33
 	.db #%00100111, #$04, #%11111100, #$33, #$33
 
+EFF1
+	.db #%00010001, #$00, #$E3
+EFF2
+	.db #%00010001, #$00, #$F3
+EFF3
+	.db #%00010001, #$00, #$23
+EFF5
+	.db #%00010001, #$00, #$34
+
+; flush effect for cooldown
+EFF6
+	.db #%00010001, #$00, #$34
+EFF7
+	.db #%00010001, #$00, #$34
+EFF8
+	.db #%00010001, #$00, #$34
 
 
 
@@ -189,9 +206,10 @@ FIR4
 ; Mech 1 animation frames
 ; -------------------------------------
 
-; mech 1 standing (diag down)
-OS1F00	.db #%00100000
-		.db #$F3
+; mech 1 standing ()
+OS1F00
+		.db #%00100000
+		.db #$F3				; -13
 		.dw O1F01
 		.db #%10100000
 		.db #$F0
@@ -297,7 +315,8 @@ OS1F08	.db #%00100000
 		.dw W1F08
 
 ; mech 1 standing (diag up)
-OS1F09	.db #%00100000
+OS1F09
+		.db #%00100000
 		.db #$F0
 		.dw O1F06
 		.db #%10100000
@@ -410,6 +429,7 @@ OS1F12	.db #%00100000
 		.db #%10100000
 		.db #$FA
 		.dw O1F0D
+
 ; mech 1 walking (down) 01
 OS1F13	.db #%00100000
 		.db #$EB
@@ -610,35 +630,38 @@ CS20:	.db #%10010000
 CS21:	.db #%10010000
 		.dw CLR0
 
+CS22:
+	.db #%10111000
+	.db #$F8
+	.dw CUR4
 
-CS22:	.db #%10000000
-		.dw CUR5
-CS23:	.db #%10000000
-		.dw CUR6
-CS24:	.db #%10000000
-		.dw CUR7
-CS25:	.db #%10000000
-		.dw CUR8
+CS23:
+	.db #%10111000
+	.db #$F8
+	.dw CUR5
 
-CS26:	.db #%10110000
+CS24:	.db #%10110000
 		.db #$E0
 		.dw CUR9
 
 
-FR00:		.db #%10111000
+EF00:		.db #%10111000
 				.db #$F4
-        .dw FIR0
-FR01:		.db #%10011000
-        .dw FIR1
-FR02:   .db #%10011000
+        .dw EFF0
+EF01:		.db #%10011000
+        .dw EFF1
+EF02:   .db #%10011000
 				.dw CLR0
-FR03:   .db #%10011000
-        .dw FIR2
-FR04:   .db #%10011000
-        .dw FIR3
-FR05:		.db #%10111000
+EF03:   .db #%10011000
+        .dw EFF2
+EF04:   .db #%10011000
+        .dw EFF3
+EF05:		.db #%10111000
 				.db #$F4
-        .dw FIR4
+        .dw EFF4
+EF06:		.db #%10010000
+				;.db #$F8
+        .dw EFF5
 
 ; -----------------------------------------------
 ; animation cycles
@@ -666,41 +689,45 @@ ANIM00:	.db #$80, #$08
 		.dw CS02
 		.dw CS01
 
-ANIM01:	.db #$80, #$08
-		.dw CS10
-		.dw CS11
-		.dw CS12
-		.dw CS13
-		.dw CS14
-		.dw CS13
-		.dw CS12
-		.dw CS11
+ANIM01:
+	.db #$80, #$08
+	.dw CS10
+	.dw CS11
+	.dw CS12
+	.dw CS13
+	.dw CS14
+	.dw CS13
+	.dw CS12
+	.dw CS11
 
-ANIM02:	.db #$20, #$20
-		.dw CS20
-		.dw CS21
+ANIM02:
+	.db $20, $20
+	.dw CS20
+	.dw CS21
 
-ANIM03:	.db #$40, #$10
-		.dw CS22
-		.dw CS23
-		.dw CS24
-		.dw CS25
+ANIM03:
+	.db $10, $40
+	.dw CS22
 
-ANIM04:	.db #$40, #$10
-		.dw FR01
-		.dw FR02
-		.dw FR03
-		.dw FR02
+ANIM04:
+	.db $10, $40
+	.dw CS23
 
-ANIM05:	.db #$20, #$06
-		.dw FR00
-		.dw FR05
+ANIM05:
+	.db $20, $06
+	.dw EF00
+	.dw EF05
 
-ANIM06	.db #$10, #$10
-		.dw FR04
+ANIM06
+	.db $10, $10
+	.dw EF04
 
 ANIM07	.db #$10, #$40
-		.dw CS26
+	.dw CS24
+
+ANIM08
+	.db $10, $40
+	.dw EF06
 
 ; OS1F00 diag down
 ; OS1F09 diag up
@@ -716,9 +743,11 @@ ANIM18:
 		.dw OS1F09
 		.dw OS1F00
 
-ANIM10	.db #$10, #$20
+ANIM10:
+		.db #$10, #$20
 		.dw OS1F00
-ANIM11	.db #$80, #$04
+ANIM11
+	.db #$80, #$04
 		.dw OS1F01
 		.dw OS1F02
 		.dw OS1F03
@@ -767,12 +796,13 @@ animationL:
 		.db #> ANIM00			; 00 cursor
 		.db #> ANIM01			; 01 active unit
 		.db #> ANIM02			; 02 blocked node (LOS)
-		.db #> ANIM03			; 03 target cursor
-		.db #> ANIM04			; 04 gunfire
+		.db #> ANIM03			; 03 obscure mask (small)
+		.db #> ANIM04			; 04 obscure mask (large)
 		.db #> ANIM05			; 05 explosion
-		.db #> ANIM06			; 06 laser
-		.db #> ANIM07			; 07 hostile target cursor
-		.dsb 8
+		.db #> ANIM06			; 06 gun bullets
+		.db #> ANIM07			; 07 hit percentage
+		.db #> ANIM08			; 08 shield (close combat miss)
+		.dsb 7
 		.db #> ANIM10			; ramulen diag down still
 		.db #> ANIM11			; ramulen diag down walking
 		.db #> ANIM12			; ramulen diag up still
@@ -792,7 +822,8 @@ animationH:
 		.db #< ANIM05
 		.db #< ANIM06
 		.db #< ANIM07
-		.dsb 8
+		.db #< ANIM08
+		.dsb 7
 		.db #< ANIM10
 		.db #< ANIM11
 		.db #< ANIM12
@@ -802,292 +833,3 @@ animationH:
 		.db #< ANIM16
 		.db #< ANIM17
 		.db #< ANIM18
-
-
-
-
-
-
-
-; -----------------------------------------------
-; load sprite frame
-;
-; IN 		pointer1
-; IN 		par1 X draw position
-; IN 		par2 Y draw position
-; IN 		par3 sprite address
-; IN 		par4 b7, b6 -> mirror
-; IN 		par4 b0 -> palette switch
-;
-; LOC		locVar1 X pixel position
-; LOC		locVar2 Y rows (down from par1)
-; LOC		locVar3 flip bits for current row
-; LOC		locVar4 counter (no of patterns in row)
-;
-; OUT		$02XX
-; pppp_FNL - (ffffffff) - xxxxxxxx - sprite pattern (* p)
-; ------------------------------------------------
-loadSpriteFrame:
-	LDY #$00
-	STY	locVar2
-	STY locVar3
--nextRow:
-	LDA (pointer1), Y
-	LSR					; L into carry
-	PHP					; carry flag 1 = last row
-+continue:
-	LSR					; N into carry move one row down?
-	BCC +continue		; no -> continue
-	INC locVar2 		; yes -> increase row count
-+continue:
-	LSR					; F into carry flip bits ?
-	BCC	+continue		; no -> continue
-	PHA
-	INY					; yes -> get flip bits
-	LDA (pointer1), Y	; flip bits
-	STA locVar3
-	PLA
-+continue:
-	LSR					; not used
-	STA locVar4			; locVar4 := no. of sprites in current row
-	INY
-	LDA (pointer1), Y	; x offset
-	BIT par4
-	BVC +continue
-	EOR #$FF			; negate offset in case sprite list is mirrored
-	SEC					;
-	ADC #$00			;
-+continue:
-	SEC
-	SBC #$04			; default offset
-	CLC
-	ADC par1			;
-	STA locVar1			; x write pos
--nextSprite:
-	DEC locVar4
-	BMI +prepNextRow
-	LDA par3
-	ASL
-	ASL
-	TAX
-	LDA locVar2								; row
-	ASL
-	ASL
-	ASL										; x8
-	ADC par2
-	STA $0200, X							; sprite Y pos
-	INY
-
-	LDA (pointer1), Y						; yes
-	BNE +next								; pattern 00 means -> no sprite
-	DEC par3								; decrement sprite index so that next sprite overwrites this one
-+next:
-	CMP #$31								; pattern 31 means -> variable
-	BNE +next
-
-	INY
-	TYA
-	PHA
-
-	LDA (pointer1), Y
-	TAY
-	LDA list3, Y
-	STA $0201, X							; pattern
-
-	PLA
-	TAY
-	JMP +variable
-	; retrieve variable
-+next:
-	STA $0201, X							; pattern
-+variable:
-	LDA #$00
-	LSR locVar3								; shift flip bit to A
-	ROR A
-	LSR locVar3								; shift second flip bit to A
-	ROR A 									; leaves CLC
-	EOR par4								; set pallette and toggle flips
-	STA $0202, X							; set flip bits (b7,6)
-
-	LDA locVar1
-	STA $0203, X 							; sprite X pos
-	LDA #$08
-	BIT par4
-	BVC +continue
-	EOR #$FF
-	SEC
-	ADC #$00
-+continue:
-	ADC locVar1								; guarantee CLC
-	STA locVar1
-	INC par3
-	JMP -nextSprite
-+prepNextRow:
-	INY
-	PLP
-	BCS +done
-	JMP -nextRow
-+done:
-	RTS
-
-; -----------------------------------------------
-; load sprite meta frame
-;
-; IN 		pointer2
-; IN 		par3 sprite address
-; IN 		par4 (b7, b6) mirror (only b6 implemented), (b0) palette switch
-; LOC		pointer2
-; LOC		locVar5
-;
-; OUT		par1 X draw position
-; OUT 		par2 Y draw position
-; OUT 		par3 address
-; calls sprite frame
-; ------------------------------------------------
-loadSpriteMetaFrame:
-	LDA par4					; take par4
-	AND #%11000001				; keep mirror bits and 1 palette intact and clear all else
-	STA locVar5					; shadow copy of par4
-
-	LDY #$00
--nextSpriteFrame:
-	LDA currentObjectXPos		; reset X
-	STA par1
-	LDA currentObjectYPos		; reset Y
-	STA par2
-
-	LDA (pointer2), Y			; A is 'LXYpp?MM'
-	ASL							; set carry
-	PHP							; L(ast frame) in carry, save for later
-	ASL
-	BCC	+noX					; X byte present?
-	PHA							; save control byte for later
-	INY
-	LDA (pointer2), Y			; read the X byte
-	CLC
-	ADC currentObjectXPos
-	STA par1
-	PLA							; restore the control byte
-+noX:
-	ASL							; Y into carry
-	BCC +noY					; Y byte present?
-	PHA							; save the control byte
-	INY
-	LDA (pointer2), Y			; read the Y byte
-	CLC
-	ADC currentObjectYPos
-	STA par2
-	PLA
-+noY:							; move the pallette bits to b1 and b0
-	CLC							; 'pp?MM000' Carry = 0
-	ROL							; 'p?MM0000, Carry = p
-	ROL							; '?MM0000p, Carry = p
-	PHP
-	ROL							; 'MM0000pp, Carry = ?
-	EOR locVar5					; apply mirror flips and palette bits
-	PLP							; EOR, through trick with carry & ADC
-	BCC +
-	ORA #$01					; last palette bit is ORA instead of EOR 11
-+	STA par4
-	INY
-	LDA (pointer2), Y			; sprite data address
-	STA pointer1+0
-	INY
-	LDA (pointer2), Y			; sprite data address
-	STA pointer1+1
-	TYA							; save Y
-	PHA							; on stack
-	JSR loadSpriteFrame
-	PLA							; restore Y
-	TAY							; from stack
-	INY
-	LDA locVar5
-	STA par4					; restore par4 to original value for next sprite frame
-	PLP
-	BCC -nextSpriteFrame
-	RTS
-
-
-; -----------------------------------------------
-; load sprite meta frame
-; select the meta frame to show in the current animation cycle, based on the animation frame count
-;
-; byte 1 - ffff.????, number of meta frames in animation & reservation for flags (not implemented)
-; byte 2 - iiii.iiii, interval between frames (number of NMI's)
-; byte 3&4 - meta frame
-; repeat
-;
-; -----------------------------------------------
-loadAnimationFrame:
-	LDA par3
-	PHA
-	LDA par4
-	PHA
-
-	LDA animationH, Y
-	STA pointer1
-	LDA animationL, Y
-	STA pointer1+1
-
-	LDY #$00
-	LDA (pointer1), Y
-	LSR
-	LSR
-	LSR
-	LSR
-	PHA								; last meta frame # in the sequence
-
-	LDA #$00
-	STA par1						; N hi
-	LDA currentObjectFrameCount
-	STA par2						; N lo
-	INY
-	LDA (pointer1), Y				; D
-	JSR divide						; frame count (N) / interval  (D) = current meta frame (Q)F
-	PLA								; compare no of meta frames to
-	CMP par4						; current meta frame #
-	BNE +continue
-	LDA #$00
-	STA currentObjectFrameCount		; reset to start of animation
-	STA par4						; reset to start of animation
-+continue:
-	LDA par4
-	ASL								; * 2 because each address takes 2 bytes
-	TAY
-	INY
-	INY								; add 2 to skip control bytes
-
-	LDA (pointer1), Y
-	STA pointer2+0
-	INY
-	LDA (pointer1), Y
-	STA pointer2+1
-
-	PLA
-	STA par4
-	PLA
-	STA par3
-
-	JMP loadSpriteMetaFrame			; tail chain!
-
-;------------------------------------------
-; clear sprites v2
-; IN 	par3 = from sprite (0-63)
-; IN 	A = through sprite (0-63)
-; LOC	X, Y
-;-----------------------------------------
-clearSprites:
-	TAY
--loop:
-	CPY par3
-	BCC +done		; locvar < par3
-	ASL
-	ASL
-	TAX
-	LDA #$FF
-	STA $0200, X
-	DEY
-	TYA
-	JMP -loop
-+done:
-	RTS

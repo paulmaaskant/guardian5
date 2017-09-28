@@ -24,22 +24,21 @@ state_showResults:
 	INX										; otherwise try next
 	CPX #$06
 	BNE -									; all dialogs done
-	LDA #$08							; next turn
-	STA gameState
-	RTS
+	JMP pullState
 
 +continue:
 	BPL +startDialog																															; any opcode with b7=1 triggers a flash
 	LDA #$00																																			; opcode processed
 	STA list3+3, X
-	LDA #$16																																			; --- set light FLASH parameters ---
-	STA list1+0																																		; return to this game state when done
-	LDA #$00
-	STA list1+1																																		; flash toggle
-	LDA #$1C																																			; game state "light flash"
-	STA gameState																																	; next gamestate
+
 	LDA targetObjectTypeAndNumber
-	JMP deleteObject																															; tail chain
+	JSR deleteObject																															; tail chain
+
+	JSR buildStateStack
+	.db $04								; # stack items
+	.db $0D, 2						; change brightness 2: flash out
+	.db $0D, 3						; change brightness 3: flash out
+	; built in RTS
 
 +startDialog:
 	TAY
@@ -61,11 +60,9 @@ state_showResults:
 	STA list1+5						; # tiles: last pos
 	LDA #$00
 	STA list1+6						; stream on
-	LDA #$16
-	STA list1+8						; goal state: show results
+
 	LDA #$09
-	STA gameState					; game state
-	RTS
+	JMP pushState
 
 streamHi:
 	.db #< resultTargetHit									; 1

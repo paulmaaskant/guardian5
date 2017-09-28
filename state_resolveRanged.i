@@ -4,6 +4,7 @@
 state_initializeRanged:
 	LDY #sGunFire
 	JSR soundLoad
+
 	JSR calculateAttack
 
 	LDA #$06										; switch on controlled effects
@@ -97,10 +98,13 @@ state_initializeRanged:
 	LDY #$06						; "opening fire"
 	JSR writeToActionMenu
 
-	LDA #$13						; next game state
-	STA gameState					; "resolve ranged"
+	JSR pullAndBuildStateStack
+	.db $02							; 2 states
+	.db $13 						; resolve
+	.db $16							; show results
 
-	RTS
+	; built in RTS
+
 
 
 
@@ -125,10 +129,6 @@ state_initializeRanged:
 ; list1+19, damage stat
 ; -----------------------------------------------
 state_resolveRanged:
-	;LDA events						; update sprites
-	;ORA event_updateSprites			; set flag
-	;STA events
-
 	; ------------------------------------------------
 	; menu (tile) updates
 	; ------------------------------------------------
@@ -201,8 +201,7 @@ state_resolveRanged:
 	LDA #$00						; switch off all blinking
 	STA menuFlags
 
-	LDA #$16						; game state: show results
-	STA gameState
+	JMP pullState
 
 +stillRunning:
 	CLC
@@ -254,15 +253,15 @@ setEffect:
 	STA list1+10		 	; temp store Y coordinate
 
 	PLA						; effect #
-	ASL
-	ASL
+;	ASL
+;	ASL
 	TAX
 	PLA						; animation #
 
-	STA currentEffects+2, X
-	LDA list1+8
 	STA currentEffects+0, X
+	LDA list1+8
+	STA currentEffects+6, X
 	LDA list1+10
-	STA currentEffects+1, X
+	STA currentEffects+12, X
 
 	RTS

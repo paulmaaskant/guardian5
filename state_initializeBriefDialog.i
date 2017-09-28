@@ -12,18 +12,10 @@ state_initializeBriefDialog:
   STA list1+1					; start address lo
   STA list1+3
 
-  LDA #$05
-  STA list1+4					; # tiles: offset
   LDA #$1C
   STA list1+5					; # tiles: last pos
-
   LDA #$00
   STA list1+6					; stream on
 
-  LDA #$22
-  STA list1+8					; game state once stream is over: title screen
-
   LDA #$09
-  STA gameState
-
-  RTS
+  JMP replaceState

@@ -100,10 +100,14 @@ state_selectAction:
 +next:
 	LSR 									; start
 	BCC +next
-	LDA sysFlags					; TEST
-	EOR sysFlag_splitScreen			;
-	STA sysFlags					;
-	JMP +setTimer
+
+	JSR buildStateStack
+	.db 6
+	.db $20, 0					; load menu backgorund 0
+	.db $23
+	.db $01, 10					; load stream 10: game paused
+	.db $25
+	; RTS built in
 
 +next:
 	LSR 									; select
@@ -162,13 +166,19 @@ state_selectAction:
 	EOR sysFlag_lock					; yes -> confirm action,
 	STA sysFlags							; unlock and move to next game state
 
+
+
 	; --- action confirmed ---
 	LDX selectedAction
 	LDA actionList, X
 	ASL
 	TAY
 	LDA actionTable, Y
-	STA gameState					; set next game state
+
+	JSR replaceState
+
+;JSR pullState
+	;JSR pushState
 
 	LDY #sConfirm
 	JMP soundLoad					; tail chain
@@ -247,13 +257,14 @@ state_selectAction:
 	LDA #$01
 	STA selectedAction
 
-+toggleDone:																																		; redo checks for newly selected action
-	LDA #$00																																			; clear action message
-	STA actionMessage																															;
++toggleDone:																																		; redo checks for newly selected action on other unit																														;
 	LDA targetObjectTypeAndNumber																									; cursor is on unit?
 	BEQ +heatCost																																	; no -> heat cost
 	CMP activeObjectTypeAndNumber																									; yes -> on self?
 	BEQ +heatCost																																	; no -> heat cost
+
+	LDA #$00																																			; clear action message
+	STA actionMessage
 	LDA effects																																		; clear possible LOS block effect
 	AND #%11000000																																; cursor and active unit marker stay on, rest turned off
 	STA effects

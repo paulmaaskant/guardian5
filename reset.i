@@ -63,8 +63,26 @@ RESET:
 	LDA #%11001000
 	STA seed+1
 
-	LDA #$01																; game state init story screen
-	STA gameState
+	; sbr buildStateStack requies a return address
+	LDA #> +returnPoint
+	PHA
+	LDA #< +returnPoint
+	PHA
+
+	JSR buildStateStack
+	.db $0E								; # stack items
+	.db $00, 1						; load screen 01: story background
+	.db $0D, 1						; change brightness 1: fade in
+	.db $01, 0						; load stream 00: story text
+	.db $0D, 0						; change brightness 0: fade out
+	.db $00, 0						; load screen 00: title screen
+	.db $1E								; load title menu
+	.db $0D, 1						; change brightness 1: fade in
+	.db $03								; title screen (wait for user)
+	; built in RTS
+
++returnPoint:
+	NOP
 
 	LDA #$99																; tile stack empty position
 	STA stackPointer2	;
@@ -85,23 +103,28 @@ RESET:
 	LDA #$01			; page 1: byte streams
 	STA $A000			; in switch bank 1
 
+
+
 	LDA #$00			;
 	STA $B000			; into CHR slot 0
 	LDA #$01
-	STA $B002
+	STA $B001
 	LDA #$02
 	STA $C000
 	LDA #$03
-	STA $C002
+	STA $C001
 
 	LDA #$04			; bank 4
 	STA $D000			; into CHR slot 4
+
 	LDA #$05
-	STA $D002
+	STA $D001
+
 	LDA #$06
 	STA $E000
+
 	LDA #$07
-	STA $E002
+	STA $E001
 
 	; --- set level 1 palettes ---
 	LDY #$07
@@ -116,6 +139,7 @@ RESET:
 	STA currentTransparant
 
 	LDA #$C0
+	;LDA 0
 	JSR updatePalette
 
 	JSR soundInitialize
