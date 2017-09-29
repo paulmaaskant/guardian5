@@ -7,6 +7,9 @@ state_initializeMap:
 	LDA #> levelOne
 	STA bytePointer+1
 
+	LDA #$18			; pallete 1 for map 1
+	STA currentPalettes
+
 	; --- map collision data ---
 	LDX #$00
 

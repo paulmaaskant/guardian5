@@ -223,6 +223,15 @@
 	currentEffects				.dsb 30
 
 	; indexes of the current palettes
+	; 00 tiles: map 1
+	; 01 tiles: map 2
+	; 02 tiles: pilot face
+	; 03 tiles: status bar & menu
+	; 04 sprites: friendly units
+	; 05 sprite: hostile units
+	; 06 sprite: cursor
+	; 07 sprite: effects
+
 	currentPalettes				.dsb 8
 	currentTransparant		.dsb 1
 
@@ -715,7 +724,9 @@ gameStateJumpTable:
 ; 08 pilot 0
 ; 09 pilot 1
 ; ...
-; 17 pilot 15
+; 17 (23) pilot 15
+; 18 (24) map 1-1
+
 
 paletteColor1:
 	.db $10, $09, $10, $08, $08, $06, $10, $30
@@ -723,18 +734,21 @@ paletteColor1:
 	.dsb 6
 	.db $08, $15
 	.dsb 6
+	.db $1B
 paletteColor2:
 	.db $00, $18, $00, $18, $18, $16, $1B, $2D
 	.db $18, $28
 	.dsb 6
 	.db $15, $30
 	.dsb 6
+	.db $0A
 paletteColor3:
 	.db $30, $37, $2B, $37, $28, $36, $2B, $37
 	.db $37, $30
 	.dsb 6
 	.db $35, $35
 	.dsb 6
+	.db $3B
 identity:
 	.db $00, $01, $02, $03, $04, $05, $06, $07, $08, $09, $0A, $0B, $0C, $0D, $0E, $0F
 	.db $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $1A, $1B, $1C, $1D, $1E, $1F
