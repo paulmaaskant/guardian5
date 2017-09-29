@@ -4,17 +4,15 @@
 ; - miss animations for gun fire
 ; - shutdown animation
 ; - cooldown animation
-; - free spin when attacked in close combat
+; - auto change of facing direction when attacked in close combat
 ;	- in game menu
 ;
 ; PARKING LOT
 ; - obscured units (use settable effect sprites instead of embedded, so that more than one mask can be shown)
 ; - obscured units (redesign map to not have transparant pixels on mask positions)
-; - attribute table scrolling (switch between two palettets)
+; - attribute table scrolling (two palettets)
 ; - show results state: decrement heat sinks and armor when results are displayed (new opcode?)
 ; - events (like mission fail / accomplished conditions and in game dialog triggers)
-;
-;
 
 
 ;; 1 - iNes header
@@ -63,7 +61,7 @@
 	cameraXDest								.dsw 1	; upper left of camera in relation to background tiles
 	cameraYStatus							.dsb 1
 
-	oamVar										.dsb 10 ; use for sprite operations
+	oamVar										.dsb 10 ; use for sprite operations, not used yet
 
 	; ---------------------------------
 	; The following are variables that have a life span that goes across frames

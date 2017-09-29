@@ -172,11 +172,11 @@ EFF5:
 
 ; flush effect for cooldown
 EFF6
-	.db #%00010001, #$00, #$34
+	.db #%00010001, #$00, #$26
 EFF7
-	.db #%00010001, #$00, #$34
+	.db #%00010001, #$00, #$36
 EFF8
-	.db #%00010001, #$00, #$34
+	.db #%00010001, #$00, #$27
 
 
 
@@ -667,14 +667,15 @@ EF05:
 EF06:
 	.db #%10010000
   .dw EFF5
+
 EF07:			; flush
-	.db #%10010000
+	.db #%10011000
 	.dw EFF6
 EF08:			; flush
-	.db #%10010000
+	.db #%10011000
 	.dw EFF7
 EF09:			; flush
-	.db #%10010000
+	.db #%10011000
 	.dw EFF8
 
 
@@ -739,15 +740,22 @@ ANIM08:
 	.dw EF06
 
 ANIM09:
-	.db $30, $20
+	.db $30, $04
 	.dw EF07
 	.dw EF08
 	.dw EF09
 
-; OS1F00 diag down
-; OS1F09 diag up
-; OS1F12 down
-; OS1F1B up
+ANIM0A:
+
+ANIM0B:
+
+ANIM0C:
+
+ANIM0D:
+
+ANIM0E:
+
+ANIM0F:
 
 ANIM10:
 		.db #$10, #$20
@@ -813,45 +821,45 @@ ANIM18:
 ; -----------------------------------------------
 
 animationL:
-		.db #> ANIM00			; 00 cursor
-		.db #> ANIM01			; 01 active unit
-		.db #> ANIM02			; 02 blocked node (LOS)
-		.db #> ANIM03			; 03 obscure mask (small)
-		.db #> ANIM04			; 04 obscure mask (large)
-		.db #> ANIM05			; 05 explosion
-		.db #> ANIM06			; 06 gun bullets
-		.db #> ANIM07			; 07 hit percentage
-		.db #> ANIM08			; 08 shield (close combat miss)
-		.db #> ANIM09			; 09 cooldown flush
-		.dsb 6
-		.db #> ANIM10			; ramulen diag down still
-		.db #> ANIM11			; ramulen diag down walking
-		.db #> ANIM12			; ramulen diag up still
-		.db #> ANIM13			; ramulen diag up walking
-		.db #> ANIM14			; ramulen down still
-		.db #> ANIM15			; ramulen down walking
-		.db #> ANIM16			; ramulen up still
-		.db #> ANIM17			; ramulen up walking
-		.db #> ANIM18			; ramulen rotate
+	.db #> ANIM00			; 00 cursor
+	.db #> ANIM01			; 01 active unit
+	.db #> ANIM02			; 02 blocked node (LOS)
+	.db #> ANIM03			; 03 obscure mask (small)
+	.db #> ANIM04			; 04 obscure mask (large)
+	.db #> ANIM05			; 05 explosion
+	.db #> ANIM06			; 06 gun bullets
+	.db #> ANIM07			; 07 hit percentage
+	.db #> ANIM08			; 08 shield (close combat miss)
+	.db #> ANIM09			; 09 cooldown flush
+	.dsb 6
+	.db #> ANIM10			; ramulen diag down still
+	.db #> ANIM11			; ramulen diag down walking
+	.db #> ANIM12			; ramulen diag up still
+	.db #> ANIM13			; ramulen diag up walking
+	.db #> ANIM14			; ramulen down still
+	.db #> ANIM15			; ramulen down walking
+	.db #> ANIM16			; ramulen up still
+	.db #> ANIM17			; ramulen up walking
+	.db #> ANIM18			; ramulen rotate
 
 animationH:
-		.db #< ANIM00
-		.db #< ANIM01
-		.db #< ANIM02
-		.db #< ANIM03
-		.db #< ANIM04
-		.db #< ANIM05
-		.db #< ANIM06
-		.db #< ANIM07
-		.db #< ANIM08
-		.db #< ANIM09
-		.dsb 6
-		.db #< ANIM10
-		.db #< ANIM11
-		.db #< ANIM12
-		.db #< ANIM13
-		.db #< ANIM14
-		.db #< ANIM15
-		.db #< ANIM16
-		.db #< ANIM17
-		.db #< ANIM18
+	.db #< ANIM00
+	.db #< ANIM01
+	.db #< ANIM02
+	.db #< ANIM03
+	.db #< ANIM04
+	.db #< ANIM05
+	.db #< ANIM06
+	.db #< ANIM07
+	.db #< ANIM08
+	.db #< ANIM09
+	.dsb 6
+	.db #< ANIM10
+	.db #< ANIM11
+	.db #< ANIM12
+	.db #< ANIM13
+	.db #< ANIM14
+	.db #< ANIM15
+	.db #< ANIM16
+	.db #< ANIM17
+	.db #< ANIM18
