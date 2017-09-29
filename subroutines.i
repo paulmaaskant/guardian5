@@ -523,7 +523,7 @@ writeStartMenuToBuffer:
 	PHA
 
 +done:
-	LDA #$6A
+	LDA #$69
 	PHA
 	LDA #$26
 	PHA
@@ -554,7 +554,7 @@ writeStartMenuToBuffer:
 	PHA
 
 +done:
-	LDA #$8A
+	LDA #$89
 	PHA
 	LDA #$26
 	PHA
@@ -585,7 +585,7 @@ writeStartMenuToBuffer:
 	PHA
 +done:
 
-	LDA #$AA
+	LDA #$A9
 	PHA
 	LDA #$26
 	PHA

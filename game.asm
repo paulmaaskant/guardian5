@@ -693,7 +693,7 @@ gameStateJumpTable:
 	.include sbr_findPath.i
 	.include sbr_soundLoad.i
 	.include sbr_updatePalette.i
-
+	.include sbr_clearCurrentEffects.i
 	.include sbr_loadSpriteFrame.i
 	.include sbr_loadSpriteMetaFrame.i
 	.include sbr_loadAnimationFrame.i

@@ -33,10 +33,10 @@ titleScreen:
 	.db $FF, $1D, $58, $57, $0F
 	.db $FF, $1D, $68, $67, $66
 	.db $FF, $16
-	.db $45, $43, $42, $44, $65, $60, $0F, $42, $42, $42, $61, $60, $63, $62, $41, $40; RAMULEN5
-	.db $FF, $10
-	.db $76, $64, $55, $54, $75, $74, $65, $72, $53, $52,$71, $70 , $73, $70,  $51, $50; RAMULEN5
-	.db $FF, $A8
+	.db $45, $43, $42, $44, $61, $62, $42, $61, $60, $61, $60, $61, $62, $42, $42, $65, $62	; GUARDIAN5
+	.db $FF, $0F
+	.db $76, $64, $55, $54, $73, $70, $51, $53, $72, $71, $70, $73, $70 , $53, $52, $53, $74;
+	.db $FF, $A7
 	.db $FF, $00			; 8 blank rows
 	; --- palettes ---
 	.db $FE, $20, $00	; 1 rows, palette
@@ -68,13 +68,13 @@ briefScreen:
 	.db $FE, $20, $AA
 
 storyStream:
-	; >RAMULEN LOG ENTRY 43639
+	; >YETHEL HQ ENTRY 43639
 	;
 	; A DARK WARLORD HAS RISEN
 	; TO POWER, BRINGING WAR
 	; TO THE COLONIES OF STAR
 	; SYSTEM J340-2
-	.db $2F, M, A, R, U, L, E, N, $0F, $17, $20, $0F, $21, $14, $1F, $1E, $21, $23, $0F, $04, $03, $06, $03, $09, $F1, $F1
+	.db $2F, Y, E, T, H, E, L, space, H, Q, space, $21, $14, $1F, $1E, $21, $23, $0F, $04, $03, $06, $03, $09, $F1, $F1
 	.db $10, $0F, $13, $10, $21, $1A, $0F, $26, $10, $21, $1B, $1E, $21, $13, $0F, $17, $10, $22, $0F, $21, $18, $22, $14, $1D, $F1
 	.db $23, $1E, $0F, $1F, $1E, $26, $14, $21, $0E, $0F, $11, $21, $18, $1D, $16, $18, $1D, $16, $0F, $26, $10, $21, $F1
 	.db $23, $1E, $0F, $23, $17, $14, $0F, $12, $1E, $1B, $1E, $1D, $18, $14, $22, $0F, $1E, $15, $0F, $22, $23, $10, $21, $F1
@@ -111,7 +111,7 @@ storyStream:
 	.db $F2	; clear & reset box
 
 	.db O, U, R, space, C, O, L, O, N, Y, space, D, E, F, E, N, C, E, space, F, O, R, C, E, lineBreak
-	.db I, N, C, L, U, D, E, S, space, F, I, V, E, space, C, L, A, S, S, space, dash, M, dash, lineBreak
+	.db I, N, C, L, U, D, E, S, space, F, I, V, E, space, C, L, A, S, S, space, dash, G, dash, lineBreak
 	.db B, I, dash, P, E, D, A, L, space, A, S, S, A, U, L, T, space, T, A, N, K, S, lineBreak
 	.db lineBreak
 	.db I, N, space, T, H, E, space, P, A, S, T, space, D, A, Y, S, comma, space, F, O, U, R, lineBreak
