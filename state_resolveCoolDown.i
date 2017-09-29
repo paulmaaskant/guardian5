@@ -24,7 +24,7 @@ state_initializeCoolDown:
 state_resolveCoolDown:
 	; animation here
 	LDA list1+0
-	CMP #$E0
+	CMP #$10
 	BNE +continue
 	JMP pullState
 

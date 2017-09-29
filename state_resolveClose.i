@@ -38,7 +38,7 @@ state_initializeCloseCombat:
 state_closeCombatAnimation:
 	LDA #$00
 	STA actionCounter
-	STA currentEffects+3
+	STA currentEffects+18
 	TAX
 
 	LDA #$05																																			; $05 hit (explosion) or $08 miss (shield)
@@ -82,14 +82,14 @@ state_closeCombatAnimation:
 	LDA currentObjectXPos
 	CLC
 	ADC list1+0
-	STA currentEffects+0
+	STA currentEffects+6
 	LDA currentObjectYPos
 	ADC list1+1
 	SBC #$08
-	STA currentEffects+1
+	STA currentEffects+12
 
 	LDA list3+22
-	STA currentEffects+2
+	STA currentEffects+0
 
 	JSR pullAndBuildStateStack
 	.db $02							; 2 states

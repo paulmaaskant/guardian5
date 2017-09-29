@@ -13,6 +13,13 @@ state_initializeRanged:
 	LDA #$00										; initialize the
 	STA list1+0									; overall animation counter
 
+	STA currentEffects+0
+	STA currentEffects+1
+	STA currentEffects+2
+	STA currentEffects+3
+	STA currentEffects+4
+	STA currentEffects+5
+
 	; --------------------------------------------------
 	; Get active / target object screen coordinates
 	; --------------------------------------------------
