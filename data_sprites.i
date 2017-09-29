@@ -137,38 +137,37 @@ W1F2E:	.db #%00100111, #$04, #%11111100, #$65, #$B1
 W1F2F:	.db #%00100111, #$04, #%11111100, #$55, #$74
 
 
-CLR0	.db #%00010001, #$00, #$00
-
-CUR0	.db #%00010001, #$00, #$20
-CUR1	.db #%00010001, #$00, #$30
-CUR2	.db #%00010001, #$00, #$21
-CUR3	.db #%00010001, #$00, #$32
-
-CUR4	.db #%00100111, #$04, #%11111100, #$25, #$25
-
-CUR5 	.db #%00110110, #$14, #%11111100, $25, $25, $24
-			.db #%00110111, #$00, #%11111001, $00, $35, $35
-
-CUR9	; hit percentage
+CLR0:
+	.db #%00010001, #$00, #$00
+CUR0:
+	.db #%00010001, #$00, #$20
+CUR1:
+	.db #%00010001, #$00, #$30
+CUR2:
+	.db #%00010001, #$00, #$21
+CUR3:
+	.db #%00010001, #$00, #$32
+CUR4:	; transparancy mask (small)
+	.db #%00100111, #$04, #%11111100, #$25, #$25
+CUR5: ; transparancy mask (large)
+	.db #%00110110, #$14, #%11111100, $25, $25, $24
+	.db #%00110111, #$00, #%11111001, $00, $35, $35
+CUR9:	; hit percentage
 	.db #%00100001, #%11111011, #$31, #$0A, #$31, #$0B
 
-
-
-
-EFF0	; explosion frame 1
+EFF0:	; explosion frame 1
 	.db #%00100110, #$0E, #%11111100, #$22, #$22
 	.db #%00100111, #$04, #%11111100, #$22, #$22
-EFF4  ; explosion frame 2
+EFF4: ; explosion frame 2
 	.db #%00100110, #$0E, #%11111100, #$33, #$33
 	.db #%00100111, #$04, #%11111100, #$33, #$33
-
-EFF1
+EFF1:
 	.db #%00010001, #$00, #$E3
-EFF2
+EFF2:
 	.db #%00010001, #$00, #$F3
-EFF3
+EFF3:
 	.db #%00010001, #$00, #$23
-EFF5
+EFF5:
 	.db #%00010001, #$00, #$34
 
 ; flush effect for cooldown
@@ -645,22 +644,39 @@ CS24:	.db #%10110000
 		.dw CUR9
 
 
-EF00:		.db #%10111000
-				.db #$F4
-        .dw EFF0
-EF01:		.db #%10011000
-        .dw EFF1
-EF02:   .db #%10011000
-				.dw CLR0
-EF03:   .db #%10011000
-        .dw EFF2
-EF04:   .db #%10011000
-        .dw EFF3
-EF05:		.db #%10111000
-				.db #$F4
-        .dw EFF4
-EF06:		.db #%10010000
-        .dw EFF5
+EF00:
+	.db #%10111000
+	.db #$F4
+  .dw EFF0
+EF01:
+	.db #%10011000
+  .dw EFF1
+EF02:
+	.db #%10011000
+	.dw CLR0
+EF03:
+	.db #%10011000
+  .dw EFF2
+EF04:
+	.db #%10011000
+  .dw EFF3
+EF05:
+	.db #%10111000
+	.db #$F4
+	.dw EFF4
+EF06:
+	.db #%10010000
+  .dw EFF5
+EF07:			; flush
+	.db #%10010000
+	.dw EFF6
+EF08:			; flush
+	.db #%10010000
+	.dw EFF7
+EF09:			; flush
+	.db #%10010000
+	.dw EFF8
+
 
 ; -----------------------------------------------
 ; animation cycles
@@ -678,16 +694,16 @@ EF06:		.db #%10010000
 ;
 ; -----------------------------------------------
 
-ANIM00:	.db #$80, #$08
-		.dw CS00
-		.dw CS01
-		.dw CS02
-		.dw CS03
-		.dw CS04
-		.dw CS03
-		.dw CS02
-		.dw CS01
-
+ANIM00:
+	.db #$80, #$08
+	.dw CS00
+	.dw CS01
+	.dw CS02
+	.dw CS03
+	.dw CS04
+	.dw CS03
+	.dw CS02
+	.dw CS01
 ANIM01:
 	.db #$80, #$08
 	.dw CS10
@@ -698,96 +714,101 @@ ANIM01:
 	.dw CS13
 	.dw CS12
 	.dw CS11
-
 ANIM02:
 	.db $20, $20
 	.dw CS20
 	.dw CS21
-
 ANIM03:
 	.db $10, $40
 	.dw CS22
-
 ANIM04:
 	.db $10, $40
 	.dw CS23
-
 ANIM05:
 	.db $20, $06
 	.dw EF00
 	.dw EF05
-
-ANIM06
+ANIM06:
 	.db $10, $10
 	.dw EF04
-
-ANIM07	.db #$10, #$40
+ANIM07:
+	.db #$10, #$40
 	.dw CS24
-
-ANIM08
+ANIM08:
 	.db $10, $40
 	.dw EF06
+
+ANIM09:
+	.db $30, $20
+	.dw EF07
+	.dw EF08
+	.dw EF09
 
 ; OS1F00 diag down
 ; OS1F09 diag up
 ; OS1F12 down
 ; OS1F1B up
 
-ANIM18:
-		.db	#$60, #$08
-		.dw OS1F12
-		.dw OS1F00
-		.dw OS1F09
-		.dw OS1F1B
-		.dw OS1F09
-		.dw OS1F00
-
 ANIM10:
 		.db #$10, #$20
 		.dw OS1F00
-ANIM11
+ANIM11:
 	.db #$80, #$04
-		.dw OS1F01
-		.dw OS1F02
-		.dw OS1F03
-		.dw OS1F04
-		.dw OS1F05
-		.dw OS1F06
-		.dw OS1F07
-		.dw OS1F08
-ANIM12	.db #$10, #$20
-		.dw OS1F09
-ANIM13	.db #$80, #$04
-		.dw OS1F0A
-		.dw OS1F0B
-		.dw OS1F0C
-		.dw OS1F0D
-		.dw OS1F0E
-		.dw OS1F0F
-		.dw OS1F10
-		.dw OS1F11
-ANIM14	.db #$10, #$20
-		.dw OS1F12
-ANIM15	.db #$80, #$04
-		.dw OS1F13
-		.dw OS1F14
-		.dw OS1F15
-		.dw OS1F16
-		.dw OS1F17
-		.dw OS1F18
-		.dw OS1F19
-		.dw OS1F1A
-ANIM16	.db #$10, #$20
-		.dw OS1F1B
-ANIM17	.db #$80, #$04
-		.dw OS1F1C
-		.dw OS1F1D
-		.dw OS1F1E
-		.dw OS1F1F
-		.dw OS1F20
-		.dw OS1F21
-		.dw OS1F22
-		.dw OS1F23
+	.dw OS1F01
+	.dw OS1F02
+	.dw OS1F03
+	.dw OS1F04
+	.dw OS1F05
+	.dw OS1F06
+	.dw OS1F07
+	.dw OS1F08
+ANIM12:
+	.db #$10, #$20
+	.dw OS1F09
+ANIM13:
+	.db #$80, #$04
+	.dw OS1F0A
+	.dw OS1F0B
+	.dw OS1F0C
+	.dw OS1F0D
+	.dw OS1F0E
+	.dw OS1F0F
+	.dw OS1F10
+	.dw OS1F11
+ANIM14:
+	.db #$10, #$20
+	.dw OS1F12
+ANIM15:
+	.db #$80, #$04
+	.dw OS1F13
+	.dw OS1F14
+	.dw OS1F15
+	.dw OS1F16
+	.dw OS1F17
+	.dw OS1F18
+	.dw OS1F19
+	.dw OS1F1A
+ANIM16:
+	.db #$10, #$20
+	.dw OS1F1B
+ANIM17:
+	.db #$80, #$04
+	.dw OS1F1C
+	.dw OS1F1D
+	.dw OS1F1E
+	.dw OS1F1F
+	.dw OS1F20
+	.dw OS1F21
+	.dw OS1F22
+	.dw OS1F23
+ANIM18:
+	.db	#$60, #$08
+	.dw OS1F12
+	.dw OS1F00
+	.dw OS1F09
+	.dw OS1F1B
+	.dw OS1F09
+	.dw OS1F00
 
 ; -----------------------------------------------
 
@@ -801,7 +822,8 @@ animationL:
 		.db #> ANIM06			; 06 gun bullets
 		.db #> ANIM07			; 07 hit percentage
 		.db #> ANIM08			; 08 shield (close combat miss)
-		.dsb 7
+		.db #> ANIM09			; 09 cooldown flush
+		.dsb 6
 		.db #> ANIM10			; ramulen diag down still
 		.db #> ANIM11			; ramulen diag down walking
 		.db #> ANIM12			; ramulen diag up still
@@ -822,7 +844,8 @@ animationH:
 		.db #< ANIM06
 		.db #< ANIM07
 		.db #< ANIM08
-		.dsb 7
+		.db #< ANIM09
+		.dsb 6
 		.db #< ANIM10
 		.db #< ANIM11
 		.db #< ANIM12
