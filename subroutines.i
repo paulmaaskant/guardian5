@@ -349,12 +349,12 @@ updateTargetMenu:
 	;---- show distance to target ---
 	LDA distanceToTarget
 	JSR toBCD
-	LDA #$13
-	STA targetMenuLine4+0
+	LDA #$3E
+	STA targetMenuLine3+3
 	LDA par2
-	STA targetMenuLine4+1
+	STA targetMenuLine3+4
 	LDA par3
-	STA targetMenuLine4+2
+	STA targetMenuLine3+5
 
 	;--- determine the target type (unit or empty node)
 	LDA targetObjectTypeAndNumber
@@ -366,18 +366,25 @@ updateTargetMenu:
 	BEQ +done
 
 	; --- target stats ---
-	LDA #$10
+	LDA #$3C
 	STA targetMenuLine1+3
 	LDA #$0F
 	STA targetMenuLine1+4
+	STA targetMenuLine2+4
 	LDA #$0B
 	STA targetMenuLine1+5
-	LDA #$1F
+	STA targetMenuLine2+5
+
+	LDA #$3D
+	STA targetMenuLine2+3
+
+
+	;LDA #$1F
 
 	BIT actionMessage					; check for invalid target
 	BMI +done							; skip power & hit
 
-	; --- armor ---
+	; --- hit points ---
 	LDA list3+12
 	STA targetMenuLine1+4
 	LDA list3+13

@@ -74,7 +74,7 @@ storyStream:
 	; TO POWER, BRINGING WAR
 	; TO THE COLONIES OF STAR
 	; SYSTEM J340-2
-	.db $2F, Y, E, T, H, E, L, space, H, Q, space, $21, $14, $1F, $1E, $21, $23, $0F, $04, $03, $06, $03, $09, $F1, $F1
+	.db $2F, R, Y, D, O, N, space, H, Q, space, $21, $14, $1F, $1E, $21, $23, $0F, $04, $03, $06, $03, $09, $F1, $F1
 	.db $10, $0F, $13, $10, $21, $1A, $0F, $26, $10, $21, $1B, $1E, $21, $13, $0F, $17, $10, $22, $0F, $21, $18, $22, $14, $1D, $F1
 	.db $23, $1E, $0F, $1F, $1E, $26, $14, $21, $0E, $0F, $11, $21, $18, $1D, $16, $18, $1D, $16, $0F, $26, $10, $21, $F1
 	.db $23, $1E, $0F, $23, $17, $14, $0F, $12, $1E, $1B, $1E, $1D, $18, $14, $22, $0F, $1E, $15, $0F, $22, $23, $10, $21, $F1
@@ -88,7 +88,7 @@ storyStream:
 	; ---
 	; LEAVING BEHIND A TRAIL
 	; OF DEATH AND DESTRUCTION
-	.db $17, $14, $21, $0F, $10, $21, $1C, $28, $0F, $1E, $15, $0F, $1C, $14, $21, $14, $1D, $10, $21, $18, $14, $22, $F1
+	.db H, E, R, space, A, R, M, Y, space, O, F, space, M, E, R, C, E, N, A, R, I, E, S, lineBreak
 	.db $18, $22, $0F, $18, $1D, $25, $10, $13, $18, $1D, $16, $0F, $1E, $1D, $14, $0F, $12, $1E, $1B, $1E, $1D, $28, $F1
 	.db $10, $15, $23, $14, $21, $0F, $23, $17, $14, $0F, $1E, $23, $17, $14, $21, $0E, $F1, $F1
 	.db $1B, $14, $10, $25, $18, $1D, $16, $0F, $11, $14, $17, $18, $1D, $13, $0F, $10, $0F, $23, $21, $10, $18, $1B, $F1
@@ -119,6 +119,12 @@ storyStream:
 	.db nextPage
 
 	.db O, N, L, Y, space, O, N, E, space, R, E, M, A, I, N, S, waitForA
+	.db endOfStream
+
+instructionStream:
+	.db T, H, I, S, space, I, S, space, A, space, T, U, R, N, dash, B, A, S, E, D, lineBreak
+	.db S, T, R, A, T, E, G, Y, space, G, A, M, E
+	.db waitForA
 	.db endOfStream
 
 brief1Stream:
@@ -165,7 +171,7 @@ resultTempStable:
 resultHeatSinksRestored:
 	.db $F2																																				; clear dialog
 	.db $FD, $00, $0F																															; X (list3+0)
-	.db	$FC, $10																																	; [HEATSINKS]
+	.db	$FC, $10																																	; [ACTION PTS]
 	.db $F1																																				; next line
 	.db $21, $14, $22, $23, $1E, $21, $14, $13																		; RESTORED
 	.db $F3																																				; A button

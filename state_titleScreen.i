@@ -105,19 +105,20 @@ state_titleScreen:
 	JMP +setTimer
 
 +next:
-	LSR									; startGame
+	LSR									; start button
 	BCS +confirm
 	LSR
 	LSR									; B
-	LSR
-	BCC +setTimer				; A button
+	LSR									; A button
+	BCC +setTimer
 
 +confirm:
 	LDA list1+1
-	BEQ +startGame
+	BEQ +startGame			; if "start game" game + start
 
-	CMP #$02
-	BNE +setTimer
+	CMP #$01
+	BEQ +instructions		; if "instructions" + start
+
 
 	JSR soundSilence
 
@@ -134,10 +135,6 @@ state_titleScreen:
 	JMP writeStartMenuToBuffer
 
 +startGame:
-
-	; FIX pass along paramter for which brief
-	; FIX pass along a paramte for which level
-
 	JSR pullAndBuildStateStack
 	.db $10							; # items
 	.db $0D, 0					; change brightness 0: fade out
@@ -151,8 +148,22 @@ state_titleScreen:
 	.db $08							; end / next turn
 	; built in RTS
 
-+done:
-	RTS
++instructions:
+JSR pullAndBuildStateStack
+	.db $10							; # items
+	.db $0D, 0					; change brightness 0: fade out
+	.db $00, 1					; load screen 1: blank screen
+	.db $0D, 1					; change brightness 1: fade in
+	.db $01, 11					; load stream 11: instructions
+	.db $0D, 0					; change brightness 0: fade out
+	.db $00, 0						; load screen 00: title screen
+	.db $1E								; load title menu
+	.db $0D, 1						; change brightness 1: fade in
+	.db $03								; title screen (wait for user)
+	; built in RTS
+
+
+
 
 faceTiles:
 	.db $4B, $4C, $49, $5C, $4A, $78, $4A, $77

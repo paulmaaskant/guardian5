@@ -770,11 +770,11 @@ stringListL:
 	.db #< str_AT_TOP_SPEED							; 0D
 	.db #< str_TARGET										; 0E
 	.db #< str_DAMAGE										; 0F
-	.db #< str_HEATSINKS								; 10
+	.db #< str_ACTION_PTS								; 10
 	.db #< str_FFW											; 11
 	.db #< str_NOT_POSSIBLE							; 12
 	.db #< str_PIVOT_TURN								; 13
-	.db #< str_STRENGTH									; 14
+	.db #< str_ATTK									; 14
 	.db #< str_START_GAME								; 15
 	.db #< str_PLAY_SOUND								; 16
 	.db #< str_INSTRUCTIONS							; 17
@@ -796,11 +796,11 @@ stringListH:
 	.db #> str_AT_TOP_SPEED   ; not used
 	.db #> str_TARGET
 	.db #> str_DAMAGE
-	.db #> str_HEATSINKS
+	.db #> str_ACTION_PTS
 	.db #> str_FFW
 	.db #> str_NOT_POSSIBLE
 	.db #> str_PIVOT_TURN
-	.db #> str_STRENGTH
+	.db #> str_ATTK
 	.db #> str_START_GAME
 	.db #> str_PLAY_SOUND
 	.db #> str_INSTRUCTIONS
@@ -838,15 +838,15 @@ str_TARGET:
 	.db $06, $23, $10, $21, $16, $14, $23
 str_DAMAGE:
 	.db $06, $13, $10, $1C, $10, $16, $14
-str_HEATSINKS:
-	.db $09, $17, $14, $10, $23, $22, $18, $1D, $1A, $22
+str_ACTION_PTS:
+	.db $0A, A, C, T, I, O, N, space, P, T, S
 str_FFW:
 	.db $01, $2F
 str_NOT_POSSIBLE:
 	.db $0C, $1D, $1E, $23, $0F, $1F, $1E, $22, $22, $18, $11, $1B, $14
 str_PIVOT_TURN:
 	.db $0A, $1F, $18, $25, $1E, $23, $0F, $23, $24, $21, $1D
-str_STRENGTH:
+str_ATTK:
 	.db $04, $22, $23, $21, $82
 str_START_GAME:
 	.db $0A, $22, $23, $10, $21, $23, $0F, $16, $10, $1C, $14

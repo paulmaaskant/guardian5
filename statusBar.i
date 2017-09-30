@@ -52,9 +52,9 @@ showHexagon:
 
 ; IN pointer1 (fixed stats)
 showSystemInfo:
-	LDA #$10
+	LDA #$3C
 	STA systemMenuLine1+0
-	LDA #$23
+	LDA #$3D
 	STA systemMenuLine1+5
 
 	LDA activeObjectStats+6
