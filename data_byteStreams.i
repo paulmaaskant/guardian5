@@ -68,7 +68,7 @@ briefScreen:
 	.db $FE, $20, $AA
 
 storyStream:
-	; >YETHEL HQ ENTRY 43639
+	; >RYDON HQ ENTRY 43639
 	;
 	; A DARK WARLORD HAS RISEN
 	; TO POWER, BRINGING WAR
@@ -83,13 +83,13 @@ storyStream:
 	.db $F2	; clear & reset box
 
 	; HER ARMY OF MERCENARIES
-	; IS INVADING ONE COLONY
+	; IS PILLAGING ONE COLONY
 	; AFTER THE OTHER
 	; ---
 	; LEAVING BEHIND A TRAIL
 	; OF DEATH AND DESTRUCTION
 	.db H, E, R, space, A, R, M, Y, space, O, F, space, M, E, R, C, E, N, A, R, I, E, S, lineBreak
-	.db $18, $22, $0F, $18, $1D, $25, $10, $13, $18, $1D, $16, $0F, $1E, $1D, $14, $0F, $12, $1E, $1B, $1E, $1D, $28, $F1
+	.db I, S, space, P, I, L, L, A, G, I, N, G, space, O, N, E, space, C, O, L, O, N, Y, lineBreak
 	.db $10, $15, $23, $14, $21, $0F, $23, $17, $14, $0F, $1E, $23, $17, $14, $21, $0E, $F1, $F1
 	.db $1B, $14, $10, $25, $18, $1D, $16, $0F, $11, $14, $17, $18, $1D, $13, $0F, $10, $0F, $23, $21, $10, $18, $1B, $F1
 	.db $1E, $15, $0F, $13, $14, $10, $23, $17, $0F, $10, $1D, $13, $0F, $13, $14, $22, $23, $21, $24, $12, $23, $18, $1E, $1D
@@ -122,8 +122,78 @@ storyStream:
 	.db endOfStream
 
 instructionStream:
-	.db T, H, I, S, space, I, S, space, A, space, T, U, R, N, dash, B, A, S, E, D, lineBreak
-	.db S, T, R, A, T, E, G, Y, space, G, A, M, E
+	.db P, R, E, S, S, space, S, T, A, R, T, space, T, O , space, R, E, T, U, R, N, lineBreak
+	.db T, O, space, T, H, E, space, M, A, I, N, space, M, E, N, U, lineBreak
+	.db lineBreak
+	.db P, R, E, S, S, space, A, space,  T, O , space, C, O, N, T, I , N, U, E, waitForA
+	.db nextPage
+
+	.db I, N, space, T, H, I, S, space, T, U, R, N, dash, B, A, S, E, D, lineBreak
+	.db S, T, R, A, T, E, G, Y, space, G, A, M, E, space, Y, O, U, lineBreak
+	.db C, O, N, T, R, O, L, space, A, space, S, Q, U, A, D, space, O, F, lineBreak
+	.db W, A, L, K, I, N, G, space, T, A, N, K, S, waitForA
+	.db nextPage
+
+	.db Y, O, U, space, P, R, O, G, R, E, S, S, space, T, H, R, O, U, G, H, lineBreak
+	.db T, H, E, space, G, A, M, E, space, B, Y, space, C, O, M , P, L, E, T, I, N, G, lineBreak
+	.db A, space, S, E, R, I, E, S, space, O, F, space, M, I, S, S, I, O, N, S, waitForA
+	.db nextPage
+
+	.db D, U, R, I, N, G, space, A, space, M, I, S, S, I, O, N, comma, lineBreak
+	.db U, N, I, T, S, space, T, A, K, E, space, T, U, R, N, S, lineBreak
+	.db P, E, R, F, O, R, M, I, N, G, space, A, C, T, I, O, N, S, lineBreak
+	.db U, N, T, I, L, space, T, H, E, space, M, I, S, S, I, O, N, lineBreak
+	.db C, O, M, P, L, E, T, E, S, space, O, R, space, F, A, I, L, S, waitForA
+	.db nextPage
+
+	.db W, H, E, N, space, A, space, U, N, I, T, space, H, A, S, space, T, H, E, space, T, U, R, N, lineBreak
+	.db I, T, space, M, U, S, T, space, S, E, L, E, C, T, space, A, N, space, A, C, T, I, O, N, lineBreak
+	.db lineBreak
+	.db T, H, E, space, A, V, A, I, L, A, B, L, E, space, A, C, T, I, O, N, S, lineBreak
+	.db D, E, P, E, N, D, space, O, N, space, T, H, E, space, P, O, S, I, T, I, O, N, lineBreak
+	.db O, F, space, T, H, E, space, C, U, R, S, O, R, waitForA
+	.db nextPage
+
+	.db C, O, N, T, R, O, L, S, space, F, O, R, lineBreak
+	.db S, E, L, E, C, T, I, N, G, space, A, N, space, A, C, T, I, O, N, lineBreak
+	.db lineBreak
+	.db D, space, dash, space, M, O, V, E, space, C, U, R, S, O, R, lineBreak
+	.db B, space, dash, space, T, O, G, G, L, E, space, A, C, T, I, O, N, lineBreak
+	.db A, space, dash, space, X, 1, space, L, O, C, K, space, A, C, T, I, O, N, lineBreak
+	.db space, space, space, space, X, 2, space, C, O, N, F, I, R, M, space, A, C, T, I, O, N, waitForA
+	.db nextPage
+
+	.db S, O, M, E, space, A, C, T, I, O, N, S, space, R, E, Q, U, I, R, E, lineBreak
+	.db Y, O, U, space, T, O, space, C, H, O, O, S, E, space, T, H, E, lineBreak
+	.db D, I, R, E, C, T, I, O, N, space, T, H, A, T, space, T, H, E, lineBreak
+	.db T, A, N, K, space, I, S, space, F, A, C, I, N, G, waitForA
+	.db nextPage
+
+	.db C, O, N, T, R, O, L, S, space, F, O, R, lineBreak
+	.db C, H, O, O, S, I, N, G, space, A, space, D, I, R, E, C, T, I, O, N, lineBreak
+	.db lineBreak
+	.db D, space, dash, space, C, H, A, N, G, E, space, D, I, R, E, C, T, I, O, N, lineBreak
+	.db A, space, dash, space, C, O, N, F, I, R, M, space, D, I, R, E, C, T, I, O, N, lineBreak
+	.db B, space, dash, space, H, O, L, D, space, T, O, space, S, C, R, O, L, L, waitForA
+	.db nextPage
+
+	.db E, X, C, E, P, T, space, F, O, R, space, dash, C, O, O, L, D, O, W, N, dash, comma, lineBreak
+	.db E, V, E, R, Y, space, A, C, T, I, O, N, space, C, O, S, T, S, space, A, lineBreak
+	.db N, U, M, B, E, R, space, O, F, space, A, C, T, I, O, N, space, P, O, I, N, T, S, lineBreak
+	.db lineBreak
+	.db T, H, E, space, dash, C, O, O, L, D, O, W, N, dash, space, A, C, T, I, O, N, lineBreak
+	.db R, E, S, T, O, R, E, S, space, A, C, T, I, O, N, space, P, O, I, N, T, S, waitForA
+	.db nextPage
+
+	.db W, H, E, N, space, A, space, T, A, N, K, space, R, U, N, S, space, O, U, T, space, O, F, lineBreak
+	.db A, C, T, I, O, N, space, P, O, I, N, T, S, comma, space, I, T, space, S, H, U, T, S, lineBreak
+	.db D, O, W, N, space, A, U, T, O, M, A, T, I, C, A, L, L, Y, comma, lineBreak
+	.db lineBreak
+	.db L, E, A, V, I, N, G, space, I, T, space, V, U, L, N, E, R, A, B, L, E, lineBreak
+	.db T, O, space, A, T, T, A, C, K, S, waitForA
+	.db nextPage
+
+	.db H, A, V, E, space, F, U, N, space, P, L ,A, Y, I, N, G
 	.db waitForA
 	.db endOfStream
 
@@ -160,15 +230,7 @@ resultTargetMiss:
 	.db $F3																																				; A button
 	.db $F4																																				; end
 
-resultTempStable:
-	.db $F2																																				; clear dialog
-	.db	$FC, $10																																	; [HEATSINKS]
-	.db $F1																																				; next line
-	.db $22, $23, $10, $11, $1B, $14																							; STABLE
-	.db $F3																																				; A button
-	.db $F4																																				; done
-
-resultHeatSinksRestored:
+resultActionPointsRestored:
 	.db $F2																																				; clear dialog
 	.db $FD, $00, $0F																															; X (list3+0)
 	.db	$FC, $10																																	; [ACTION PTS]
@@ -195,14 +257,10 @@ resultChargeDamageSustained:
 	.db $F4
 
 resultHeatSinksSaturated:
-	.db $F2																																				; clear dialog
-	.db $FD, $00, $0F																															; X (list3+0)
-	.db	$FC, $10																																	; [HEATSINKS]
-	.db $F1																																				; next line
-	.db $1E, $15, $15, $1B, $18, $1D, $14																					; OFFLINE
-	;.db $22, $10, $23, $24, $21, $10, $23, $14, $13															; SATURATED
-	.db $F3																																				; A button
-	.db $F4																																				; done
+	.db nextPage
+	.db parameter, 0, space, dict, 16, lineBreak																	; 16 =  action pts
+	.db S, P, E, N, T, waitForA
+	.db endOfStream
 
 resultShutdown:
 	.db nextPage

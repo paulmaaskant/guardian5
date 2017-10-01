@@ -18,6 +18,9 @@ state_initializeDialog:
   LDA state01_lastCol, Y
   STA list1+5
 
+  LDA state01_lineCount, Y
+  STA list1+8
+
   LDA #$00
   STA list1+6
 
@@ -59,3 +62,10 @@ state01_lastCol:
   .db $1C
   .db $1C
   .db $1C
+state01_lineCount:
+  .db 6
+  .db 6
+  .dsb 7
+  .db 6
+  .db 6
+  .db 8

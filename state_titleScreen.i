@@ -116,15 +116,15 @@ state_titleScreen:
 	LDA list1+1
 	BEQ +startGame			; if "start game" game + start
 
-	CMP #$01
-	BEQ +instructions		; if "instructions" + start
-
-
 	JSR soundSilence
 
 	LDA frameCounter				; wait for next frame
 -	CMP frameCounter
 	BEQ -
+
+	LDA list1+1
+	CMP #$01
+	BEQ +instructions		; if "instructions" + start
 
 	LDY list1+2
 	JSR soundLoad

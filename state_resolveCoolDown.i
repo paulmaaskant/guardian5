@@ -15,6 +15,8 @@ state_initializeCoolDown:
 	LDA activeObjectGridPos
 	JSR gridPosToScreenPos
 
+	JSR clearCurrentEffects
+
 	LDA #$09
 	STA currentEffects+0
 	STA currentEffects+1

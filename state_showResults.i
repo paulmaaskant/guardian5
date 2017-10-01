@@ -60,6 +60,8 @@ state_showResults:
 	STA list1+5						; # tiles: last pos
 	LDA #$00
 	STA list1+6						; stream on
+	LDA #$03
+	STA list1+8						; 3 lines in height
 
 	LDA #$09
 	JMP pushState
@@ -67,8 +69,8 @@ state_showResults:
 streamHi:
 	.db #< resultTargetHit									; 1
 	.db #< resultTargetMiss									; 2
-	.db #< resultTempStable									; 3
-	.db #< resultHeatSinksRestored					; 4
+	.db #< resultActionPointsRestored				; 3 NOT USED
+	.db #< resultActionPointsRestored				; 4
 	.db #< resultUnitDestroyed							; 5
 	.db #< resultChargeDamageSustained			; 6
 	.db #< resultHeatSinksSaturated					; 7
@@ -78,8 +80,8 @@ streamHi:
 streamLo:
 	.db #> resultTargetHit
 	.db #> resultTargetMiss
-	.db #> resultTempStable
-	.db #> resultHeatSinksRestored
+	.db #> resultActionPointsRestored
+	.db #> resultActionPointsRestored
 	.db #> resultUnitDestroyed
 	.db #> resultChargeDamageSustained
 	.db #> resultHeatSinksSaturated

@@ -676,6 +676,7 @@ gameStateJumpTable:
 	.include state_initializeGameMenu.i
 	.include state_loadGameMenu.i
 	.include state_faceTarget.i
+	.include state_clearDialog.i
 
 	.include subroutines.i
 	.include sbr_pushState.i
@@ -767,14 +768,14 @@ stringListL:
 	.db #< str_OUTSIDE_ARC							; 0A
 	.db #< str_CHOOSE_FACING_DIRECTION	; 0B
 	.db #< str_TARGET_TOO__CLOSE 				; 0C
-	.db #< str_AT_TOP_SPEED							; 0D
+	.db #< str_RUN											; 0D
 	.db #< str_TARGET										; 0E
 	.db #< str_DAMAGE										; 0F
 	.db #< str_ACTION_PTS								; 10
 	.db #< str_FFW											; 11
 	.db #< str_NOT_POSSIBLE							; 12
 	.db #< str_PIVOT_TURN								; 13
-	.db #< str_ATTK									; 14
+	.db #< str_ATTK											; 14
 	.db #< str_START_GAME								; 15
 	.db #< str_PLAY_SOUND								; 16
 	.db #< str_INSTRUCTIONS							; 17
@@ -793,7 +794,7 @@ stringListH:
 	.db #> str_OUTSIDE_ARC
 	.db #> str_CHOOSE_FACING_DIRECTION
 	.db #> str_TARGET_TOO__CLOSE
-	.db #> str_AT_TOP_SPEED   ; not used
+	.db #> str_RUN  ; not used
 	.db #> str_TARGET
 	.db #> str_DAMAGE
 	.db #> str_ACTION_PTS
@@ -832,14 +833,12 @@ str_CHOOSE_FACING_DIRECTION:
 	.db $18, $12, $17, $1E, $1E, $22, $14, $0F, $15, $10, $12, $18, $1D, $16, $0F, $0F, $13, $18, $21, $14, $12, $23, $18, $1E, $1D
 str_TARGET_TOO__CLOSE:
 	.db $12, $23, $10, $21, $16, $14, $23, $0F, $23, $1E, $1E, $0F, $0F, $0F, $12, $1B, $1E, $22, $14
-str_AT_TOP_SPEED:
-	.db $0C, $10, $23, $0F, $23, $1E, $1F, $0F, $22, $1F, $14, $14, $13
 str_TARGET:
 	.db $06, $23, $10, $21, $16, $14, $23
 str_DAMAGE:
 	.db $06, $13, $10, $1C, $10, $16, $14
 str_ACTION_PTS:
-	.db $0A, A, C, T, I, O, N, space, P, T, S
+	.db 10 , A, C, T, I, O, N, space, P, T, S
 str_FFW:
 	.db $01, $2F
 str_NOT_POSSIBLE:

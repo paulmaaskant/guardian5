@@ -5,11 +5,11 @@
 ; list1+1 address current tile lo
 ; list1+2 address start tile hi
 ; list1+3 address start tile lo
-
+; list1+4 # tiles margin left
 ; list1+5 # tiles margin right
 ; list1+6 stream control (b7 stop, b6 wait for A)
-; list1+7 reserved
-; list1+8 game state
+; list1+7 line count  (used to clear dialog)
+; list1+8 number of lines
 
 state_runDialog:
 	; --- if start button is hit ---
@@ -99,7 +99,7 @@ state_runDialog:
 	LDA list1+3				;
 	STA list1+1				;
 
-	LDA #$06				; number of lines to clear
+	LDA list1+8				; number of lines to clear
 	STA list1+7				;
 
 	LDA #$0F				; game state : clear text box
