@@ -64,7 +64,7 @@ state01_lastCol:
   .db $1C
 state01_lineCount:
   .db 6
-  .db 6
+  .db 13
   .dsb 7
   .db 6
   .db 6

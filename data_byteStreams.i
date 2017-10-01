@@ -198,13 +198,46 @@ instructionStream:
 	.db endOfStream
 
 brief1Stream:
+	.db setPortrait, $10
+	.db G, U, A, R, D, I, A, N, space, 5, comma, lineBreak
+	.db T, H, I, S, space, I, S, space, C, O, M, M, A, N, D, space, 1, lineBreak
+	.db lineBreak
+	.db S, T, A, N, D, space, B, Y, space, F, O, R, space, N, E, W, space, O, R, D, E, R, S, waitForA
+	.db nextPage
 	.db setPortrait, $00
-	.db S, T, A, R, T, space, M, I, S, S, I, O, N, space, $01, waitForA
+	.db T, H, I, S, space, I, S, space, G, U, A, R, D, I, A, N, space, 5, comma, lineBreak
+	.db S, T, A, N, D, I, N, G, space, B, Y, waitForA
+	.db nextPage
+	.db setPortrait, $10
+	.db C, A, P, T, A, I, N, comma, lineBreak
+	.db lineBreak
+	.db A, space, S, I, N, G, L, E, space, E, N, E, M, Y, space, U, N, I, T, lineBreak
+	.db H, A, S, space, M, A, D, E, space, I, T, S, space, W, A, Y, space, P, A, S, T, lineBreak
+	.db O, U, R, space, D, E, F, E, N, S, E, space, L, I, N, E, lineBreak
+	.db lineBreak
+	.db I, T, space, M, U, S, T, space, B, E, space, D, E, S, T, R, O, Y, E, D, lineBreak
+	.db B, E, F, O, R, E, space, I, T, space, R, E, A, C, H, E, S, space, T, H, E, lineBreak
+	.db C, I, T, Y, lineBreak
+	.db lineBreak
+	.db Y, O, U, R, space, O, R, D, E, R, S, space, A, R, E, space, T, O, space, F, I, N, D, lineBreak
+	.db A, N, D, space, E, L, I, M, I, N, A, T, E, space, T, H, E, space, R, O, G, U, E, lineBreak
+	.db E, N, E, M, Y, space, U, N, I, T, waitForA
+	.db nextPage
+	.db setPortrait, $00
+	.db O, R, D, E, R, S, space, C, O, N, F, I, R, M, E, D, lineBreak
+	.db lineBreak
+	.db M, O, V, I, N, G, space, O, U, T, space, T, O, space, F, I, N, D, space, A, N, D, lineBreak
+	.db E, L, I, M, I, N, A, T, E, space, E, N, E, M, Y, space, U, N, I, T, lineBreak, N, O, W, waitForA
 	.db endOfStream
 
 accomplishedStream:
 	.db M, I, S, S, I, O, N, lineBreak
 	.db A, C, C, O, M, P, L, I, S, H, E, D, waitForA
+	.db endOfStream
+
+failedStream:
+	.db M, I, S, S, I, O, N, lineBreak
+	.db F, A, I, L, E, D, waitForA
 	.db endOfStream
 
 pausedStream:
@@ -330,6 +363,7 @@ lineBreak = $F1
 nextPage = $F2
 waitForA = $F3
 endOfStream = $F4
+setPortrait = $F5
 
 dict = $FC
 parameter = $FD

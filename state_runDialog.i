@@ -66,14 +66,12 @@ state_runDialog:
 	BNE +continue
 	LDA #$40				; set b6
 	STA list1+6
-	RTS						; and done
+	RTS							; and done
 
 +continue:
 	; --- op code: new line ---
 	CMP #lineBreak
 	BNE +continue
-
-
 
 	LDA list1+3
 	AND #%00011111
@@ -91,7 +89,7 @@ state_runDialog:
 
 +continue:
 	; --- op code: clear all ---
-	CMP #$F2
+	CMP #nextPage
 	BNE +continue
 
 	LDA list1+2				; reset write address to first position
@@ -107,7 +105,7 @@ state_runDialog:
 
 +continue:
 	; --- op code: wait for A button ---
-	CMP #$F3
+	CMP #waitForA
 	BNE +continue
 	LDA #$60				; stop stream (b6) and wait for A button (b5)
 	STA list1+6
@@ -115,11 +113,19 @@ state_runDialog:
 
 +continue:
 	; --- op code: move to next game state ---
-	CMP #$F4
+	CMP #endOfStream
 	BNE +continue
 	LDA #$80				; (b7) move to next game state
 	STA list1+6
 	RTS
+
++continue:
+	CMP #setPortrait
+	BNE +continue
+	JSR getNextByte
+	AND #$F0
+	LDY #$A4
+	JMP showPilot
 
 +continue:
 

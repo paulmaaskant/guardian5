@@ -32,15 +32,15 @@ getNextByte:
 	BEQ +numberValue
 	CMP #setDictionaryString
 	BEQ +setDictionaryString
-	CMP #setPortrait
-	BEQ +setPortrait
+	;CMP #setPortrait
+	;BEQ +setPortrait
 	RTS
 
 repeatBlank = $FF
 repeatChar = $FE
 setNumberValue = $FD
 setDictionaryString = $FC
-setPortrait = $FB
+;setPortrait = $FB
 
 +repeatBlank:
 	LDA (bytePointer), Y		; number of repeats
@@ -67,13 +67,13 @@ setPortrait = $FB
 	LDA par3
 	JMP incrementBytePointer	; tail chain
 
-+setPortrait:
-	LDA (bytePointer), Y		; portrait index
-	AND #$F0
-	LDY #$A4
-	JSR showPilot
-	JSR incrementBytePointer
-	JMP getNextByte
+;+setPortrait:
+;	LDA (bytePointer), Y		; portrait index
+;	AND #$F0
+;	LDY #$A4
+;	JSR showPilot
+;	JSR incrementBytePointer
+;	JMP getNextByte
 
 +setDictionaryString:
 	LDA (bytePointer), Y		; string index

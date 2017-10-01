@@ -699,6 +699,7 @@ gameStateJumpTable:
 	.include sbr_loadSpriteMetaFrame.i
 	.include sbr_loadAnimationFrame.i
 	.include sbr_clearSprites.i
+	.include sbr_showPilot.i
 
 	.include reset.i
 	.include nmi.i
