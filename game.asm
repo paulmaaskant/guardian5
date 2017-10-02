@@ -649,10 +649,12 @@ gameStateJumpTable:
 ; includes
 ; -------------------------
 
-	.include state_misc.i
+	.include state_initializeSetDirection.i
 	.include state_initializeDialog.i
 	.include state_initializeMap.i
 	.include state_initializeTitleMenu.i
+	.include state_fadeInOut.i
+	.include state_loadLevelMapTiles.i
 	.include state_setDirection.i
 	.include state_initializeScreen.i
 	.include state_centerCamera.i
