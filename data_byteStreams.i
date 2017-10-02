@@ -15,13 +15,9 @@ statusBar:
 	.db $FA				; pilot face attributes
 	.db $FE, $20, $AA
 
-
-
 statusMenu:
 	.db $FF, $43, $2B, $FF, $12, $2A, $FF, $49	; 6 rows
 	.db $FF, $03, $2D, $FF, $12, $2C, $FF, $09
-
-
 
 titleScreen:
 	.db $FF, $00	; 8 blank rows
@@ -43,7 +39,7 @@ titleScreen:
 	.db $FE, $18, $00	; 1 rows, palette
 	.db $FE, $08, $05	;
 
-storyScreen:
+blankScreen:
 	.db repeatBlank, $00			; 8 rows
 	.db repeatBlank, $00			; 8 rows
 	.db repeatBlank, $00			; 8 rows
@@ -57,10 +53,10 @@ briefScreen:
 	.db $FF, $7A																																	; 3 rows and 26 tiles
 	.db $2D, $FF, $04, $2C 																												; 0 rows and 6 tiles
 	.db $FF, $06, $2B, $FF, $18, $2A
-	.db $FF, $C6			; 3 rows
+	.db $FF, $E6			;
 	.db $FF, $00			; 8 rows
 	.db $2D, $FF, $18, $2C
-	.db $FF, $A3			; 5 rows
+	.db $FF, $83			; 4 rows, 3 tiles
 	; --- palettes ---
 	.db $FE, $16, $AA
 	.db $FE, $01, $FF 				; pilot face attributes
@@ -228,6 +224,26 @@ brief1Stream:
 	.db lineBreak
 	.db M, O, V, I, N, G, space, O, U, T, space, T, O, space, F, I, N, D, space, A, N, D, lineBreak
 	.db E, L, I, M, I, N, A, T, E, space, E, N, E, M, Y, space, U, N, I, T, lineBreak, N, O, W, waitForA
+	.db endOfStream
+
+brief2Stream:
+	.db setPortrait, $00
+	.db C, O, M, M, A, N, D, space, 1, comma, lineBreak
+	.db T, H, I, S, space, I, S, space, G, U, A, R, D, I, A, N, space, 5, lineBreak
+	.db lineBreak
+	.db T, H, E, space,  E, N, E, M, Y, space, T, H, R, E, A, T, space, H, A, S, lineBreak
+	.db B, E, E, N, space, E, L, I, M, I, N, A, T, E, D, lineBreak
+	.db lineBreak
+	.db I, space, A, M, space, R, E, T, U, R, N, I, N, G, space, T, O, space, B, A, S, E, lineBreak
+	.db C, A, M, P, space, F, O, R, space, R, E, P, A, I, R, S, waitForA
+	.db setPortrait, $10
+	.db E, X, C, E, L, L, E, N, T, space, W, O, R, K, comma, space, C, A, P, T, A, I, N, lineBreak
+	.db lineBreak
+	.db T, H, A, N, K, S, space, F, O, R, space, P, L, A, Y, I, N, G, waitForA
+	.db endOfStream
+
+brief3Stream:
+	.db T, H, A, N, K, S, space, F, O, R, space, P, L, A, Y, I, N, G, waitForA
 	.db endOfStream
 
 accomplishedStream:

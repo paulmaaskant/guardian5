@@ -36,19 +36,22 @@ state_initializeScreen:
 
 
 state00_screenLo:
-	.db #> titleScreen
-	.db #> storyScreen
-	.db #> briefScreen
-	.db #> statusBar
+	.db #> titleScreen			; 00 title screen background
+	.db #> blankScreen			; 01 introduction story background
+	.db #> briefScreen			; 02 mission brief background
+	.db #> statusBar				; 03 status bar
+	.db #> blankScreen			; 04 instructions background
 
 state00_screenHi:
 	.db #< titleScreen
-	.db #< storyScreen
+	.db #< blankScreen
 	.db #< briefScreen
 	.db #< statusBar
+	.db #< blankScreen
 
 state00_sound:
 	.db $00
 	.db $01
 	.db $C0									; silence
-	.db $04									; silence
+	.db $04
+	.db $C0									; silence

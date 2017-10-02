@@ -152,7 +152,7 @@ state_titleScreen:
 JSR pullAndBuildStateStack
 	.db $10							; # items
 	.db $0D, 0					; change brightness 0: fade out
-	.db $00, 1					; load screen 1: blank screen
+	.db $00, 4					; load screen 1: blank screen
 	.db $0D, 1					; change brightness 1: fade in
 	.db $01, 11					; load stream 11: instructions
 	.db $0D, 0					; change brightness 0: fade out

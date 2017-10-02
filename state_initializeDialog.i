@@ -30,42 +30,60 @@ state_initializeDialog:
 state01_streamLo:
   .db #> storyStream
   .db #> brief1Stream
-  .dsb 7
+  .db #> brief2Stream
+  .db #> brief3Stream
+  .dsb 5
   .db #> accomplishedStream
   .db #> pausedStream
   .db #> instructionStream
+  .db #> failedStream
 state01_streamHi:
   .db #< storyStream
   .db #< brief1Stream
-  .dsb 7
+  .db #< brief2Stream
+  .db #< brief3Stream
+  .dsb 5
   .db #< accomplishedStream
   .db #< pausedStream
   .db #< instructionStream
+  .db #< failedStream
 state01_positionHi:
   .db $25
   .db $25
-  .dsb 7
+  .db $25
+  .db $25
+  .dsb 5
   .db $27
   .db $27
   .db $25
+  .db $27
 state01_positionLo:
   .db $44
   .db $64
-  .dsb 7
+  .db $64
+  .db $64
+  .dsb 5
   .db $6A
   .db $6A
   .db $44
+  .db $6A
 state01_lastCol:
   .db $1C
   .db $1C
-  .dsb 7
+  .db $1C
+  .db $1C
+  .dsb 5
+  .db $1C
   .db $1C
   .db $1C
   .db $1C
 state01_lineCount:
   .db 6
   .db 13
-  .dsb 7
+  .db 13
+  .db 13
+  .dsb 5
   .db 6
   .db 6
   .db 8
+  .db 6
