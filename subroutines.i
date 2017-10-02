@@ -448,46 +448,7 @@ clearList3:
 	RTS
 
 
-; --------------------------
-; deleteObject A
-; --------------------------
-deleteObject:
-	LDX #$05
 
-	; --- first find the to-be deleted object ---
--loop:
-	CMP objectTypeAndNumber, X
-	BEQ +match
-	DEX
-	BPL -loop
-	RTS
-
-	; --- then delete it ---
-+match:
-	AND #$07
-	ASL
-	ASL
-	TAY
-	LDA object+3, Y
-	TAY
-	LDA nodeMap, Y
-	AND #$3F
-	STA nodeMap, Y
-
-	DEC objectCount
--loop:
-	CPX objectCount
-	BEQ +done
-	LDA objectTypeAndNumber+1, X
-	STA objectTypeAndNumber, X
-	INX
-	BEQ -loop												; always branches
-
-+done:
-	LDA events
-	ORA event_updateSprites
-	STA events
-	RTS
 
 
 writeStartMenuToBuffer:
