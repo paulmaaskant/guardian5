@@ -136,7 +136,7 @@ state_resolveRanged:
 	; ------------------------------------------------
 	LDA list1+0
 	AND #$F8
-	BEQ +done;
+	BEQ +continue
 
 	LSR
 	LSR
@@ -151,9 +151,20 @@ state_resolveRanged:
 	ORA event_refreshStatusBar		; set flag
 	STA events
 
++continue:
+	LDA list1+0
+	AND #$03
+	BNE +continue
+	LDA list1+0
+	AND #$04
+	ASL
+	ASL
+	JSR updatePalette
 
-+done:
 
+
+
++continue:
 	; ------------------------------------------------
 	; sprite updates
 	; ------------------------------------------------
