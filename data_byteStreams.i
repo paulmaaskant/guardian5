@@ -21,7 +21,7 @@ statusMenu:
 
 titleScreen:
 	.db $FF, $00	; 8 blank rows
-	.db $FF, $0F, $4B, $4A
+	.db $FF, $0F, $E1, $E0
 	.db $FF, $1E, $5B, $5A, $59
 	.db $FF, $1D, $6B, $6A, $69
 	.db $FF, $1D, $7B, $7A, $79
@@ -29,9 +29,9 @@ titleScreen:
 	.db $FF, $1D, $58, $57, $0F
 	.db $FF, $1D, $68, $67, $66
 	.db $FF, $16
-	.db $45, $43, $42, $44, $61, $62, $42, $61, $60, $61, $60, $61, $62, $42, $42, $65, $62	; GUARDIAN5
+	.db $41, $40, $42, $44, $61, $62, $42, $61, $60, $61, $60, $61, $62, $42, $42, $41, $74; GUARDIAN5
 	.db $FF, $0F
-	.db $76, $64, $55, $54, $73, $70, $51, $53, $72, $71, $70, $73, $70 , $53, $52, $53, $74;
+	.db $51, $50, $64, $54, $73, $70, $63, $53, $72, $71, $70, $73, $70, $53, $52, $51, $43;
 	.db $FF, $A7
 	.db $FF, $00			; 8 blank rows
 	; --- palettes ---
@@ -236,6 +236,7 @@ brief2Stream:
 	.db lineBreak
 	.db I, space, A, M, space, R, E, T, U, R, N, I, N, G, space, T, O, space, B, A, S, E, lineBreak
 	.db C, A, M, P, space, F, O, R, space, R, E, P, A, I, R, S, waitForA
+	.db nextPage
 	.db setPortrait, $10
 	.db E, X, C, E, L, L, E, N, T, space, W, O, R, K, comma, space, C, A, P, T, A, I, N, lineBreak
 	.db lineBreak

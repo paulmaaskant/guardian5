@@ -247,10 +247,23 @@ NMI:
 	; MUSIC here
 	JSR soundNextFrame
 
+	; tile animation
+	LDA frameCounter
+	AND #$07
+	BNE +continue
+	LDA frameCounter
+	LSR
+	LSR
+	LSR
+	AND #$03
+	ADC #$0C
+	STA $E001
+
 	; tile blinking
 	;---------------------------
 	; event: update blinking tiles
 	;---------------------------
++continue:
 	LDA menuFlags
 	BNE +blink
 	STA menuCounter										; reset to 0

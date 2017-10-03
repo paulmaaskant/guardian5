@@ -35,13 +35,13 @@ calculateActionCost:
 +less:
   STA list3+0
 	STA systemMenuLine2+4
-  LDA #$0C
+  LDA #$D0
   STA systemMenuLine2+3
 	CPX #aCHARGE
 	BNE +continue
 	LDA #$01
 	STA systemMenuLine1+4
-  LDA #$0C
+  LDA #$D0
   STA systemMenuLine1+3
 
 +continue:
@@ -69,6 +69,6 @@ calculateActionCost:
 +notLess:
   LDA list3+0
   STA systemMenuLine2+4
-  LDA #$0D
+  LDA #$D1
   STA systemMenuLine2+3
   RTS

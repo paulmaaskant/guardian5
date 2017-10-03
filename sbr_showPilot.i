@@ -19,7 +19,7 @@ showPilot:
 	PLA							; set address
 	AND #%00001100
 	CLC
-	ADC #$C0
+	ADC #$40
 	STA locVar1
 
 	PLA							; set bank
@@ -28,7 +28,7 @@ showPilot:
 	ROL
 	ROL							; Carry clear
 	ADC #$08
-	STA $E001
+	STA $D001
 
 	TSX							; switch stack pointers
 	STX	stackPointer1

@@ -2,39 +2,6 @@
 ; gameState 03: Title Screen Cycle
 ; ------------------------------------------
 state_titleScreen:
-	LDA frameCounter
-	AND #%00000111
-	BNE +skipAnimation
-
-	; --- update animated tiles every 8 frames ---
-	TSX
-	STX	stackPointer1
-	LDX stackPointer2
-	TXS
-	LDY list1+0
-	CPY #$03
-	BCC +increment
-	LDY #$FF
-
-+increment:
-	INY
-	STY list1+0
-	LDA faceTiles, Y
-	PHA
-	LDA faceTiles+4, Y
-	PHA
-	LDA #$0F
-	PHA						; address low byte
-	LDA #$25
-	PHA						; address high byte
-	LDA #$04
-	PHA						; lenght * 2
-	TSX						; switch stack pointers
-	STX	stackPointer2
-	LDX stackPointer1
-	TXS
-
-+skipAnimation:
 	LDA blockInputCounter
 	BEQ +continue
 	DEC blockInputCounter
@@ -161,9 +128,3 @@ JSR pullAndBuildStateStack
 	.db $0D, 1						; change brightness 1: fade in
 	.db $03								; title screen (wait for user)
 	; built in RTS
-
-
-
-
-faceTiles:
-	.db $4B, $4C, $49, $5C, $4A, $78, $4A, $77

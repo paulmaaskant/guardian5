@@ -80,7 +80,7 @@ initializeMove:
 	STA actionCounter
 	STA actionList+0						; node number on path in list1
 
-	RTS
+	JMP clearCurrentEffects
 
 ; ----------------------------------------
 ; loop to resolve move
@@ -104,7 +104,7 @@ state_resolveMove:
 	; Move complete
 	;-------------------------------
 	LDA effects
-	AND #%11101111							; switch off obscure mask
+	AND #%11111000							; switch off obscure mask effects
 	STA effects
 
 	LDY activeObjectIndex
@@ -139,57 +139,68 @@ state_resolveMove:
 	CMP	#%00000010
 	BNE +next
 	LDA #%01100000
-	;LDA #%01000000
 	BNE +store
 
 +next:
 	LDA #%00100000																																; used in embedded effect 4
-	;LDA #%00000000
 
 +store:
-	STA currentEffects
+	STA currentEffects+28										; mirror settings for mask
 
 	LDA effects
-	AND #%11101111
+	AND #%11111000
 	STA effects
 
-	STX locVar1
+	STX currentEffects+29										; store X
 
 	LDX activeObjectGridPos
 	LDA nodeMap, X
 	AND #%00100000
 	BEQ +continue
 
-	LDA effects
-	ORA #%00010000
-	STA effects
+	TXA
+	JSR gridPosToScreenPos
 
-	LDA currentEffects
+	INC effects
+
+	LDA #$04
+	STA currentEffects+0
+	LDA currentObjectXPos
+	STA currentEffects+6
+	LDA currentObjectYPos
+	STA currentEffects+12
+	LDA currentEffects+28
 	EOR #%01000000
-	STA currentEffects
-
-	STX currentEffects+1
+	STA currentEffects+24									; mirror
 
 +continue:
-
-	LDX locVar1
-
+	LDX currentEffects+29
 	LDA list1, X							; update active object's grid position
 	STA activeObjectGridPos		;
 	STA object+3, Y						;
-
 	TAY
 	LDA nodeMap, Y
 	AND #%00100000
 	BEQ +continue
-	LDA effects
-	ORA #%00010000
-	STA effects
 
-	STY currentEffects+1
+	TYA
+	JSR gridPosToScreenPos
+	LDA effects
+	AND #%00000001
+	TAX
+	INC effects
+
+	LDA #$04
+	STA currentEffects+0, X
+	LDA currentObjectXPos
+	STA currentEffects+6, X
+	LDA currentObjectYPos
+	STA currentEffects+12, X
+	LDA currentEffects+28
+	STA currentEffects+24, X								; mirror
 
 +continue:
-
+	LDX currentEffects+29
 	LDA #$00
 	STA actionList+1					; reset X offset (Y offset is always overwritten)
 
@@ -197,8 +208,8 @@ state_resolveMove:
 	; update action+3
 	;-----------------------------------
 	LDA list2, X					; determine interpolation toggle
-	CMP #$01						; 1 = vertical interpolation only (16 pixels)
-	BEQ +							; 0 = vertical & horizontal interpolation (8 pixels and 24 pixels)
+	CMP #$01							; 1 = vertical interpolation only (16 pixels)
+	BEQ +									; 0 = vertical & horizontal interpolation (8 pixels and 24 pixels)
 	CMP #$04
 	BEQ +
 	CLC

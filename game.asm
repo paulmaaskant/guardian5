@@ -1,18 +1,15 @@
-;; List
+; List
 ;
 ; - volume mute operation
 ; - miss animations for gun fire
 ; - shutdown animation
-; - cooldown animation
 ; - auto change of facing direction when attacked in close combat
 ;	- in game menu
 ;
 ; PARKING LOT
-; - obscured units (use settable effect sprites instead of embedded, so that more than one mask can be shown)
-; - obscured units (redesign map to not have transparant pixels on mask positions)
 ; - attribute table scrolling (two palettets)
-; - show results state: decrement heat sinks and armor when results are displayed (new opcode?)
-; - events (like mission fail / accomplished conditions and in game dialog triggers)
+; - show results state: decrement AP and HP when results are displayed (new opcode?)
+; - events/  end turn / begin turn states (like mission fail / accomplished conditions and in game dialog triggers)
 
 
 ;; 1 - iNes header
@@ -325,17 +322,17 @@ mainGameLoop:
 	LDY #$02																																			; cursor animation #
 	JSR loadAnimationFrame																												; set sprites!
 
-+nextEffect:																																		; blocking node marker, sprite 5
-	LDA effects
-	AND #%00010000
-	BEQ +nextEffect
-	LDA currentEffects+0													; mask
-	STA par4													; parameter to "loadAnimationFrame"
-	LDA currentEffects+1																																		; node that is blocking line of sight
-	JSR gridPosToScreenPos																												; get the screen coordinates
-	BCC +nextEffect																																; off screen!
-	LDY #$04																																			; cursor animation #
-	JSR loadAnimationFrame																												; set sprites!
+;+nextEffect:																																		; blocking node marker, sprite 5
+;	LDA effects
+;	AND #%00010000
+	;BEQ +nextEffect
+	;LDA currentEffects+0													; mask
+	;STA par4													; parameter to "loadAnimationFrame"
+	;LDA currentEffects+1																																		; node that is blocking line of sight
+	;JSR gridPosToScreenPos																												; get the screen coordinates
+	;BCC +nextEffect																																; off screen!
+	;LDY #$04																																			; cursor animation #
+	;JSR loadAnimationFrame																												; set sprites!
 
 +nextEffect:																																		; manage counter for all embedded effects
 	LDA currentObjectFrameCount																										; FIX
@@ -976,17 +973,17 @@ hitProbability:				.db #$64	; dif 0 100% (97 due to crit miss
 	.dw RESET				; points the Reset to our label RESET
 	.dw 00					; IRQ reference - not used
 
-;; bank 0 - not used
+;; bank 0 - sprites: cursor and effects
 ;; bank 1 - sprites: unit moving
 ;; bank 2 - sprites: unit stationary
-;; bank 3 - sprites: effects
+;; bank 3 - sprites: not used
 ;; bank 4 - tiles: alphabet & menu
-;; bank 5 - tiles: title screen pilot
+;; bank 5 - tiles: title screen
 ;; bank 6 - tiles: level 1 map
-;; bank 7 - tiles: title screen title
+;; bank 7 - tiles: not used
 
 ;; 10 tiles and sprites
 	.incbin "bank_00_03.chr" 		; 4 x 1k CHR for sprites
 	.incbin "bank_04_07.chr" 		; 4 x 1k CHR for tiles
 	.incbin "bank_08_11.chr" 		; 4 x 1k CHR for tiles
-	.incbin "bank_04_07.chr" 		; 4 x 1k CHR for tiles
+	.incbin "bank_12_15.chr" 		; 4 x 1k CHR for tiles
