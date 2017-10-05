@@ -7,7 +7,7 @@
 ; list1+3 address start tile lo
 ; list1+4 # tiles margin left
 ; list1+5 # tiles margin right
-; list1+6 stream control (b7 stop, b6 wait for A)
+; list1+6 stream control (b7 end, b6 pause, b5 wait for A)
 ; list1+7 line count  (used to clear dialog)
 ; list1+8 number of lines
 
@@ -35,23 +35,23 @@ state_runDialog:
 	LDA buttons
 	BMI +confirmed				; A button pressed
 
-	LDA frameCounter
-	AND #%00000111
-	BEQ +cursor
+	;LDA frameCounter
+	;AND #%00000111
+	;BEQ +cursor
 	RTS
 
-+cursor:
-	LDA frameCounter
-	AND #%00001000
-	BEQ +off
-	LDA #$2F
-	JMP +pushChar
+;+cursor:
+;	LDA frameCounter
+;	AND #%00001000
+;	BEQ +off
+;	LDA #$2F
+;	JMP +pushChar
 
 +confirmed:
 	LDA #$00
 	STA list1+6					; open stream again
 
-+off:
+;+off:
 	LDA #$0F
 	JMP +pushChar
 
@@ -109,7 +109,8 @@ state_runDialog:
 	BNE +continue
 	LDA #$60				; stop stream (b6) and wait for A button (b5)
 	STA list1+6
-	RTS
+	LDA #$F1
+	BNE +pushChar
 
 +continue:
 	; --- op code: move to next game state ---
@@ -159,7 +160,7 @@ state_runDialog:
 	BIT list1+6
 	BVS +continue
 
-	INC list1+1				; set pointer to next tile position if stream is open
+	INC list1+1				; set pointer to next tile position if stream is not paused
 	BNE +continue
 	INC list1+0
 

@@ -201,9 +201,9 @@ state_selectAction:
 	LDY #sSelect
 	JSR soundLoad
 
-	LDA menuFlags
-	EOR menuFlag_indicator
-	STA menuFlags
+	;LDA menuFlags
+	;EOR menuFlag_indicator
+	;STA menuFlags
 
 	LDA events
 	ORA event_refreshStatusBar		; buffer to screen

@@ -104,14 +104,10 @@ updateActionList:
 	LDA activeObjectStats+2																												; movement stat
 	CMP list1																																			; compare to used number of moves (list1)
 	BCS +walk
-	;LDA #$02
-	;STA list3+0
 	LDA #aRUN
 	JMP addPossibleAction
 
 +walk:
-	;LDA #$01
-	;STA list3+0
 	LDA #aMOVE
 	JMP addPossibleAction
 

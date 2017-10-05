@@ -314,15 +314,15 @@ fireArc:
 ;			    deltaX
 ;
 ; LOC list1+2 	Y center of check node
-; LOC list1+3	X center of check node
+; LOC list1+3	  X center of check node
 ; LOC list1+7 	temp var used in line function
 ; LOC list1+8 	result var used in line function
-; LOC list1+9   node that is checked
-; LOC list2+0	Y1 of line segment that is checked
-; LOC list2+1	X1 of line segment that is checked
-; LOC list2+2	Y2 of line segment that is checked
-; LOC list2+3	X2 of line segment that is checked
-; LOC list2+4	targetNode grid position
+; LOC list1+9   origin grid position
+; LOC list2+0		Y1 of line segment that is checked
+; LOC list2+1		X1 of line segment that is checked
+; LOC list2+2		Y2 of line segment that is checked
+; LOC list2+3		X2 of line segment that is checked
+; LOC list2+4		target grid position
 ; LOC list2+5   targetNode grid position X coordinate only
 
 ; helper subroutines
@@ -338,9 +338,10 @@ checkLineOfSight:
 	; 3) Per blocked node, determine the 3 line segments that define the node's hexagon and check any of them intersect with the line of sight
 
 	; --- determine tile coordinates for active object
-	LDX #$00
+
 	LDA activeObjectGridPos
 	STA list1+9					; used for node iteration later
+	LDX #$00
 	JSR gridPosToTilePos
 
 	; --- determine tile coordinates for target object

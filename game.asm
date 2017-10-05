@@ -4,9 +4,10 @@
 ; - miss animations for gun fire
 ; - shutdown animation
 ; - auto change of facing direction when attacked in close combat
-;	- in game menu
+; - hostile unit AI
 ;
 ; PARKING LOT
+; - content for in game menu
 ; - attribute table scrolling (two palettets)
 ; - show results state: decrement AP and HP when results are displayed (new opcode?)
 ; - events/  end turn / begin turn states (like mission fail / accomplished conditions and in game dialog triggers)
@@ -206,7 +207,7 @@
 	actionMenuLine1				.dsb 13
 	actionMenuLine2				.dsb 13
 	actionMenuLine3				.dsb 13
-	menuIndicator					.dsb 3
+	menuIndicator					.dsb 2
 	targetMenuLine1				.dsb 6
 	targetMenuLine2				.dsb 6
 	targetMenuLine3				.dsb 6
@@ -519,13 +520,13 @@ mainGameLoop:
 -	CMP frameCounter							; to prevent game from freezing (due to half completed stack operations)
 	BEQ -
 
-	LDA menuFlags									; switch on blinking for the indicators
-	ORA menuFlag_indicator
-	STA menuFlags
+	;LDA menuFlags									; switch on blinking for the indicators
+	;ORA menuFlag_indicator
+	;STA menuFlags
 
-	LDA #$2E  										; set indicator tiles
+	LDA #$C1											; set indicator tiles
 	STA menuIndicator+0						; in 'toggle' positions
-	LDA #$2F
+	LDA #$C0
 	STA menuIndicator+1
 
 	; ------------------------------
@@ -573,7 +574,7 @@ mainGameLoop:
 	EOR event_refreshStatusBar			;
 	STA events
 
-	JSR writeMenuToBuffer
+	JSR writeStatusBarToBuffer
 
 ; --- events have been handled, now launch game state subroutine ---
 +nextEvent:
@@ -700,6 +701,7 @@ gameStateJumpTable:
 	.include sbr_clearSprites.i
 	.include sbr_showPilot.i
 	.include sbr_deleteObject.i
+	.include sbr_writeStatusBarToBuffer.i
 
 	.include reset.i
 	.include nmi.i
