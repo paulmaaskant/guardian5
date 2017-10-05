@@ -303,18 +303,19 @@ fireArc:
 ; so in order to prevent rounding issues
 ; the following equivalent is calculated
 ;
-; list1+0 Y orig coordinate
-; list1+1 X orig coordinate (list1+1)
-; list1+4 delta Y (list+4)
-; list1+5 delta X (list+5)
-; list1+6 sign of deltas (list+6)
+; LOC list1+0 	Y orig coordinate
+; LOC list1+1 	X orig coordinate (list1+1)
+; LOC list1+2 	Y center of check node
+; LOC list1+3	  X center of check node
+; LOC list1+4 	delta Y (list+4)
+; LOC list1+5 	delta X (list+5)
+; LOC list1+6 	sign of deltas (list+6)
 ;
 ;       (X1 - Xorig) * deltaY
 ;    _________________________  + Yorig - Y1 = RESULT (SIGN)
 ;			    deltaX
 ;
-; LOC list1+2 	Y center of check node
-; LOC list1+3	  X center of check node
+
 ; LOC list1+7 	temp var used in line function
 ; LOC list1+8 	result var used in line function
 ; LOC list1+9   origin grid position
