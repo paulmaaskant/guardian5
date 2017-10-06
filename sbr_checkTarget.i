@@ -304,7 +304,7 @@ fireArc:
 ; the following equivalent is calculated
 ;
 ; LOC list1+0 	Y orig coordinate
-; LOC list1+1 	X orig coordinate (list1+1)
+; LOC list1+1 	X orig coordinate
 ; LOC list1+2 	Y center of check node
 ; LOC list1+3	  X center of check node
 ; LOC list1+4 	delta Y (list+4)
@@ -315,10 +315,9 @@ fireArc:
 ;    _________________________  + Yorig - Y1 = RESULT (SIGN)
 ;			    deltaX
 ;
-
 ; LOC list1+7 	temp var used in line function
 ; LOC list1+8 	result var used in line function
-; LOC list1+9   origin grid position
+; LOC list1+9   used to iterate over grid nodes
 ; LOC list2+0		Y1 of line segment that is checked
 ; LOC list2+1		X1 of line segment that is checked
 ; LOC list2+2		Y2 of line segment that is checked
@@ -341,43 +340,16 @@ checkLineOfSight:
 	; --- determine tile coordinates for active object
 
 	LDA activeObjectGridPos
-	STA list1+9					; used for node iteration later
-	LDX #$00
-	JSR gridPosToTilePos
+  STA list1+9					; used for node iteration later
 
-	; --- determine tile coordinates for target object
-	LDA cursorGridPos			; gridPos
-	STA list2+4					; used for node iteration later
-	LDX #$02
-	JSR gridPosToTilePos
+	;LDA cursorGridPos
+  ;STA list2+4					; used for node iteration later
 
-	; --- init variables ---
-	LDA #$00
-	STA list1+6		; b0
-	STA list1+8		; b0
-
-	; --- determine Y delta ---
-	LDA list1+0
-	SEC
-	SBC list1+2
-	BCS +
-	INC list1+6
-	EOR #$FF
-	ADC #$01
-+	STA list1+4
-
-	; --- determine X delta ---
-	LDA list1+1
-	SEC
-	SBC list1+3
-	BCS +
-	INC list1+6
-	EOR #$FF
-	ADC #$01
-+	STA list1+5
+	JSR setLineFunction
 
 	; --- prepare node iteration ---
-	LDA list2+4		; target node
+	;LDA list2+4		; target node
+	LDA cursorGridPos
 	AND #$0F		; mask
 	STA list2+5		; target node X coor
 
@@ -385,13 +357,14 @@ checkLineOfSight:
 	; --- check each blocked node in bounding box ---
 -nextNode:
 	JSR getNextBlockedNode
-	BCC +				; carry set means that
+	BCC +continue			; carry set means that
 	CLC					; iteration is complete, no blocked nodes found
 	RTS
-+
+
++continue
 	; --- determine the line segments that make up the blocked node ---
-	LDA list1+9
-	LDX #$02	; store Y in list1+2 and X in list1+3
+	LDA list1+9							; grid pos of the check node
+	LDX #$02								; store Y in list1+2 and X in list1+3
 	JSR gridPosToTilePos
 
 	; --- line segment 1 (horizontal through center)
@@ -403,7 +376,7 @@ checkLineOfSight:
 	SBC #$02
 	STA list2+1			; line 1, p1, X
 	CLC
-	ADC #$04			; line 1, p2, X
+	ADC #$04				; line 1, p2, X
 	STA list2+3
 
 	; --- check if the node's line segment intersects the line of sight ---
@@ -425,6 +398,7 @@ checkLineOfSight:
 	; --- check if the node's line segment intersects the line of sight ---
 	JSR checkIntersect
 	BCC -nextNode
+
 +lineBlocked:
 	RTS
 
@@ -439,53 +413,65 @@ checkLineOfSight:
 ; OUT carry flag	1=iteration complete, 0=more nodes left in bounding box
 ; --------------------------------------------------------
 getNextBlockedNode:
+
 	LDA list1+9					; current node
-	AND #$0F					; current node X coor
+	AND #$0F						; current node X coor
 	CMP list2+5					; target node X coor
 	BEQ +nextY
 	BCC +incX
 	DEC list1+9
 	JMP +check
+
 +incX:
 	INC list1+9
 	JMP +check
+
 +nextY:
-	LDA list1+9					; current node
-	AND #$F0					; reset X coordinate
-	STA list1+9					; on current node
-	LDA activeObjectGridPos		; back to X coordinate
-	AND #$0F					; of active node
+	LDA list1+9									; current node
+	AND #$F0										; clear X coordinate
+	STA list1+9									; on current node
+	LDA activeObjectGridPos			; back to X coordinate
+	AND #$0F										; of active node
 	CLC
 	ADC list1+9
-	STA list1+9					; done
+	STA list1+9									; done
 
-	CMP list2+4
+	;CMP list2+4					; target node
+	CMP cursorGridPos
 	BCC +incY
 	SBC #$10
 	STA list1+9
 	JMP +check
+
 +incY:
 	ADC #$10
 	STA list1+9
-	JMP +check
+	;JMP +check
+
 +check:
 	LDA list1+9
-	CMP list2+4					; target node
+	;CMP list2+4					; target node
+	CMP cursorGridPos
 	BEQ +lastNode
 
 	TAY
 	LDA nodeMap, Y
-	AND #%01000000				; does node block visibility?
+	AND #%01000000						; does node block visibility?
 	BEQ getNextBlockedNode		; no -> try next node
-	LDA list1+9					; yes -> return node & clear carry (this is not the last node)
+	LDA list1+9								; yes -> return node & clear carry (this is not the last node)
 	CLC
 	RTS
+
 +lastNode:
 	SEC							; set carry (this is the last node)
 	RTS
 
 ; --------------------------------------------------------
 ; checkIntersect
+;
+; uses the line function in list1
+;
+;	can only be used if the setLineFunction sbr has been called
 ;
 ; check if line segment intersects with the sight-line
 ; OUT carry flag (1 intersect, 0 no intersect)
@@ -584,42 +570,5 @@ lineFunction:
 	; --- A: 0 if the point is on the line of sight
 	LDA par4
 	ORA locVar1;	; set zero flag
-
-	RTS
-
-; --------------------------------------------------------
-; gridPosToTilePos
-;
-; IN A
-; LOC locVar1, locVar2
-; OUT list1
-; --------------------------------------------------------
-gridPosToTilePos:
-	; --- separate grid X & Y ---
-	PHA
-	LSR 					; y mask
-	LSR
-	LSR
-	LSR
-	STA locVar2				; YYYY
-	PLA
-	AND #$0F				; x mask
-	STA locVar1				; XXXX
-
-	; --- calculate Y position ---
-	SEC
-	SBC locVar2				; (XXXX - YYYY)
-	CLC
-	ADC #$10
-	STA list1+0, X
-
-	; --- calculate X position ---
-	LDA locVar1
-	CLC
-	ADC locVar2
-	STA list1+1, X			; (X+Y) (max 30)
-	ASL A
-	ADC list1+1, X
-	STA list1+1, X			; (X+Y) * 3
 
 	RTS

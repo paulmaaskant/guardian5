@@ -229,22 +229,18 @@ state_selectAction:
 	BIT sysFlag_lock				; action locked?
 	BEQ +toggle							; no -> toggle
 													; yes -> release lock
+
 	; --- release lock ---
 	EOR sysFlag_lock
 	STA sysFlags
 
-	LDY #sRelease
-	JSR soundLoad
-
-	LDA menuFlags
-	ORA menuFlag_indicator
-	STA menuFlags
-
-	LDA #$2E ; 						; "< >"
+	LDA #$C1 ; 						; "< >"
 	STA menuIndicator+0
-	LDA #$2F ;
+	LDA #$C0 ;
 	STA menuIndicator+1
-	RTS
+
+	LDY #sRelease
+	JMP soundLoad					; tail chain
 
 +toggle:
 	LDY #sSimpleBlip

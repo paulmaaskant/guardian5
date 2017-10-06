@@ -609,7 +609,7 @@ gameStateJumpTable:
 	.dw state_initializeMap-1						; 04
 	.dw state_loadLevelMapTiles-1				; 05
 	.dw state_selectAction-1						; 06
-	.dw state_setDirection-1						; 07
+	.dw state_selectDirection-1					; 07
 	.dw state_endTurn-1									; 08
 	.dw state_runDialog-1								; 09
 	.dw state_initializeSetDirection-1	; 0A
@@ -651,16 +651,17 @@ gameStateJumpTable:
 	.include state_initializeDialog.i
 	.include state_initializeMap.i
 	.include state_initializeTitleMenu.i
+	.include state_initializeScreen.i
+	.include state_initializeGameMenu.i
 	.include state_fadeInOut.i
 	.include state_loadLevelMapTiles.i
-	.include state_setDirection.i
-	.include state_initializeScreen.i
 	.include state_centerCamera.i
 	.include state_waitForCamera.i
 	.include state_runDialog.i
 	.include state_loadScreen.i
 	.include state_endTurn.i
 	.include state_selectAction.i
+	.include state_selectDirection.i
 	.include state_titleScreen.i
 	.include state_resolveMove.i
 	.include state_resolveSpin.i
@@ -673,7 +674,7 @@ gameStateJumpTable:
 	.include state_statusBarOpened.i
 	.include state_collapseStatusBar.i
 	.include state_changeBrightness.i
-	.include state_initializeGameMenu.i
+
 	.include state_loadGameMenu.i
 	.include state_faceTarget.i
 	.include state_clearDialog.i
@@ -686,6 +687,7 @@ gameStateJumpTable:
 	.include sbr_write32Tiles.i
 	.include sbr_multiply.i
 	.include sbr_gridPosToScreenPos.i
+	.include sbr_gridPosToTilePos.i
 	.include sbr_updateActionList.i
 	.include sbr_calculateActionCost.i
 	.include sbr_calculateHeat.i
@@ -702,6 +704,7 @@ gameStateJumpTable:
 	.include sbr_showPilot.i
 	.include sbr_deleteObject.i
 	.include sbr_writeStatusBarToBuffer.i
+	.include sbr_setLineFunction.i
 
 	.include reset.i
 	.include nmi.i
@@ -875,7 +878,7 @@ objectTypeH:
 
 typeRamulen1:
 	; animations (13 bytes)
-	.db #$05 ; 0 animation: taking fire
+	.db #$05 ; 0 animation: not used
 	.db #$16 ; 1 animation: facing U, still
 	.db #$12 ; 2 animation: facing RU, still
 	.db #$10 ; 3 animation: facing RD, still
@@ -936,7 +939,6 @@ sysFlag_scrollAdjustment:		.db %00000001
 
 ; --- menu flags control menu tile animation ---
 menuFlag_blink:							.db %10000000
-menuFlag_indicator:					.db %01000000
 menuFlag_line1:							.db %00100000
 menuFlag_line2:							.db %00010000
 menuFlag_line3:							.db %00001000

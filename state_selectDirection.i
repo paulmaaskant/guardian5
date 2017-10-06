@@ -1,7 +1,7 @@
 ; ------------------------------------------
 ; gameState 07: Wait for player to confirm spin direction
 ; ------------------------------------------
-state_setDirection:
+state_selectDirection:
 	LDA blockInputCounter
 	BEQ +takeInput					  ; if timer is still running, then skip input processing
 	DEC blockInputCounter			; timer still running
