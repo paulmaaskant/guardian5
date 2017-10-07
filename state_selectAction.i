@@ -44,7 +44,12 @@ state_selectAction:
 	LDA #$0F
 	BCC +xEven
 	CMP locVar1
-	BEQ +setTimer
+	BNE +continue
+
+	JMP +setTimer
++continue:
+
+
 	INC locVar1
 	JMP +setTimer
 
@@ -111,6 +116,15 @@ state_selectAction:
 
 +next:
 	LSR 									; select
+	BCC +next
+
+	LDA events
+	ORA event_updateSprites
+	STA events
+
+	JMP state_faceTarget
+
++next:
 	LSR 									; get B button
 	BCC +next
 	LDA events

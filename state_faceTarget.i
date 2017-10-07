@@ -1,64 +1,30 @@
 ; ------
-; 29 face target (only works after charge, needs rewrite)
+; 29 face target (active unit on p1 to face cursor on p2)
 ; -----
+;      \_1__/
+;      /\  /\
+;   6 /  \/  \ 2
+;  ---------------
+;     \  /\  /
+;   5  \/__\/  3
+;      / 4  \
+;
+; first the line function transposes p1 and p2 to the tile grid
+; then we do 3 comparisons and store the sign of each
+;
+; (p1_x - p1_y) compared to (p2_x - p2_y)
+; (p1_x + p1_y) compared to (p2_x + p2_y)
+; p1_y compared to p2_y
+;
+; which gives us a number between 0 and 7 and we used that that
+; to retrieve the direction from a look up table
+
 state_faceTarget:
-  JSR setLineFunction           ; draw a line from the active unit pos
-                                ; to the target pos
-  LDX #$03
--loop:                          ; then loop to find wich of the line segments of the active
-  LDA list1+0                   ; units hexagon intersect that line
-  CLC                           ;
-  ADC state29_point_dY, X
-  STA list2+0                   ; point 1 Y
-
-  LDA list1+1
-  CLC
-  ADC state29_point_dX, X
-  STA list2+1                 ; point 1 X
-
-  LDA list1+0
-  CLC
-  ADC state29_point_dY-1, X
-  STA list2+2                 ; point 2 Y
-
-  LDA list1+1
-  CLC
-  ADC state29_point_dX-1, X
-  STA list2+3                 ; point 2 X
-
-  TXA
-  PHA
-  JSR checkIntersect
-  PLA
-  TAX
-
-  BCS +foundIntersection
-
-  DEX
-  CPX #$01
-  BNE -loop
-
-+foundIntersection:
-  ; unfortunately, the line always intersect 2 hexagon line segments
-  ; so we can't yet see choose between direction
-  ; 1 and 4
-  ; 2 and 5
-  ; 3 and 6
-  ; ( draw any lin through the center of the hex below and you'll understand)
-  ; the following code solves that problem
-  ; by "drawing" a symetry line in the active hexagon (dividing direction 1, 2 and 3 from 4, 5, and 6)
-  ;      \_1__
-  ;      /\   \
-  ;   6 /  \   \ 2
-  ;     \   \  /
-  ;   5  \___\/  3
-  ;        4  \
-
-  ; and seeing on which side the targeted node lies
-  ; this can be done through simple addition ad substractoin
-  ; by comparing (active unit X - active unit Y)
-  ; to (target X - target Y)
-
+  JSR setLineFunction           ; used to set to transpose
+                                ; point 1 and point 2 to tile grid coors
+                                ; and store them in list1+0, 1, 2, 3
+  LDA #$00
+  STA list1+9
 
   CLC
   LDA list1+1         ; ox
@@ -66,12 +32,27 @@ state_faceTarget:
   SEC
   SBC list1+0         ; oy
   SBC list1+3         ; px
-  BMI +continue:
-  INX
-  INX
-  INX
+  ASL
+  ROL list1+9         ; push sign bit into list1+9
 
-+continue
+  CLC
+  LDA list1+1         ; ox
+  ADC list1+0         ; oy
+  SEC
+  SBC list1+2         ; py
+  SBC list1+3         ; px
+  ASL
+  ROL list1+9         ; push sign bit into list1+9
+
+  SEC
+  LDA list1+2         ; py
+  SBC list1+0         ; oy
+  ASL
+  ROL list1+9         ; push sign bit into list1+9
+
+  LDY list1+9
+  LDX state29_direction, Y
+
   LDY activeObjectIndex
   LDA object, Y
   AND #%11111000
@@ -79,12 +60,5 @@ state_faceTarget:
   STA object, Y
   JMP pullState
 
-;     _1_
-;    /   \2
-;    \_ _/3
-;
-
-state29_point_dY:
-  .db  -1, -1, 0, 1
-state29_point_dX:
-  .db  -1, 1, 2, 1
+state29_direction:
+  db 5, 6, 4, 3, 5, 1, 3, 2
