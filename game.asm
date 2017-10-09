@@ -674,7 +674,6 @@ gameStateJumpTable:
 	.include state_statusBarOpened.i
 	.include state_collapseStatusBar.i
 	.include state_changeBrightness.i
-
 	.include state_loadGameMenu.i
 	.include state_faceTarget.i
 	.include state_clearDialog.i
@@ -685,7 +684,6 @@ gameStateJumpTable:
 	.include sbr_replaceState.i
 	.include sbr_buildStateStack.i
 	.include sbr_write32Tiles.i
-	.include sbr_multiply.i
 	.include sbr_gridPosToScreenPos.i
 	.include sbr_gridPosToTilePos.i
 	.include sbr_updateActionList.i
@@ -701,10 +699,20 @@ gameStateJumpTable:
 	.include sbr_loadSpriteMetaFrame.i
 	.include sbr_loadAnimationFrame.i
 	.include sbr_clearSprites.i
+	.include sbr_clearList3.i
 	.include sbr_showPilot.i
 	.include sbr_deleteObject.i
 	.include sbr_writeStatusBarToBuffer.i
+	.include sbr_writeStartMenuToBuffer.i
 	.include sbr_setLineFunction.i
+
+	.include sbr_random.i
+	.include sbr_random100.i
+	.include sbr_divide.i
+	.include sbr_multiply.i
+	.include sbr_distance.i
+	.include sbr_toBCD.i
+	.include sbr_absolute.i
 
 	.include reset.i
 	.include nmi.i
@@ -852,73 +860,18 @@ str_NOT_POSSIBLE:
 str_PIVOT_TURN:
 	.db $0A, $1F, $18, $25, $1E, $23, $0F, $23, $24, $21, $1D
 str_ATTK:
-	.db $04, $22, $23, $21, $82
+	.db $04, S, T, R, $82
 str_START_GAME:
-	.db $0A, $22, $23, $10, $21, $23, $0F, $16, $10, $1C, $14
+	.db $0A, S, T, A, R, T, space, G, A, M, E
 str_PLAY_SOUND:
-	.db $0A, $1F, $1B, $10, $28, $0F, $22, $1E, $24, $1D, $13
+	.db $0A, P, L , A, Y, space, S, O, U, N, D
 str_INSTRUCTIONS:
 	.db $0C, $18, $1D, $22, $23, $21, $24, $12, $23, $18, $1E, $1D, $22
 str_RUN
 	.db $03, $21, $24, $1D
 
 
-; --- unit type attribute tables ---
-objectTypeL:
-	.dsb 1; reserved
-	.dsb 1; reserved
-	.dsb 1; reserved
-	.db #< typeRamulen1
-
-objectTypeH:
-	.dsb 1; reserved
-	.dsb 1; reserved
-	.dsb 1; reserved
-	.db #> typeRamulen1
-
-typeRamulen1:
-	; animations (13 bytes)
-	.db #$05 ; 0 animation: not used
-	.db #$16 ; 1 animation: facing U, still
-	.db #$12 ; 2 animation: facing RU, still
-	.db #$10 ; 3 animation: facing RD, still
-	.db #$14 ; 4 animation: facing D, still
-	.db #$10 ; 5 animation: facing LD, still
-  .db #$12 ; 6 animation: facing LU, still
-	.db #$17 ; 1 animation: facing U, walking
-	.db #$13 ; 2 animation: facing RU, walking
-	.db #$11 ; 3 animation: facing RD, walking
-	.db #$15 ; 4 animation: facing D, walking
-	.db #$11 ; 5 animation: facing LD, walking
-  .db #$13 ; 6 animation: facing LU, walking
-	; fixed stats (3 bytes)
-	.db #%00110110					; Dail starting positions: (b7-b3) main dial, (b2-b1) heat dial, and cool down (b0)
-	.db #%01100101					; Ranged weapon 1 max range (b7-4), min range (b3-2) and type  (b1-0)
-	.db #%01101011					; Ranged weapon 2 max range (b7-4), min range (b3-2) and type  (b1-0)
-	; dail stats
-	; 00000000 00000000
-	; |||||||| ||||||||
-	; |||||||| |||||+++ weapon 1 damage
-	; |||||||| ||+++--- weapon 2 damage
-	; |||||||| ++------ movement (add 2)
-	; |||||+++--------- armor (add 15)
-	; ||+++------------ accuracy (add 5)
-	.db #%00100100, #%01101001, #%00000000		; 01; 0-4-4, 1-5-1
-	.db #%00100100, #%01101010, #%00000000		; 02; 0-4-4, 1-5-2
-	.db #%00100100, #%01101011, #%00000000		; 03; 0-4-4, 1-5-3
-	.db #%00100100, #%01101011, #%00000000		; 04; 0-4-4, 1-5-3
-	.db #%00100100, #%01101011, #%00000000		; 05; 0-4-4, 1-5-3
-	.db #%00100100, #%01101011, #%00000000		; 06; 0-4-4, 1-5-3
-	.db #%00100100, #%01101011, #%00000000		; 07; 0-4-4, 1-5-3
-	.db #%00100100, #%01101011, #%00000000		; 08; 0-4-4, 1-5-3
-	.db #%00100100, #%01101011, #%00000000		; 09; 0-4-4, 1-5-3
-	.db #%00100100, #%01101011, #%00000000		; 10; 0-4-4, 1-5-3
-	.db #%00100100, #%01101011, #%00000000		; 11; 0-4-4, 1-5-3
-	.db #%00100100, #%01101011, #%00000000		; 12; 0-4-4, 1-5-3
-	.db #%00100100, #%01101011, #%00000000		; 13; 0-4-4, 1-5-3
-	.db #%00100100, #%01101011, #%00000000		; 14; 0-4-4, 1-5-3
-	.db #%00100100, #%01101100, #%00000000		; 15; 0-4-4, 1-5-4
-
+.include data_objectTypes.i
 
 ; --- events are automatically unflagged after they are executed
 event_confirmAction:				.db %10000000

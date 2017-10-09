@@ -6,10 +6,7 @@ state_loadGameMenu:
 	JSR write32Tiles				; push 64 tiles per cycle
 	DEC list1
 	BEQ +continue
-	;JSR write32Tiles
-	;DEC list1
-	;BEQ +continue
-	RTS								;
+	RTS								
 
 	; --- load complete ---
 +continue:
