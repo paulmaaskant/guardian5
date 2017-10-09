@@ -7,7 +7,9 @@ soundsLo:
   .db #< sound02
   .db #< sound03
   .db #< sound04
-  .dsb 11, #< sound15
+  .db #< sound05
+  .db #< sound06
+  .dsb 9, #< sound15
   .db #< sound10
   .db #< sound11
   .db #< sound12
@@ -28,7 +30,9 @@ soundsHi:
   .db #> sound02
   .db #> sound03
   .db #> sound04
-  .dsb 11, #> sound15
+  .db #> sound05
+  .db #> sound06
+  .dsb 9, #> sound15
   .db #> sound10
   .db #> sound11
   .db #> sound12
@@ -49,6 +53,8 @@ soundsHi:
   .include sound02.i
   .include sound03.i
   .include sound04.i
+  .include sound05.i
+  .include sound06.i
   .include soundEffects.i
 
 ; --------------------------------------
