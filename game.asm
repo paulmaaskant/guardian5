@@ -454,13 +454,15 @@ mainGameLoop:
 +skip:
 	LDA object+0, Y																																; derive the animation # based on object's direction and move
 	AND rightNyble																																; (b3) moving? (b2-0) direction
-	TAY																																						; set animation sequence (Y)
+	TAY
+
 	AND #%00000110																																; mirror sprite if direction is 2 or 3
 	CMP	#%00000010
 	BNE +next
-	TXA																																						; set b6 in X
-	CLC
-	ADC #%01000000
+	TXA																																						; set b6 in X to mirror
+	;CLC
+	;ADC #%01000000
+	ORA #%01000000
 	TAX
 
 +next:																																					; palette 0 for friendly, palette 1 for hostile
@@ -470,10 +472,12 @@ mainGameLoop:
 
 +next:
 	STX par4
-	CPY #$07																																			; 'moving' animation is required
-	BCC +next																																			; the animation's sequence location is Y - 2
-	DEY																																						;
-	DEY
+	LDA directionLookup, Y
+	TAY
+	;CPY #$07																																			; 'moving' animation is required
+	;BCC +next																																			; the animation's sequence location is Y - 2
+	;DEY																																						;
+	;DEY
 
 +next:
 	LDA (currentObjectType), Y 																										; retrieve sequence from the type
@@ -635,11 +639,12 @@ gameStateJumpTable:
 	.dw state_initializeTitleMenu-1			; 1E
 	.dw state_shutDown-1								; 1F
 	.dw state_initializeGameMenu-1			; 20
-	.dw not_used												; 21
+	.dw state_playAnimation-1						; 21
 	.dw state_loadGameMenu-1						; 22
 	.dw state_expandStatusBar-1					; 23
 	.dw state_statusBarOpened-1					; 24
 	.dw state_collapseStatusBar-1				; 25
+	.dw state_initializePlayAnimation-1	; 26
 
 :not_used
 
@@ -677,6 +682,8 @@ gameStateJumpTable:
 	.include state_loadGameMenu.i
 	.include state_faceTarget.i
 	.include state_clearDialog.i
+	.include state_playAnimation.i
+	.include state_initializePlayAnimation.i
 
 	.include subroutines.i
 	.include sbr_pushState.i
@@ -716,7 +723,9 @@ gameStateJumpTable:
 
 	.include reset.i
 	.include nmi.i
-	.include data_sprites.i
+	.include data_spriteFrames.i
+	.include data_metaSpriteFrames.i
+	.include data_animations.i
 	.include statusBar.i
 	.include audio.i
 
@@ -768,6 +777,7 @@ identity:
 	.db $00, $01, $02, $03, $04, $05, $06, $07, $08, $09, $0A, $0B, $0C, $0D, $0E, $0F
 	.db $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $1A, $1B, $1C, $1D, $1E, $1F
 	.db $20
+
 stringListL:
 	.db #< str_RANGED_ATK_1							; 00
 	.db #< str_RANGED_ATK_2							; 01
@@ -782,18 +792,19 @@ stringListL:
 	.db #< str_OUTSIDE_ARC							; 0A
 	.db #< str_CHOOSE_FACING_DIRECTION	; 0B
 	.db #< str_TARGET_TOO__CLOSE 				; 0C
-	.db #< str_RUN											; 0D
+	.db #< str_RUN											; 0D NOT USED
 	.db #< str_TARGET										; 0E
 	.db #< str_DAMAGE										; 0F
 	.db #< str_ACTION_PTS								; 10
 	.db #< str_FFW											; 11
-	.db #< str_NOT_POSSIBLE							; 12
+	.db #< str_RUN											; 12 NOT USED
 	.db #< str_PIVOT_TURN								; 13
 	.db #< str_ATTK											; 14
 	.db #< str_START_GAME								; 15
 	.db #< str_PLAY_SOUND								; 16
 	.db #< str_INSTRUCTIONS							; 17
 	.db #< str_RUN											; 18
+
 stringListH:
 	.db #> str_RANGED_ATK_1
 	.db #> str_RANGED_ATK_2
@@ -808,12 +819,12 @@ stringListH:
 	.db #> str_OUTSIDE_ARC
 	.db #> str_CHOOSE_FACING_DIRECTION
 	.db #> str_TARGET_TOO__CLOSE
-	.db #> str_RUN  ; not used
+	.db #> str_RUN  										; not used
 	.db #> str_TARGET
 	.db #> str_DAMAGE
 	.db #> str_ACTION_PTS
 	.db #> str_FFW
-	.db #> str_NOT_POSSIBLE
+	.db #> str_RUN
 	.db #> str_PIVOT_TURN
 	.db #> str_ATTK
 	.db #> str_START_GAME
@@ -846,29 +857,27 @@ str_OUTSIDE_ARC:
 str_CHOOSE_FACING_DIRECTION:
 	.db $18, $12, $17, $1E, $1E, $22, $14, $0F, $15, $10, $12, $18, $1D, $16, $0F, $0F, $13, $18, $21, $14, $12, $23, $18, $1E, $1D
 str_TARGET_TOO__CLOSE:
-	.db $12, $23, $10, $21, $16, $14, $23, $0F, $23, $1E, $1E, $0F, $0F, $0F, $12, $1B, $1E, $22, $14
+	.db 18, T, A, R, G, E, T, space, T, O, O, space, space, space, C, L, O, S, E
 str_TARGET:
-	.db $06, $23, $10, $21, $16, $14, $23
+	.db 6, T, A, R, G, E, T
 str_DAMAGE:
-	.db $06, $13, $10, $1C, $10, $16, $14
+	.db 6, D, A, M, A, G, E
 str_ACTION_PTS:
-	.db 10 , A, C, T, I, O, N, space, P, T, S
+	.db 10, A, C, T, I, O, N, space, P, T, S
 str_FFW:
-	.db $01, $2F
-str_NOT_POSSIBLE:
-	.db $0C, $1D, $1E, $23, $0F, $1F, $1E, $22, $22, $18, $11, $1B, $14
+	.db 1, $2F
 str_PIVOT_TURN:
-	.db $0A, $1F, $18, $25, $1E, $23, $0F, $23, $24, $21, $1D
+	.db 10, P, I, V, O, T, space, T, U, R, N
 str_ATTK:
-	.db $04, S, T, R, $82
+	.db 4, S, T, R, $82
 str_START_GAME:
-	.db $0A, S, T, A, R, T, space, G, A, M, E
+	.db 10, S, T, A, R, T, space, G, A, M, E
 str_PLAY_SOUND:
-	.db $0A, P, L , A, Y, space, S, O, U, N, D
+	.db 10, P, L , A, Y, space, S, O, U, N, D
 str_INSTRUCTIONS:
-	.db $0C, $18, $1D, $22, $23, $21, $24, $12, $23, $18, $1E, $1D, $22
+	.db 12, I, N, S, T, R, U, C, T, I, O, N, S
 str_RUN
-	.db $03, $21, $24, $1D
+	.db 3, R, U, N
 
 
 .include data_objectTypes.i
@@ -921,7 +930,9 @@ hitProbability:				.db #$64	; dif 0 100% (97 due to crit miss
 							.db #$01	; dif 18  1% (3% due to crit
 							.db #$00	; dif 19  0% (3% due to crit
 
-
+;;
+directionLookup:
+	.db 0, 0, 1, 2, 3, 2, 1, 0, 0, 4, 5, 6, 7, 6, 5
 
 
 ;; 9 - vectors
