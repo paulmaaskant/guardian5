@@ -47,6 +47,17 @@ blankScreen:
 	; --- palettes ---
 	.db repeatChar, $40, $00	; 2 rows, palette 0
 
+animationScreen:
+	.db repeatBlank, $00			; 8 rows
+	.db repeatBlank, $AC			; 5 rows
+	.db $2B, repeatBlank, $06, $2A; 1 row
+	.db repeatBlank, $78			; 3 rows
+	.db $2D, 	repeatBlank, $06, $2C		; 1 row
+	.db repeatBlank, $00			; 8 rows
+	.db repeatBlank, $8C			; 4 rows
+	; --- palettes ---
+	.db repeatChar, $40, $AA	; 2 rows, palette 0
+
 briefScreen:
 	.db $FF, $97																																	; 7 rows and 23 tiles
 	.db $2B, $FF, $04, $2A 																												; 0 rows and 6 tiles
