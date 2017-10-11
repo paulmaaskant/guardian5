@@ -238,7 +238,7 @@ getStatsAddress:
 	TAX
 	LDA objectTypeL, X
 	CLC
-	ADC #$0D
+	ADC #$08
 	STA pointer1+0
 	LDA objectTypeH, X
 	ADC #$00

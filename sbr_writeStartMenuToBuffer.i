@@ -7,9 +7,9 @@ writeStartMenuToBuffer:
 	LDA list1+2
 	JSR toBCD
 	LDA par2
-	STA actionMenuLine3+11
+	STA actionMenuLine3+11			; sound number (tens)
 	LDA par3
-	STA actionMenuLine3+12
+	STA actionMenuLine3+12			; sound number (ones)
 
 
 	; --- line 1 tile 8 through 21 ---

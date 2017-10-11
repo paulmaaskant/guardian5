@@ -41,6 +41,7 @@ state00_screenLo:
 	.db #> briefScreen			; 02 mission brief background
 	.db #> statusBar				; 03 status bar
 	.db #> blankScreen			; 04 instructions background
+	.db #> animationScreen			; 05 play animation background
 
 state00_screenHi:
 	.db #< titleScreen
@@ -48,6 +49,7 @@ state00_screenHi:
 	.db #< briefScreen
 	.db #< statusBar
 	.db #< blankScreen
+	.db #< animationScreen
 
 state00_sound:
 	.db $00
@@ -55,3 +57,4 @@ state00_sound:
 	.db $C0									; silence
 	.db $04
 	.db $C0									; silence
+	.db $05									;

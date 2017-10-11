@@ -74,7 +74,8 @@ state_titleScreen:
 +next:
 	LSR									; start button
 	BCS +confirm
-	LSR
+	LSR									; select button
+	BCS +animation
 	LSR									; B
 	LSR									; A button
 	BCC +setTimer
@@ -103,7 +104,7 @@ state_titleScreen:
 
 +startGame:
 	JSR pullAndBuildStateStack
-	.db $10							; # items
+	.db 16							; # items
 	.db $0D, 0					; change brightness 0: fade out
 	.db $00, 2					; load screen 2: mission brief screen
 	.db $0D, 1					; change brightness 1: fade in
@@ -117,12 +118,32 @@ state_titleScreen:
 
 +instructions:
 JSR pullAndBuildStateStack
-	.db $10							; # items
+	.db 16							; # items
 	.db $0D, 0					; change brightness 0: fade out
-	.db $00, 4					; load screen 1: blank screen
+	.db $00, 4					; load screen 4: instruction screen
 	.db $0D, 1					; change brightness 1: fade in
 	.db $01, 11					; load stream 11: instructions
 	.db $0D, 0					; change brightness 0: fade out
+	.db $00, 0						; load screen 00: title screen
+	.db $1E								; load title menu
+	.db $0D, 1						; change brightness 1: fade in
+	.db $03								; title screen (wait for user)
+	; built in RTS
+
++animation:
+
+JSR soundSilence
+JSR pullAndBuildStateStack
+	.db 15							; # items
+	.db $0D, 0					; change brightness 0: fade out
+	.db $00, 5					; load screen 5: animation screen
+	.db $0D, 1					; change brightness 1: fade in
+
+	.db $26							; play animations
+
+	; unclean state variables cause corrupt
+
+	.db $0D, 0						; change brightness 0: fade out
 	.db $00, 0						; load screen 00: title screen
 	.db $1E								; load title menu
 	.db $0D, 1						; change brightness 1: fade in
