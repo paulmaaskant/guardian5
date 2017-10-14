@@ -22,10 +22,10 @@ tankType2:
 	.db $1B ; 3 animation: facing RD, still
 	.db $19 ; 4 animation: facing D, still
 
-	.db $00 ; 1 animation: facing U, walking
-	.db $00 ; 2 animation: facing RU, walking
-	.db $00 ; 3 animation: facing RD, walking
-	.db $00 ; 4 animation: facing D, walking
+	.db $1F ; 1 animation: facing U, walking
+	.db $1D ; 2 animation: facing RU, walking
+	.db $1C ; 3 animation: facing RD, walking
+	.db $1E ; 4 animation: facing D, walking
 
 	; fixed stats (3 bytes)
 	.db #%00110110					; Dail starting positions: (b7-b3) main dial, (b2-b1) heat dial, and cool down (b0)

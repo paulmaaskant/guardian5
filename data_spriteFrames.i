@@ -8,97 +8,123 @@
 ; ffffffff = (optional) flip bits for first 4 patterns
 ; xxxxxxxx = X offset from center vertical axis
 
-tank_all_stationary_d4_bottom:
+tank_all_d4_bottom:
 	.db %00101111, $04, -4, $91, $91
 
-tank_all_stationary_d1_bottom:
+tank_all_d1_bottom:
 	.db %00101111, $04, -4, $B1, $B1
 
-tank01_stationary_d5_left:
+tank01_d5_left:
 	.db %00010000, -4, $82
 	.db %00010010, -4, $92
 	.db %00011011, -4, $84
 
-tank02_stationary_d5_left:
+tank02_d5_left:
 	.db %00010000, -4, $86
 	.db %00010010, -4, $96
 	.db %00011011, -4, $84
 
-tank01_stationary_d5_right:
+tank01_d5_right:
 	.db %00010000, 4, $83
 	.db %00010010, 4, $93
 	.db %00011011, 1, $84
 
-tank02_stationary_d5_right:
+tank02_d5_right:
 	.db %00010000, 4, $87
 	.db %00010010, 4, $97
 	.db %00011011, 1, $84
 
-tank01_stationary_d6_right:
+tank01_d6_right:
 	.db %00010000, 4, $A3
 	.db %00010010, 4, $B3
 	.db %00010011, 4, $85
 
-tank02_stationary_d6_right:
+tank02_d6_right:
 	.db %00010000, 4, $A7
 	.db %00010010, 4, $B7
 	.db %00010011, 4, $85
 
-tank01_stationary_d6_left:
+tank01_d6_left:
 	.db %00010000, -4, $A2
 	.db %00010010, -1, $B2
 	.db %00011011, -2, $85
 
-tank02_stationary_d6_left:
+tank02_d6_left:
 	.db %00010000, -4, $A6
 	.db %00010010, -1, $B6
 	.db %00011011, -2, $85
 
-tank01_stationary_d4_top:
+tank01_d4_top:
 	.db %00110110, $10, -8, $80, $81, $80
 	.db %00100111, $04, -4, $90, $90
 
-tank02_stationary_d4_top:  ; body front
+tank02_d4_top:
 	.db %00110110, $10, -8, $94, $95, $94
 	.db %00100111, $04, -4, $A4, $A4
 
-tank01_stationary_d1_top:
+tank01_d1_top:
 	.db %00110110, $10, -8, $A0, $A1, $A0
 	.db %00100111, $04, -4, $B0, $B0
 
-tank02_stationary_d1_top:
+tank02_d1_top:
 	.db %00110110, $10, -8, $B4, $B5, $B4
 	.db %00100111, $04, -4, $A5, $A5
 
-O1F03:                                                                          ; m1 down diag left column body
-	.db %00010000, %11111100, $82
-	.db %00010011, %11111100, $92
+tank01_d5_top_left:
+	.db %00010000, -4, $82
+	.db %00010011, -4, $92
 
-O1F04:                                                                          ; m1 down diag right column body frame 1
-	.db %00010000, %00000100, $83
-	.db %00010011, %00000100, $93
+tank02_d5_top_left:
+	.db %00010000, -4, $86
+	.db %00010011, -4, $96
 
-O1F05:                                                                          ; m1 down diag right column body frame 2
-	.db %00010000, %00000100, $83
-	.db %00010011, %00000100, $75
+tank01_d5_top_right_1:
+	.db %00010000, 4, $83
+	.db %00010011, 4, $93
 
-O1F08:                                                                          ; m1 up diag right column body
-	.db #%00010000, #%00000100, #$A3
-	.db #%00010011, #%00000100, #$B3
+tank02_d5_top_right_1:
+	.db %00010000, 4, $87
+	.db %00010011, 4, $97
 
-O1F09:                                                                          ; m1 up diag right column body
-	.db #%00010000, #%00000100, #$A3
-	.db #%00010011, #%00000100, #$46
+tank01_d5_top_right_2:
+	.db %00010000, 4, $83
+	.db %00010011, 4, $75
 
-; m1 up diag right column body frame 1
-O1F0A:
-	.db #%00010000, #%11111100, #$A2
-	.db #%00010011, #%11111111, #$B2
+tank02_d5_top_right_2:
+	.db %00010000, 4, $87
+	.db %00010011, 4, $66
 
-; m1 up diag right column body frame 2
-O1F0B:
-	.db #%00010000, #%11111100, #$A2
-	.db #%00010011, #%11111110, #$56
+tank01_d6_top_right_1:
+	.db %00010000, 4, $A3
+	.db %00010011, 4, $B3
+
+tank02_d6_top_right_1:
+	.db %00010000, 4, $A7
+	.db %00010011, 4, $B7
+
+tank01_d6_top_right_2:
+	.db %00010000, 4, $A3
+	.db %00010011, 4, $46
+
+tank02_d6_top_right_2:
+	.db %00010000, 4, $A7
+	.db %00010011, 4, $76
+
+tank01_d6_top_left_1:
+	.db %00010000, -4, $A2
+	.db %00010011, -1, $B2
+
+tank02_d6_top_left_1:
+	.db %00010000, -4, $A6
+	.db %00010011, -1, $B6
+
+tank01_d6_top_left_2:
+	.db %00010000, -4, $A2
+	.db %00010011, -2, $56
+
+tank02_d6_top_left_2:
+	.db %00010000, -4, $A6
+	.db %00010011, -2, $47
 
 ; m1 down diag front leg
 W1F00:	.db #%00010001, #$00, #$40

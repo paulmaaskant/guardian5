@@ -20,392 +20,753 @@
 
 
 ; -------------------------------------
-; tank 1 animation frames
+; tank animation frames
 ; -------------------------------------
+
+tank01_stationary_d1_f:
+  .db %00100000
+	.db -22
+	.dw tank01_d1_top
+	.db %10100000
+	.db -6
+	.dw tank_all_d1_bottom
+
+tank02_stationary_d1_f:
+  .db %00100000
+	.db -22
+	.dw tank02_d1_top
+	.db %10100000
+	.db -6
+	.dw tank_all_d1_bottom
+
+tank01_stationary_d4_f:
+	.db %00100000
+	.db -22
+	.dw tank01_d4_top
+	.db %10100000
+	.db -6
+	.dw tank_all_d4_bottom
+
+tank02_stationary_d4_f:
+  .db %00100000
+	.db -22
+	.dw tank02_d4_top
+	.db %10100000
+	.db -6
+	.dw tank_all_d4_bottom
 
 tank01_stationary_d5_f:
   .db %00100000
   .db -13
-  .dw tank01_stationary_d5_right
+  .dw tank01_d5_right
   .db %10100000
   .db -16
-  .dw tank01_stationary_d5_left
+  .dw tank01_d5_left
 
 tank02_stationary_d5_f:
   .db %00100000
   .db -13
-  .dw tank02_stationary_d5_right
+  .dw tank02_d5_right
   .db %10100000
   .db -16
-  .dw tank02_stationary_d5_left
+  .dw tank02_d5_left
 
 tank01_stationary_d6_f:
 	.db %00100000
 	.db -16
-	.dw tank01_stationary_d6_right
+	.dw tank01_d6_right
 	.db %10100000
 	.db -13
-	.dw tank01_stationary_d6_left
+	.dw tank01_d6_left
 
 tank02_stationary_d6_f:
 	.db %00100000
 	.db -16
-	.dw tank02_stationary_d6_right
+	.dw tank02_d6_right
 	.db %10100000
 	.db -13
-	.dw tank02_stationary_d6_left
+	.dw tank02_d6_left
 
-
-
-
-; tank 1 walking (diag down) 01
-OS1F01
-  .db #%00100000
-	.db #$F0
-	.dw O1F03
-	.db #%00100000
-	.db #$F3
-	.dw O1F04
-	.db #%00100000
-	.db #$03
+tank01_moving_d5_fr01:
+  .db %00100000
+	.db -16
+	.dw tank01_d5_top_left
+	.db %00100000
+	.db -13
+	.dw tank01_d5_top_right_1
+	.db %00100000
+	.db 3
 	.dw W1F05
-	.db #%10000000
+	.db %10000000
 	.dw W1F09
-; tank 1 walking (diag down) 02
-OS1F02	.db #%00100000
-		.db #$F0
-		.dw O1F03
-		.db #%00100000
-		.db #$F3
-		.dw O1F04
-		.db #%00100000
-		.db #$03
-		.dw W1F06
-		.db #%10000000
-		.dw W1F0A
-; tank 1 walking (diag down) 03
-OS1F03	.db #%00100000
-		.db #$F0
-		.dw O1F03
-		.db #%00100000
-		.db #$F3
-		.dw O1F04
-		.db #%00100000
-		.db #$03
-		.dw W1F07
-		.db #%10000000
-		.dw W1F0B
-; tank 1 walking (diag down) 04
-OS1F04	.db #%00100000
-		.db #$F1
-		.dw O1F03
-		.db #%00100000
-		.db #$F4
-		.dw O1F04
-		.db #%00100000
-		.db #$04
-		.dw W1F00
-		.db #%10100000
-		.db #$01
-		.dw W1F0C
-; tank 1 walking (diag down) 05
-OS1F05	.db #%00100000
-		.db #$F0
-		.dw O1F03
-		.db #%00100000
-		.db #$F3
-		.dw O1F05
-		.db #%00100000
-		.db #$03
-		.dw W1F01
-		.db #%10000000
-		.dw W1F0D
-; tank 1 walking (diag down) 06
-OS1F06	.db #%00100000
-		.db #$F0
-		.dw O1F03
-		.db #%00100000
-		.db #$F3
-		.dw O1F05
-		.db #%00100000
-		.db #$03
-		.dw W1F02
-		.db #%10000000
-		.dw W1F0E
-; tank 1 walking (diag down) 07
-OS1F07	.db #%00100000
-		.db #$F0
-		.dw O1F03
-		.db #%00100000
-		.db #$F3
-		.dw O1F05
-		.db #%00100000
-		.db #$03
-		.dw W1F03
-		.db #%10000000
-		.dw W1F0F
-; tank 1 walking (diag down) 08
-OS1F08	.db #%00100000
-		.db #$F1
-		.dw O1F03
-		.db #%00100000
-		.db #$F4
-		.dw O1F05
-		.db #%00100000
-		.db #$04
-		.dw W1F04
-		.db #%10100000
-		.db #$01
-		.dw W1F08
 
+tank01_moving_d5_fr02:
+  .db %00100000
+	.db -16
+	.dw tank01_d5_top_left
+	.db #%00100000
+	.db -13
+	.dw tank01_d5_top_right_1
+	.db %00100000
+	.db 3
+	.dw W1F06
+	.db %10000000
+	.dw W1F0A
 
+tank01_moving_d5_fr03:
+  .db %00100000
+	.db -16
+	.dw tank01_d5_top_left
+	.db %00100000
+	.db -13
+	.dw tank01_d5_top_right_1
+	.db %00100000
+	.db 3
+	.dw W1F07
+	.db %10000000
+	.dw W1F0B
 
-; tank 1 walking (diag up) 01
-OS1F0A	.db #%00100000
-		.db #$F4
-		.dw O1F0B
-		.db #%00100000
-		.db #$F1
-		.dw O1F08
-		.db #%00100000
-		.db #$04
-		.dw W1F10
-		.db #%10100000
-		.db #$01
-		.dw W1F18
-; tank 1 walking (diag up) 02
-OS1F0B	.db #%00100000
-		.db #$F3
-		.dw O1F0A
-		.db #%00100000
-		.db #$F0
-		.dw O1F08
-		.db #%00100000
-		.db #$03
-		.dw W1F11
-		.db #%10000000
-		.dw W1F19
-; tank 1 walking (diag up) 03
-OS1F0C	.db #%00100000
-		.db #$F3
-		.dw O1F0A
-		.db #%00100000
-		.db #$F0
-		.dw O1F09
-		.db #%00100000
-		.db #$03
-		.dw W1F12
-		.db #%10000000
-		.dw W1F1A
-; tank 1 walking (diag up) 04
-OS1F0D	.db #%00100000
-		.db #$F3
-		.dw O1F0A
-		.db #%00100000
-		.db #$F0
-		.dw O1F09
-		.db #%00100000
-		.db #$03
-		.dw W1F13
-		.db #%10000000
-		.dw W1F1B
-; tank 1 walking (diag up) 05
-OS1F0E	.db #%00100000
-		.db #$F4
-		.dw O1F0A
-		.db #%00100000
-		.db #$F1
-		.dw O1F09
-		.db #%00100000
-		.db #$04
-		.dw W1F14
-		.db #%10100000
-		.db #$01
-		.dw W1F1C
-; tank 1 walking (diag up) 06
-OS1F0F	.db #%00100000
-		.db #$F3
-		.dw O1F0A
-		.db #%00100000
-		.db #$F0
-		.dw O1F08
-		.db #%00100000
-		.db #$03
-		.dw W1F15
-		.db #%10000000
-		.dw W1F1D
-; tank 1 walking (diag up) 07
-OS1F10	.db #%00100000
-		.db #$F3
-		.dw O1F0B
-		.db #%00100000
-		.db #$F0
-		.dw O1F08
-		.db #%00100000
-		.db #$03
-		.dw W1F16
-		.db #%10000000
-		.dw W1F1E
-; tank 1 walking (diag up) 08
-OS1F11	.db #%00100000
-		.db #$F3
-		.dw O1F0B
-		.db #%00100000
-		.db #$F0
-		.dw O1F08
-		.db #%00100000
-		.db #$03
-		.dw W1F17
-		.db #%10000000
-		.dw W1F1F
+tank01_moving_d5_fr04:
+  .db %00100000
+	.db -15
+	.dw tank01_d5_top_left
+	.db #%00100000
+	.db -12
+	.dw tank01_d5_top_right_1
+	.db %00100000
+	.db 4
+	.dw W1F00
+	.db %10100000
+	.db 1
+	.dw W1F0C
 
-; tank 1 still (down)
-OS1F12	.db #%00100000
-		.db #$EA
-		.dw tank01_stationary_d4_top
-		.db #%10100000
-		.db #$FA
-		.dw tank_all_stationary_d4_bottom
+tank01_moving_d5_fr05:
+  .db %00100000
+	.db -16
+	.dw tank01_d5_top_left
+	.db %00100000
+	.db -13
+	.dw tank01_d5_top_right_2
+	.db %00100000
+	.db 3
+	.dw W1F01
+	.db %10000000
+	.dw W1F0D
 
-; tank 1 walking (down) 01
-OS1F13	.db #%00100000
-		.db #$EB
-		.dw tank01_stationary_d4_top
-		.db #%10100000
-		.db #$FB
-		.dw W1F20
-; tank 1 walking (down) 02
-OS1F14	.db #%00100000
-		.db #$EA
-		.dw tank01_stationary_d4_top
-		.db #%10100000
-		.db #$FA
-		.dw W1F21
-; tank 1 walking (down) 03
-OS1F15	.db #%00100000
-		.db #$EA
-		.dw tank01_stationary_d4_top
-		.db #%10100000
-		.db #$FA
-		.dw W1F22
-; tank 1 walking (down) 04
-OS1F16	.db #%00100000
-		.db #$EA
-		.dw tank01_stationary_d4_top
-		.db #%10100000
-		.db #$FA
-		.dw W1F23
-; tank 1 walking (down) 05
-OS1F17	.db #%00100000
-		.db #$EB
-		.dw tank01_stationary_d4_top
-		.db #%10100000
-		.db #$FB
-		.dw W1F24
-; tank 1 walking (down) 06
-OS1F18	.db #%00100000
-		.db #$EA
-		.dw tank01_stationary_d4_top
-		.db #%10100000
-		.db #$FA
-		.dw W1F25
-; tank 1 walking (down) 07
-OS1F19	.db #%00100000
-		.db #$EA
-		.dw tank01_stationary_d4_top
-		.db #%10100000
-		.db #$FA
-		.dw W1F26
-; tank 1 walking (down) 08
-OS1F1A	.db #%00100000
-		.db #$EA
-		.dw tank01_stationary_d4_top
-		.db #%10100000
-		.db #$FA
-		.dw W1F27
+tank01_moving_d5_fr06:
+  .db %00100000
+	.db -16
+	.dw tank01_d5_top_left
+	.db %00100000
+	.db -13
+	.dw tank01_d5_top_right_2
+	.db %00100000
+	.db 3
+	.dw W1F02
+	.db %10000000
+	.dw W1F0E
 
-; tank 1 still (up)
-OS1F1B	.db #%00100000
-		.db #$EA
-		.dw tank01_stationary_d1_top
-		.db #%10100000
-		.db #$FA
-		.dw tank_all_stationary_d1_bottom
-; tank 1 walking (up) 01
-OS1F1C	.db #%00100000
-		.db #$EB
-		.dw tank01_stationary_d1_top
-		.db #%10100000
-		.db #$FB
-		.dw W1F28
-; tank 1 walking (up) 02
-OS1F1D	.db #%00100000
-		.db #$EA
-		.dw tank01_stationary_d1_top
-		.db #%10100000
-		.db #$FA
-		.dw W1F29
-; tank 1 walking (up) 03
-OS1F1E	.db #%00100000
-		.db #$EA
-		.dw tank01_stationary_d1_top
-		.db #%10100000
-		.db #$FA
-		.dw W1F2A
-; tank 1 walking (up) 04
-OS1F1F	.db #%00100000
-		.db #$EA
-		.dw tank01_stationary_d1_top
-		.db #%10100000
-		.db #$FA
-		.dw W1F2B
-; tank 1 walking (up) 05
-OS1F20	.db #%00100000
-		.db #$EB
-		.dw tank01_stationary_d1_top
-		.db #%10100000
-		.db #$FB
-		.dw W1F2C
-; tank 1 walking (up) 06
-OS1F21	.db #%00100000
-		.db #$EA
-		.dw tank01_stationary_d1_top
-		.db #%10100000
-		.db #$FA
-		.dw W1F2D
-; tank 1 walking (up) 07
-OS1F22	.db #%00100000
-		.db #$EA
-		.dw tank01_stationary_d1_top
-		.db #%10100000
-		.db #$FA
-		.dw W1F2E
-; tank 1 walking (up) 08
-OS1F23	.db #%00100000
-		.db #$EA
-		.dw tank01_stationary_d1_top
-		.db #%10100000
-		.db #$FA
-		.dw W1F2F
+tank01_moving_d5_fr07:
+  .db %00100000
+	.db -16
+	.dw tank01_d5_top_left
+	.db %00100000
+	.db -13
+	.dw tank01_d5_top_right_2
+	.db #%00100000
+	.db 3
+	.dw W1F03
+	.db %10000000
+	.dw W1F0F
 
+tank01_moving_d5_fr08:
+  .db %00100000
+	.db -15
+	.dw tank01_d5_top_left
+	.db %00100000
+	.db -12
+	.dw tank01_d5_top_right_2
+	.db %00100000
+	.db 4
+	.dw W1F04
+	.db %10100000
+	.db 1
+	.dw W1F08
 
+tank02_moving_d5_fr01:
+  .db %00100000
+	.db -16
+	.dw tank02_d5_top_left
+	.db %00100000
+	.db -13
+	.dw tank02_d5_top_right_1
+	.db %00100000
+	.db 3
+	.dw W1F05
+	.db %10000000
+	.dw W1F09
 
-; mech 2 still (down)
-tank02_stationary_d4_f
-    .db #%00100000
-		.db #$EA
-		.dw tank02_stationary_d4_top
-		.db #%10100000
-		.db #$FA
-		.dw tank_all_stationary_d4_bottom
+tank02_moving_d5_fr02:
+  .db %00100000
+	.db -16
+	.dw tank02_d5_top_left
+	.db #%00100000
+	.db -13
+	.dw tank02_d5_top_right_1
+	.db %00100000
+	.db 3
+	.dw W1F06
+	.db %10000000
+	.dw W1F0A
 
-tank02_stationary_d1_f
-    .db #%00100000
-		.db #$EA
-		.dw tank02_stationary_d1_top
-		.db #%10100000
-		.db #$FA
-		.dw tank_all_stationary_d1_bottom
+tank02_moving_d5_fr03:
+  .db %00100000
+	.db -16
+	.dw tank02_d5_top_left
+	.db %00100000
+	.db -13
+	.dw tank02_d5_top_right_1
+	.db %00100000
+	.db 3
+	.dw W1F07
+	.db %10000000
+	.dw W1F0B
+
+tank02_moving_d5_fr04:
+  .db %00100000
+	.db -15
+	.dw tank02_d5_top_left
+	.db #%00100000
+	.db -12
+	.dw tank02_d5_top_right_1
+	.db %00100000
+	.db 4
+	.dw W1F00
+	.db %10100000
+	.db 1
+	.dw W1F0C
+
+tank02_moving_d5_fr05:
+  .db %00100000
+	.db -16
+	.dw tank02_d5_top_left
+	.db %00100000
+	.db -13
+	.dw tank02_d5_top_right_2
+	.db %00100000
+	.db 3
+	.dw W1F01
+	.db %10000000
+	.dw W1F0D
+
+tank02_moving_d5_fr06:
+  .db %00100000
+	.db -16
+	.dw tank02_d5_top_left
+	.db %00100000
+	.db -13
+	.dw tank02_d5_top_right_2
+	.db %00100000
+	.db 3
+	.dw W1F02
+	.db %10000000
+	.dw W1F0E
+
+tank02_moving_d5_fr07:
+  .db %00100000
+	.db -16
+	.dw tank02_d5_top_left
+	.db %00100000
+	.db -13
+	.dw tank02_d5_top_right_2
+	.db #%00100000
+	.db 3
+	.dw W1F03
+	.db %10000000
+	.dw W1F0F
+
+tank02_moving_d5_fr08:
+  .db %00100000
+	.db -15
+	.dw tank02_d5_top_left
+	.db %00100000
+	.db -12
+	.dw tank02_d5_top_right_2
+	.db %00100000
+	.db 4
+	.dw W1F04
+	.db %10100000
+	.db 1
+	.dw W1F08
+
+tank01_moving_d6_fr01:
+  .db %00100000
+	.db -12
+	.dw tank01_d6_top_left_2
+	.db %00100000
+	.db -15
+	.dw tank01_d6_top_right_1
+	.db %00100000
+	.db 4
+	.dw W1F10
+	.db %10100000
+	.db 1
+	.dw W1F18
+
+tank01_moving_d6_fr02:
+  .db %00100000
+	.db -13
+	.dw tank01_d6_top_left_1
+	.db %00100000
+	.db -16
+	.dw tank01_d6_top_right_1
+	.db %00100000
+	.db 3
+	.dw W1F11
+	.db %10000000
+	.dw W1F19
+
+tank01_moving_d6_fr03:
+  .db %00100000
+	.db -13
+	.dw tank01_d6_top_left_1
+	.db %00100000
+	.db -16
+	.dw tank01_d6_top_right_2
+	.db %00100000
+	.db 3
+	.dw W1F12
+	.db %10000000
+	.dw W1F1A
+
+tank01_moving_d6_fr04:
+  .db %00100000
+	.db -13
+	.dw tank01_d6_top_left_1
+	.db %00100000
+	.db -16
+	.dw tank01_d6_top_right_2
+	.db %00100000
+	.db 3
+	.dw W1F13
+	.db %10000000
+	.dw W1F1B
+
+tank01_moving_d6_fr05:
+  .db %00100000
+	.db -12
+	.dw tank01_d6_top_left_1
+	.db %00100000
+	.db -15
+	.dw tank01_d6_top_right_2
+	.db %00100000
+	.db 4
+	.dw W1F14
+	.db %10100000
+	.db 1
+	.dw W1F1C
+
+tank01_moving_d6_fr06:
+  .db %00100000
+	.db -13
+	.dw tank01_d6_top_left_1
+	.db %00100000
+	.db -16
+	.dw tank01_d6_top_right_1
+	.db %00100000
+	.db 3
+	.dw W1F15
+	.db %10000000
+	.dw W1F1D
+
+tank01_moving_d6_fr07:
+	.db %00100000
+	.db -13
+	.dw tank01_d6_top_left_2
+	.db %00100000
+	.db -16
+	.dw tank01_d6_top_right_1
+	.db %00100000
+	.db 3
+	.dw W1F16
+	.db %10000000
+	.dw W1F1E
+
+tank01_moving_d6_fr08:
+  .db %00100000
+	.db -13
+	.dw tank01_d6_top_left_2
+	.db %00100000
+	.db -16
+	.dw tank01_d6_top_right_1
+	.db %00100000
+	.db 3
+	.dw W1F17
+	.db %10000000
+	.dw W1F1F
+
+tank02_moving_d6_fr01:
+  .db %00100000
+	.db -12
+	.dw tank02_d6_top_left_2
+	.db %00100000
+	.db -15
+	.dw tank02_d6_top_right_1
+	.db %00100000
+	.db 4
+	.dw W1F10
+	.db %10100000
+	.db 1
+	.dw W1F18
+
+tank02_moving_d6_fr02:
+  .db %00100000
+	.db -13
+	.dw tank02_d6_top_left_1
+	.db %00100000
+	.db -16
+	.dw tank02_d6_top_right_1
+	.db %00100000
+	.db 3
+	.dw W1F11
+	.db %10000000
+	.dw W1F19
+
+tank02_moving_d6_fr03:
+  .db %00100000
+	.db -13
+	.dw tank02_d6_top_left_1
+	.db %00100000
+	.db -16
+	.dw tank02_d6_top_right_2
+	.db %00100000
+	.db 3
+	.dw W1F12
+	.db %10000000
+	.dw W1F1A
+
+tank02_moving_d6_fr04:
+  .db %00100000
+	.db -13
+	.dw tank02_d6_top_left_1
+	.db %00100000
+	.db -16
+	.dw tank02_d6_top_right_2
+	.db %00100000
+	.db 3
+	.dw W1F13
+	.db %10000000
+	.dw W1F1B
+
+tank02_moving_d6_fr05:
+  .db %00100000
+	.db -12
+	.dw tank02_d6_top_left_1
+	.db %00100000
+	.db -15
+	.dw tank02_d6_top_right_2
+	.db %00100000
+	.db 4
+	.dw W1F14
+	.db %10100000
+	.db 1
+	.dw W1F1C
+
+tank02_moving_d6_fr06:
+  .db %00100000
+	.db -13
+	.dw tank02_d6_top_left_1
+	.db %00100000
+	.db -16
+	.dw tank02_d6_top_right_1
+	.db %00100000
+	.db 3
+	.dw W1F15
+	.db %10000000
+	.dw W1F1D
+
+tank02_moving_d6_fr07:
+	.db %00100000
+	.db -13
+	.dw tank02_d6_top_left_2
+	.db %00100000
+	.db -16
+	.dw tank02_d6_top_right_1
+	.db %00100000
+	.db 3
+	.dw W1F16
+	.db %10000000
+	.dw W1F1E
+
+tank02_moving_d6_fr08:
+  .db %00100000
+	.db -13
+	.dw tank02_d6_top_left_2
+	.db %00100000
+	.db -16
+	.dw tank02_d6_top_right_1
+	.db %00100000
+	.db 3
+	.dw W1F17
+	.db %10000000
+	.dw W1F1F
+
+tank01_moving_d4_fr01:
+  .db %00100000
+	.db -21
+	.dw tank01_d4_top
+	.db %10100000
+	.db -5
+	.dw W1F20
+
+tank01_moving_d4_fr02:
+  .db %00100000
+	.db -22
+	.dw tank01_d4_top
+	.db %10100000
+	.db -6
+	.dw W1F21
+
+tank01_moving_d4_fr03:
+  .db %00100000
+	.db -22
+	.dw tank01_d4_top
+	.db %10100000
+	.db -6
+	.dw W1F22
+
+tank01_moving_d4_fr04:
+  .db %00100000
+	.db -22
+	.dw tank01_d4_top
+	.db %10100000
+	.db -6
+	.dw W1F23
+
+tank01_moving_d4_fr05:
+  .db %00100000
+	.db -21
+	.dw tank01_d4_top
+	.db %10100000
+	.db -5
+	.dw W1F24
+
+tank01_moving_d4_fr06:
+  .db %00100000
+	.db -22
+	.dw tank01_d4_top
+	.db %10100000
+	.db -6
+	.dw W1F25
+
+tank01_moving_d4_fr07:
+  .db %00100000
+	.db -22
+	.dw tank01_d4_top
+	.db %10100000
+	.db -6
+	.dw W1F26
+
+tank01_moving_d4_fr08:
+  .db %00100000
+	.db -22
+	.dw tank01_d4_top
+	.db %10100000
+	.db -6
+	.dw W1F27
+
+tank02_moving_d4_fr01:
+  .db %00100000
+	.db -21
+	.dw tank02_d4_top
+	.db %10100000
+	.db -5
+	.dw W1F20
+
+tank02_moving_d4_fr02:
+  .db %00100000
+	.db -22
+	.dw tank02_d4_top
+	.db %10100000
+	.db -6
+	.dw W1F21
+
+tank02_moving_d4_fr03:
+  .db %00100000
+	.db -22
+	.dw tank02_d4_top
+	.db %10100000
+	.db -6
+	.dw W1F22
+
+tank02_moving_d4_fr04:
+  .db %00100000
+	.db -22
+	.dw tank02_d4_top
+	.db %10100000
+	.db -6
+	.dw W1F23
+
+tank02_moving_d4_fr05:
+  .db %00100000
+	.db -21
+	.dw tank02_d4_top
+	.db %10100000
+	.db -5
+	.dw W1F24
+
+tank02_moving_d4_fr06:
+  .db %00100000
+	.db -22
+	.dw tank02_d4_top
+	.db %10100000
+	.db -6
+	.dw W1F25
+
+tank02_moving_d4_fr07:
+  .db %00100000
+	.db -22
+	.dw tank02_d4_top
+	.db %10100000
+	.db -6
+	.dw W1F26
+
+tank02_moving_d4_fr08:
+  .db %00100000
+	.db -22
+	.dw tank02_d4_top
+	.db %10100000
+	.db -6
+	.dw W1F27
+
+tank01_moving_d1_fr01:
+	.db %00100000
+	.db -21
+	.dw tank01_d1_top
+	.db %10100000
+	.db -5
+	.dw W1F28
+
+tank01_moving_d1_fr02:
+	.db %00100000
+	.db -22
+	.dw tank01_d1_top
+	.db #%10100000
+	.db -6
+	.dw W1F29
+
+tank01_moving_d1_fr03:
+	.db %00100000
+	.db -22
+	.dw tank01_d1_top
+	.db %10100000
+	.db -6
+	.dw W1F2A
+
+tank01_moving_d1_fr04:
+  .db %00100000
+	.db -21
+	.dw tank01_d1_top
+	.db %10100000
+	.db -5
+	.dw W1F2B
+
+tank01_moving_d1_fr05:
+	.db %00100000
+	.db -21
+	.dw tank01_d1_top
+	.db %10100000
+	.db -5
+	.dw W1F2C
+
+tank01_moving_d1_fr06:
+	.db %00100000
+	.db -22
+	.dw tank01_d1_top
+	.db %10100000
+	.db -6
+	.dw W1F2D
+
+tank01_moving_d1_fr07:
+	.db %00100000
+	.db -22
+	.dw tank01_d1_top
+	.db %10100000
+	.db -6
+	.dw W1F2E
+
+tank01_moving_d1_fr08:
+  .db %00100000
+	.db -22
+	.dw tank01_d1_top
+	.db %10100000
+	.db -6
+	.dw W1F2F
+
+tank02_moving_d1_fr01:
+	.db %00100000
+	.db -21
+	.dw tank02_d1_top
+	.db %10100000
+	.db -5
+	.dw W1F28
+
+tank02_moving_d1_fr02:
+	.db %00100000
+	.db -22
+	.dw tank02_d1_top
+	.db #%10100000
+	.db -6
+	.dw W1F29
+
+tank02_moving_d1_fr03:
+	.db %00100000
+	.db -22
+	.dw tank02_d1_top
+	.db %10100000
+	.db -6
+	.dw W1F2A
+
+tank02_moving_d1_fr04:
+  .db %00100000
+	.db -21
+	.dw tank02_d1_top
+	.db %10100000
+	.db -5
+	.dw W1F2B
+
+tank02_moving_d1_fr05:
+	.db %00100000
+	.db -21
+	.dw tank02_d1_top
+	.db %10100000
+	.db -5
+	.dw W1F2C
+
+tank02_moving_d1_fr06:
+	.db %00100000
+	.db -22
+	.dw tank02_d1_top
+	.db %10100000
+	.db -6
+	.dw W1F2D
+
+tank02_moving_d1_fr07:
+	.db %00100000
+	.db -22
+	.dw tank02_d1_top
+	.db %10100000
+	.db -6
+	.dw W1F2E
+
+tank02_moving_d1_fr08:
+  .db %00100000
+	.db -22
+	.dw tank02_d1_top
+	.db %10100000
+	.db -6
+	.dw W1F2F
+
 
 
 CS00:	.db #%00110000

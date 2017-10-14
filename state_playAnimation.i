@@ -47,7 +47,7 @@ state_playAnimation:
   LDY list1+2
   CPY #$04
   BNE +setTimer
-  LDY #$00
+  LDY #$02
   STY list1+2
 
 +continue:

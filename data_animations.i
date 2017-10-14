@@ -76,73 +76,114 @@ ANIM0E:
 ANIM0F:
 
 ANIM10:
-		.db #$10, #$20
-		.dw tank01_stationary_d5_f
+	.db $10, $20
+	.dw tank01_stationary_d5_f
 ANIM11:
-	.db #$80, #$04
-	.dw OS1F01
-	.dw OS1F02
-	.dw OS1F03
-	.dw OS1F04
-	.dw OS1F05
-	.dw OS1F06
-	.dw OS1F07
-	.dw OS1F08
+	.db $80, $04
+	.dw tank01_moving_d5_fr01
+	.dw tank01_moving_d5_fr02
+	.dw tank01_moving_d5_fr03
+	.dw tank01_moving_d5_fr04
+	.dw tank01_moving_d5_fr05
+	.dw tank01_moving_d5_fr06
+	.dw tank01_moving_d5_fr07
+	.dw tank01_moving_d5_fr08
 ANIM12:
-	.db #$10, #$20
+	.db $10, $20
 	.dw tank01_stationary_d6_f
 ANIM13:
-	.db #$80, #$04
-	.dw OS1F0A
-	.dw OS1F0B
-	.dw OS1F0C
-	.dw OS1F0D
-	.dw OS1F0E
-	.dw OS1F0F
-	.dw OS1F10
-	.dw OS1F11
+	.db $80, $04
+	.dw tank01_moving_d6_fr01
+	.dw tank01_moving_d6_fr02
+	.dw tank01_moving_d6_fr03
+	.dw tank01_moving_d6_fr04
+	.dw tank01_moving_d6_fr05
+	.dw tank01_moving_d6_fr06
+	.dw tank01_moving_d6_fr07
+	.dw tank01_moving_d6_fr08
 ANIM14:
-	.db #$10, #$20
-	.dw OS1F12
+	.db $10, $20
+	.dw tank01_stationary_d4_f
 ANIM15:
-	.db #$80, #$04
-	.dw OS1F13
-	.dw OS1F14
-	.dw OS1F15
-	.dw OS1F16
-	.dw OS1F17
-	.dw OS1F18
-	.dw OS1F19
-	.dw OS1F1A
+	.db $80, $04
+	.dw tank01_moving_d4_fr01
+	.dw tank01_moving_d4_fr02
+	.dw tank01_moving_d4_fr03
+	.dw tank01_moving_d4_fr04
+	.dw tank01_moving_d4_fr05
+	.dw tank01_moving_d4_fr06
+	.dw tank01_moving_d4_fr07
+	.dw tank01_moving_d4_fr08
 ANIM16:
-	.db #$10, #$20
-	.dw OS1F1B
+	.db $10, $20
+	.dw tank01_stationary_d1_f
 ANIM17:
-	.db #$80, #$04
-	.dw OS1F1C
-	.dw OS1F1D
-	.dw OS1F1E
-	.dw OS1F1F
-	.dw OS1F20
-	.dw OS1F21
-	.dw OS1F22
-	.dw OS1F23
+	.db $80, $04
+	.dw tank01_moving_d1_fr01
+	.dw tank01_moving_d1_fr02
+	.dw tank01_moving_d1_fr03
+	.dw tank01_moving_d1_fr04
+	.dw tank01_moving_d1_fr05
+	.dw tank01_moving_d1_fr06
+	.dw tank01_moving_d1_fr07
+	.dw tank01_moving_d1_fr08
 
 ANIM18:
-	.db #$10, #$20
+	.db $10, $20
 	.dw tank02_stationary_d6_f
 
 ANIM19:
-	.db #$10, #$20
+	.db $10, $20
 	.dw tank02_stationary_d4_f
 
 ANIM1A:
-	.db #$10, #$20
+	.db $10, $20
 	.dw tank02_stationary_d1_f
 
 ANIM1B:
-	.db #$10, #$20
+	.db $10, $20
 	.dw tank02_stationary_d5_f
+
+ANIM1C:
+	.db $80, $04
+	.dw tank02_moving_d5_fr01
+	.dw tank02_moving_d5_fr02
+	.dw tank02_moving_d5_fr03
+	.dw tank02_moving_d5_fr04
+	.dw tank02_moving_d5_fr05
+	.dw tank02_moving_d5_fr06
+	.dw tank02_moving_d5_fr07
+	.dw tank02_moving_d5_fr08
+ANIM1D:
+	.db $80, $04
+	.dw tank02_moving_d6_fr01
+	.dw tank02_moving_d6_fr02
+	.dw tank02_moving_d6_fr03
+	.dw tank02_moving_d6_fr04
+	.dw tank02_moving_d6_fr05
+	.dw tank02_moving_d6_fr06
+	.dw tank02_moving_d6_fr07
+	.dw tank02_moving_d6_fr08
+ANIM1E:
+	.db $80, $04
+	.dw tank02_moving_d4_fr01
+	.dw tank02_moving_d4_fr02
+	.dw tank02_moving_d4_fr03
+	.dw tank02_moving_d4_fr04
+	.dw tank02_moving_d4_fr05
+	.dw tank02_moving_d4_fr06
+	.dw tank02_moving_d4_fr07
+	.dw tank02_moving_d4_fr08
+ANIM1F:
+	.db $80, $04
+	.dw tank02_moving_d1_fr01
+	.dw tank02_moving_d1_fr02
+	.dw tank02_moving_d1_fr03
+	.dw tank02_moving_d1_fr04
+	.dw tank02_moving_d1_fr05
+	.dw tank02_moving_d1_fr06
+	.dw tank02_moving_d1_fr07
+	.dw tank02_moving_d1_fr08
 
 ; -----------------------------------------------
 
@@ -166,10 +207,14 @@ animationL:
 	.db #> ANIM15			; ramulen down walking
 	.db #> ANIM16			; ramulen up still
 	.db #> ANIM17			; ramulen up walking
-	.db #> ANIM18			;
-	.db #> ANIM19			;
-	.db #> ANIM1A
-	.db #> ANIM1B
+	.db #> ANIM18			; t2
+	.db #> ANIM19			; t2
+	.db #> ANIM1A			; t2
+	.db #> ANIM1B			; t2
+	.db #> ANIM1C			; t2 m d5
+	.db #> ANIM1D			; t2 m d6
+	.db #> ANIM1E			; t2 m d4
+	.db #> ANIM1F			; t2 m d1
 
 animationH:
 	.db #< ANIM00
@@ -195,3 +240,7 @@ animationH:
 	.db #< ANIM19
 	.db #< ANIM1A
 	.db #< ANIM1B
+	.db #< ANIM1C
+	.db #< ANIM1D
+	.db #< ANIM1E
+	.db #< ANIM1F
