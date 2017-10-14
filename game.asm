@@ -833,7 +833,7 @@ stringListH:
 	.db #> str_RUN
 
 str_LOS_BLOCKED:
-	.db $14, $1B, $18, $1D, $14, $0B, $1E, $15, $0B, $22, $18, $16, $17, $23, $11, $1B, $1E, $12, $1A, $14, $13
+	.db 20, L, I, N, E, dash, O, F, dash, S, I, G, H, T, B, L, O, C, K, E, D
 str_RANGED_ATK_1:
 	.db $0C, $21, $10, $1D, $16, $14, $13, $0F, $10, $23, $1A, $0F, $10
 str_RANGED_ATK_2:
@@ -847,15 +847,15 @@ str_COOL_DOWN:
 str_CHARGE:
 	.db $06, $12, $17, $10, $21, $16, $14
 str_CLOSE_COMBAT:
-	.db $0C, $12, $1B, $1E, $22, $14, $0F, $12, $1E, $1C, $11, $10, $23
+	.db 12, $12, $1B, $1E, $22, $14, $0F, $12, $1E, $1C, $11, $10, $23
 str_OUT_OF_RANGE:
-	.db $0C, $1E, $24, $23, $0B, $1E, $15, $0B, $21, $10, $1D, $16, $14
+	.db 12, O, U, T, dash, O, F, dash, R, A, N, G, E
 str_IMPASSABLE:
-	.db $0A, $18, $1C, $1F, $10, $22, $22, $10, $11, $1B, $14
+	.db 10, I, M, P, A, S, S, A, B, L, E
 str_OUTSIDE_ARC:
-	 db $16, $15, $10, $12, $18, $1D, $16, $0F, $26, $21, $1E, $1D, $16, $0F, $13, $18, $21, $14, $12, $23, $18, $1E, $1D
+	 db 22, F, A, C, I, N, G, space, W, R, O, N, G, space, D, I, R, E, C, T, I, O, N
 str_CHOOSE_FACING_DIRECTION:
-	.db $18, $12, $17, $1E, $1E, $22, $14, $0F, $15, $10, $12, $18, $1D, $16, $0F, $0F, $13, $18, $21, $14, $12, $23, $18, $1E, $1D
+	.db 24, C, H, O, O, S, E, space, F, A, C, I, N, G, space, space, D, I, R, E, C, T, I, O, N
 str_TARGET_TOO__CLOSE:
 	.db 18, T, A, R, G, E, T, space, T, O, O, space, space, space, C, L, O, S, E
 str_TARGET:
@@ -909,28 +909,30 @@ menuFlag_line3:							.db %00001000
 leftNyble:					.db #$F0
 rightNyble:					.db #$0F
 
-hitProbability:				.db #$64	; dif 0 100% (97 due to crit miss
-							.db #$64	; dif 1 100% (97 due to crit miss
-							.db #$64	; dif 2 100% (97 due to crit miss
-							.db #$64	; dif 3 100% (97 due to crit miss
-							.db #$64	; dif 4 100% (97 due to crit miss
-							.db #$63	; dif 5  99% (97 due to crit miss
-							.db #$60	; dif 6  96%
-							.db #$5B	; dif 7  91%
-							.db #$54	; dif 8  84%
-							.db #$4B	; dif 9  75%
-							.db #$3F	; dif 10 63%
-							.db #$32	; dif 11 50%
-							.db #$26	; dif 12 38%
-							.db #$1A	; dif 13 26%
-							.db #$11	; dif 14 17%
-							.db #$0A	; dif 15 10%
-							.db #$05	; dif 16  5%
-							.db #$02	; dif 17  2% (3% due to crit
-							.db #$01	; dif 18  1% (3% due to crit
-							.db #$00	; dif 19  0% (3% due to crit
+hitProbability:
+	.db 100	; dif 0 100% (97 due to crit miss
+	.db 100 ; dif 1 100% (97 due to crit miss
+	.db 100	; dif 2 100% (97 due to crit miss
+	.db 100	; dif 3 100% (97 due to crit miss
+	.db 100	; dif 4 100% (97 due to crit miss
+	.db 99	; dif 5  99% (97 due to crit miss
+	.db 96	; dif 6  96%
+	.db 91	; dif 7  91%
+	.db 84	; dif 8  84%
+	.db 75	; dif 9  75%
+	.db 63	; dif 10 63%
+	.db 50	; dif 11 50%
+	.db 38	; dif 12 38%
+	.db 26	; dif 13 26%
+	.db 17	; dif 14 17%
+	.db 10	; dif 15 10%
+	.db 5		; dif 16  5%
+	.db 2		; dif 17  2% (3% due to crit
+	.db 1		; dif 18  1% (3% due to crit
+	.db 0		; dif 19  0% (3% due to crit
 
-;;
+; maps object byte 0, b3-0 (direction+move) to the address in the object type table
+; that holds the matching animation #
 directionLookup:
 	.db 0, 0, 1, 2, 3, 2, 1, 0, 0, 4, 5, 6, 7, 6, 5
 
