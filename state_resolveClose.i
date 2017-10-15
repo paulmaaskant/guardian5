@@ -87,6 +87,9 @@ state_closeCombatAnimation:
 	ADC list1+1
 	SBC #$08
 	STA currentEffects+12
+	LDA #$00
+	STA currentEffects+18
+	STA currentEffects+24
 
 	LDA list3+22
 	STA currentEffects+0

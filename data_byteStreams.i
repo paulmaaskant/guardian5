@@ -205,7 +205,7 @@ instructionStream:
 	.db endOfStream
 
 brief1Stream:
-	.db setPortrait, $10
+	.db setPortrait, $20
 	.db G, U, A, R, D, I, A, N, space, 5, comma, lineBreak
 	.db T, H, I, S, space, I, S, space, C, O, M, M, A, N, D, space, 1, lineBreak
 	.db lineBreak
@@ -215,7 +215,7 @@ brief1Stream:
 	.db T, H, I, S, space, I, S, space, G, U, A, R, D, I, A, N, space, 5, comma, lineBreak
 	.db S, T, A, N, D, I, N, G, space, B, Y, waitForA
 	.db nextPage
-	.db setPortrait, $10
+	.db setPortrait, $20
 	.db C, A, P, T, A, I, N, comma, lineBreak
 	.db lineBreak
 	.db A, space, S, I, N, G, L, E, space, E, N, E, M, Y, space, U, N, I, T, lineBreak
@@ -248,7 +248,7 @@ brief2Stream:
 	.db I, space, A, M, space, R, E, T, U, R, N, I, N, G, space, T, O, space, B, A, S, E, lineBreak
 	.db C, A, M, P, space, F, O, R, space, R, E, P, A, I, R, S, waitForA
 	.db nextPage
-	.db setPortrait, $10
+	.db setPortrait, $20
 	.db E, X, C, E, L, L, E, N, T, space, W, O, R, K, comma, space, C, A, P, T, A, I, N, lineBreak
 	.db lineBreak
 	.db T, H, A, N, K, S, space, F, O, R, space, P, L, A, Y, I, N, G, waitForA
@@ -342,10 +342,10 @@ resultUnitRestart:
 	.db endOfStream
 
 levelOne:																																				; --- blocked nodes (1 bit for movement + 1 bit for line of sight) ---
-	.db $00, $00, $80																													; row 0
-	.db $FE, 5, $00																													  ; row 0 & 1
-	.db $00, $C0, $80, $00																										; row 2
-	.db %10001010, $A8, $80, $00																							;	row 3
+	.db $00, $00, $80, $00																													; row 0
+	.db $00, $00, $00, %00110000																												  ; row 1
+	.db $00, $C0, $80, %11000000																										; row 2
+	.db %10001010, $A8, %10000001, $00																							;	row 3
 	.db %10000000, %00001000, $80, $00																				; row 4
 	.db %10000011, %00001010, $80, $00																				; row 5
 	.db %10000100, $C0, %00001010, $AA																							; row 6
@@ -353,15 +353,15 @@ levelOne:																																				; --- blocked nodes (1 bit for move
 	.db %10000000, %00001010, %10001010, $00																	; row 8
 	.db %10001010, %10101000, %00001010, $00																	; row 9
 	.db %00000000, %00000000, %00001010, $00																	; row 10
-	.db #$FE, 20, #$00																												; row 11-15
+	.db $FE, 20, $00																												; row 11-15
 																																								; --- initial objects ---
-	.db	#$02																																			; number of objects (2)
-	.db #$03																																			; object 0 f type 3
-	.db #$02																																			; object 0 grid position
-	.db #$03																																			; object 0 pilot f0 & facing RD
-	.db #$12																																			; object 1 h type 2
-	.db #$07																																			; object 1 grid position
-	.db #$05																																			; object 1 pilot ho & facing LD
+	.db	$02																																			; number of objects (2)
+	.db $03																																			; object 0 f type 3
+	.db $02																																			; object 0 grid position
+	.db $03																																			; object 0 pilot f0 & facing RD
+	.db $12																																			; object 1 h type 2
+	.db $5C																																			; object 1 grid position
+	.db $05																																			; object 1 pilot ho & facing LD
 
 A = $10
 B = $11

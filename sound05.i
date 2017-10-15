@@ -28,7 +28,7 @@ sound05:
 sound05_stream00:
   .db L16th
 -restart:
-  .db setCountLoop1, 4
+  .db setCountLoop1, 8
 -loop:
 
   .db E3, REST, E3, E3
@@ -43,7 +43,10 @@ sound05_stream00:
 sound05_stream01:
   .db L2
 -restart:
-  .db E2, D2,E2, D2, E2, D2, E2, D2
-  .db C2, D2,C2, D2, C2, D2, C2, D2
+  .db E2, D2, E2, D2, E2, D2, E2, D2
+  .db C2, D2, C2, D2, C2, D2, C2, D2
+  .db L1
+  .db A2, B2, C3, B2
+  .db A2, B2, C3, L2, D3, Eb3
   .db loopSound
   .dw -restart

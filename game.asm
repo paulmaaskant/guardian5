@@ -754,22 +754,22 @@ gameStateJumpTable:
 
 paletteColor1:
 	.db $10, $09, $10, $08, $08, $06, $10, $30
-	.db $08, $18
-	.dsb 6
+	.db $08, $18, $0A
+	.dsb 5
 	.db $08, $15
 	.dsb 6
 	.db $1B
 paletteColor2:
 	.db $00, $18, $00, $18, $18, $16, $1B, $2D
-	.db $18, $28
-	.dsb 6
+	.db $18, $28, $19
+	.dsb 5
 	.db $15, $30
 	.dsb 6
 	.db $0A
 paletteColor3:
 	.db $30, $37, $2B, $37, $28, $36, $2B, $37
-	.db $37, $30
-	.dsb 6
+	.db $37, $30, $39
+	.dsb 5
 	.db $35, $35
 	.dsb 6
 	.db $3B
