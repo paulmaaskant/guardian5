@@ -26,19 +26,19 @@ NMI:
 	STA #$2007					;
 	PLA							; 31
 	STA #$2007					;
-    PLA							; 30
+  PLA							; 30
 	STA #$2007					;
-    PLA							; 29
+  PLA							; 29
 	STA #$2007					;
-    PLA							; 28
+  PLA							; 28
 	STA #$2007					;
-    PLA							; 27
+  PLA							; 27
 	STA #$2007					;
-    PLA							; 26
+  PLA							; 26
 	STA #$2007					;
-    PLA							; 25
+  PLA							; 25
 	STA #$2007					;
-    PLA							; 24
+  PLA							; 24
 	STA #$2007					;
 	PLA							; 23
 	STA #$2007					;
@@ -176,19 +176,24 @@ NMI:
 	STA $2006
 	STA $2006
 
+
 	; -------------------------------------------
 	; read controller 1
 	; -------------------------------------------
-	LDA #$01 					; set A to 00000001
++continue:
+	LDA #$01 						; set A to 00000001
 	STA buttons					; set buttons to 0000 0001
-	STA	$4016					; strobe 1
-	LSR A						; set A to 00000000 by moving all bits to the right, while at the same time setting the carry flag to 1
-	STA $4016					; strobe 0
--	LDA $4016 					; read A, which is either 0 or 1
-	LSR A						; move A into the carry flag
+	STA	$4016						; strobe 1
+	LSR A								; set A to 00000000 by moving all bits to the right, while at the same time setting the carry flag to 1
+	STA $4016						; strobe 0
+-loop:
+	LDA $4016 					; read A, which is either 0 or 1
+	LSR A								; move A into the carry flag
 	ROL buttons					; push on carry flag on right
-								; bit that falls on left goes into the carry flag
-	BCC -						; stop looping if carry flag is 1
+											; bit that falls on left goes into the carry flag
+	BCC -loop						; stop looping if carry flag is 1
+
+;+skipRead:
 
 	; -------------------------------------------
 	; scrolling

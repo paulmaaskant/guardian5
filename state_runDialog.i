@@ -7,7 +7,7 @@
 ; list1+3 address start tile lo
 ; list1+4 # tiles margin left
 ; list1+5 # tiles margin right
-; list1+6 stream control (b7 end, b6 pause, b5 wait for A, b4 speed up)
+; list1+6 stream control (b7 end, b6 wait for A, b4 speed up)
 ; list1+7 line count  (used to clear dialog)
 ; list1+8 number of lines
 ; list1+9 number of buffered characters
@@ -18,29 +18,41 @@ state_runDialog:
 	AND #%00010000				; start button
 	BNE +nextGameState
 
-	LDA buttons
-	BPL +continue
-	LDA list1+6
-	ORA #$10							; speed mode (b4)
-	STA list1+6
+	LDA blockInputCounter
+	BEQ +continue
+	DEC blockInputCounter
 
 +continue:
 	; --- stream control ----
 	LDA list1+6
 	ASL
-	BCS	+nextGameState			;
-	ASL
-	BCC +readStream
+	BCS	+nextGameState
 	ASL
 	BCS +waitForConfirm
+	ASL
+	BCS +readStream
+
+	LDA buttons
+	BPL +readStream
+	LDA list1+6
+	ORA #$20							; speed mode (b5)
+	STA list1+6
+
+	LDA #$10
+	STA blockInputCounter
+	BNE +readStream
+
+-done:
 	RTS
 
 +waitForConfirm:
+	LDA blockInputCounter
+	BNE -done
 	LDA buttons
-	BMI +confirmed				; A button pressedz
-	RTS
+	BPL -done				; A button pressed
+	;RTS
 
-+confirmed:
+;+confirmed:
 	LDA #$00
 	STA list1+6						; open stream again
 	LDA #$0F							; replace blinking cursor
@@ -52,15 +64,6 @@ state_runDialog:
 +readStream:
 	JSR getNextByte
 
--processByte:
-	; --- op code: end of stream ---
-	CMP #$F0
-	BNE +continue
-	LDA #$40				; set b6
-	STA list1+6
-	RTS							; and done
-
-+continue:
 	; --- op code: new line ---
 	CMP #lineBreak
 	BNE +continue
@@ -102,7 +105,7 @@ state_runDialog:
 	; --- op code: wait for A button ---
 	CMP #waitForA
 	BNE +continue
-	LDA #$60				; stop stream (b6) and wait for A button (b5)
+	LDA #$40				; wait for A button (b6)
 	STA list1+6
 	LDA #$F1				; blink cursor
 	BNE +pushChar
@@ -141,7 +144,7 @@ state_runDialog:
 
 	TAX
 	LDA list1+6
-	AND #$10
+	AND #$20
 	BEQ +oneCharOnly			; if speed mod skip
 
 	TXA
@@ -190,15 +193,10 @@ state_runDialog:
 
 	BIT list1+6				; unless the stream is paused
 	BVS +continue
-
-	;INC list1+1				; set pointer to next tile position if stream is not paused
-
 	LDA list1+1
 	CLC
 	ADC list1+9
 	STA list1+1
-	;LDA list1+0
-	;ADC #$00
 
 
 +continue:
