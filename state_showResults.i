@@ -60,6 +60,7 @@ state_showResults:
 	STA list1+5						; # tiles: last pos
 	LDA #$00
 	STA list1+6						; stream on
+	STA list1+9						; number of chars in line
 	LDA #$03
 	STA list1+8						; 3 lines in height
 
