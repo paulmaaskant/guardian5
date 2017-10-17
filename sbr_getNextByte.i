@@ -4,7 +4,7 @@
 ; byteStreamVar+0, 		repeat counter
 ; byteStreamVar+1, 		repeat byte
 ; byteStreamVar+2,
-; bytePointer,			current position in the byte stream
+; bytePointer,				current position in the byte stream
 ; -----------------------------------------
 getNextByte:
 	LDA byteStreamVar+0																														; repeat counter non 0?
@@ -32,8 +32,6 @@ getNextByte:
 	BEQ +numberValue
 	CMP #setDictionaryString
 	BEQ +setDictionaryString
-	;CMP #setPortrait
-	;BEQ +setPortrait
 	RTS
 
 repeatBlank = $FF
@@ -66,14 +64,6 @@ setDictionaryString = $FC
 	JSR toBCD					; find the tile for the number (0-9)
 	LDA par3
 	JMP incrementBytePointer	; tail chain
-
-;+setPortrait:
-;	LDA (bytePointer), Y		; portrait index
-;	AND #$F0
-;	LDY #$A4
-;	JSR showPilot
-;	JSR incrementBytePointer
-;	JMP getNextByte
 
 +setDictionaryString:
 	LDA (bytePointer), Y		; string index

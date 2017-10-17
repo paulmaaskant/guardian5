@@ -23,6 +23,7 @@ state_initializeDialog:
 
   LDA #$00
   STA list1+6
+  STA list1+9
 
   LDA #$09
   JMP pushState
