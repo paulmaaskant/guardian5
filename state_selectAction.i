@@ -37,38 +37,65 @@ state_selectAction:
 	; --- process directional buttons ---
 	LSR 									; read RIGHT bit
 	BCC +next							; skip if RIGHT not pressed
+	CLC
+	LDA locVar2						; translate 'isometric' directions
+	ADC locVar1						; to Cartesian
+	LSR
+	LDA #$0F
+	BCC +xEven
+	CMP locVar1
+	BEQ +setTimer
+	INC locVar1
+	JMP +setTimer
 
-	LDA locVar2
-	CMP #$0F
++xEven:
+	CMP locVar2
 	BEQ +setTimer
 	INC locVar2
-	BNE +setTimer
+	JMP +setTimer
 
 +next:
 	LSR 									; read LEFT bit
 	BCC +next							; skip if LEFT is not pressed
+	CLC
+	LDA locVar2
+	ADC locVar1
+	LSR
+	BCS +xUnEven
+	LDA locVar1
+	BEQ +setTimer
+	DEC locVar1
+	JMP +setTimer
+
++xUnEven:
 	LDA locVar2
 	BEQ +setTimer
 	DEC locVar2
 	JMP +setTimer
 
 +next:
-	LSR 									; read DOWN bit
-	BCC +next
-
+	LSR
+	BCC +next						; skip if DOWN is not pressed
 	LDA locVar1
 	BEQ +setTimer
+	LDA locVar2
+	CMP #$0F
+	BEQ +setTimer
 	DEC locVar1
-	JMP +setTimer
+	INC locVar2
+	BNE +setTimer
 
 +next:
-	LSR 									; read UP bit
-	BCC +next
+	LSR
+	BCC +next						; skip if UP is not pressed
+	LDA locVar2
+	BEQ +setTimer
 	LDA locVar1
 	CMP #$0F
-	BCS +setTimer
+	BEQ +setTimer
+	DEC locVar2
 	INC locVar1
-	JMP +setTimer
+	BNE +setTimer
 
 +next:
 	LSR 									; start
@@ -84,15 +111,6 @@ state_selectAction:
 
 +next:
 	LSR 									; select
-	BCC +next
-
-	LDA events
-	ORA event_updateSprites
-	STA events
-
-	JMP state_faceTarget
-
-+next:
 	LSR 									; get B button
 	BCC +next
 	LDA events
