@@ -712,6 +712,7 @@ gameStateJumpTable:
 	.include sbr_writeStatusBarToBuffer.i
 	.include sbr_writeStartMenuToBuffer.i
 	.include sbr_setLineFunction.i
+	.include sbr_updateCamera.i
 	;.include sbr_setPreviousByte.i
 
 	.include sbr_random.i

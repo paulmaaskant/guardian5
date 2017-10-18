@@ -40,25 +40,24 @@ state_selectAction:
 
 	LDA locVar2
 	CMP #$0F
-	BCS +next
+	BEQ +setTimer
 	INC locVar2
-
-	JMP +setTimer
+	BNE +setTimer
 
 +next:
 	LSR 									; read LEFT bit
 	BCC +next							; skip if LEFT is not pressed
 	LDA locVar2
-	BEQ +next
+	BEQ +setTimer
 	DEC locVar2
 	JMP +setTimer
 
 +next:
 	LSR 									; read DOWN bit
-	BCC +next							
+	BCC +next
 
 	LDA locVar1
-	BEQ +next
+	BEQ +setTimer
 	DEC locVar1
 	JMP +setTimer
 
@@ -67,7 +66,7 @@ state_selectAction:
 	BCC +next
 	LDA locVar1
 	CMP #$0F
-	BCS +next
+	BCS +setTimer
 	INC locVar1
 	JMP +setTimer
 
