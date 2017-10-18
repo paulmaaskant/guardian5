@@ -460,8 +460,6 @@ mainGameLoop:
 	CMP	#%00000010
 	BNE +next
 	TXA																																						; set b6 in X to mirror
-	;CLC
-	;ADC #%01000000
 	ORA #%01000000
 	TAX
 
@@ -474,10 +472,6 @@ mainGameLoop:
 	STX par4
 	LDA directionLookup, Y
 	TAY
-	;CPY #$07																																			; 'moving' animation is required
-	;BCC +next																																			; the animation's sequence location is Y - 2
-	;DEY																																						;
-	;DEY
 
 +next:
 	LDA (currentObjectType), Y 																										; retrieve sequence from the type
@@ -845,11 +839,11 @@ str_MOVE:
 str_OPENING_FIRE:
 	.db $0C, $1E, $1F, $14, $1D, $18, $1D, $16, $0F, $15, $18, $21, $14
 str_COOL_DOWN:
-	.db $09, $12, $1E, $1E, $1B, $0F, $13, $1E, $26, $1D
+	.db 9, C, O, O, L, space, D, O, W, N
 str_CHARGE:
-	.db $06, $12, $17, $10, $21, $16, $14
+	.db 6, C, H, A, R, G, E
 str_CLOSE_COMBAT:
-	.db 12, $12, $1B, $1E, $22, $14, $0F, $12, $1E, $1C, $11, $10, $23
+	.db 12, C, L, O, S, E, space, C, O, M, B, A, T
 str_OUT_OF_RANGE:
 	.db 12, O, U, T, dash, O, F, dash, R, A, N, G, E
 str_IMPASSABLE:

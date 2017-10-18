@@ -166,8 +166,6 @@ state_selectAction:
 	EOR sysFlag_lock					; yes -> confirm action,
 	STA sysFlags							; unlock and move to next game state
 
-
-
 	; --- action confirmed ---
 	LDX selectedAction
 	LDA actionList, X
@@ -176,9 +174,6 @@ state_selectAction:
 	LDA actionTable, Y
 
 	JSR replaceState
-
-;JSR pullState
-	;JSR pushState
 
 	LDY #sConfirm
 	JMP soundLoad					; tail chain
@@ -270,4 +265,7 @@ state_selectAction:
 	JMP calculateActionCost																												; tail chain
 
 +nextEvent:
+
+	; show path for a locked move
+
 	RTS
