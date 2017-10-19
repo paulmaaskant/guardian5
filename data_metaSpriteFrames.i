@@ -899,6 +899,5 @@ EF09:			; flush
 	.dw EFF8
 
 EF0A:
-  .db #%10110000
-  .db -8
+  .db #%10010000
   .dw EFF9

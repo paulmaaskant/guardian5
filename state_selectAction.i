@@ -17,9 +17,9 @@ state_selectAction:
 	BNE +done
 	LDA actionMessage
 	BMI +done
-	LDA frameCounter
-	AND #$1F
-	BNE +done
+	;LDA frameCounter
+	;AND #$1F
+	;BNE +done
 
 
 	LDA effects
