@@ -14,12 +14,16 @@ state_waitForCamera:
 	LDA cameraYDest+1
 	CMP cameraY+1
 	BNE +wait
-	JSR showSystemInfo
 
+	LDA activeObjectTypeAndNumber
+	BMI +done
+
+	JSR showSystemInfo
   LDA events
 	ORA event_updateTarget
 	STA events
 
++done:
   JMP pullState
 
 +wait:
