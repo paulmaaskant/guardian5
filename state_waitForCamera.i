@@ -16,7 +16,7 @@ state_waitForCamera:
 	BNE +wait
 
 	LDA activeObjectTypeAndNumber
-	BMI +done
+	;BMI +done
 
 	JSR showSystemInfo
   LDA events

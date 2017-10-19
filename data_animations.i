@@ -64,6 +64,8 @@ ANIM09:
 	.dw EF09
 
 ANIM0A:
+	.db $10, $10
+	.dw EF0A
 
 ANIM0B:
 
@@ -198,7 +200,8 @@ animationL:
 	.db #> ANIM07			; 07 hit percentage
 	.db #> ANIM08			; 08 shield (close combat miss)
 	.db #> ANIM09			; 09 cooldown flush
-	.dsb 6
+	.db #> ANIM0A			; 0A waypoint
+	.dsb 5
 	.db #> ANIM10			; ramulen diag down still
 	.db #> ANIM11			; ramulen diag down walking
 	.db #> ANIM12			; ramulen diag up still
@@ -227,7 +230,8 @@ animationH:
 	.db #< ANIM07
 	.db #< ANIM08
 	.db #< ANIM09
-	.dsb 6
+	.db #< ANIM0A
+	.dsb 5
 	.db #< ANIM10
 	.db #< ANIM11
 	.db #< ANIM12

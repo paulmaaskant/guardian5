@@ -11,6 +11,41 @@ state_selectAction:
 +continue:
 	LDA buttons																																		;
 	BNE +continue					; if no buttons are pressed
+
+
+	LDA targetObjectTypeAndNumber																									; move?
+	BNE +done
+	LDA actionMessage
+	BMI +done
+	LDA frameCounter
+	AND #$1F
+	BNE +done
+
+
+	LDA effects
+	ORA #$01
+	STA effects
+	LDX list2
+	CPX list1
+	BCC +noReset
+	LDX #0
+
++noReset:
+	INX
+	LDA list1, X
+	STX list2
+	JSR gridPosToScreenPos
+	LDA currentObjectXPos
+	STA currentEffects+6
+	LDA currentObjectYPos
+	STA currentEffects+12
+	LDA #10
+	STA currentEffects+0
+	LDA #0
+	STA currentEffects+18
+	STA currentEffects+24
+
++done:
 	RTS										; then skip input processing
 
 +continue:
@@ -265,7 +300,5 @@ state_selectAction:
 	JMP calculateActionCost																												; tail chain
 
 +nextEvent:
-
-	; show path for a locked move
 
 	RTS
