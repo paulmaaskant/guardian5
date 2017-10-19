@@ -3,14 +3,14 @@
 ; - volume mute operation
 ; - miss animations for gun fire
 ; - shutdown animation
-; - auto change of facing direction when attacked in close combat
-; - hostile unit AI
+; - AI
+; - split the end turn state into end turn / start turn state
 ;
 ; PARKING LOT
 ; - content for in game menu
 ; - attribute table scrolling (two palettets)
 ; - show results state: decrement AP and HP when results are displayed (new opcode?)
-; - events/  end turn / begin turn states (like mission fail / accomplished conditions and in game dialog triggers)
+; - events (like mission fail / accomplished conditions and in game dialog triggers)
 
 
 ;; 1 - iNes header
@@ -327,11 +327,11 @@ mainGameLoop:
 ;	LDA effects
 ;	AND #%00010000
 	;BEQ +nextEffect
-	;LDA currentEffects+0													; mask
-	;STA par4													; parameter to "loadAnimationFrame"
-	;LDA currentEffects+1																																		; node that is blocking line of sight
+	;LDA currentEffects+0																													; mask
+	;STA par4																																			; parameter to "loadAnimationFrame"
+	;LDA currentEffects+1																													; node that is blocking line of sight
 	;JSR gridPosToScreenPos																												; get the screen coordinates
-	;BCC +nextEffect																																; off screen!
+	;BCC +nextEffect																															; off screen!
 	;LDY #$04																																			; cursor animation #
 	;JSR loadAnimationFrame																												; set sprites!
 
@@ -350,15 +350,15 @@ mainGameLoop:
 	DEX
 
 -loopEffects:
-	LDY currentEffects+0, X					; pattern
+	LDY currentEffects+0, X																												; pattern
 	BEQ +skip
-	LDA	currentEffects+6, X					; x pos
+	LDA	currentEffects+6, X																												; x pos
 	STA currentObjectXPos
-	LDA currentEffects+12, X				; y pos
+	LDA currentEffects+12, X																											; y pos
 	STA currentObjectYPos
-	LDA currentEffects+18, X				; count
+	LDA currentEffects+18, X																											; count
 	STA currentObjectFrameCount
-	LDA currentEffects+24, X				; mirror
+	LDA currentEffects+24, X																											; mirror
 	STA par4
 
 	TXA
@@ -503,27 +503,23 @@ mainGameLoop:
 	BIT event_updateTarget
 	BEQ +nextEvent
 	EOR event_updateTarget
-	ORA event_updateStatusBar			; trigger an update of the status bar
+	ORA event_updateStatusBar																											; trigger an update of the status bar
 	STA events
 
 	LDA effects
-	AND #%11000000								; cursor and active unit marker stay on, rest turned off
+	AND #%11000000																																; cursor and active unit marker stay on, rest turned off
 	STA effects
 
-	JSR updateTargetObject				; load target based on cursor position
-	JSR updateActionList					; heavy subroutine: may take more than a single frame
-	JSR calculateActionCost				;
+	JSR updateTargetObject																												; load target based on cursor position
+	JSR updateActionList																													; heavy subroutine: may take more than a single frame
+	JSR calculateActionCost																												;
 
-	LDA frameCounter							; wait for next frame
--	CMP frameCounter							; to prevent game from freezing (due to half completed stack operations)
+	LDA frameCounter																															; wait for next frame
+-	CMP frameCounter																															; to prevent game from freezing (due to half completed stack operations)
 	BEQ -
 
-	;LDA menuFlags									; switch on blinking for the indicators
-	;ORA menuFlag_indicator
-	;STA menuFlags
-
-	LDA #$C1											; set indicator tiles
-	STA menuIndicator+0						; in 'toggle' positions
+	LDA #$C1																																			; set indicator tiles
+	STA menuIndicator+0																														; in 'toggle' positions
 	LDA #$C0
 	STA menuIndicator+1
 
@@ -531,21 +527,21 @@ mainGameLoop:
 	; update status bar & trigger refresh
 	; ------------------------------
 +nextEvent:
-	LDA events											;
-	BIT event_updateStatusBar				;
-	BEQ +nextEvent									;
-	ORA event_refreshStatusBar			; raise event to trigger buffer to screen
-	EOR event_updateStatusBar				;
+	LDA events																																		;
+	BIT event_updateStatusBar																											;
+	BEQ +nextEvent																																;
+	ORA event_refreshStatusBar																										; raise event to trigger buffer to screen
+	EOR event_updateStatusBar																											;
 	STA events
 
-	JSR clearActionMenu							; set all tiles to blank
-	LDY selectedAction							; update the action menu buffer with the selected action
+	JSR clearActionMenu																														; set all tiles to blank
+	LDY selectedAction																														; update the action menu buffer with the selected action
 	LDA actionList, Y
 	ASL
 	TAX
-	LDY actionTable+1, X						; Y is the string ID
-	LDX #$00												; Show on position 0
-	JSR writeToActionMenu						;
+	LDY actionTable+1, X																													; Y is the string ID
+	LDX #$00																																			; Show on position 0
+	JSR writeToActionMenu																													;
 
 	LDA actionMessage
 	BEQ +actionMenuDone
@@ -588,57 +584,59 @@ mainGameLoop:
 launchStateSubroutine:
 	LDX stateStack
 	LDA stateStack, X
-	;CMP #$FF
-	;BEQ +
+	CMP #$FF
+	BEQ +
 	ASL
   TAX
   LDA gameStateJumpTable+1, X
   PHA
   LDA gameStateJumpTable, X
   PHA
-; +
+ +
   RTS            											; launch!
 
 gameStateJumpTable:
-	.dw state_initializeScreen-1				; 00
-	.dw state_initializeDialog-1				; 01
-	.dw state_fadeInOut-1								; 02
-	.dw state_titleScreen-1							; 03
-	.dw state_initializeMap-1						; 04
-	.dw state_loadLevelMapTiles-1				; 05
-	.dw state_selectAction-1						; 06
-	.dw state_selectDirection-1					; 07
-	.dw state_endTurn-1									; 08
-	.dw state_runDialog-1								; 09
-	.dw state_initializeSetDirection-1	; 0A
-	.dw state_centerCamera-1						; 0B
-	.dw state_waitForCamera-1						; 0C
-	.dw state_changeBrightness-1				; 0D
-	.dw state_loadScreen-1							; 0E
-	.dw state_clearDialog-1							; 0F
-	.dw state_initializeMove-1					; 10
-	.dw state_resolveMove-1							; 11
-	.dw state_initializeRanged-1				; 12
-	.dw state_resolveRanged-1						; 13
-	.dw state_initializeCoolDown-1			; 14
-	.dw state_resolveCoolDown-1					; 15
-	.dw state_showResults-1							; 16
-	.dw state_initializeCloseCombat-1		; 17
-	.dw state_resolveClose-1						; 18
-	.dw state_initializePivotTurn-1			; 19
-	.dw state_initializeFreeSpin-1			; 1A
-	.dw state_initializeCharge-1				; 1B
-	.dw state_faceTarget-1							; 1C
-	.dw state_closeCombatAnimation-1		; 1D
-	.dw state_initializeTitleMenu-1			; 1E
-	.dw state_shutDown-1								; 1F
-	.dw state_initializeGameMenu-1			; 20
-	.dw state_playAnimation-1						; 21
-	.dw state_loadGameMenu-1						; 22
-	.dw state_expandStatusBar-1					; 23
-	.dw state_statusBarOpened-1					; 24
-	.dw state_collapseStatusBar-1				; 25
-	.dw state_initializePlayAnimation-1	; 26
+	.dw state_initializeScreen-1								; 00
+	.dw state_initializeDialog-1								; 01
+	.dw state_fadeInOut-1												; 02
+	.dw state_titleScreen-1											; 03
+	.dw state_initializeMap-1										; 04
+	.dw state_loadLevelMapTiles-1								; 05
+	.dw state_selectAction-1										; 06
+	.dw state_selectDirection-1									; 07
+	.dw state_endTurn-1													; 08
+	.dw state_runDialog-1												; 09
+	.dw state_initializeSetDirection-1					; 0A
+	.dw state_centerCamera-1										; 0B
+	.dw state_waitForCamera-1										; 0C
+	.dw state_changeBrightness-1								; 0D
+	.dw state_loadScreen-1											; 0E
+	.dw state_clearDialog-1											; 0F
+	.dw state_initializeMove-1									; 10
+	.dw state_resolveMove-1											; 11
+	.dw state_initializeRanged-1								; 12
+	.dw state_resolveRanged-1										; 13
+	.dw state_initializeCoolDown-1							; 14
+	.dw state_resolveCoolDown-1									; 15
+	.dw state_showResults-1											; 16
+	.dw state_initializeCloseCombat-1						; 17
+	.dw state_resolveClose-1										; 18
+	.dw state_initializePivotTurn-1							; 19
+	.dw state_initializeFreeSpin-1							; 1A
+	.dw state_initializeCharge-1								; 1B
+	.dw state_faceTarget-1											; 1C
+	.dw state_closeCombatAnimation-1						; 1D
+	.dw state_initializeTitleMenu-1							; 1E
+	.dw state_shutDown-1												; 1F
+	.dw state_initializeGameMenu-1							; 20
+	.dw state_playAnimation-1										; 21
+	.dw state_loadGameMenu-1										; 22
+	.dw state_expandStatusBar-1									; 23
+	.dw state_statusBarOpened-1									; 24
+	.dw state_collapseStatusBar-1								; 25
+	.dw state_initializePlayAnimation-1					; 26
+	.dw state_ai_determineAction-1							; 27
+	.dw state_ai_determineAttackPosition-1 			; 28
 
 :not_used
 
@@ -678,6 +676,8 @@ gameStateJumpTable:
 	.include state_clearDialog.i
 	.include state_playAnimation.i
 	.include state_initializePlayAnimation.i
+	.include state_ai_determineAction.i
+	.include state_ai_determineAttackPosition.i
 
 	.include subroutines.i
 	.include sbr_pushState.i
@@ -707,7 +707,8 @@ gameStateJumpTable:
 	.include sbr_writeStartMenuToBuffer.i
 	.include sbr_setLineFunction.i
 	.include sbr_updateCamera.i
-	;.include sbr_setPreviousByte.i
+	.include sbr_updateTarget.i
+	.include sbr_updateTargetMenu.i
 
 	.include sbr_random.i
 	.include sbr_random100.i

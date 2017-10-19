@@ -102,7 +102,7 @@ state_initializeRanged:
 
 	JSR pullAndBuildStateStack
 	.db $02							; 2 states
-	.db $13 						; resolve
+	.db $13 						; resolve ranged
 	.db $16							; show results
 
 	; built in RTS
@@ -112,7 +112,7 @@ state_initializeRanged:
 
 
 ; -----------------------------------------------
-; game state 13: resolve ranged attack (laser)
+; game state 13: resolve ranged attack (machine gun)
 ; -----------------------------------------------
 ;
 ; list1+00, frame counter

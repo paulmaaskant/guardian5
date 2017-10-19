@@ -128,13 +128,13 @@ state_endTurn:
 	STA activeObjectStats+2			; movement
 
 	LDY #$01
-	LDA (pointer1), Y				; wpn range 1
+	LDA (pointer1), Y						; wpn range 1
 	STA activeObjectStats+0
 	INY
 	LDA (pointer1), Y
 	STA activeObjectStats+1			; wpn range 2
 
-	LDA #$C0									; switch on cursor and active marker
+	LDA #$C0										; switch on cursor and active marker
 	STA effects
 
 	LDA activeObjectGridPos
@@ -159,6 +159,9 @@ state_endTurn:
 	LDA object+0, Y
 	BMI +shutDown
 
+	LDA activeObjectTypeAndNumber
+	;BMI +aiControlled
+
 	JSR buildStateStack
 	.db $02							; 2 states
 	.db $0B 						; center camera
@@ -171,4 +174,11 @@ state_endTurn:
 	.db $0B 						; center camera
 	.db $1F							; handle shut down
 	.db $16							; show results
+	; built in RTS
+
++aiControlled:
+	JSR buildStateStack
+	.db $02							; 2 states
+	.db $0B 						; center camera
+	.db $27							; ai determines action
 	; built in RTS
