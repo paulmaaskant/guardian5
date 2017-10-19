@@ -1,3 +1,6 @@
+; -----------------------------------
+; game state 27: ai controls active unit
+; -----------------------------------
 state_ai_determineAction:
   ; to do
   ;   what if target of choice cannot be attacked, e.g., because in base contact with another?
@@ -5,9 +8,7 @@ state_ai_determineAction:
   ;
   ;
   ; 1 select the most attractive player controlled target
-  ;   consider all player units
-  ;   lowest score wins:
-  ;   (100-ranged attack hit probability) + target hp + distance
+  ;
   ;
   ; 2 determine available options
   ; - ranged attack 1 on target
@@ -34,19 +35,74 @@ state_ai_determineAction:
   ;       - repeat untill a move is possble
 
 
-  LDX objectCount                   ; get first available player unit
+  ; ----------------------------------------
+  ; 1. select most attractive target TODO
+  ;     consider all player units
+  ;     lowest score wins:
+  ;     (100-ranged attack hit probability) + target hp + distance
+  ; ----------------------------------------
+  LDX objectCount
 
 -loop:
-
   DEX
   LDA objectTypeAndNumber, X
-  BMI -loop
-	AND #%00000111																																; and mask the object number
-	ASL																																						; mulitply by 4 to get the
-	ASL																																						; object index																																					; save X (object list index)
-	LDA object+3, Y																																; on screen check
-	STA cursorGridPosition
+  BMI -loop                               ; get first available player unit
+  STA targetObjectTypeAndNumber
+  AND #%00000111
+	ASL
+	ASL																																																																										; save X (object list index)
+	LDA object+3, Y
+  STY targetObjectIndex
+	STA cursorGridPos
 
+  ; ----------------------------------------
+  ; 2. score available options
+  ; ----------------------------------------
 
+  LDX #$06
 
-  JMP pullState
+-loop:
+  LDA #0
+  CPX #AI_move_offensive                                 ; assign 1 point
+  BNE +continue
+  LDA #1
+
++continue:
+  STA list3, X
+  DEX
+  BPL -loop
+
+  ; ----------------------------------------
+  ; 3. select best option
+  ; ----------------------------------------
+
+  LDX #6
+  LDA #0
+  STA locVar1           ; best score
+  STA locVar2           ; best action
+
+-loop:
+  LDA list3, X
+  CMP locVar1
+  BCC +continue
+  STA locVar1
+  STX locVar2
+
++continue:
+  DEX
+  BPL -loop
+
+  LDY locVar2
+  LDA state29_nextState, Y
+  JMP replaceState
+
+  AI_cooldown = 0
+  AI_move_defensive = 1
+  AI_move_offensive = 2
+  AI_ranged_attack_1 = 3
+  AI_ranged_attack_2 = 4
+  AI_close_combat = 5
+  AI_charge = 6
+
+state29_nextState:
+  .db $14, $FF, $FF, $12, $12, $17, $1B
