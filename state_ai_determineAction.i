@@ -5,8 +5,6 @@ state_ai_determineAction:
   ; to do
   ;   what if target of choice cannot be attacked, e.g., because in base contact with another?
   ;
-  ;
-  ;
   ; 1 select the most attractive player controlled target
   ;
   ;
@@ -105,4 +103,4 @@ state_ai_determineAction:
   AI_charge = 6
 
 state29_nextState:
-  .db $14, $FF, $FF, $12, $12, $17, $1B
+  .db $14, $FF, $28, $12, $12, $17, $1B

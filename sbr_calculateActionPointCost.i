@@ -1,4 +1,4 @@
-heatsinkCostTable:
+actionPointCostTable:
 	.db $01				                                                                ; 00 MOVE
 	.db $01  			                                                                ; 01 RANGED ATK 1
 	.db $01    		                                                                ; 02 RANGED ATK 2
@@ -8,7 +8,7 @@ heatsinkCostTable:
 	.db $01                                                                       ; 06 PIVOT TURN
 	.db $02                                                                       ; 07 RUN
 
-calculateActionCost:
+calculateActionPointCost:
 	LDA #$0F
 	STA systemMenuLine1+4
 	STA systemMenuLine1+3
@@ -25,7 +25,7 @@ calculateActionCost:
   STA locVar1                                                                   ; current # active heatsinks
   LDY selectedAction
   LDX actionList, Y
-	LDA heatsinkCostTable, X
+	LDA actionPointCostTable, X
   CPX #aCOOLDOWN
   BEQ +restoreHeatsinks
   CMP locVar1

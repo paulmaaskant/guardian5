@@ -76,8 +76,16 @@ updateActionList:
 	JSR addPossibleAction
 
 +skipCharge:
-	JMP checkTarget					; tail chain, check conditions for attack
+	JSR checkTarget					; tail chain, check conditions for attack
 													; such as line of sight
+	BIT actionMessage
+	BMI +done
+	LDA effects
+	ORA #%00010000
+	STA effects
+	
++done:
+	RTS
 
 	; ----------------------------------
 	; Cursor on EMPTY SPACE

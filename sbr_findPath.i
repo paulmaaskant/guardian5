@@ -13,7 +13,8 @@
 ; LOCAL		nodeMap (b3-0 only) = b3 closed flag, b2-0 direction
 ; LOCAL     list1 = directions from current node's neighbours back to current node
 ; LOCAL     list2 = current node's neighbours
-; OUT		list1 = shortest path
+; OUT		list1 = shortest path nodes
+; OUT   list2 = directions to connect nodes
 ;------------------------------------
 
 directionBits:

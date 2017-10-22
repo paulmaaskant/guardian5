@@ -6,6 +6,7 @@
 ; - AI
 ; - split the end turn state into end turn / start turn state
 ;
+;
 ; PARKING LOT
 ; - content for in game menu
 ; - attribute table scrolling (two palettets)
@@ -192,7 +193,8 @@
 	; ||||||||
 	; |||||+++ reference to neighbour node (used in findPath)
 	; ||||+--- closed node (used in findPath)
-	; ||++---- not used
+	; |||+---- possible destination (used in AI determine move)
+	; ||+----- not used
 	; |+------ this node blocks line of sight
 	; +------- this node is blocks movement
 	; ------------------------------------------------------------
@@ -293,13 +295,10 @@ mainGameLoop:
 	LDY #$00													; cursor animation #
 	JSR loadAnimationFrame						; set sprites!
 
-	LDA targetObjectTypeAndNumber
++nextEffect:																																		; hit percentage
+	LDA effects
+	AND #%00010000
 	BEQ +nextEffect
-	BIT actionMessage
-	BMI +nextEffect
-	CMP activeObjectTypeAndNumber
-	BEQ +nextEffect
-
 	LDY #$07													; hit probability
 	JSR loadAnimationFrame						; set sprites!
 
@@ -323,17 +322,7 @@ mainGameLoop:
 	LDY #$02																																			; cursor animation #
 	JSR loadAnimationFrame																												; set sprites!
 
-;+nextEffect:																																		; blocking node marker, sprite 5
-;	LDA effects
-;	AND #%00010000
-	;BEQ +nextEffect
-	;LDA currentEffects+0																													; mask
-	;STA par4																																			; parameter to "loadAnimationFrame"
-	;LDA currentEffects+1																													; node that is blocking line of sight
-	;JSR gridPosToScreenPos																												; get the screen coordinates
-	;BCC +nextEffect																															; off screen!
-	;LDY #$04																																			; cursor animation #
-	;JSR loadAnimationFrame																												; set sprites!
+
 
 +nextEffect:																																		; manage counter for all embedded effects
 	LDA currentObjectFrameCount																										; FIX
@@ -425,12 +414,30 @@ mainGameLoop:
 	CLC																																						; if moving, then add displacement
 	LDA currentObjectYPos																													; displacement is updated every frame
 	ADC actionList+2																															; by the 'resolve move' game state
-	STA currentObjectYPos																													; FIX account for the wrap around
+	STA currentObjectYPos
+
 	CLC
 	LDA currentObjectXPos
+	TAX
 	ADC actionList+1
 	STA currentObjectXPos
-	JMP +notObscured
+
+	CPX #$20																																			; the following code ensures
+	BCS +rightEdge																																; that sprites arent wrapped
+	LDA actionList+1																															; to other side of screen
+	BPL +notObscured
+	PLP
+	JMP +done
+
++rightEdge:
+	CPX #$E0
+	BCC +notObscured
+	LDA actionList+1
+	BMI +notObscured
+	PLP
+	JMP +done
+
+
 
 +next:
 	LDX object+3, Y
@@ -512,7 +519,7 @@ mainGameLoop:
 
 	JSR updateTargetObject																												; load target based on cursor position
 	JSR updateActionList																													; heavy subroutine: may take more than a single frame
-	JSR calculateActionCost																												;
+	JSR calculateActionPointCost																									;
 
 	LDA frameCounter																															; wait for next frame
 -	CMP frameCounter																															; to prevent game from freezing (due to half completed stack operations)
@@ -637,6 +644,7 @@ gameStateJumpTable:
 	.dw state_initializePlayAnimation-1					; 26
 	.dw state_ai_determineAction-1							; 27
 	.dw state_ai_determineAttackPosition-1 			; 28
+	.dw state_ai_test-1 												; 28
 
 :not_used
 
@@ -678,6 +686,7 @@ gameStateJumpTable:
 	.include state_initializePlayAnimation.i
 	.include state_ai_determineAction.i
 	.include state_ai_determineAttackPosition.i
+	.include state_ai_test.i
 
 	.include subroutines.i
 	.include sbr_pushState.i
@@ -688,10 +697,11 @@ gameStateJumpTable:
 	.include sbr_gridPosToScreenPos.i
 	.include sbr_gridPosToTilePos.i
 	.include sbr_updateActionList.i
-	.include sbr_calculateActionCost.i
+	.include sbr_calculateActionPointCost.i
 	.include sbr_calculateHeat.i
 	.include sbr_calculateAttack.i
 	.include sbr_checkTarget.i
+	.include sbr_checkLineOfSight.i
 	.include sbr_findPath.i
 	.include sbr_soundLoad.i
 	.include sbr_updatePalette.i

@@ -1,5 +1,5 @@
 ; ------
-; 29 face target (active unit on p1 to face cursor on p2)
+; game state 1C: active unit face target
 ; -----
 ;      \_1__/
 ;      /\  /\
@@ -20,9 +20,15 @@
 ; to retrieve the direction from a look up table
 
 state_faceTarget:
-  JSR setLineFunction           ; used to set to transpose
-                                ; point 1 and point 2 to tile grid coors
-                                ; and store them in list1+0, 1, 2, 3
+  LDY targetObjectIndex
+  LDA object+3, Y
+  TAY
+
+
+  LDA activeObjectGridPos                                                       ; point 1
+  JSR setLineFunction                                                           ; used to set to transpose
+                                                                                ; point 1 and point 2 to tile grid coors
+                                                                                ; and store them in list1+0, 1, 2, 3
   LDA #$00
   STA list1+9
 
@@ -58,6 +64,11 @@ state_faceTarget:
   AND #%11111000
   ORA identity, X
   STA object, Y
+
+  LDA events
+  ORA event_updateSprites
+  STA events
+
   JMP pullState
 
 state29_direction:

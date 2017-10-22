@@ -10,13 +10,13 @@
 ; LOCAL locVar5
 ;-----------------------------------------
 distance:
-	PHA
+	STA locVar1
 	LSR
 	LSR
 	LSR
 	LSR
 	STA locVar2 	; start.Y
-	PLA
+	LDA locVar1
 	AND #$0F
 	STA locVar1		; start.X
 	LDA par1

@@ -13,17 +13,17 @@
 ;			    deltaX
 ;
 
-setLineFunction:
+;
+;
+; IN A =  grid position
 
-  ; point 1
-  LDA activeObjectGridPos
-  LDX #$00
-  STX list1+6		; initialize b0 to 0
-  STX list1+8		;
+setLineFunction:
+  LDX #$00                                                                      ; point 1
+  STX list1+6		                                                                ; initialize b0 to 0
+  STX list1+8		                                                                ;
   JSR gridPosToTilePos
 
-  ; point 2
-  LDA cursorGridPos			; gridPos
+  TYA		                                                                         ; point 2, 
   LDX #$02
   JSR gridPosToTilePos
 
