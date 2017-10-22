@@ -16,7 +16,7 @@ state_shutDown:
 
   LDA #aCOOLDOWN
   STA actionList
-  JSR calculateActionCost
+  JSR calculateActionPointCost
   JSR calculateHeat
 
   JMP pullState

@@ -160,6 +160,7 @@ state_resolveMove:
 
 	TXA
 	JSR gridPosToScreenPos
+	BCC +continue													; not on screen!
 
 	INC effects
 
@@ -185,6 +186,7 @@ state_resolveMove:
 
 	TYA
 	JSR gridPosToScreenPos
+	BCC +continue							; not on screen!
 	LDA effects
 	AND #%00000001
 	TAX

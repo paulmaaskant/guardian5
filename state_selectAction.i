@@ -12,15 +12,13 @@ state_selectAction:
 	LDA buttons																																		;
 	BNE +continue					; if no buttons are pressed
 
-
+	LDA sysFlags
+	AND sysFlag_lock
+	BEQ +done
 	LDA targetObjectTypeAndNumber																									; move?
 	BNE +done
 	LDA actionMessage
 	BMI +done
-	;LDA frameCounter
-	;AND #$1F
-	;BNE +done
-
 
 	LDA effects
 	ORA #$01
@@ -35,6 +33,7 @@ state_selectAction:
 	LDA list1, X
 	STX list2
 	JSR gridPosToScreenPos
+	BCC +done											; off screen!
 	LDA currentObjectXPos
 	STA currentEffects+6
 	LDA currentObjectYPos
@@ -269,6 +268,10 @@ state_selectAction:
 	LDA #$C0 ;
 	STA menuIndicator+1
 
+	LDA effects																																		; clear possible LOS block effect
+	AND #$F0																																; cursor and active unit marker stay on, rest turned off
+	STA effects
+
 	LDY #sRelease
 	JMP soundLoad					; tail chain
 
@@ -285,9 +288,9 @@ state_selectAction:
 
 +toggleDone:																																		; redo checks for newly selected action on other unit																														;
 	LDA targetObjectTypeAndNumber																									; cursor is on unit?
-	BEQ +heatCost																																	; no -> heat cost
+	BEQ +actionPointCost																													; no -> point cost
 	CMP activeObjectTypeAndNumber																									; yes -> on self?
-	BEQ +heatCost																																	; no -> heat cost
+	BEQ +actionPointCost																													; no -> point cost
 
 	LDA #$00																																			; clear action message
 	STA actionMessage
@@ -296,9 +299,14 @@ state_selectAction:
 	STA effects
 	JSR checkTarget																																; possibly different weapon, so re-check range, damage etc
 
-+heatCost:
-	JMP calculateActionCost																												; tail chain
+	BIT actionMessage
+	BMI +actionPointCost
+	LDA effects
+	ORA #%00010000
+	STA effects
+
++actionPointCost:
+	JMP calculateActionPointCost																									; tail chain
 
 +nextEvent:
-
 	RTS

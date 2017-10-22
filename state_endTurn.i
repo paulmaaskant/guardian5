@@ -160,7 +160,7 @@ state_endTurn:
 	BMI +shutDown
 
 	LDA activeObjectTypeAndNumber
-	;BMI +aiControlled
+	BMI +aiControlled
 
 	JSR buildStateStack
 	.db $02							; 2 states
