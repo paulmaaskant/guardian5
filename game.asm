@@ -688,7 +688,7 @@ gameStateJumpTable:
 	.include state_ai_determineAttackPosition.i
 	.include state_ai_test.i
 
-	.include subroutines.i
+	.include sbr_getStatsAddress.i
 	.include sbr_pushState.i
 	.include sbr_pullState.i
 	.include sbr_replaceState.i
@@ -719,6 +719,8 @@ gameStateJumpTable:
 	.include sbr_updateCamera.i
 	.include sbr_updateTarget.i
 	.include sbr_updateTargetMenu.i
+	.include sbr_updateCameraXPos.i
+	.include sbr_updateCameraYPos.i
 
 	.include sbr_random.i
 	.include sbr_random100.i
