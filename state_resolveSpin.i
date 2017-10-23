@@ -6,7 +6,7 @@ state_initializePivotTurn:
 	LDX #$09						; up to and including list3+9
 	JSR clearList3
 
-	JSR calculateHeat
+	JSR applyActionPointCost
 	JSR clearActionMenu
 
 	JSR pullAndBuildStateStack

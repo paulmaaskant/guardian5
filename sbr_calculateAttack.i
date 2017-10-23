@@ -70,5 +70,4 @@ calculateAttack:
 	STA object+1, Y
 
 +continue:
-	JMP calculateHeat																															; tail chain
-																																	
+	JMP applyActionPointCost																											; tail chain

@@ -1,4 +1,4 @@
-calculateHeat:
+applyActionPointCost:
   LDY activeObjectIndex
   LDA object+1, Y
   AND #$07
