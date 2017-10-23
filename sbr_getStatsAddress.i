@@ -26,14 +26,14 @@ getStatsAddress:
 	ADC #$00
 	STA pointer1+1
 
-	LDA object+1, Y					; current dail pos
-	LSR
-	LSR								; 3x shift right
-	LSR
-	PHA
-	TAY								; multiply by 3 (3 bytes per dail click)
-	ASL								; carry is guaranteed 0
-	ADC identity, Y
-	TAY
-	PLA								; current dail pos in A
+	LDA object+1, Y																																; current dail pos
+	LSR																											
+	LSR																																						; 3x shift right
+	LSR																											
+	PHA																											
+	TAY																																						; multiply by 3 (3 bytes per dail click)
+	ASL																																						; carry is guaranteed 0
+	ADC identity, Y																											
+	TAY																											
+	PLA																																						; current dail pos in A
 	RTS

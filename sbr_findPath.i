@@ -1,20 +1,21 @@
 ;-------------------------------------
 ; findPath (A* alghorithm)
 ;
-; IN		A = start node
-; IN		par1 = destination node
-; IN		par2 = moves available
+; IN				A = start node
+; IN				par1 = destination node
+; IN				par2 = moves available
 ; LOCAL     par3 = current node
-; LOCAL		par4 = cost: start node -> current node (b7-b4)
-; LOCAL		locVar1, locVar2, locVar3, locVar4, locVar5
-; LOCAL		X, Y
-; LOCAL 	list3 "open nodes" stack
-; LOCAL 	list4 "open node scores" (b7-b4) actual cost: start->node, (b3-b0) estimate cost: start->node->destination
-; LOCAL		nodeMap (b3-0 only) = b3 closed flag, b2-0 direction
+; LOCAL			par4 = cost: start node -> current node (b7-b4)
+; LOCAL			locVar1, locVar2, locVar3, locVar4, locVar5
+; LOCAL			X, Y
+; LOCAL 		list3 "open nodes" stack
+; LOCAL 		list4 "open node scores" (b7-b4) actual cost: start->node, (b3-b0) estimate cost: start->node->destination
+; LOCAL			nodeMap (b3-0 only) = b3 closed flag, b2-0 direction
 ; LOCAL     list1 = directions from current node's neighbours back to current node
 ; LOCAL     list2 = current node's neighbours
-; OUT		list1 = shortest path nodes
-; OUT   list2 = directions to connect nodes
+; OUT				list1 = path nodes
+; OUT   		list2 = directions to connect nodes
+; OUT				actionMessage = reason failed
 ;------------------------------------
 
 directionBits:
@@ -37,36 +38,50 @@ oppositeDirection:
 	; path is found: time to reconstruct path out of the stored directions
 	;---------------------------------
 -pathFound:
-	LDA list4, Y
+	LDA list4, Y								; this subr uses only 4 bits to denote the distance
 	LSR
 	LSR
 	LSR
-	LSR
+	LSR													; ISSUE this can never be more than 15
 	TAX
 	STX list1										; number of nodes in path
 
 	LDA par1										; destination node
 -loop:
-	STA list1, X
 
+	;CPX #$0A
+	;STA locVar1
+	;BCS +continue
+	STA list1, X								; only store if X is 9 or less
+
+;+continue:
 	TAY
 	LDA nodeMap, Y
 	AND #$07										; direction to get to preceding node
 
+	;BCS +continue								; only store if X is 9 or less
 	TAY
 	LDA oppositeDirection-1, Y	; determine opposite direction
 	STA list2, X								; and store in list 2 (used for animation)
 	TYA
 
+;+continue:
 	DEX
-	BEQ +done
-
+	BEQ +done										; Y holds node
 	TAY
 	LDA directionTable-1, Y
 	CLC
-	ADC list1+1, X
+	;ADC locVar1 ;
+	ADC list1+1, X							;
 	JMP -loop
+
 +done:
+	LDA #9
+	CMP list1
+	BCS +continue
+	STA list1
+
++continue:
 	RTS
 	;---------------------------------
 	; path does not exist or not enough moves available: done
@@ -88,7 +103,10 @@ findPath:
 	CMP distanceToTarget				; is less than Manhattan distance
 	BCC -outOfRange							; we are done
 
+
+
 	LDX #$00										;
+	STX debug
 -loop:
 	LDA nodeMap, x
 	AND leftNyble								; clears right nyble
@@ -104,6 +122,7 @@ findPath:
 	;---------------------------------
 -tryNexOpenNode:
 	BEQ -outOfRange							; open node stack size == 0? no more nodes to try! Done
+	INC debug
 	LDX list3, Y								; otherwise, take next most promising open node from top of open node stack
 	STX par3										; and make it the current node
 	CPX par1										; is destination node?

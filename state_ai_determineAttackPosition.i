@@ -9,41 +9,47 @@
 ; ------------------------------
 state_ai_determineAttackPosition:
 
-  LDX #$00										;
-  STX list2+7
--loop:
-  LDA nodeMap, x
-  AND leftNyble								; clears right nyble
-  STA nodeMap, x							;
-  INX													;
-  BNE -loop										; node map initialized
+  LDX #$00										                                                  ;
+  STX list2+7                                                                   ; reset eligble node count
+
+;-loop:
+;  LDA nodeMap, x
+;  AND leftNyble								                                                  ; clears right nyble
+;  STA nodeMap, x							                                                  ;
+;  INX													                                                  ;
+;  BNE -loop										                                                  ; node map initialized
 
   LDA activeObjectStats+2
   ASL
   STA list2+8                                                                   ; act obj run distance
-  INC list2+8
+  ;INC list2+8                                                                   ; +1 to make compare easier
 
   LDA activeObjectStats+0
   LSR
   LSR
   LSR
   LSR
-  STA list2+9
-  INC list2+9
+  STA list2+9                                                                   ; max range of primary weapon
+  INC list2+9                                                                   ; +1 to make compare easier
 
   LDX #$00
 
 -loop:
   STX par1
-
   LDA nodeMap, X
   BMI +discardNode                                                              ; node is blocked
 
   LDA activeObjectGridPos                                                       ;
   JSR distance
   CMP list2+8
+  BEQ +maxMoves
   BCS +discardNode                                                              ; node too far from active unit
+  BCC +continue
 
++maxMoves:
+
+
++continue:
   LDA cursorGridPos
   JSR distance
   CMP list2+9
@@ -77,7 +83,6 @@ state_ai_determineAttackPosition:
                                                                                 ; add eligble nodes to a list sorted on score
                                                                                 ; score examples
                                                                                 ; +1 point if target has no visibility arc on node
-
 -nextNode:
   LDA list2+7
   BEQ +noMoreNodes
@@ -105,13 +110,11 @@ state_ai_determineAttackPosition:
   STA nodeMap, X
 
   DEC list2+7
-
   JMP -nextNode
 
 +foundNode:
-
   LDA par1
-  STA cursorGridPos
+  STA cursorGridPos           ; put the cursor on the destination node
 
   LDA #$03										; clear from list3+4
 	LDX #$09										; up to and including list3+9
@@ -120,9 +123,10 @@ state_ai_determineAttackPosition:
   LDA #$00                    ; FIX me (action point cost)
   STA list3+0
 
-	JSR calculateHeat
+	JSR applyActionPointCost
 	JSR initializeMove
-	JSR pullAndBuildStateStack
+
+  JSR pullAndBuildStateStack
 	.db $03							; 3 states
 	.db $11 						; resolve move
 	.db $1C							; face target
@@ -130,13 +134,12 @@ state_ai_determineAttackPosition:
 	; built in RTS
 
 +noMoreNodes:
-
   LDA #$00                    ; FIX me (action point cost)
   STA list3+0
 
-  JSR calculateHeat
+  JSR applyActionPointCost
 
   JSR pullAndBuildStateStack
-  .db $02							; 3 states
+  .db $02							; 2 states
   .db $1C							; face target
   .db $16							; show results

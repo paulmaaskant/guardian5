@@ -698,7 +698,7 @@ gameStateJumpTable:
 	.include sbr_gridPosToTilePos.i
 	.include sbr_updateActionList.i
 	.include sbr_calculateActionPointCost.i
-	.include sbr_calculateHeat.i
+	.include sbr_applyActionPointCost.i
 	.include sbr_calculateAttack.i
 	.include sbr_checkTarget.i
 	.include sbr_checkLineOfSight.i
