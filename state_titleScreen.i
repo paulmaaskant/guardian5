@@ -104,26 +104,26 @@ state_titleScreen:
 
 +startGame:
 	JSR pullAndBuildStateStack
-	.db 16							; # items
-	.db $0D, 0					; change brightness 0: fade out
-	.db $00, 2					; load screen 2: mission brief screen
-	.db $0D, 1					; change brightness 1: fade in
-	.db $01, 1					; load stream 01: mission 1 brief
-	.db $0D, 0					; change brightness 0: fade out
-	.db $00, 3					; load screen 3: status bar
-	.db $04							; load level
-	.db $0D, 1					; change brightness 1: fade in
-	.db $08							; end / next turn
+	.db 16								; # items
+	.db $0D, 0						; change brightness 0: fade out
+	.db $00, 2						; load screen 2: mission brief screen
+	.db $0D, 1						; change brightness 1: fade in
+	.db $01, 1						; load stream 01: mission 1 brief
+	.db $0D, 0						; change brightness 0: fade out
+	.db $00, 3						; load screen 3: status bar
+	.db $04								; load level
+	.db $0D, 1						; change brightness 1: fade in
+	.db $2A								; new turn
 	; built in RTS
 
 +instructions:
-JSR pullAndBuildStateStack
-	.db 16							; # items
-	.db $0D, 0					; change brightness 0: fade out
-	.db $00, 4					; load screen 4: instruction screen
-	.db $0D, 1					; change brightness 1: fade in
-	.db $01, 11					; load stream 11: instructions
-	.db $0D, 0					; change brightness 0: fade out
+	JSR pullAndBuildStateStack
+	.db 16								; # items
+	.db $0D, 0						; change brightness 0: fade out
+	.db $00, 4						; load screen 4: instruction screen
+	.db $0D, 1						; change brightness 1: fade in
+	.db $01, 11						; load stream 11: instructions
+	.db $0D, 0						; change brightness 0: fade out
 	.db $00, 0						; load screen 00: title screen
 	.db $1E								; load title menu
 	.db $0D, 1						; change brightness 1: fade in
@@ -131,18 +131,13 @@ JSR pullAndBuildStateStack
 	; built in RTS
 
 +animation:
-
-JSR soundSilence
-JSR pullAndBuildStateStack
-	.db 15							; # items
-	.db $0D, 0					; change brightness 0: fade out
-	.db $00, 5					; load screen 5: animation screen
-	.db $0D, 1					; change brightness 1: fade in
-
-	.db $26							; play animations
-
-	; unclean state variables cause corrupt
-
+	JSR soundSilence
+	JSR pullAndBuildStateStack
+	.db 15								; # items
+	.db $0D, 0						; change brightness 0: fade out
+	.db $00, 5						; load screen 5: animation screen
+	.db $0D, 1						; change brightness 1: fade in
+	.db $26								; play animations
 	.db $0D, 0						; change brightness 0: fade out
 	.db $00, 0						; load screen 00: title screen
 	.db $1E								; load title menu
