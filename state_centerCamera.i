@@ -1,8 +1,8 @@
 ; ------------------------------------------
-; gameState 0B: sets the camera destination so that it centres on the active object
+; gameState 0B: sets the camera destination so that it centres on the cursor
 ; ------------------------------------------
 state_centerCamera:
-	LDA activeObjectGridPos
+	LDA cursorGridPos
 	JSR gridPosToScreenPos
 
 	; --- camera X += current X ---
@@ -28,5 +28,6 @@ state_centerCamera:
 	LDA #$81					; offset
 	JSR updateCameraYPos
 
-  LDA #$0C					; wait for camera to center
-	JMP replaceState
+;  LDA #$0C					; wait for camera to center
+;	JMP replaceState
+	JMP pullState
