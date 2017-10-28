@@ -5,7 +5,6 @@
 ; - shutdown animation
 ; - unit destroyed animation & sound
 ; - AI
-; -
 ;
 ;
 ; PARKING LOT
@@ -281,7 +280,7 @@ mainGameLoop:
 
 +nextEffect:																																		; hit percentage
 	LDA effects
-	AND #%00010000
+	AND #%00010000										; check b4
 	BEQ +nextEffect
 	LDY #$07													; hit probability
 	JSR loadAnimationFrame						; set sprites!
@@ -298,7 +297,7 @@ mainGameLoop:
 
 +nextEffect:																																		; blocking node marker, sprite 5
 	LDA effects
-	AND #%00100000
+	AND #%00100000										; check b5
 	BEQ +nextEffect
 	LDA list1+9																																		; node that is blocking line of sight
 	JSR gridPosToScreenPos																												; get the screen coordinates
@@ -307,6 +306,12 @@ mainGameLoop:
 	JSR loadAnimationFrame																												; set sprites!
 
 
++nextEffect:																																		; explode effect, sprite 4
+	LDA effects
+	AND #%00001000										; check b4
+	BEQ +nextEffect
+
+	JSR runExplosion
 
 +nextEffect:																																		; manage counter for all embedded effects
 	LDA currentObjectFrameCount																										; FIX
@@ -709,6 +714,9 @@ gameStateJumpTable:
 	.include sbr_updateTargetMenu.i
 	.include sbr_updateCameraXPos.i
 	.include sbr_updateCameraYPos.i
+	.include sbr_centerCameraOnNode.i
+	.include sbr_initializeExplosion.i
+	.include sbr_runExplosion.i
 
 	.include sbr_random.i
 	.include sbr_random100.i

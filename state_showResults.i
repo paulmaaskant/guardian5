@@ -33,6 +33,7 @@ state_showResults:
 
 	LDA targetObjectTypeAndNumber
 	JSR deleteObject																															; tail chain
+	JSR initializeExplosion
 
 	JSR buildStateStack
 	.db $04								; # stack items
