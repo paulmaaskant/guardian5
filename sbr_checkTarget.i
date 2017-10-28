@@ -45,16 +45,16 @@ checkTarget:
 	RTS
 
 +nextCheck:
-	CPX #aCLOSECOMBAT						; if action is 04
-	BEQ +checksDone							; all checks are done
-
-	; --- check min max distance for ranged attacks ---
+	; --- check min / max distance for ranged attacks ---
 	JSR checkRange							; destroys X
 	LDA actionMessage
 	BEQ +nextCheck
 	RTS
 
 +nextCheck:
+	CPX #aCLOSECOMBAT						; if action is CC
+	BEQ +checksDone							; all checks are done
+	
 	; --- check line of sight ---
 	LDA activeObjectGridPos
 	JSR checkLineOfSight
@@ -91,7 +91,7 @@ checkTarget:
 	ORA #$80										; reset blocked flag
 	STA nodeMap, X
 
-	BIT actionMessage
+	LDA actionMessage
 	BMI +return
 
 	; TODO
@@ -161,13 +161,19 @@ checkTarget:
 ; -----------------------------------------
 checkRange:
 	; -- determine which weapon is selected ---
+	LDA #%00010000									; default: close combat (max 1, min 0)
+
 	LDY selectedAction
-	LDX actionList, Y					; 1 for weapon 1, 2 for weapon 2
+	LDX actionList, Y								; 1 for weapon 1, 2 for weapon 2
+	CPX #aCLOSECOMBAT
+	BEQ +continue										; if true, stick with current value of A
 	LDA activeObjectStats-1, X			; max range (b7-4) min range (b3-2)
+
++continue:
 	LSR
 	LSR
 	STA locVar2
-	INC locVar2							; minimum range
+	INC locVar2											; minimum range
 	LSR
 	LSR
 	CMP distanceToTarget
@@ -175,13 +181,14 @@ checkRange:
 	LDA #$88							; deny (b7) + out of range (b6-b0)
 	STA actionMessage
 	RTS
+
 +checkMinRange:
 	LDA locVar2							; minimum distance
-	AND #$03							; distance
+	AND #$03								; distance
 	CMP distanceToTarget
 	BEQ +done
 	BCC +done
-	LDA #$8C							; deny (b7) + target too close (b6-b0)
+	LDA #$8C								; deny (b7) + target too close (b6-b0)
 	STA actionMessage
 +done:
 	RTS

@@ -106,7 +106,6 @@ findPath:
 
 
 	LDX #$00										;
-	STX debug
 -loop:
 	LDA nodeMap, x
 	AND leftNyble								; clears right nyble
@@ -122,7 +121,6 @@ findPath:
 	;---------------------------------
 -tryNexOpenNode:
 	BEQ -outOfRange							; open node stack size == 0? no more nodes to try! Done
-	INC debug
 	LDX list3, Y								; otherwise, take next most promising open node from top of open node stack
 	STX par3										; and make it the current node
 	CPX par1										; is destination node?

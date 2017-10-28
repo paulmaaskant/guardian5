@@ -218,20 +218,20 @@ brief1Stream:
 	.db setPortrait, $20
 	.db C, A, P, T, A, I, N, comma, lineBreak
 	.db lineBreak
-	.db A, space, S, I, N, G, L, E, space, E, N, E, M, Y, space, U, N, I, T, lineBreak
-	.db H, A, S, space, M, A, D, E, space, I, T, S, space, W, A, Y, space, P, A, S, T, lineBreak
-	.db O, U, R, space, D, E, F, E, N, S, E, space, L, I, N, E, lineBreak
+	.db T, W, O, space, E, N, E, M, Y, space, U, N, I, T, S, space, H, A, V, E, lineBreak
+	.db B, O, K, E, N, space, T, H, R, O, U, G, H, space, O, U, R, lineBreak
+	.db D, E, F, E, N, S, E, space, L, I, N, E, lineBreak
 	.db lineBreak
-	.db I, T, space, M, U, S, T, space, B, E, space, D, E, S, T, R, O, Y, E, D, lineBreak
-	.db B, E, F, O, R, E, space, I, T, space, R, E, A, C, H, E, S, space, T, H, E, lineBreak
+	.db T, H, E, Y, space, M, U, S, T, space, B, E, space, S, T, O, P, P, E, D, lineBreak
+	.db B, E, F, O, R, E, space, R, E, A, C, H, I, N, G, space, T, H, E, lineBreak
 	.db C, I, T, Y, lineBreak
 	.db lineBreak
 	.db Y, O, U, R, space, O, R, D, E, R, S, space, A, R, E, space, T, O, space, F, I, N, D, lineBreak
 	.db A, N, D, space, E, L, I, M, I, N, A, T, E, space, T, H, E, space, R, O, G, U, E, lineBreak
-	.db E, N, E, M, Y, space, U, N, I, T, waitForA
+	.db E, N, E, M, Y, space, U, N, I, T, S, waitForA
 	.db nextPage
 	.db setPortrait, $00
-	.db O, R, D, E, R, S, space, C, O, N, F, I, R, M, E, D, lineBreak
+	.db A, C, K, N, O, W, L, E, G, E, D, lineBreak
 	.db lineBreak
 	.db M, O, V, I, N, G, space, O, U, T, space, T, O, space, F, I, N, D, space, A, N, D, lineBreak
 	.db E, L, I, M, I, N, A, T, E, space, E, N, E, M, Y, space, U, N, I, T, lineBreak, N, O, W, waitForA
@@ -355,13 +355,16 @@ levelOne:																																				; --- blocked nodes (1 bit for move
 	.db %00000000, %00000000, %00001010, $00																			; row 10
 	.db $FE, 20, $00																															; row 11-15
 																																								; --- initial objects ---
-	.db	$02																																				; number of objects (2)
+	.db	$03																																				; number of objects (2)
 	.db $03																																				; object 0 f type 3
 	.db $13																																				; object 0 grid position
 	.db $02																																				; object 0 pilot f0 & facing RD
 	.db $12																																				; object 1 h type 2
 	.db $CC																																				; object 1 grid position
 	.db $05																																				; object 1 pilot ho & facing LD
+	.db $12																																				; object 2 h type 2
+	.db $C4																																				; object 2 grid position
+	.db $15																																				; object 2 pilot ho & facing LD
 
 A = $10
 B = $11
