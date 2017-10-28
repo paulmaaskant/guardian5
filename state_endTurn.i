@@ -9,10 +9,10 @@ state_endTurn:
 	; end of turn event : mission accomplished if only friendly units remain
 	; ---------------------
 	LDX objectCount
-	LDA #0
+	LDA #00
 
 -loop:
-	ORA objectTypeAndNumber, X
+	ORA objectTypeAndNumber-1, X
 	DEX
 	BPL -loop
 	ASL
@@ -25,7 +25,7 @@ state_endTurn:
 	LDA #$80
 
 -loop:
-	AND objectTypeAndNumber, X
+	AND objectTypeAndNumber-1, X
 	DEX
 	BPL -loop
 	ASL
