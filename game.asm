@@ -3,8 +3,9 @@
 ; - volume mute operation
 ; - miss animations for gun fire
 ; - shutdown animation
+; - unit destroyed animation & sound
 ; - AI
-; - split the end turn state into end turn / start turn state
+; -
 ;
 ;
 ; PARKING LOT
@@ -24,146 +25,129 @@
 	.db $00, $00, $00, $00, $00, $00, $00, $00	; filler
 
 ;; 2 - constants and variables
-	.enum $0000 ; sets what is known as the zero page
+	.enum $0000 													; zero page
 
-	nmiVar0										.dsb 1
-	nmiVar1										.dsb 1
-	nmiVar2										.dsb 1
-	nmiVar3										.dsb 1
-	nmiVar4										.dsb 1
-	nmiVar5										.dsb 1
+	nmiVar0											.dsb 1		; local variables used by NMI and
+	nmiVar1											.dsb 1		; subroutines that are NMI specific
+	nmiVar2											.dsb 1
+	nmiVar3											.dsb 1
+	nmiVar4											.dsb 1
+	nmiVar5											.dsb 1
 
-	; ---------------------------------
-	; The following are variables that have a lifespan limited to a single frame
-	; Used by various subroutines
-	; They cannot be relied upon to carry values across frames
-	; ---------------------------------
+																				; ---------------------------------
+																				; The following are variables that have a lifespan limited to a single frame
+																				; Used by various subroutines
+																				; They cannot be relied upon to carry values across frames
+																				; ---------------------------------
 
-	; LOCAL variables usable by supporting subroutines (never used as IN OUT)
-	locVar1 									.dsb 1
-	locVar2 									.dsb 1
-	locVar3										.dsb 1
-	locVar4										.dsb 1
-	locVar5										.dsb 1
+	locVar1 											.dsb 1	; LOCAL variables usable by supporting subroutines (never used as IN OUT)
+	locVar2 											.dsb 1
+	locVar3												.dsb 1
+	locVar4												.dsb 1
+	locVar5												.dsb 1
 
-	; IN / OUT parameters used by supporting subroutines
-	par1 											.dsb 1
-	par2 											.dsb 1
-	par3 											.dsb 1
-	par4											.dsb 1
-	pointer1									.dsw 1
-	pointer2									.dsw 1
+	par1 													.dsb 1	; IN / OUT parameters used by supporting subroutines
+	par2 													.dsb 1
+	par3 													.dsb 1
+	par4													.dsb 1
+	pointer1											.dsw 1
+	pointer2											.dsw 1	;
 
-	cameraY										.dsw 1	; upper left of camera in relation to background tiles
-	cameraX										.dsw 1	; upper left of camera in relation to background tiles
-	cameraYDest								.dsw 1	; upper left of camera in relation to background tiles
-	cameraXDest								.dsw 1	; upper left of camera in relation to background tiles
-	cameraYStatus							.dsb 1
+	cameraY												.dsw 1	; upper left of camera in relation to background tiles
+	cameraX												.dsw 1	; upper left of camera in relation to background tiles
+	cameraYDest										.dsw 1	; upper left of camera in relation to background tiles
+	cameraXDest										.dsw 1	; upper left of camera in relation to background tiles
+	cameraYStatus									.dsb 1
 
-	oamVar										.dsb 10 ; use for sprite operations, not used yet
+	oamVar												.dsb 10 ; use for sprite operations, not used yet
 
-	; ---------------------------------
-	; The following are variables that have a life span that goes across frames
-	; typically used to carry information from one game state to the next
-	; ---------------------------------
+																				; ---------------------------------
+																				; The following are variables that have a life span that goes across frames
+																				; typically used to carry information from one game state to the next
+																				; ---------------------------------
 
-	; used as game state values, sometimes to transfer values from one game state to the next
-	; these values are constant over frame rates (not used by event subroutines)
-	list1											.dsb 10
-	list2											.dsb 10
+	list1													.dsb 10	; used as game state values, sometimes to transfer values from one game state to the next
+	list2													.dsb 10	; these values are constant over frame rates (not used by event subroutines)
 
-	; dedicated to byte streams
-	bytePointer								.dsw 1
-	byteStreamVar							.dsb 3
+	bytePointer										.dsw 1	; dedicated to byte streams
+	byteStreamVar									.dsb 3	; dedicated to byte streams
 
-	; general purpose variables
-	frameCounter 							.dsb 1	; used to pace the main loop, i.e., once per frame
-	actionCounter							.dsb 1	; used to time action animations
-	blockInputCounter					.dsb 1  ; used to block input for specified time
-	effectCounter							.dsb 1  ; used to time cursor sprite animation
-	menuCounter								.dsb 1	; used to time menu blinking
+	frameCounter 									.dsb 1	; used to pace the main loop, i.e., once per frame
+	actionCounter									.dsb 1	; used to time action animations
+	blockInputCounter							.dsb 1  ; used to block input for specified time
+	effectCounter									.dsb 1  ; used to time cursor sprite animation
+	menuCounter										.dsb 1	; used to time menu blinking
 
-	sysFlags									.dsb 1	; scroll direction (b7-6), action locked (b5), screen split (b4), PAL vs NTSC (b3)
-	events										.dsb 1  ; flags that trigger specific subroutines
-	effects										.dsb 1  ; flags that trigger embedded sprite effects
-	menuFlags									.dsb 1	; flags that causes menu areas to blink
-	actionMessage							.dsb 1	;
+	sysFlags											.dsb 1	; scroll direction (b7-6), action locked (b5), screen split (b4), PAL vs NTSC (b3)
+	events												.dsb 1  ; flags that trigger specific subroutines
+	effects												.dsb 1  ; flags that trigger embedded sprite effects
+	menuFlags											.dsb 1	; flags that causes menu areas to blink
+	actionMessage									.dsb 1	;
 
-	; buffer to write tiles to VRAM
-	stackPointer1							.dsb 1
-	stackPointer2							.dsb 1
+	stackPointer1									.dsb 1	;
+	stackPointer2									.dsb 1	;
 
-	buttons 									.dsb 1	; used to store controller #1 status
-	gameProgress							.dsb 1  ; used to keep track of game progress
-	seed											.dsw 1	; used to generate random numbers
-	cursorGridPos							.dsb 1  ; grid coordinates of cursor XXXX YYYY
-	stateStack								.dsb 22 ; used to control state transitions in the game
+	buttons 											.dsb 1	; used to store controller #1 status
+	gameProgress									.dsb 1  ; used to keep track of game progress
+	seed													.dsw 1	; used to generate random numbers
+	cursorGridPos									.dsb 1  ; grid coordinates of cursor XXXX YYYY
+	stateStack										.dsb 22 ; used to control state transitions in the game
 
-	; ---------------------------------
-	; The following are variables are dedicated to object management
-	; ---------------------------------
+																				; the object that is currently being handled
+	currentObjectType 						.dsw 1	; pointer to the object type (all constants for the object)
+	currentObjectYPos 						.dsb 1 	; on screen coordinate Y of active object
+	currentObjectYScreen					.dsb 1	;
+	currentObjectXPos 						.dsb 1 	; on screen coordinate X of active object
+	currentObjectXScreen					.dsb 1	;
+	currentObjectFrameCount 			.dsb 1	; used to time the object's sprite animation
 
-	; the object that is currently being handled
-	currentObjectType 				.dsw 1	; pointer to the object type (all constants for the object)
-	currentObjectYPos 				.dsb 1 	; on screen coordinate Y of active object
-	currentObjectYScreen			.dsb 1	;
-	currentObjectXPos 				.dsb 1 	; on screen coordinate X of active object
-	currentObjectXScreen			.dsb 1	;
-	currentObjectFrameCount 	.dsb 1	; used to time the object's sprite animation
+	targetObjectTypeAndNumber			.dsb 1	; target object type / number
+	targetObjectIndex							.dsb 1	; index in objects table
 
-	; active / target objects attributes
-	targetObjectTypeAndNumber	.dsb 1	; target object type / number
-	targetObjectIndex					.dsb 1	; index in objects table
+	activeObjectTypeAndNumber			.dsb 1	; active object type / number
+	activeObjectIndex							.dsb 1	; index in objects table
+	activeObjectGridPos						.dsb 1	; position of the object that has the turn
+	activeObjectStats							.dsb 1	; 0 weapon 1 max range (b7-4) min range (b3-2) and type (b1-0)
+																.dsb 1	; 1 weapon 2 max range (b7-4) min range (b3-2) and type (b1-0)
+																.dsb 1	; 2 movement
+																.dsb 1  ; 3 weapon 1 damage
+																.dsb 1 	; 4 weapon 2 damage
+																.dsb 1 	; 5 accuracy & defence (b7-4) acc, (b3-0) def
+																.dsb 1	; 6 armor (dail)
+																.dsb 1	; 7 heat modifiers?
+																.dsb 1	; 8 special abilities?
+																.dsb 1	; 9 special abilities?
 
-	activeObjectTypeAndNumber	.dsb 1	; active object type / number
-	activeObjectIndex					.dsb 1	; index in objects table
-	activeObjectGridPos				.dsb 1	; position of the object that has the turn
-	activeObjectStats					.dsb 1	; 0 weapon 1 max range (b7-4) min range (b3-2) and type (b1-0)
-														.dsb 1	; 1 weapon 2 max range (b7-4) min range (b3-2) and type (b1-0)
-														.dsb 1	; 2 movement
-														.dsb 1  ; 3 weapon 1 damage
-														.dsb 1 	; 4 weapon 2 damage
-														.dsb 1 	; 5 accuracy & defence (b7-4) acc, (b3-0) def
-														.dsb 1	; 6 armor (dail)
-														.dsb 1	; 7 heat modifiers?
-														.dsb 1	; 8 special abilities?
-														.dsb 1	; 9 special abilities?
+																				; stored memory objects
+																				; object grid position is stored separately as it will be sorted regularly
+	objectCount										.dsb 1	; number of objects presently in memory
+	objectTypeAndNumber						.dsb 6	; (b7) hostile (b6-3) objectType (b2-0) object number
+																				; the rest of the object information is stored (4 bytes each) so that it does not require sorting whenever the object's position changes
+	object												.dsb 1	; +0: (b7) shutdown (b6-4) pilot, (b3) move/still, (b2-0) direction
+																.dsb 1	; +1: health dial (b7-3), heat dial (b2-0)
+																.dsb 1	; +2: frame count (b7-0)
+																.dsb 1	; +3: grid pos
+	object1												.dsb 4	;
+	object2												.dsb 4	;
+	object3												.dsb 4	;
+	object4												.dsb 4	;
+	object5												.dsb 4	;
 
-	; stored memory objects
-	; object grid position is stored separately as it will be sorted regularly
-	objectCount								.dsb 1	; number of objects presently in memory
-	objectTypeAndNumber				.dsb 6	; (b7) hostile (b6-3) objectType (b2-0) object number
-	; the rest of the object information is stored (4 bytes each) so that it does not require sorting whenever the object's position changes
-	object										.dsb 1	; +0: (b7) shutdown (b6-4) pilot, (b3) move/still, (b2-0) direction
-														.dsb 1	; +1: health dial (b7-3), heat dial (b2-0)
-														.dsb 1	; +2: frame count (b7-0)
-														.dsb 1	; +3: grid pos
-	object1										.dsb 4	;
-	object2										.dsb 4	;
-	object3										.dsb 4	;
-	object4										.dsb 4	;
-	object5										.dsb 4	;
+	actionList										.dsb 10	; ------------------------------------------------------
+	selectedAction								.dsb 1	; various
+	debug 												.dsb 2	; possible actions used for player and AI
+	distanceToTarget							.dsb 1
 
-	; ------------------------------------------------------
-	; various
-	; ------------------------------------------------------
+	pal_transparant								.dsb 1	; ------------------------------------------------------
+	pal_color1										.dsb 8	; palette colours
+	pal_color2										.dsb 8	; store in memory to manipulate brightness
+	pal_color3										.dsb 8
 
-	; possible actions used for player and AI
-	actionList								.dsb 10	;
-	selectedAction						.dsb 1
-
-	debug 										.dsb 2
-	distanceToTarget					.dsb 1
-
-	; palette colours
-	; store in memory to manipulate brightness
-	pal_transparant						.dsb 1
-	pal_color1								.dsb 8
-	pal_color2								.dsb 8
-	pal_color3								.dsb 8
+	list5													.dsb 10	; all purpose
 
 	.ende
 	.enum $0300																																		; sound variables
+
 	soundFlags										.dsb 1																					; (b7) sound enabled (b6) silence event raised
 	soundStreamChannel						.dsb 6																					; (b7) stream active? (b1-0) APU channel that the stream using
 	soundStreamDutyVolume					.dsb 6																					; (b7-6) Duty (b4-0) Volume Offset
@@ -213,7 +197,7 @@
 	targetMenuLine1				.dsb 6
 	targetMenuLine2				.dsb 6
 	targetMenuLine3				.dsb 6
-	targetMenuLine4				.dsb 3
+	targetMenuLine4				.dsb 3 ; not used
 	systemMenuLine1				.dsb 5
 	systemMenuLine2				.dsb 5
 	systemMenuLine3				.dsb 5
@@ -231,7 +215,6 @@
 	; 05 sprite: hostile units
 	; 06 sprite: cursor
 	; 07 sprite: effects
-
 	currentPalettes				.dsb 8
 	currentTransparant		.dsb 1
 
@@ -251,6 +234,7 @@
 
 	; PRG page 1: byteStreams
 	.org $A000
+	.include data_dictionary.i
 	.include data_byteStreams.i
 	.include sbr_getNextByte.i
 
@@ -614,7 +598,7 @@ gameStateJumpTable:
 	.dw state_endTurn-1													; 08
 	.dw state_runDialog-1												; 09
 	.dw state_initializeSetDirection-1					; 0A
-	.dw state_centerCamera-1										; 0B
+	.dw state_centerCameraOnCursor-1						; 0B
 	.dw state_waitForCamera-1										; 0C
 	.dw state_changeBrightness-1								; 0D
 	.dw state_loadScreen-1											; 0E
@@ -644,7 +628,9 @@ gameStateJumpTable:
 	.dw state_initializePlayAnimation-1					; 26
 	.dw state_ai_determineAction-1							; 27
 	.dw state_ai_determineAttackPosition-1 			; 28
-	.dw state_ai_test-1 												; 28
+	.dw state_ai_test-1 												; 29
+	.dw state_newTurn-1													; 2A
+	.dw state_centerCameraOnAttack-1						; 2B
 
 :not_used
 
@@ -660,7 +646,7 @@ gameStateJumpTable:
 	.include state_initializeGameMenu.i
 	.include state_fadeInOut.i
 	.include state_loadLevelMapTiles.i
-	.include state_centerCamera.i
+	.include state_centerCameraOnCursor.i
 	.include state_waitForCamera.i
 	.include state_runDialog.i
 	.include state_loadScreen.i
@@ -687,6 +673,8 @@ gameStateJumpTable:
 	.include state_ai_determineAction.i
 	.include state_ai_determineAttackPosition.i
 	.include state_ai_test.i
+	.include state_newTurn.i
+	.include state_centerCameraOnAttack.i
 
 	.include sbr_getStatsAddress.i
 	.include sbr_pushState.i
@@ -786,107 +774,6 @@ identity:
 	.db $00, $01, $02, $03, $04, $05, $06, $07, $08, $09, $0A, $0B, $0C, $0D, $0E, $0F
 	.db $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $1A, $1B, $1C, $1D, $1E, $1F
 	.db $20
-
-stringListL:
-	.db #< str_RANGED_ATK_1							; 00
-	.db #< str_RANGED_ATK_2							; 01
-	.db #< str_MOVE											; 02
-	.db #< str_CHARGE										; 03
-	.db #< str_COOL_DOWN								; 04
-	.db #< str_LOS_BLOCKED							; 05
-	.db #< str_OPENING_FIRE							; 06
-	.db #< str_CLOSE_COMBAT							; 07
-	.db #< str_OUT_OF_RANGE							; 08
-	.db #< str_IMPASSABLE								; 09
-	.db #< str_OUTSIDE_ARC							; 0A
-	.db #< str_CHOOSE_FACING_DIRECTION	; 0B
-	.db #< str_TARGET_TOO__CLOSE 				; 0C
-	.db #< str_RUN											; 0D NOT USED
-	.db #< str_TARGET										; 0E
-	.db #< str_DAMAGE										; 0F
-	.db #< str_ACTION_PTS								; 10
-	.db #< str_FFW											; 11
-	.db #< str_RUN											; 12 NOT USED
-	.db #< str_PIVOT_TURN								; 13
-	.db #< str_ATTK											; 14
-	.db #< str_START_GAME								; 15
-	.db #< str_PLAY_SOUND								; 16
-	.db #< str_INSTRUCTIONS							; 17
-	.db #< str_RUN											; 18
-
-stringListH:
-	.db #> str_RANGED_ATK_1
-	.db #> str_RANGED_ATK_2
-	.db #> str_MOVE
-	.db #> str_CHARGE
-	.db #> str_COOL_DOWN
-	.db #> str_LOS_BLOCKED
-	.db #> str_OPENING_FIRE
-	.db #> str_CLOSE_COMBAT
-	.db #> str_OUT_OF_RANGE
-	.db #> str_IMPASSABLE
-	.db #> str_OUTSIDE_ARC
-	.db #> str_CHOOSE_FACING_DIRECTION
-	.db #> str_TARGET_TOO__CLOSE
-	.db #> str_RUN  										; not used
-	.db #> str_TARGET
-	.db #> str_DAMAGE
-	.db #> str_ACTION_PTS
-	.db #> str_FFW
-	.db #> str_RUN
-	.db #> str_PIVOT_TURN
-	.db #> str_ATTK
-	.db #> str_START_GAME
-	.db #> str_PLAY_SOUND
-	.db #> str_INSTRUCTIONS
-	.db #> str_RUN
-
-str_LOS_BLOCKED:
-	.db 20, L, I, N, E, dash, O, F, dash, S, I, G, H, T, B, L, O, C, K, E, D
-str_RANGED_ATK_1:
-	.db $0C, $21, $10, $1D, $16, $14, $13, $0F, $10, $23, $1A, $0F, $10
-str_RANGED_ATK_2:
-	.db $0C, $21, $10, $1D, $16, $14, $13, $0F, $10, $23, $1A, $0F, $11
-str_MOVE:
-	.db $04, $1C, $1E, $25, $14
-str_OPENING_FIRE:
-	.db $0C, $1E, $1F, $14, $1D, $18, $1D, $16, $0F, $15, $18, $21, $14
-str_COOL_DOWN:
-	.db 9, C, O, O, L, space, D, O, W, N
-str_CHARGE:
-	.db 6, C, H, A, R, G, E
-str_CLOSE_COMBAT:
-	.db 12, C, L, O, S, E, space, C, O, M, B, A, T
-str_OUT_OF_RANGE:
-	.db 12, O, U, T, dash, O, F, dash, R, A, N, G, E
-str_IMPASSABLE:
-	.db 10, I, M, P, A, S, S, A, B, L, E
-str_OUTSIDE_ARC:
-	 db 22, F, A, C, I, N, G, space, W, R, O, N, G, space, D, I, R, E, C, T, I, O, N
-str_CHOOSE_FACING_DIRECTION:
-	.db 24, C, H, O, O, S, E, space, F, A, C, I, N, G, space, space, D, I, R, E, C, T, I, O, N
-str_TARGET_TOO__CLOSE:
-	.db 18, T, A, R, G, E, T, space, T, O, O, space, space, space, C, L, O, S, E
-str_TARGET:
-	.db 6, T, A, R, G, E, T
-str_DAMAGE:
-	.db 6, D, A, M, A, G, E
-str_ACTION_PTS:
-	.db 10, A, C, T, I, O, N, space, P, T, S
-str_FFW:
-	.db 1, $2F
-str_PIVOT_TURN:
-	.db 10, P, I, V, O, T, space, T, U, R, N
-str_ATTK:
-	.db 4, S, T, R, $82
-str_START_GAME:
-	.db 10, S, T, A, R, T, space, G, A, M, E
-str_PLAY_SOUND:
-	.db 10, P, L , A, Y, space, S, O, U, N, D
-str_INSTRUCTIONS:
-	.db 12, I, N, S, T, R, U, C, T, I, O, N, S
-str_RUN
-	.db 3, R, U, N
 
 
 .include data_objectTypes.i
