@@ -53,21 +53,43 @@ state_ai_determineAction:
   STY targetObjectIndex
 	STA cursorGridPos
 
-  ; ----------------------------------------
-  ; 2. score available options
-  ; ----------------------------------------
+  LDY activeObjectGridPos
+  STY par1
+  JSR distance
+  STA distanceToTarget
 
-  LDX #$06
+  ; ----------------------------------------
+  ; 2. score all options
+  ; ----------------------------------------
+  LDX #6
+  STX selectedAction
 
 -loop:
+  LDX selectedAction
+
+  LDA state29_actionID, X
+  STA actionList, X
+
+  CPX #3
+  BCC +continue
+
+  LDA #$00
+  STA actionMessage
+  JSR checkTarget
+  LDX selectedAction
+  LDA actionMessage
+  BPL +continue
+
   LDA #0
-  CPX #AI_move_offensive                                 ; assign 1 point
-  BNE +continue
-  LDA #1
+  BEQ +store
 
 +continue:
-  STA list3, X
-  DEX
+  LDA state29_baslineLineScore, X
+
++store:
+  STA list5, X
+
+  DEC selectedAction
   BPL -loop
 
   ; ----------------------------------------
@@ -76,22 +98,25 @@ state_ai_determineAction:
 
   LDX #6
   LDA #0
+  STA actionMessage     ; reset
   STA locVar1           ; best score
-  STA locVar2           ; best action
+  STA selectedAction    ; best action
 
 -loop:
-  LDA list3, X
+  LDA list5, X
   CMP locVar1
   BCC +continue
   STA locVar1
-  STX locVar2
+  STX selectedAction
 
 +continue:
   DEX
   BPL -loop
 
-  LDY locVar2
-  LDA state29_nextState, Y
+  JSR calculateActionPointCost
+
+  LDX selectedAction
+  LDA state29_nextState, X
   JMP replaceState
 
   AI_cooldown = 0
@@ -103,4 +128,37 @@ state_ai_determineAction:
   AI_charge = 6
 
 state29_nextState:
-  .db $14, $FF, $28, $12, $12, $17, $1B
+  .db $14 ; AI_cooldown
+  .db $FF ; AI_move_defensive
+  .db $28 ; AI_move_offensive
+  .db $12 ; AI_ranged_attack_1
+  .db $12 ; AI_ranged_attack_2
+  .db $17 ; AI_close_combat
+  .db $1B ; AI_charge
+
+state29_actionID:
+  .db aCOOLDOWN     ; AI_cooldown
+  .db aMOVE         ; AI_move_defensive
+  .db aMOVE         ; AI_move_offensive
+  .db aRANGED1      ; AI_ranged_attack_1
+  .db aRANGED2      ; AI_ranged_attack_2
+  .db aCLOSECOMBAT  ; AI_close_combat
+  .db aCHARGE       ; AI_charge
+
+state29_baslineLineScore:
+  .db $01 ; AI_cooldown
+  .db $01 ; AI_move_defensive
+  .db $02 ; AI_move_offensive
+  .db $03 ; AI_ranged_attack_1
+  .db $02 ; AI_ranged_attack_2
+  .db $03 ; AI_close_combat
+  .db $00 ; AI_charge
+
+
+; COLS
+; col a only if target check is passed
+
+
+; col 1 always add score
+; col 2 if less than 4 AP, add score
+; col 3 if less than 2 AP, add score

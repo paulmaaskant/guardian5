@@ -16,17 +16,22 @@ state_ai_determineAttackPosition:
 
 +pathFound:
   LDA par1
-  STA cursorGridPos           ; put the cursor on the destination node
+  STA cursorGridPos                                                             ; put the cursor on the destination node
 
-  LDA #$03										; clear from list3+4
-	LDX #$09										; up to and including list3+9
+  LDA #$03										                                                  ; clear from list3+4
+	LDX #$09										                                                  ; up to and including list3+9
 	JSR clearList3
 
-  LDA #$00                    ; FIX me (action point cost)
+  LDA #$01                                                                      ; MOVE costs 1 point
   STA list3+0
+  LDA activeObjectStats+2																												; movement stat
+  CMP list1																																			; compare to used number of moves (list1)
+  BCS +continue
+  INC list3+0                                                                   ; RUN costs an extra point
 
-	JSR applyActionPointCost
-	JSR initializeMove
++continue:
+  JSR applyActionPointCost
+  JSR initializeMove
 
   JSR pullAndBuildStateStack
 	.db $04							        ; 3 states
@@ -52,7 +57,7 @@ state_ai_determineAttackPosition:
 firstPass:
   ; ------------------
   ; first pass,
-  ; look for a reachable node that has clear line of sight to target
+  ; find all reachable nodes that have clear line of sight to target and are withing weapon range
   ; ------------------
 
   LDX #$00										                                                  ;
@@ -67,9 +72,8 @@ firstPass:
   LSR
   LSR
   LSR
-  STA actionList+2                                                                   ; max range of primary weapon
-  INC actionList+2                                                                   ; +1 to make compare easier
-
+  STA actionList+2                                                              ; max range of primary weapon
+  INC actionList+2                                                              ; +1 to make compare easier
 
 -loop:
   STX par1
@@ -85,6 +89,9 @@ firstPass:
   JSR distance
   CMP actionList+2
   BCS +discardNode                                                              ; node too far from target unit
+
+  CMP #2
+  BCC +discardNode                                                              ; node too close to target unit
 
   TXA
   PHA
@@ -158,6 +165,7 @@ evaluateNodes:
   LDA actionList+0
   BNE +continue
   RTS
+
 +continue:
   JSR random                                                                    ; FIX
   TAX                                                                           ; choose node based on strategy
@@ -167,7 +175,12 @@ evaluateNodes:
 
   LDA #$00
   STA actionMessage                                                             ; reset action message
+
   STX par1                                                                      ; set destination node
+  LDA activeObjectGridPos
+  JSR distance
+  STA distanceToTarget                                                          ; update dtt
+
   LDA activeObjectStats+2
   ASL
   STA par2                                                                      ; set max number of moves
