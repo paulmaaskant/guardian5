@@ -2,8 +2,6 @@
 ; game state 2A
 ; ------------------------
 state_newTurn:
-  INC debug
-
   LDA activeObjectTypeAndNumber
   AND #$07
   STA locVar1

@@ -1,27 +1,39 @@
 ; ------------------------------------------
 ; gamesState 08: end turn
 ;------------------------------------------
-; 1) see if end-of-turn events are triggered
-; 2) assign turn to next unit
-; 			looks up the active object's index and tries to find the object with index+1
-; 			if no such object exits it looks for index+2 etc
-; 			when index+n is equal to the number of objects in memory, the index is reset to 0
-; 3) see if start-of-turn events are triggered
-;
+; see if end-of-turn events are triggered
 ;
 
 state_endTurn:
 	; ---------------------
-	; end of turn event : mission accomplished if only 1 unit remains
+	; end of turn event : mission accomplished if only friendly units remain
 	; ---------------------
-	LDA objectCount
-	CMP #$02
-	BCS +continue
+	LDX objectCount
+	LDA #0
 
-	; is the last unit standing hostile or friendly?
-	LDA objectTypeAndNumber
-	BMI +missionFailed
+-loop:
+	ORA objectTypeAndNumber, X
+	DEX
+	BPL -loop
+	ASL
+	BCC +missionAccomplished
 
+	; ---------------------
+	; end of turn event : mission failed if only hostile units remain
+	; ---------------------
+	LDX objectCount
+	LDA #$80
+
+-loop:
+	AND objectTypeAndNumber, X
+	DEX
+	BPL -loop
+	ASL
+	BCS +missionFailed
+
+	JMP pullState
+
++missionAccomplished:
 	JSR buildStateStack
 	.db $14							; # items
 	.db $20, 0
@@ -52,7 +64,3 @@ state_endTurn:
 	.db $04							; load level
 	.db $0D, 1					; change brightness 1: fade in
 	; built in RTS
-
-+continue:
-
-	JMP pullState
