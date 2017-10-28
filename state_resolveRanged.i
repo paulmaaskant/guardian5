@@ -16,94 +16,31 @@ state_initializeRanged:
 	JSR clearCurrentEffects
 
 	; --------------------------------------------------
-	; Get active / target object screen coordinates
-	; --------------------------------------------------
-	LDA activeObjectGridPos			; attacking unit position
-	JSR gridPosToScreenPos			; attacking unit screen coordinates
-	LDA currentObjectXPos				;
-	STA list1+9									;
-	LDA currentObjectXScreen		;
-	STA list1+8									;
-	LDA currentObjectYPos				;
-	STA list1+11								;
-	LDA currentObjectYScreen		;
-	STA list1+10								;
-
-	LDA cursorGridPos						; target unit position
-	JSR gridPosToScreenPos			; target unit screen coordinates
-
-	LDA list3+3
-	CMP #$02
-	BNE +done
-
-	LDA currentObjectXPos
-	SBC #$20
-	STA currentObjectXPos
-
-+done:
-
-	; --------------------------------------------------
-	; Calculate delta X
-	; --------------------------------------------------
-	LDA list1+9						; determine signed difference
-	SEC
-	SBC currentObjectXPos
-	STA list1+3
-	LDA list1+8
-	SBC currentObjectXScreen
-	STA list1+2						; store the sign for the X delta
-	BPL +positive					; now store the absolute value
-	LDA list1+3						; for the X delta
-	EOR #$FF						; assuming it will never be
-	CLC
-	ADC #$01
-	STA list1+3						; more than 255
-+positive:
-
-	; --------------------------------------------------
-	; Calculate delta Y
-	; --------------------------------------------------
-	LDA list1+11
-	SEC
-	SBC currentObjectYPos
-	STA list1+6
-	LDA list1+10
-	SBC currentObjectYScreen
-	STA list1+5
-
-	BPL +positive					; now store the absolute value
-	LDA list1+6						; for the Y delta
-	EOR #$FF						; assuming it will never be
-	CLC
-	ADC #$01
-	STA list1+6						; more than 255
-+positive:
-
-	; --------------------------------------------------
 	; Prepare the menu
 	; --------------------------------------------------
-	JSR clearActionMenu				; clear the menu
+	JSR clearActionMenu					; clear the menu
 
-	LDA events						; refresh menu
-	ORA event_refreshStatusBar		; set flag
+	LDA events									; refresh menu
+	ORA event_refreshStatusBar	; set flag
 	STA events
 
-	LDA #$0F ;
+	LDA #$0F 										; hide menu indicators
 	STA menuIndicator+0
 	STA menuIndicator+1
 
-	LDA menuFlags					; switch on blinking for line 1
-	ORA menuFlag_line1				; set flag
+	LDA menuFlags								; switch on blinking for line 1
+	ORA menuFlag_line1					; set flag
 	STA menuFlags
 
-	LDX #$00						; write to menu
-	LDY #$06						; "opening fire"
+	LDX #$00										; write to menu
+	LDY #$06										; "opening fire"
 	JSR writeToActionMenu
 
 	JSR pullAndBuildStateStack
-	.db $02							; 2 states
-	.db $13 						; resolve ranged
-	.db $16							; show results
+	.db $03											; 2 states
+	.db $2B
+	.db $13 										; resolve ranged
+	.db $16											; show results
 
 	; built in RTS
 
@@ -131,38 +68,99 @@ state_initializeRanged:
 ; list1+19, damage stat
 ; -----------------------------------------------
 state_resolveRanged:
-	; ------------------------------------------------
-	; menu (tile) updates
-	; ------------------------------------------------
+	; --------------------------------------------------
+	; Get active / target object screen coordinates
+	; --------------------------------------------------
+	LDA activeObjectGridPos			; attacking unit position
+	JSR gridPosToScreenPos			; attacking unit screen coordinates
+	LDA currentObjectXPos				;
+	STA list1+9									;
+	LDA currentObjectXScreen		;
+	STA list1+8									;
+	LDA currentObjectYPos				;
+	STA list1+11								;
+	LDA currentObjectYScreen		;
+	STA list1+10								;
+
+	LDA cursorGridPos						; target unit position
+	JSR gridPosToScreenPos			; target unit screen coordinates
+
+	LDA list3+3
+	CMP #$02
+	BNE +done
+
+	LDA currentObjectXPos
+	SBC #$20
+	STA currentObjectXPos
++done:
+
+	; --------------------------------------------------
+	; Calculate delta X
+	; --------------------------------------------------
+	LDA list1+9						; determine signed difference
+	SEC
+	SBC currentObjectXPos
+	STA list1+3
+	LDA list1+8
+	SBC currentObjectXScreen
+	STA list1+2						; store the sign for the X delta
+	BPL +positive					; now store the absolute value
+	LDA list1+3						; for the X delta
+	EOR #$FF							; assuming it will never be
+	CLC
+	ADC #$01
+	STA list1+3						; more than 255
++positive:
+
+	; --------------------------------------------------
+	; Calculate delta Y
+	; --------------------------------------------------
+	LDA list1+11
+	SEC
+	SBC currentObjectYPos
+	STA list1+6
+	LDA list1+10
+	SBC currentObjectYScreen
+	STA list1+5
+
+	BPL +positive					; now store the absolute value
+	LDA list1+6						; for the Y delta
+	EOR #$FF						; assuming it will never be
+	CLC
+	ADC #$01
+	STA list1+6						; more than 255
+
++positive:
+
+
+
+
 	LDA list1+0
 	AND #$F8
-	BEQ +continue
+	BEQ +continue												; skip the first 8 frames
 
-	LSR
+	LSR																	; show filling gauge while firing
 	LSR
 	LSR
 	CLC
 	ADC #$0C
 	TAX
 	LDY #$11
-	JSR writeToActionMenu			; write
+	JSR writeToActionMenu								; write
 
-	LDA events						; refresh menu
-	ORA event_refreshStatusBar		; set flag
+	LDA events													; refresh menu
+	ORA event_refreshStatusBar					; set flag
 	STA events
 
 +continue:
-	LDA list1+0
+	LDA list1+0													; lightning effect
 	AND #$03
 	BNE +continue
-	LDA list1+0
-	AND #$04
+	LDA list1+0													; toggle every 8 frames
+	AND #$04														; between value $00 and value $10
 	ASL
 	ASL
 	JSR updatePalette
-
-
-
 
 +continue:
 	; ------------------------------------------------
