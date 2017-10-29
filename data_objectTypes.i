@@ -28,7 +28,7 @@ tankType2:
 	.db $1E ; 4 animation: facing D, walking
 
 	; fixed stats (3 bytes)
-	.db #%00110110					; Dail starting positions: (b7-b3) main dial, (b2-b1) heat dial, and cool down (b0)
+	.db #%00011110					; Dail starting positions: (b7-b3) main dial, (b2-b1) heat dial, and cool down (b0)
 	.db #%01100101					; Ranged weapon 1 max range (b7-4), min range (b3-2) and type  (b1-0)
 	.db #%01101011					; Ranged weapon 2 max range (b7-4), min range (b3-2) and type  (b1-0)
 	; dail stats
@@ -68,7 +68,7 @@ tankType3:
 	.db #$15 ; 4 animation: facing D, walking
 
 	; fixed stats (3 bytes)
-	.db #%00110110					; Dail starting positions: (b7-b3) main dial, (b2-b1) heat dial, and cool down (b0)
+	.db #%01001110					; Dail starting positions: (b7-b3) main dial, (b2-b1) heat dial, and cool down (b0)
 	.db #%01100101					; Ranged weapon 1 max range (b7-4), min range (b3-2) and type  (b1-0)
 	.db #%01101011					; Ranged weapon 2 max range (b7-4), min range (b3-2) and type  (b1-0)
 	; dail stats

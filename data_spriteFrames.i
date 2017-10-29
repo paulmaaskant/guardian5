@@ -225,3 +225,11 @@ EFF8
 	.db #%00010001, #$00, #$27
 EFF9:
 	.db #%00010001, #$00, #$37
+
+EFFA: ; explosion shockwave upper
+	.db %00100000, -4,  $28, $29
+	.db %00100011, -4,  0, $39
+
+EFFB: ; explosion shockwave upper
+	.db %00100100, $08, -4,  $0, $39
+	.db %00100111, $0A, -4,  $28, $29

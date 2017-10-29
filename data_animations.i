@@ -68,10 +68,16 @@ ANIM0A:
 	.dw EF0A
 
 ANIM0B:
+	.db $10, $10
+	.dw CS21
 
 ANIM0C:
+	.db $10, $10
+	.dw EF0B
 
 ANIM0D:
+	.db $10, $10
+	.dw EF0C
 
 ANIM0E:
 
@@ -201,7 +207,10 @@ animationL:
 	.db #> ANIM08			; 08 shield (close combat miss)
 	.db #> ANIM09			; 09 cooldown flush
 	.db #> ANIM0A			; 0A waypoint
-	.dsb 5
+	.db #> ANIM0B			; 0B no sprites
+	.db #> ANIM0C			; 0B shockwave
+	.db #> ANIM0D			; 0B shockwave
+	.dsb 2
 	.db #> ANIM10			; ramulen diag down still
 	.db #> ANIM11			; ramulen diag down walking
 	.db #> ANIM12			; ramulen diag up still
@@ -231,7 +240,10 @@ animationH:
 	.db #< ANIM08
 	.db #< ANIM09
 	.db #< ANIM0A
-	.dsb 5
+	.db #< ANIM0B
+	.db #< ANIM0C
+	.db #< ANIM0D
+	.dsb 2
 	.db #< ANIM10
 	.db #< ANIM11
 	.db #< ANIM12
