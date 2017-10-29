@@ -14,7 +14,7 @@ state_endTurn:
 -loop:
 	ORA objectTypeAndNumber-1, X
 	DEX
-	BPL -loop
+	BNE -loop
 	ASL
 	BCC +missionAccomplished
 
@@ -27,7 +27,7 @@ state_endTurn:
 -loop:
 	AND objectTypeAndNumber-1, X
 	DEX
-	BPL -loop
+	BNE -loop
 	ASL
 	BCS +missionFailed
 
