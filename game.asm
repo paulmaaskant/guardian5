@@ -725,6 +725,7 @@ gameStateJumpTable:
 	.include sbr_distance.i
 	.include sbr_toBCD.i
 	.include sbr_absolute.i
+	.include sbr_squareRoot.i
 
 	.include reset.i
 	.include nmi.i

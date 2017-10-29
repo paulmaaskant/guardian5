@@ -35,7 +35,7 @@ state_endTurn:
 
 +missionAccomplished:
 	JSR buildStateStack
-	.db $14							; # items
+	.db $15							; # items
 	.db $20, 0
 	.db $23 						; expand status bar
 	.db $01, 9					; load stream 09: mission accomplished
@@ -44,14 +44,15 @@ state_endTurn:
 	.db $0D, 1					; change brightness 1: fade in
 	.db $01, 2					; load stream 01: mission 2 brief
 	.db $0D, 0					; change brightness 0: fade out
-	.db $00, 3					; load screen 03: status bar
-	.db $04							; load level
-	.db $0D, 1					; change brightness 1: fade in
+	.db $00, 0						; load screen 00: title screen
+	.db $1E								; load title menu
+	.db $0D, 1						; change brightness 1: fade in
+	.db $03								; title screen (wait for user)
 	; built in RTS
 
 +missionFailed:
 	JSR buildStateStack
-	.db $14							; # items
+	.db $15							; # items
 	.db $20, 0
 	.db $23 						; expand status bar
 	.db $01, 12					; load stream 12: mission failed
@@ -60,7 +61,8 @@ state_endTurn:
 	.db $0D, 1					; change brightness 1: fade in
 	.db $01, 3					; load stream 01: mission 3 brief
 	.db $0D, 0					; change brightness 0: fade out
-	.db $00, 3					; load screen 03: status bar
-	.db $04							; load level
-	.db $0D, 1					; change brightness 1: fade in
+	.db $00, 0						; load screen 00: title screen
+	.db $1E								; load title menu
+	.db $0D, 1						; change brightness 1: fade in
+	.db $03								; title screen (wait for user)
 	; built in RTS

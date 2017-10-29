@@ -139,7 +139,6 @@ RESET:
 	STA currentTransparant
 
 	LDA #$C0
-	;LDA 0
 	JSR updatePalette
 
 	JSR soundInitialize
