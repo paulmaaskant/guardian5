@@ -10,6 +10,12 @@ state_initializeScreen:
 	STA bytePointer+0
 	LDA state00_screenLo, Y
 	STA bytePointer+1
+
+	LDA state00_tileBank1, Y
+	STA $D001
+
+	
+
 	LDA state00_sound, Y
 	BMI +noSound
 	TAY
@@ -58,3 +64,13 @@ state00_sound:
 	.db $04
 	.db $C0									; silence
 	.db $05									;
+
+state00_tileBank1:
+	.db $05
+	.db $05
+	.db $05
+	.db $05
+	.db $05
+	.db $05
+state00_tileBank2:
+state00_tileBank3:
