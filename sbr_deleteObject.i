@@ -35,7 +35,5 @@ deleteObject:
 	BEQ -loop												;
 
 +done:
-	LDA events											; update so that the object is no longer shown
-	ORA event_updateSprites
-	STA events
+
 	RTS

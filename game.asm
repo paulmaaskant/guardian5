@@ -636,6 +636,8 @@ gameStateJumpTable:
 	.dw state_ai_test-1 												; 29
 	.dw state_newTurn-1													; 2A
 	.dw state_centerCameraOnAttack-1						; 2B
+	.dw state_initializeEffect-1								; 2C
+	.dw state_runEffect-1												; 2D
 
 :not_used
 
@@ -680,6 +682,8 @@ gameStateJumpTable:
 	.include state_ai_test.i
 	.include state_newTurn.i
 	.include state_centerCameraOnAttack.i
+	.include state_initializeEffect.i
+	.include state_runEffect.i
 
 	.include sbr_getStatsAddress.i
 	.include sbr_pushState.i
@@ -725,7 +729,7 @@ gameStateJumpTable:
 	.include sbr_distance.i
 	.include sbr_toBCD.i
 	.include sbr_absolute.i
-	.include sbr_squareRoot.i
+	.include sbr_getCircleCoordinates.i
 
 	.include reset.i
 	.include nmi.i
@@ -840,6 +844,7 @@ hitProbability:
 ; that holds the matching animation #
 directionLookup:
 	.db 0, 0, 1, 2, 3, 2, 1, 0, 0, 4, 5, 6, 7, 6, 5
+
 
 
 ;; 9 - vectors

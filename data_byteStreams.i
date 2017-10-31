@@ -209,10 +209,12 @@ brief1Stream:
 	.db G, U, A, R, D, I, A, N, space, 5, comma, lineBreak
 	.db T, H, I, S, space, I, S, space, C, O, M, M, A, N, D, space, 1, lineBreak
 	.db lineBreak
-	.db S, T, A, N, D, space, B, Y, space, F, O, R, space, N, E, W, space, O, R, D, E, R, S, waitForA
+	.db S, T, A, N, D, space, B, Y, space, T, O, space, R, E, C, E, I, V, E, lineBreak
+	.db N, E, W, space, O, R, D, E, R, S, waitForA
 	.db nextPage
 	.db setPortrait, $00
 	.db T, H, I, S, space, I, S, space, G, U, A, R, D, I, A, N, space, 5, comma, lineBreak
+	.db lineBreak
 	.db S, T, A, N, D, I, N, G, space, B, Y, waitForA
 	.db nextPage
 	.db setPortrait, $20
@@ -231,7 +233,7 @@ brief1Stream:
 	.db E, N, E, M, Y, space, U, N, I, T, S, waitForA
 	.db nextPage
 	.db setPortrait, $00
-	.db A, C, K, N, O, W, L, E, G, E, D, lineBreak
+	.db O, R, D, E, R, S, space, C, O, N, F, I, R, M, E, D, lineBreak
 	.db lineBreak
 	.db M, O, V, I, N, G, space, O, U, T, space, T, O, space, F, I, N, D, space, A, N, D, lineBreak
 	.db E, L, I, M, I, N, A, T, E, space, E, N, E, M, Y, space, U, N, I, T, lineBreak, N, O, W, waitForA

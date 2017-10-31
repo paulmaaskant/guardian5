@@ -1,9 +1,5 @@
 state_initializePlayAnimation:
 
-  LDA #$80
-  STA currentObjectYPos
-  STA currentObjectXPos
-
   LDA #$00
   STA currentObjectFrameCount
 

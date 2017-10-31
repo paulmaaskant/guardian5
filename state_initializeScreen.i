@@ -14,8 +14,6 @@ state_initializeScreen:
 	LDA state00_tileBank1, Y
 	STA $D001
 
-	
-
 	LDA state00_sound, Y
 	BMI +noSound
 	TAY
@@ -72,5 +70,15 @@ state00_tileBank1:
 	.db $05
 	.db $05
 	.db $05
+
 state00_tileBank2:
 state00_tileBank3:
+
+state00_tilePall0:
+	.dsb 6, 0
+state00_tilePall1:
+	.dsb 6, 1
+state00_tilePall2:
+	.dsb 6, 2
+state00_tilePall3:
+	.dsb 6, 3

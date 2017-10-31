@@ -30,5 +30,6 @@ squareRoot:
 
 nomore:
   STY par2      ; all done, store square root
+  TYA
   STX par1      ; and remainder
   RTS

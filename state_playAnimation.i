@@ -2,6 +2,7 @@
 ; list1+1 moving
 
 state_playAnimation:
+
   LDA blockInputCounter
 	BEQ +continue
 	DEC blockInputCounter
@@ -35,6 +36,17 @@ state_playAnimation:
   LSR                   ; skip down
   LSR                   ; skip up
   LSR                   ; skip start
+  BCC +continue
+
+
+	JSR buildStateStack
+	.db $05								; # stack items
+  .db $2C
+	.db $0D, 2						; change brightness 2: flash out
+	.db $0D, 3						; change brightness 3: flash out
+	; built in RTS
+
++continue:
   LSR                   ; select
   BCC +continue
   JMP pullState         ; back to main menu
@@ -65,10 +77,13 @@ state_playAnimation:
   LDA state26_mirror, Y
   STA par4
 
-  LDA #$01
+  LDA #1
   STA par3
 
 +showSprite:
+  LDA #$80
+  STA currentObjectYPos
+  STA currentObjectXPos
 
   LDY list1+2
   LDA objectTypeL, Y

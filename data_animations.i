@@ -13,6 +13,74 @@
 ; ++++ ++++ timing: number of NMI's between frames in this cycle
 ; -----------------------------------------------
 
+; -----------------------------------------------
+
+animationL:
+	.db #> ANIM00			; 00 cursor
+	.db #> ANIM01			; 01 active unit
+	.db #> ANIM02			; 02 blocked node (LOS)
+	.db #> ANIM03			; 03 obscure mask (small)
+	.db #> ANIM04			; 04 obscure mask (large)
+	.db #> ANIM05			; 05 explosion
+	.db #> ANIM06			; 06 gun bullets
+	.db #> ANIM07			; 07 hit percentage
+	.db #> ANIM08			; 08 shield (close combat miss)
+	.db #> ANIM09			; 09 cooldown flush
+	.db #> ANIM0A			; 0A waypoint
+	.db #> ANIM0B			; 0B no sprites
+	.db #> ANIM0C			; 0B shockwave
+	.db #> ANIM0D			; 0B shockwave
+	.dsb 2
+	.db #> ANIM10			; ramulen diag down still
+	.db #> ANIM11			; ramulen diag down walking
+	.db #> ANIM12			; ramulen diag up still
+	.db #> ANIM13			; ramulen diag up walking
+	.db #> ANIM14			; ramulen down still
+	.db #> ANIM15			; ramulen down walking
+	.db #> ANIM16			; ramulen up still
+	.db #> ANIM17			; ramulen up walking
+	.db #> ANIM18			; t2
+	.db #> ANIM19			; t2
+	.db #> ANIM1A			; t2
+	.db #> ANIM1B			; t2
+	.db #> ANIM1C			; t2 m d5
+	.db #> ANIM1D			; t2 m d6
+	.db #> ANIM1E			; t2 m d4
+	.db #> ANIM1F			; t2 m d1
+
+animationH:
+	.db #< ANIM00
+	.db #< ANIM01
+	.db #< ANIM02
+	.db #< ANIM03
+	.db #< ANIM04
+	.db #< ANIM05
+	.db #< ANIM06
+	.db #< ANIM07
+	.db #< ANIM08
+	.db #< ANIM09
+	.db #< ANIM0A
+	.db #< ANIM0B
+	.db #< ANIM0C
+	.db #< ANIM0D
+	.dsb 2
+	.db #< ANIM10
+	.db #< ANIM11
+	.db #< ANIM12
+	.db #< ANIM13
+	.db #< ANIM14
+	.db #< ANIM15
+	.db #< ANIM16
+	.db #< ANIM17
+	.db #< ANIM18
+	.db #< ANIM19
+	.db #< ANIM1A
+	.db #< ANIM1B
+	.db #< ANIM1C
+	.db #< ANIM1D
+	.db #< ANIM1E
+	.db #< ANIM1F
+
 ANIM00:
 	.db #$80, #$08
 	.dw CS00
@@ -192,71 +260,3 @@ ANIM1F:
 	.dw tank02_moving_d1_fr06
 	.dw tank02_moving_d1_fr07
 	.dw tank02_moving_d1_fr08
-
-; -----------------------------------------------
-
-animationL:
-	.db #> ANIM00			; 00 cursor
-	.db #> ANIM01			; 01 active unit
-	.db #> ANIM02			; 02 blocked node (LOS)
-	.db #> ANIM03			; 03 obscure mask (small)
-	.db #> ANIM04			; 04 obscure mask (large)
-	.db #> ANIM05			; 05 explosion
-	.db #> ANIM06			; 06 gun bullets
-	.db #> ANIM07			; 07 hit percentage
-	.db #> ANIM08			; 08 shield (close combat miss)
-	.db #> ANIM09			; 09 cooldown flush
-	.db #> ANIM0A			; 0A waypoint
-	.db #> ANIM0B			; 0B no sprites
-	.db #> ANIM0C			; 0B shockwave
-	.db #> ANIM0D			; 0B shockwave
-	.dsb 2
-	.db #> ANIM10			; ramulen diag down still
-	.db #> ANIM11			; ramulen diag down walking
-	.db #> ANIM12			; ramulen diag up still
-	.db #> ANIM13			; ramulen diag up walking
-	.db #> ANIM14			; ramulen down still
-	.db #> ANIM15			; ramulen down walking
-	.db #> ANIM16			; ramulen up still
-	.db #> ANIM17			; ramulen up walking
-	.db #> ANIM18			; t2
-	.db #> ANIM19			; t2
-	.db #> ANIM1A			; t2
-	.db #> ANIM1B			; t2
-	.db #> ANIM1C			; t2 m d5
-	.db #> ANIM1D			; t2 m d6
-	.db #> ANIM1E			; t2 m d4
-	.db #> ANIM1F			; t2 m d1
-
-animationH:
-	.db #< ANIM00
-	.db #< ANIM01
-	.db #< ANIM02
-	.db #< ANIM03
-	.db #< ANIM04
-	.db #< ANIM05
-	.db #< ANIM06
-	.db #< ANIM07
-	.db #< ANIM08
-	.db #< ANIM09
-	.db #< ANIM0A
-	.db #< ANIM0B
-	.db #< ANIM0C
-	.db #< ANIM0D
-	.dsb 2
-	.db #< ANIM10
-	.db #< ANIM11
-	.db #< ANIM12
-	.db #< ANIM13
-	.db #< ANIM14
-	.db #< ANIM15
-	.db #< ANIM16
-	.db #< ANIM17
-	.db #< ANIM18
-	.db #< ANIM19
-	.db #< ANIM1A
-	.db #< ANIM1B
-	.db #< ANIM1C
-	.db #< ANIM1D
-	.db #< ANIM1E
-	.db #< ANIM1F

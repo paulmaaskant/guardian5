@@ -42,10 +42,11 @@ runExplosion:
   LDA currentObjectYPos
   CLC
   ADC actionCounter
+  ADC #-8
   STA currentEffects+12
   STA currentEffects+13
 
-  CMP #$C8
+  CMP #$E0
   BNE +continue
 
   LDA #$0B
@@ -57,6 +58,7 @@ runExplosion:
   LDA currentObjectYPos
   SEC
   SBC actionCounter
+  SBC #8
   STA currentEffects+14
   STA currentEffects+15
 
@@ -75,7 +77,19 @@ runExplosion:
 
   LDA #$40
   STA currentEffects+25
-
   STA currentEffects+27
 
+  LDX #3
+
+-loop:
+  LDA currentEffects, X
+  CMP #$0B
+  BNE +done
+  DEX
+  BPL -loop
+
+  LDA #$00
+  STA effects
+
++done:
   RTS

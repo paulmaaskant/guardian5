@@ -33,10 +33,10 @@ state_showResults:
 
 	LDA targetObjectTypeAndNumber
 	JSR deleteObject																															; tail chain
-	JSR initializeExplosion
 
 	JSR buildStateStack
-	.db $04								; # stack items
+	.db $05								; # stack items
+	.db $2C								; show effect: explosion
 	.db $0D, 2						; change brightness 2: flash out
 	.db $0D, 3						; change brightness 3: flash out
 	; built in RTS
