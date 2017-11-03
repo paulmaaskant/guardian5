@@ -664,7 +664,7 @@ gameStateJumpTable:
 	.include state_resolveMove.i
 	.include state_resolveSpin.i
 	.include state_resolveCoolDown.i
-	.include state_resolveRanged2.i
+	.include state_resolveRanged.i
 	.include state_resolveClose.i
 	.include state_showResults.i
 	.include state_shutDown.i

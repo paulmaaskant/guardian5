@@ -5,9 +5,9 @@ state_initializeEffect:
   ORA #$06
   STA effects
 
+  JSR clearCurrentEffects
   LDX #5
   LDA #10
-
 -loop:
   STA currentEffects+0, X
   DEX

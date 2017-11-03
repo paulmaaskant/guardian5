@@ -33,7 +33,6 @@ getCircleCoordinates:
   ADC #0
   STA locVar4         ; X
 
-
   LDX locVar4         ; X
   LDY locVar3         ; Y
 
@@ -69,18 +68,13 @@ getCircleCoordinates:
   CLC
   ADC #1
   TAY
+
 +done:
-
-
-
-
-  STX debug
-  STY debug+1
 
   RTS
 
 sinTable:
-  .db $00
+  .db $00 ; 0
   .db $06
   .db $0C
   .db $12
@@ -90,29 +84,29 @@ sinTable:
   .db $2B
   .db $31
   .db $38
-  .db $3E
+  .db $3E ; 10
   .db $44
   .db $4A
-  .db $50
+  .db $50 ;
   .db $56
   .db $5C
   .db $61
   .db $67
   .db $6D
   .db $73
-  .db $78
+  .db $78 ; 20
   .db $7E
   .db $83
   .db $88
-  .db $8E
-  .db $93
-  .db $98
-  .db $9D
+  .db $8E ; 24
+  .db $93 ;
+  .db $98 ; 26
+  .db $9D ;
   .db $A2
   .db $A7
-  .db $AB
+  .db $AB ; 30
   .db $B0
-  .db $B5
+  .db $B5 ; 32
   .db $B9
   .db $BD
   .db $C1
@@ -120,7 +114,7 @@ sinTable:
   .db $C9
   .db $CD
   .db $D1
-  .db $D4
+  .db $D4 ; 40
   .db $D8
   .db $DB
   .db $DE
@@ -130,18 +124,17 @@ sinTable:
   .db $EA
   .db $EC
   .db $EE
-  .db $F1
+  .db $F1 ; 50
   .db $F3
   .db $F4
   .db $F6
   .db $F8
-  .db $F9
+  .db $F9 ; 55
   .db $FB
   .db $FC
   .db $FD
   .db $FE
-  .db $FE
+  .db $FE ; 60
   .db $FF
   .db $FF
-  .db $FF
-  .db $FF
+  .db $FF ; 63
