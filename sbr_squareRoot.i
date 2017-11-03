@@ -1,7 +1,7 @@
 squareRoot:
 ; Example 5-14.  Simple 16-bit square root.
 ;
-; Returns the 8-bit square root in par2 of the
+; Returns the 8-bit square root in A of the
 ; 16-bit number in par2 (low) and par1 (high). The
 ; remainder is in location par1.
 
@@ -29,7 +29,7 @@ squareRoot:
   JMP -again
 
 nomore:
-  STY par2      ; all done, store square root
+  ;STY par2      ; all done, store square root
   TYA
   STX par1      ; and remainder
   RTS
