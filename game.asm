@@ -134,7 +134,7 @@
 
 	actionList										.dsb 10	; ------------------------------------------------------
 	selectedAction								.dsb 1	; various
-	debug 												.dsb 2	; possible actions used for player and AI
+	debug 												.dsb 5	; possible actions used for player and AI
 	distanceToTarget							.dsb 1
 
 	pal_transparant								.dsb 1	; ------------------------------------------------------
@@ -664,7 +664,7 @@ gameStateJumpTable:
 	.include state_resolveMove.i
 	.include state_resolveSpin.i
 	.include state_resolveCoolDown.i
-	.include state_resolveRanged.i
+	.include state_resolveRanged2.i
 	.include state_resolveClose.i
 	.include state_showResults.i
 	.include state_shutDown.i
@@ -730,6 +730,7 @@ gameStateJumpTable:
 	.include sbr_toBCD.i
 	.include sbr_absolute.i
 	.include sbr_getCircleCoordinates.i
+	.include sbr_squareRoot.i
 
 	.include reset.i
 	.include nmi.i
