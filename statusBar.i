@@ -16,7 +16,7 @@ clearTargetMenu:
 
 clearSystemMenu:
 	LDA #$0F					; clear tile
-	LDX #$0E
+	LDX #8
 -	STA systemMenuLine1, X
 	DEX
 	BPL -
@@ -55,7 +55,7 @@ showSystemInfo:
 	LDA #$3C
 	STA systemMenuLine1+0
 	LDA #$3D
-	STA systemMenuLine1+5
+	STA systemMenuLine1+3
 
 	LDA activeObjectStats+6
 	JSR toBCD
@@ -70,9 +70,9 @@ showSystemInfo:
 	JSR toBCD
 
 	LDA par2
-	STA systemMenuLine1+6
+	STA systemMenuLine1+4
 	LDA par3
-	STA systemMenuLine1+7
+	STA systemMenuLine1+5
 	RTS
 
 ; -------------------------------------

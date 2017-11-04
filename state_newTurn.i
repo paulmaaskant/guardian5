@@ -45,7 +45,7 @@ state_newTurn:
   ASL
   PLP
   ROR
-  LDY #$40
+  LDY #$42
   JSR showPilot
 
   ; --- retrieve type data ---

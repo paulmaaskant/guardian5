@@ -197,9 +197,9 @@
 	targetMenuLine2				.dsb 6
 	targetMenuLine3				.dsb 6
 	targetMenuLine4				.dsb 3 ; not used
-	systemMenuLine1				.dsb 5
-	systemMenuLine2				.dsb 5
-	systemMenuLine3				.dsb 5
+	systemMenuLine1				.dsb 3
+	systemMenuLine2				.dsb 3
+	systemMenuLine3				.dsb 3
 
 	; effects
 	; 6 sprites, 5 bytes per sprite (X, Y, animation #, counter, mirror pallette control)
@@ -540,13 +540,20 @@ mainGameLoop:
 	JSR writeToActionMenu																													;
 
 	LDA actionMessage
-	BEQ +actionMenuDone
+	BEQ +continue
 	AND #$7F
 	TAY
 	LDX #$0D
 	JSR writeToActionMenu						;
 
-+actionMenuDone:
++continue:
+	LDA actionMessage
+	BMI +continue
+	LDY #13
+	LDX #26
+	JSR writeToActionMenu						;
+
++continue:
 	JSR clearTargetMenu
 	JSR updateTargetMenu
 

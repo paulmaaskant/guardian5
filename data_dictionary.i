@@ -12,7 +12,7 @@ stringListL:
 	.db #< str_OUTSIDE_ARC							; 0A
 	.db #< str_CHOOSE_FACING_DIRECTION	; 0B
 	.db #< str_TARGET_TOO__CLOSE 				; 0C
-	.db #< str_RUN											; 0D NOT USED
+	.db #< str_COST											; 0D
 	.db #< str_TARGET										; 0E
 	.db #< str_DAMAGE										; 0F
 	.db #< str_ACTION_PTS								; 10
@@ -39,7 +39,7 @@ stringListH:
 	.db #> str_OUTSIDE_ARC
 	.db #> str_CHOOSE_FACING_DIRECTION
 	.db #> str_TARGET_TOO__CLOSE
-	.db #> str_RUN  										; not used
+	.db #> str_COST 										; not used
 	.db #> str_TARGET
 	.db #> str_DAMAGE
 	.db #> str_ACTION_PTS
@@ -89,7 +89,7 @@ str_FFW:
 str_PIVOT_TURN:
 	.db 10, P, I, V, O, T, space, T, U, R, N
 str_ATTK:
-	.db 4, S, T, R, $82
+	.db 7, A, T, T, K, space, $80+2, $3F
 str_START_GAME:
 	.db 10, S, T, A, R, T, space, G, A, M, E
 str_PLAY_SOUND:
@@ -98,3 +98,5 @@ str_INSTRUCTIONS:
 	.db 12, I, N, S, T, R, U, C, T, I, O, N, S
 str_RUN:
 	.db 3, R, U, N
+str_COST
+	.db 10, C, O, S, T, space, $80+0, $3D, space, $80+21, $3C

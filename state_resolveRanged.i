@@ -186,6 +186,19 @@ state_initializeRanged:
 	LDA #$04										; switch on controlled effects
 	STA effects									;
 
+	LDA list3+3
+	CMP #$02
+	BNE +continue
+
+	LDA list1+7
+	ADC #20
+	STA list1+7
+
+	LDA list1+8
+	ADC #5
+	STA list1+8
+
++continue:
 	JSR pullAndBuildStateStack
 	.db #3											; 3 items
 	.db $2B

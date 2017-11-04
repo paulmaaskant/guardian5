@@ -49,18 +49,19 @@ writeStatusBarToBuffer:
 	LDA menuIndicator+0
 	PHA
 	; --- line 1 tile 23 to 26 ---
-	LDX #$04
+	LDX #$02
 								;
 -loop:
 	LDA systemMenuLine1, X
 	PHA
 	DEX
 	BPL -loop
-	LDA #$44
+
+	LDA #$46
 	PHA
 	LDA #$24
 	PHA
-	LDA #$36								; 27 * 2 = 54
+	LDA #50								; 25 * 2 = 50
 	PHA
 
 	; --- line 2 ---
@@ -96,20 +97,20 @@ writeStatusBarToBuffer:
 +done:
 
 	LDA #$0F			; separator blank space
-	PHA					
+	PHA
 
-	LDX #$04			; 03
+	LDX #$02			; 03
 -loop:
 	LDA systemMenuLine2, X
 	PHA
 	DEX
 	BPL -loop
 
-	LDA #$64
+	LDA #$66
 	PHA
 	LDA #$24
 	PHA
-	LDA #$36
+	LDA #50								; 25 * 2 = 50
 	PHA
 
 	; --- line 3 ---
@@ -144,18 +145,18 @@ LDA menuFlags
 	LDA #$0F			; separator blank space
 	PHA					; twice
 
-	LDX #$04			; 03
+	LDX #$02			; 03
 -loop:
 	LDA systemMenuLine3, X
 	PHA
 	DEX
 	BPL -loop
 
-	LDA #$84
+	LDA #$86
 	PHA
 	LDA #$24
 	PHA
-	LDA #$36			;
+	LDA #50								; 25 * 2 = 50
 	PHA
 
 

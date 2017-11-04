@@ -8,13 +8,13 @@ deleteObject:
 	; --- first find the to-be deleted object ---
 -loop:
 	CMP objectTypeAndNumber, X
-	BEQ +match
+	BEQ +continue
 	DEX
 	BPL -loop
 	RTS
 
 	; --- then delete it ---
-+match:
++continue:
 	AND #$07										; retrieve object's grid pos
 	ASL
 	ASL
@@ -35,5 +35,4 @@ deleteObject:
 	BEQ -loop												;
 
 +done:
-
 	RTS

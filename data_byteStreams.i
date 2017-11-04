@@ -1,23 +1,31 @@
 
 ; --- byte stream to load status bar ( in reverse )	---
 statusBar:
-	.db $FF, $23 	; 2 rows + 3 blank tiles
-	.db $2B, $FF, $03, $2A, $2B, $FF, $0D, $2A, $FF, $69
-	.db $FF, $03, $2D, $FF, $03, $2C, $2D, $FF, $0D, $2C, $FF, $09
+	.db $FF, $21 	; 2 rows + 3 blank tiles
+	.db $2B, $FF, 5, $2A
+	.db $2B, $FF, 13, $2A
+	.db $2B, $FF, 6, $2A
+	.db $FF, $62
+	.db $2D, $FF, 5, $2C
+	.db $2D, $FF, 13, $2C
+	.db $2D, $FF, 6, $2C
+	.db $FF, $01
 	.db $FF, $00	; 8 blank rows
 	.db $FF, $00  ; 8 blank rows
 	.db $FF, $00	; 8 blank rows
 
 	; --- palettes ---
-	.db $FE, $17, $AA
-	.db $AF 				; pilot face attributes
-	.db $FE, $07, $AA
-	.db $FA				; pilot face attributes
+	.db $FE, 22, $AA
+	.db %10101011 			; pilot face attributes
+	.db %10101110 			; pilot face attributes
+	.db $FE, 6, $AA
+	.db %10111010 			; pilot face attributes
+	.db %11101010 			; pilot face attributes
 	.db $FE, $20, $AA
 
 statusMenu:
-	.db $FF, $43, $2B, $FF, $12, $2A, $FF, $49	; 6 rows
-	.db $FF, $03, $2D, $FF, $12, $2C, $FF, $09
+	.db $FF, $41, $2B, $FF, 28, $2A, $FF, $41	; 6 rows
+	.db $FF, $01, $2D, $FF, 28, $2C, $FF, $01
 
 titleScreen:
 	.db $FF, $00	; 8 blank rows
@@ -362,7 +370,7 @@ levelOne:																																				; --- blocked nodes (1 bit for move
 	.db $13																																				; object 0 grid position
 	.db $02																																				; object 0 pilot f0 & facing RD
 	.db $12																																				; object 1 h type 2
-	.db $16																																				; object 1 grid position
+	.db $CA																																				; object 1 grid position
 	.db $05																																				; object 1 pilot ho & facing LD
 	.db $12																																				; object 2 h type 2
 	.db $C4																																				; object 2 grid position

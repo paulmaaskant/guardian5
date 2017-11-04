@@ -5,7 +5,7 @@
 ; list1+0..9	Reserved for Run Dialog state
 ; list2+0..9  Reserved for lightflash
 ;
-; list3+0		Temp value
+; list3+0
 ; list3+1		Hit Probability
 ; list3+2		Damage value
 ; list3+3		stream 1

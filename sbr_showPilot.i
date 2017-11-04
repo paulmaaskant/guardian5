@@ -2,6 +2,7 @@
 ; Show pilot
 ; ----------------------------
 ; IN A (b7-b4) pilot ID
+; IN Y position
 showPilot:
 	STY locVar2			; controls position
 
