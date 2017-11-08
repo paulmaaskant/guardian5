@@ -12,27 +12,35 @@ state_ai_determineAttackPosition:
   BCC +pathFound
   JSR secondPass
   JSR evaluateNodes
-  BCS +noPathFound
+  BCC +pathFound
+                              ; if no path is found, simply face the target
+  LDA #$01                    ; set action point cost directly (1)
+  STA list3+0
+  JSR applyActionPointCost
+
+  JSR pullAndBuildStateStack
+  .db $02							        ; 2 states
+  .db $1C							        ; face target
+  .db $16							        ; show results
 
 +pathFound:
   LDA par1
-  STA cursorGridPos                                                             ; put the cursor on the destination node
+  STA cursorGridPos           ; put the cursor on the destination node
 
-  LDA #$03										                                                  ; clear from list3+4
-	LDX #$09										                                                  ; up to and including list3+9
+  LDA #$03										; clear from list3+4
+	LDX #$09										; up to and including list3+9
 	JSR clearList3
 
-  LDA #$01                                                                      ; MOVE costs 1 point
+  LDA #$01                    ; MOVE costs 1 point
   STA list3+0
-  LDA activeObjectStats+2																												; movement stat
-  CMP list1																																			; compare to used number of moves (list1)
+  LDA activeObjectStats+2			; movement stat
+  CMP list1									  ; compare to used number of moves (list1)
   BCS +continue
-  INC list3+0                                                                   ; RUN costs an extra point
+  INC list3+0                 ; RUN costs 1 extra point
 
 +continue:
   JSR applyActionPointCost
   JSR initializeMove
-
   JSR pullAndBuildStateStack
 	.db $04							        ; 3 states
   .db $0B 						        ; center camera
@@ -41,26 +49,14 @@ state_ai_determineAttackPosition:
 	.db $16							        ; show results
 	; built in RTS
 
-+noPathFound:
-  LDA #$00                    ; FIX me (action point cost)
-  STA list3+0
-
-  JSR applyActionPointCost
-
-  JSR pullAndBuildStateStack
-  .db $02							        ; 2 states
-  .db $1C							        ; face target
-  .db $16							        ; show results
-
-
-
 firstPass:
   ; ------------------
   ; first pass,
   ; find all reachable nodes that have clear line of sight to target and are withing weapon range
   ; ------------------
 
-  LDX #$00										                                                  ;
+  LDX #$00
+  STX list6									                                                  ;
   STX actionList+0                                                              ; reset eligble node count
   LDA activeObjectStats+2
   ASL
@@ -125,7 +121,8 @@ firstPass:
 
 
 secondPass:
-  LDX #$00										                                                  ;
+  LDX #$00
+  STX list6							                                                  ;
   STX actionList+0                                                              ; reset eligble node count
   LDA activeObjectStats+2
   ASL
@@ -146,6 +143,13 @@ secondPass:
   LDA nodeMap, X                                                                ; eligible node
   ORA #%00010000
   STA nodeMap, X
+
+  LDA cursorGridPos
+  JSR distance
+  JSR addToSortedList
+
+  LDX par1            ; restore X
+
   BNE +nextNode
 
 +discardNode:
@@ -166,6 +170,13 @@ evaluateNodes:
   BNE +continue
   RTS
 
++continue
+  LDY list6
+  BEQ +continue
+  LDX list6, Y
+  DEC list6
+  BPL +evaluate
+
 +continue:
   JSR random                                                                    ; FIX
   TAX                                                                           ; choose node based on strategy
@@ -173,6 +184,7 @@ evaluateNodes:
   AND #%00010000
   BEQ -nextNode
 
++evaluate:
   LDA #$00
   STA actionMessage                                                             ; reset action message
 
