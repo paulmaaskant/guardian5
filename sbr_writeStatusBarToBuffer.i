@@ -161,24 +161,20 @@ LDA menuFlags
 
 
 
-	LDA targetMenuLine4+2
-	PHA
-	LDA targetMenuLine4+1
-	PHA
-	LDA targetMenuLine4+0
-	PHA
-	LDA #$B9
-	PHA
-	LDA #$24
-	PHA
-	LDA #$06			;
-	PHA
+	;LDA targetMenuLine4+2
+	;PHA
+	;LDA targetMenuLine4+1
+	;PHA
+	;LDA targetMenuLine4+0
+	;PHA
+	;LDA #$B9
+	;PHA
+	;LDA #$24
+	;PHA
+	;LDA #$06								;
+	;PHA
 
-
-
-
-
-	TSX					; switch stack pointers
+	TSX											; switch stack pointers
 	STX	stackPointer2
 	LDX stackPointer1
 	TXS
