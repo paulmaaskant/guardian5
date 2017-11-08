@@ -17,7 +17,7 @@ stringListL:
 	.db #< str_DAMAGE										; 0F
 	.db #< str_ACTION_PTS								; 10
 	.db #< str_FFW											; 11
-	.db #< str_RUN											; 12 NOT USED
+	.db #< str_GAIN											; 12
 	.db #< str_PIVOT_TURN								; 13
 	.db #< str_ATTK											; 14
 	.db #< str_START_GAME								; 15
@@ -39,12 +39,12 @@ stringListH:
 	.db #> str_OUTSIDE_ARC
 	.db #> str_CHOOSE_FACING_DIRECTION
 	.db #> str_TARGET_TOO__CLOSE
-	.db #> str_COST 										; not used
+	.db #> str_COST
 	.db #> str_TARGET
 	.db #> str_DAMAGE
 	.db #> str_ACTION_PTS
 	.db #> str_FFW
-	.db #> str_RUN
+	.db #> str_GAIN
 	.db #> str_PIVOT_TURN
 	.db #> str_ATTK
 	.db #> str_START_GAME
@@ -55,11 +55,11 @@ stringListH:
 str_LOS_BLOCKED:
 	.db 20, L, I, N, E, dash, O, F, dash, S, I, G, H, T, B, L, O, C, K, E, D
 str_RANGED_ATK_1:
-	.db $0C, $21, $10, $1D, $16, $14, $13, $0F, $10, $23, $1A, $0F, $10
+	.db 12, $21, $10, $1D, $16, $14, $13, $0F, $10, $23, $1A, $0F, $10
 str_RANGED_ATK_2:
-	.db $0C, $21, $10, $1D, $16, $14, $13, $0F, $10, $23, $1A, $0F, $11
+	.db 12, $21, $10, $1D, $16, $14, $13, $0F, $10, $23, $1A, $0F, $11
 str_MOVE:
-	.db $04, $1C, $1E, $25, $14
+	.db 4, M, O, V, E
 str_OPENING_FIRE:
 	.db $0C, $1E, $1F, $14, $1D, $18, $1D, $16, $0F, $15, $18, $21, $14
 str_COOL_DOWN:
@@ -100,3 +100,5 @@ str_RUN:
 	.db 3, R, U, N
 str_COST
 	.db 10, C, O, S, T, space, $80+0, $3D, space, $80+21, $3C
+str_GAIN
+	.db 7, G, A, I, N, space, $80+0, $3D

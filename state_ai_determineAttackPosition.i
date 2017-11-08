@@ -96,16 +96,24 @@ firstPass:
   TAX
   BCS +discardNode                                                              ; node has no visibility on target unit
 
-  INC actionList+0
-  LDA nodeMap, X                                                                ; eligible node
-  ORA #%00010000
-  STA nodeMap, X
+;  INC actionList+0
+;  LDA nodeMap, X                                                                ; eligible node
+;  ORA #%00010000
+;  STA nodeMap, X
+
+  STX par1
+  JSR random
+  LDX par1            ; restore X
+  JSR addToSortedList
+  LDX par1            ; restore X
   BNE +nextNode
 
+
+
 +discardNode:
-  LDA nodeMap, X
-  AND #%11101111
-  STA nodeMap, X
+;  LDA nodeMap, X
+;  AND #%11101111
+;  STA nodeMap, X
 
 +nextNode:
   INX
@@ -139,23 +147,21 @@ secondPass:
   CMP actionList+1
   BNE +discardNode                                                              ; node too far from active unit
 
-  INC actionList+0
-  LDA nodeMap, X                                                                ; eligible node
-  ORA #%00010000
-  STA nodeMap, X
+;  INC actionList+0
+;  LDA nodeMap, X                                                                ; eligible node
+;  ORA #%00010000
+;  STA nodeMap, X
 
   LDA cursorGridPos
   JSR distance
   JSR addToSortedList
-
   LDX par1            ; restore X
-
   BNE +nextNode
 
 +discardNode:
-  LDA nodeMap, X
-  AND #%11101111
-  STA nodeMap, X
+;  LDA nodeMap, X
+;  AND #%11101111
+;  STA nodeMap, X
 
 +nextNode:
   INX
@@ -166,25 +172,14 @@ secondPass:
 
 evaluateNodes:
 -nextNode:
-  LDA actionList+0
+  LDY list6
   BNE +continue
   RTS
 
-+continue
-  LDY list6
-  BEQ +continue
++continue:
   LDX list6, Y
   DEC list6
-  BPL +evaluate
 
-+continue:
-  JSR random                                                                    ; FIX
-  TAX                                                                           ; choose node based on strategy
-  LDA nodeMap, X                                                                ; i.e., closest node
-  AND #%00010000
-  BEQ -nextNode
-
-+evaluate:
   LDA #$00
   STA actionMessage                                                             ; reset action message
 
@@ -204,10 +199,10 @@ evaluateNodes:
   RTS
 
 +continue:
-  LDX par1
-  LDA nodeMap, X
-  AND #%11101111
-  STA nodeMap, X
+;  LDX par1
+;  LDA nodeMap, X
+;  AND #%11101111
+;  STA nodeMap, X
 
-  DEC actionList+0
+;  DEC actionList+0
   JMP -nextNode

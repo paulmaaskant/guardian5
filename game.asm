@@ -1,10 +1,13 @@
 ; List
 ;
+; - missile animation
 ; - volume mute operation
-; - miss animations for gun fire
 ; - shutdown animation
-; - unit destroyed animation & sound
-; - AI
+; - unit destroyed sound & ground shake
+; - AI: use sorted list in first pass
+;
+; - Bugs
+; 	Sometimes when using missiles (screen garbage game crash)
 ;
 ;
 ; PARKING LOT
@@ -113,9 +116,9 @@
 																.dsb 1 	; 4 weapon 2 damage
 																.dsb 1 	; 5 accuracy & defence (b7-4) acc, (b3-0) def
 																.dsb 1	; 6 armor (dail)
-																.dsb 1	; 7 heat modifiers?
-																.dsb 1	; 8 special abilities?
-																.dsb 1	; 9 special abilities?
+																.dsb 1	; 7 weapon 1 details
+																.dsb 1	; 8 weapon 2 details
+																.dsb 1	; 9 not used
 
 																				; stored memory objects
 																				; object grid position is stored separately as it will be sorted regularly
@@ -183,41 +186,40 @@
 	; ------------------------------------------------------------
 	nodeMap								.dsb 256
 
-	; path finding and dialog control
-	list3									.dsb 64
-	list4									.dsb 64
+	list3									.dsb 64							; path finding and action control
+	list4									.dsb 64							; path finding
 
-	; Buffers used to render the status menu
-	; 78 bytes
-	actionMenuLine1				.dsb 13
+	list6									.dsb 64							; used by AI for scoring
+	list7									.dsb 64							; used by AI for scoring
+
+	actionMenuLine1				.dsb 13							; Buffers used to render the status menu
 	actionMenuLine2				.dsb 13
 	actionMenuLine3				.dsb 13
 	menuIndicator					.dsb 2
 	targetMenuLine1				.dsb 6
 	targetMenuLine2				.dsb 6
 	targetMenuLine3				.dsb 6
-	targetMenuLine4				.dsb 3 ; not used
+	;targetMenuLine4				.dsb 3 							; not used
 	systemMenuLine1				.dsb 3
 	systemMenuLine2				.dsb 3
 	systemMenuLine3				.dsb 3
 
-	; effects
-	; 6 sprites, 5 bytes per sprite (X, Y, animation #, counter, mirror pallette control)
-	currentEffects				.dsb 30
+	currentEffects				.dsb 30							; effects
+																						; 6 sprites, 5 bytes per sprite
+																						; (X, Y, animation #, counter, mirror pallette control)
 
-	; indexes of the current palettes
-	; 00 tiles: map 1
-	; 01 tiles: map 2
-	; 02 tiles: pilot face
-	; 03 tiles: status bar & menu
-	; 04 sprites: friendly units
-	; 05 sprite: hostile units
-	; 06 sprite: cursor
-	; 07 sprite: effects
-	currentPalettes				.dsb 8
-	currentTransparant		.dsb 1
+	currentPalettes				.dsb 8							; indexes of the current palettes
+	currentTransparant		.dsb 1							; 00 tiles: map 1
+																						; 01 tiles: map 2
+																						; 02 tiles: pilot face
+																						; 03 tiles: status bar & menu
+																						; 04 sprites: friendly units
+																						; 05 sprite: hostile units
+																						; 06 sprite: cursor
+																						; 07 sprite: effects
 
-	;
+
+
 
 	.ende
 
@@ -549,7 +551,15 @@ mainGameLoop:
 +continue:
 	LDA actionMessage
 	BMI +continue
-	LDY #13
+
+	LDY #13													; COST
+	LDX selectedAction
+  LDA actionList, X
+  CMP #aCOOLDOWN
+	BNE +continue
+	LDY #18													; GAIN
+
++continue:
 	LDX #26
 	JSR writeToActionMenu						;
 
@@ -645,6 +655,7 @@ gameStateJumpTable:
 	.dw state_centerCameraOnAttack-1						; 2B
 	.dw state_initializeEffect-1								; 2C
 	.dw state_runEffect-1												; 2D
+	.dw state_resolveMissile-1									; 2E
 
 :not_used
 
@@ -671,6 +682,7 @@ gameStateJumpTable:
 	.include state_resolveMove.i
 	.include state_resolveSpin.i
 	.include state_resolveCoolDown.i
+	.include state_initializeRanged.i
 	.include state_resolveRanged.i
 	.include state_resolveClose.i
 	.include state_showResults.i
@@ -691,6 +703,7 @@ gameStateJumpTable:
 	.include state_centerCameraOnAttack.i
 	.include state_initializeEffect.i
 	.include state_runEffect.i
+	.include state_resolveMissile.i
 
 	.include sbr_getStatsAddress.i
 	.include sbr_pushState.i
@@ -728,6 +741,7 @@ gameStateJumpTable:
 	.include sbr_centerCameraOnNode.i
 	.include sbr_initializeExplosion.i
 	.include sbr_runExplosion.i
+	.include sbr_addToSortedList.i
 
 	.include sbr_random.i
 	.include sbr_random100.i
@@ -756,9 +770,9 @@ gameStateJumpTable:
 ; Palette index
 ;
 ; 00 background  title screen
-; 01 background	 title screen
+; 01 background	 title screen light
 ; 02 background  status bar
-; 03 not assigned
+; 03 background  title screen dark
 ; 04 sprite desert mech
 ; 05 sprite fire mech
 ; 06 sprite tooltip & cursor
@@ -771,7 +785,7 @@ gameStateJumpTable:
 
 
 paletteColor1:
-	.db $10, $09, $10, $08, $08, $06, $10, $30
+	.db $10, $38, $10, $08, $08, $06, $10, $30
 	.db $08, $18, $0A
 	.dsb 5
 	.db $08, $15, $08
@@ -785,12 +799,13 @@ paletteColor2:
 	.dsb 5
 	.db $0A
 paletteColor3:
-	.db $30, $37, $2B, $37, $28, $36, $2B, $37
+	.db $30, $28, $2B, $28, $28, $36, $2B, $37
 	.db $37, $30, $39
 	.dsb 5
 	.db $35, $35, $35
 	.dsb 5
 	.db $3B
+
 identity:
 	.db $00, $01, $02, $03, $04, $05, $06, $07, $08, $09, $0A, $0B, $0C, $0D, $0E, $0F
 	.db $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $1A, $1B, $1C, $1D, $1E, $1F

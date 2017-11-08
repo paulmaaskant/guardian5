@@ -9,11 +9,6 @@ actionPointCostTable:
 	.db $02                                                                       ; 07 RUN
 
 calculateActionPointCost:
-	;LDA #$0F
-	;STA systemMenuLine1+4
-	;STA systemMenuLine1+3
-	;STA systemMenuLine2+4
-	;STA systemMenuLine2+3
 	BIT actionMessage
 	BPL +continue
 	RTS
@@ -34,17 +29,6 @@ calculateActionPointCost:
 
 +less:
   STA list3+0
-	;STA systemMenuLine2+4
-  ;LDA #$D0
-  ;STA systemMenuLine2+3
-	;CPX #aCHARGE
-	;BNE +continue
-	;LDA #$01
-	;STA systemMenuLine1+4
-  ;LDA #$D0
-  ;STA systemMenuLine1+3
-
-+continue:
   RTS
 
 +restoreHeatsinks:
@@ -67,8 +51,4 @@ calculateActionPointCost:
   STA list3+0
 
 +notLess:
-  ;LDA list3+0
-  ;STA systemMenuLine2+4
-  ;LDA #$D1
-  ;STA systemMenuLine2+3
   RTS
