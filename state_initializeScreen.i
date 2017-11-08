@@ -2,9 +2,9 @@
 ; gameState 00: Initialize title screen
 ; ------------------------------------------
 state_initializeScreen:
-	JSR pullState							; discard state
-	JSR pullState							; pull state parameter
-	TAY
+	JSR pullState									; discard state
+	JSR pullState									; pull state parameter into A
+	TAY														; and transfer to Y
 
 	LDA state00_screenHi, Y
 	STA bytePointer+0
@@ -13,6 +13,18 @@ state_initializeScreen:
 
 	LDA state00_tileBank1, Y
 	STA $D001
+
+	LDA state00_tilePall0, Y
+	STA currentPalettes+0
+
+	LDA state00_tilePall1, Y
+	STA currentPalettes+1
+
+	LDA state00_tilePall2, Y
+	STA currentPalettes+2
+
+	LDA state00_tilePall3, Y
+	STA currentPalettes+3
 
 	LDA state00_sound, Y
 	BMI +noSound
@@ -40,15 +52,15 @@ state_initializeScreen:
 
 
 state00_screenLo:
-	.db #> titleScreen			; 00 title screen background
+	.db #> titleScreen2			; 00 title screen background
 	.db #> blankScreen			; 01 introduction story background
 	.db #> briefScreen			; 02 mission brief background
 	.db #> statusBar				; 03 status bar
 	.db #> blankScreen			; 04 instructions background
-	.db #> animationScreen			; 05 play animation background
+	.db #> animationScreen	; 05 play animation background
 
 state00_screenHi:
-	.db #< titleScreen
+	.db #< titleScreen2
 	.db #< blankScreen
 	.db #< briefScreen
 	.db #< statusBar
@@ -64,7 +76,7 @@ state00_sound:
 	.db $05									;
 
 state00_tileBank1:
-	.db $05
+	.db $07
 	.db $05
 	.db $05
 	.db $05
@@ -75,10 +87,30 @@ state00_tileBank2:
 state00_tileBank3:
 
 state00_tilePall0:
-	.dsb 6, 0
+	.db 0
+	.db 0
+	.db 0
+	.db 0
+	.db 0
+	.db 0
 state00_tilePall1:
-	.dsb 6, 1
+	.db 3
+	.db 1
+	.db 1
+	.db 1
+	.db 1
+	.db 1
 state00_tilePall2:
-	.dsb 6, 2
+	.db 1
+	.db 2
+	.db 2
+	.db 2
+	.db 2
+	.db 2
 state00_tilePall3:
-	.dsb 6, 3
+	.db 3
+	.db 3
+	.db 3
+	.db 3
+	.db 3
+	.db 3

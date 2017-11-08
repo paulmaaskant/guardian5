@@ -47,6 +47,28 @@ titleScreen:
 	.db $FE, $18, $00	; 1 rows, palette
 	.db $FE, $08, $05	;
 
+titleScreen2:
+	.db $FF, 0	; 8 rows
+	.db $FF, 21, $4D, $4C, $4B, $FF, 8
+	.db $FF, 21, $5D, $5C, $5B, $5A, $59, $58, $57, $FF, 4
+	.db $FF, 21, $6D, $6C, $6B, $6A, $69, $68, $67, $FF, 4
+	.db $FF, 22, $7C, $0F, $7A, $79, $78, $77, $FF, 4
+	.db $FF, 22, $7E, $7D, $7B, $44, $63, $50, $FF, 4
+	.db $FF, 21, $41, $40, $4A, $49, $48, $47, $FF, 5
+	.db $FF, 21, $46, $45, $0F, $43, $42, $FF, 6
+	.db $FF, 21, $56, $55, $54, $53, $52, $51, $FF, 5
+	.db $FF, 21, $66, $65, $64, $0F, $62, $61, $60, $FF, 4
+	.db $FF, 21, $76, $75, $74, $73, $72, $71, $70, $FF, 4
+	.db $FF, 128	; 4 rows
+	.db $FF, 0	; 8 rows
+
+	; --- palettes ---
+	.db $FE, 5, $00, %01011010, %01100101
+	.db $FE, 6, $00, %01011010, %10101010
+	.db $FE, 46, $00 ; 17+29
+	.db %01010101, %01100110
+	.db $00
+
 blankScreen:
 	.db repeatBlank, $00			; 8 rows
 	.db repeatBlank, $00			; 8 rows
@@ -368,9 +390,9 @@ levelOne:																																				; --- blocked nodes (1 bit for move
 	.db	$03																																				; number of objects (2)
 	.db $03																																				; object 0 f type 3
 	.db $13																																				; object 0 grid position
-	.db $02																																				; object 0 pilot f0 & facing RD
+	.db $03																																				; object 0 pilot f0 & facing RD
 	.db $12																																				; object 1 h type 2
-	.db $CA																																				; object 1 grid position
+	.db $18																																				; object 1 grid position
 	.db $05																																				; object 1 pilot ho & facing LD
 	.db $12																																				; object 2 h type 2
 	.db $C4																																				; object 2 grid position
