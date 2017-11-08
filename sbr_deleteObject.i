@@ -3,7 +3,8 @@
 ; in A, objectTypeAndNumber to be deleted
 ; --------------------------
 deleteObject:
-	LDX #$05
+	LDX objectCount
+	DEX
 
 	; --- first find the to-be deleted object ---
 -loop:

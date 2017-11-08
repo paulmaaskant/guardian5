@@ -4,7 +4,6 @@
 ; - volume mute operation
 ; - shutdown animation
 ; - unit destroyed sound & ground shake
-; - AI: use sorted list in first pass
 ;
 ; - Bugs
 ; 	Sometimes when using missiles (screen garbage game crash)
@@ -93,6 +92,7 @@
 	gameProgress									.dsb 1  ; used to keep track of game progress
 	seed													.dsw 1	; used to generate random numbers
 	cursorGridPos									.dsb 1  ; grid coordinates of cursor XXXX YYYY
+
 	stateStack										.dsb 22 ; used to control state transitions in the game
 
 																				; the object that is currently being handled

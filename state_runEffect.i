@@ -1,4 +1,5 @@
 state_runEffect:
+
   LDA list1+2
   AND #$3F
   STA list1+3
@@ -8,8 +9,6 @@ state_runEffect:
 
   LDA cursorGridPos
   JSR gridPosToScreenPos
-
-
 
 -loop:
   LDY list1+4
