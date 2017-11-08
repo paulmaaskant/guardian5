@@ -38,9 +38,9 @@ writeStartMenuToBuffer:
 	PHA
 
 +done:
-	LDA #$69
+	LDA #$EC
 	PHA
-	LDA #$26
+	LDA #$25
 	PHA
 	LDA #$1C			; 14 * 2 = 28
 	PHA
@@ -69,7 +69,7 @@ writeStartMenuToBuffer:
 	PHA
 
 +done:
-	LDA #$89
+	LDA #$0C
 	PHA
 	LDA #$26
 	PHA
@@ -100,7 +100,7 @@ writeStartMenuToBuffer:
 	PHA
 +done:
 
-	LDA #$A9
+	LDA #$2C
 	PHA
 	LDA #$26
 	PHA
