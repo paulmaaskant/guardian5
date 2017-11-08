@@ -32,7 +32,7 @@ deleteObject:
 	LDA objectTypeAndNumber+1, X
 	STA objectTypeAndNumber, X
 	INX
-	BEQ -loop												;
+	BNE -loop												;
 
 +done:
 	RTS
