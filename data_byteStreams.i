@@ -27,25 +27,25 @@ statusMenu:
 	.db $FF, $41, $2B, $FF, 28, $2A, $FF, $41	; 6 rows
 	.db $FF, $01, $2D, $FF, 28, $2C, $FF, $01
 
-titleScreen:
-	.db $FF, $00	; 8 blank rows
-	.db $FF, $0F, $E1, $E0
-	.db $FF, $1E, $5B, $5A, $59
-	.db $FF, $1D, $6B, $6A, $69
-	.db $FF, $1D, $7B, $7A, $79
-	.db $FF, $1D, $48, $47, $46
-	.db $FF, $1D, $58, $57, $0F
-	.db $FF, $1D, $68, $67, $66
-	.db $FF, $16
-	.db $41, $40, $42, $44, $61, $62, $42, $61, $60, $61, $60, $61, $62, $42, $42, $41, $74; GUARDIAN5
-	.db $FF, $0F
-	.db $51, $50, $64, $54, $73, $70, $63, $53, $72, $71, $70, $73, $70, $53, $52, $51, $43;
-	.db $FF, $A7
-	.db $FF, $00			; 8 blank rows
-	; --- palettes ---
-	.db $FE, $20, $00	; 1 rows, palette
-	.db $FE, $18, $00	; 1 rows, palette
-	.db $FE, $08, $05	;
+;titleScreen:
+;	.db $FF, $00	; 8 blank rows
+;	.db $FF, $0F, $E1, $E0
+;	.db $FF, $1E, $5B, $5A, $59
+;	.db $FF, $1D, $6B, $6A, $69
+;	.db $FF, $1D, $7B, $7A, $79
+;	.db $FF, $1D, $48, $47, $46
+;	.db $FF, $1D, $58, $57, $0F
+;	.db $FF, $1D, $68, $67, $66
+;	.db $FF, $16
+;	.db $41, $40, $42, $44, $61, $62, $42, $61, $60, $61, $60, $61, $62, $42, $42, $41, $74; GUARDIAN5
+;	.db $FF, $0F
+;	.db $51, $50, $64, $54, $73, $70, $63, $53, $72, $71, $70, $73, $70, $53, $52, $51, $43;
+;	.db $FF, $A7
+;	.db $FF, $00			; 8 blank rows
+;	; --- palettes ---
+;	.db $FE, $20, $00	; 1 rows, palette
+;	.db $FE, $18, $00	; 1 rows, palette
+;	.db $FE, $08, $05	;
 
 titleScreen2:
 	.db $FF, 0	; 8 rows
@@ -68,6 +68,20 @@ titleScreen2:
 	.db $FE, 46, $00 ; 17+29
 	.db %01010101, %01100110
 	.db $00
+
+missionAccomplishedScreen:
+	.db repeatBlank, 0	; 8 blank rows
+	.db repeatBlank, 128	; 4 blank rows
+	.db repeatBlank, 22, $E1, $E0									; 17
+	.db repeatBlank, 30, $5B, $5A, $59						; 33
+	.db repeatBlank, 29, $6B, $6A, $69
+	.db repeatBlank, 29, $7B, $7A, $79
+	.db repeatBlank, 29, $48, $47, $46
+	.db repeatBlank, 29, $58, $57, $0F
+	.db repeatBlank, 29, $68, $67, $66
+	.db repeatBlank, 167	; 5 rows + 7 tiles
+	.db repeatBlank, 192	; 8 blank rows
+	.db repeatChar, $40, $00	; 2 rows, palette 0
 
 blankScreen:
 	.db repeatBlank, $00			; 8 rows
