@@ -61,7 +61,7 @@ state01_positionHi:
 state01_positionLo:
   .db $44
   .db $64
-  .db $64
+  .db $88
   .db $64
   .dsb 5
   .db $6A
@@ -81,7 +81,7 @@ state01_lastCol:
 state01_lineCount:
   .db 6
   .db 13
-  .db 13
+  .db 8
   .db 13
   .dsb 5
   .db 6

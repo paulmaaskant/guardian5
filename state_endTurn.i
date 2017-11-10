@@ -40,7 +40,7 @@ state_endTurn:
 	.db $23 						; expand status bar
 	.db $01, 9					; load stream 09: mission accomplished
 	.db $0D, 0					; change brightness 0: fade out
-	.db $00, 2					; load screen 02: mission screen
+	.db $00, 6					; load screen 02: mission screen
 	.db $0D, 1					; change brightness 1: fade in
 	.db $01, 2					; load stream 01: mission 2 brief
 	.db $0D, 0					; change brightness 0: fade out

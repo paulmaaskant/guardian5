@@ -72,14 +72,14 @@ titleScreen2:
 missionAccomplishedScreen:
 	.db repeatBlank, 0	; 8 blank rows
 	.db repeatBlank, 128	; 4 blank rows
-	.db repeatBlank, 22, $E1, $E0									; 17
+	.db repeatBlank, 26, $E1, $E0									; 17
 	.db repeatBlank, 30, $5B, $5A, $59						; 33
 	.db repeatBlank, 29, $6B, $6A, $69
 	.db repeatBlank, 29, $7B, $7A, $79
 	.db repeatBlank, 29, $48, $47, $46
 	.db repeatBlank, 29, $58, $57, $0F
 	.db repeatBlank, 29, $68, $67, $66
-	.db repeatBlank, 167	; 5 rows + 7 tiles
+	.db repeatBlank, 163	; 5 rows + 3 tiles
 	.db repeatBlank, 192	; 8 blank rows
 	.db repeatChar, $40, $00	; 2 rows, palette 0
 
@@ -284,19 +284,14 @@ brief1Stream:
 	.db endOfStream
 
 brief2Stream:
-	.db setPortrait, $00
-	.db C, O, M, M, A, N, D, space, 1, comma, lineBreak
-	.db T, H, I, S, space, I, S, space, G, U, A, R, D, I, A, N, space, 5, lineBreak
+	.db M, I, S, S, I, O, N, space, A, C, C, O, M, P, L, I, S, H, E, D, lineBreak
 	.db lineBreak
-	.db T, H, E, space,  E, N, E, M, Y, space, T, H, R, E, A, T, space, H, A, S, lineBreak
-	.db B, E, E, N, space, E, L, I, M, I, N, A, T, E, D, lineBreak
+	.db Y, O, U, space, H, A, V, E, space, E, L, I, M, I, N, A, T, E, D, lineBreak
+	.db T, H, E, space,  E, N, E, M, Y, space, T, H, R, E, A, T, lineBreak
 	.db lineBreak
-	.db I, space, A, M, space, R, E, T, U, R, N, I, N, G, space, T, O, space, B, A, S, E, lineBreak
-	.db C, A, M, P, space, F, O, R, space, R, E, P, A, I, R, S, waitForA
+	.db T, H, E, space, C, I, T, Y, space, S, A, F, E, comma, lineBreak
+	.db F, O, R, space, N, O, W, waitForA
 	.db nextPage
-	.db setPortrait, $20
-	.db E, X, C, E, L, L, E, N, T, space, W, O, R, K, comma, space, C, A, P, T, A, I, N, lineBreak
-	.db lineBreak
 	.db T, H, A, N, K, S, space, F, O, R, space, P, L, A, Y, I, N, G, waitForA
 	.db endOfStream
 

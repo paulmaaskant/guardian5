@@ -1,21 +1,3 @@
-; List
-;
-; - missile animation
-; - volume mute operation
-; - shutdown animation
-; - unit destroyed sound & ground shake
-;
-; - Bugs
-; 	Sometimes when using missiles (screen garbage game crash)
-;
-;
-; PARKING LOT
-; - content for in game menu
-; - attribute table scrolling (two palettets)
-; - show results state: decrement AP and HP when results are displayed (new opcode?)
-; - events (like mission fail / accomplished conditions and in game dialog triggers)
-
-
 ;; 1 - iNes header
 	.db "NES", $1A	; iNes Identifier
 	.db $02			; number of PRG-Rom (16kb) blocks the game has

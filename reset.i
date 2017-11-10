@@ -69,6 +69,9 @@ RESET:
 	LDA #< +returnPoint
 	PHA
 
+
+
+
 	JSR buildStateStack
 	.db $0E								; # stack items
 	.db $00, 1						; load screen 01: story background
