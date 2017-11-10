@@ -29,6 +29,8 @@ state_initializeScreen:
 	LDA state00_sound, Y
 	BMI +noSound
 	TAY
+
+	JSR soundSilence
 	JSR soundLoad
 	JMP +done
 
@@ -44,7 +46,6 @@ state_initializeScreen:
 	STA list1+2																																; $24[00]
 	LDA #$20																																			; full screen 32 rows
 	STA list1+0
-
 
 	; next game state ---
 	LDA #$0E

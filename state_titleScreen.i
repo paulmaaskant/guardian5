@@ -86,10 +86,6 @@ state_titleScreen:
 
 	JSR soundSilence
 
-	LDA frameCounter				; wait for next frame
--	CMP frameCounter
-	BEQ -
-
 	LDA list1+1
 	CMP #$01
 	BEQ +instructions		; if "instructions" + start
@@ -131,7 +127,6 @@ state_titleScreen:
 	; built in RTS
 
 +animation:
-	JSR soundSilence
 	JSR pullAndBuildStateStack
 	.db 15								; # items
 	.db $0D, 0						; change brightness 0: fade out
