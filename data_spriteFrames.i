@@ -233,3 +233,18 @@ EFFA: ; explosion shockwave upper
 EFFB: ; explosion shockwave upper
 	.db %00100100, $08, -4,  $0, $39
 	.db %00100111, $0A, -4,  $28, $29
+
+MIS0:	; missile up 1
+	.db %00010000, 0,  $2A
+	.db %00010011, 0,  $3A
+
+MIS1	; missile up 2
+	.db %00010000, 0,  $2A
+	.db %00010011, 0,  $3D
+
+
+MIS2  ; missile right
+
+MIS3	; missile down right
+
+MIS4	; missile down

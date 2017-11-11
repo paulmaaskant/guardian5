@@ -1,18 +1,18 @@
 
 ; --- byte stream to load status bar ( in reverse )	---
 statusBar:
-	.db $FF, $21 	; 2 rows + 3 blank tiles
-	.db $2B, $FF, 5, $2A
-	.db $2B, $FF, 13, $2A
-	.db $2B, $FF, 6, $2A
-	.db $FF, $62
-	.db $2D, $FF, 5, $2C
-	.db $2D, $FF, 13, $2C
-	.db $2D, $FF, 6, $2C
-	.db $FF, $01
-	.db $FF, $00	; 8 blank rows
-	.db $FF, $00  ; 8 blank rows
-	.db $FF, $00	; 8 blank rows
+	.db repeatBlank, $21 	; 2 rows + 3 blank tiles
+	.db $2B, repeatBlank, 5, $2A
+	.db $2B, repeatBlank, 13, $2A
+	.db $2B, repeatBlank, 6, $2A
+	.db repeatBlank, $62
+	.db $2D, repeatBlank, 5, $2C
+	.db $2D, repeatBlank, 13, $2C
+	.db $2D, repeatBlank, 6, $2C
+	.db repeatBlank, $01
+	.db repeatBlank, $00	; 8 blank rows
+	.db repeatBlank, $00  ; 8 blank rows
+	.db repeatBlank, $00	; 8 blank rows
 
 	; --- palettes ---
 	.db $FE, 22, $AA
@@ -24,43 +24,43 @@ statusBar:
 	.db $FE, $20, $AA
 
 statusMenu:
-	.db $FF, $41, $2B, $FF, 28, $2A, $FF, $41	; 6 rows
-	.db $FF, $01, $2D, $FF, 28, $2C, $FF, $01
+	.db repeatBlank, $41, $2B, repeatBlank, 28, $2A, repeatBlank, $41	; 6 rows
+	.db repeatBlank, $01, $2D, repeatBlank, 28, $2C, repeatBlank, $01
 
 ;titleScreen:
-;	.db $FF, $00	; 8 blank rows
-;	.db $FF, $0F, $E1, $E0
-;	.db $FF, $1E, $5B, $5A, $59
-;	.db $FF, $1D, $6B, $6A, $69
-;	.db $FF, $1D, $7B, $7A, $79
-;	.db $FF, $1D, $48, $47, $46
-;	.db $FF, $1D, $58, $57, $0F
-;	.db $FF, $1D, $68, $67, $66
-;	.db $FF, $16
+;	.db repeatBlank, $00	; 8 blank rows
+;	.db repeatBlank, $0F, $E1, $E0
+;	.db repeatBlank, $1E, $5B, $5A, $59
+;	.db repeatBlank, $1D, $6B, $6A, $69
+;	.db repeatBlank, $1D, $7B, $7A, $79
+;	.db repeatBlank, $1D, $48, $47, $46
+;	.db repeatBlank, $1D, $58, $57, $0F
+;	.db repeatBlank, $1D, $68, $67, $66
+;	.db repeatBlank, $16
 ;	.db $41, $40, $42, $44, $61, $62, $42, $61, $60, $61, $60, $61, $62, $42, $42, $41, $74; GUARDIAN5
-;	.db $FF, $0F
+;	.db repeatBlank, $0F
 ;	.db $51, $50, $64, $54, $73, $70, $63, $53, $72, $71, $70, $73, $70, $53, $52, $51, $43;
-;	.db $FF, $A7
-;	.db $FF, $00			; 8 blank rows
+;	.db repeatBlank, $A7
+;	.db repeatBlank, $00			; 8 blank rows
 ;	; --- palettes ---
 ;	.db $FE, $20, $00	; 1 rows, palette
 ;	.db $FE, $18, $00	; 1 rows, palette
 ;	.db $FE, $08, $05	;
 
 titleScreen2:
-	.db $FF, 0	; 8 rows
-	.db $FF, 21, $4D, $4C, $4B, $FF, 8
-	.db $FF, 21, $5D, $5C, $5B, $5A, $59, $58, $57, $FF, 4
-	.db $FF, 21, $6D, $6C, $6B, $6A, $69, $68, $67, $FF, 4
-	.db $FF, 22, $7C, $0F, $7A, $79, $78, $77, $FF, 4
-	.db $FF, 22, $7E, $7D, $7B, $44, $63, $50, $FF, 4
-	.db $FF, 21, $41, $40, $4A, $49, $48, $47, $FF, 5
-	.db $FF, 21, $46, $45, $0F, $43, $42, $FF, 6
-	.db $FF, 21, $56, $55, $54, $53, $52, $51, $FF, 5
-	.db $FF, 21, $66, $65, $64, $0F, $62, $61, $60, $FF, 4
-	.db $FF, 21, $76, $75, $74, $73, $72, $71, $70, $FF, 4
-	.db $FF, 128	; 4 rows
-	.db $FF, 0	; 8 rows
+	.db repeatBlank, 0	; 8 rows
+	.db repeatBlank, 21, $4D, $4C, $4B
+	.db repeatBlank, 29, $5D, $5C, $5B, $5A, $59, $58, $57
+	.db repeatBlank, 25, $6D, $6C, $6B, $6A, $69, $68, $67
+	.db repeatBlank, 26, $7C, $0F, $7A, $79, $78, $77
+	.db repeatBlank, 26, $7E, $7D, $7B, $44, $63, $50
+	.db repeatBlank, 25, $41, $40, $4A, $49, $48, $47
+	.db repeatBlank, 26, $46, $45, $0F, $43, $42
+	.db repeatBlank, 27, $56, $55, $54, $53, $52, $51
+	.db repeatBlank, 26, $66, $65, $64, $0F, $62, $61, $60
+	.db repeatBlank, 25, $76, $75, $74, $73, $72, $71, $70
+	.db repeatBlank, 132	; 4 rows + 4 tiles
+	.db repeatBlank, 0	; 8 rows
 
 	; --- palettes ---
 	.db $FE, 5, $00, %01011010, %01100101
@@ -103,18 +103,18 @@ animationScreen:
 	.db repeatChar, $40, $AA	; 2 rows, palette 0
 
 briefScreen:
-	.db $FF, $97																																	; 7 rows and 23 tiles
-	.db $2B, $FF, $04, $2A 																												; 0 rows and 6 tiles
-	.db $FF, $7A																																	; 3 rows and 26 tiles
-	.db $2D, $FF, $04, $2C 																												; 0 rows and 6 tiles
-	.db $FF, $06, $2B, $FF, $18, $2A
-	.db $FF, $E6			;
-	.db $FF, $00			; 8 rows
-	.db $2D, $FF, $18, $2C
-	.db $FF, $83			; 4 rows, 3 tiles
+	.db repeatBlank, $97																																	; 7 rows and 23 tiles
+	.db $2B, repeatBlank, $04, $2A 																												; 0 rows and 6 tiles
+	.db repeatBlank, $7A																																	; 3 rows and 26 tiles
+	.db $2D, repeatBlank, $04, $2C 																												; 0 rows and 6 tiles
+	.db repeatBlank, $06, $2B, repeatBlank, $18, $2A
+	.db repeatBlank, $E6			;
+	.db repeatBlank, $00			; 8 rows
+	.db $2D, repeatBlank, $18, $2C
+	.db repeatBlank, $83			; 4 rows, 3 tiles
 	; --- palettes ---
 	.db $FE, $16, $AA
-	.db $FE, $01, $FF 				; pilot face attributes
+	.db $FE, $01, repeatBlank 				; pilot face attributes
 	.db $FE, $09, $AA
 	.db $FE, $20, $AA
 
