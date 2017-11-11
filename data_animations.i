@@ -47,6 +47,7 @@ animationL:
 	.db #> ANIM1D			; t2 m d6
 	.db #> ANIM1E			; t2 m d4
 	.db #> ANIM1F			; t2 m d1
+	.db #> ANIM20
 
 animationH:
 	.db #< ANIM00
@@ -80,6 +81,7 @@ animationH:
 	.db #< ANIM1D
 	.db #< ANIM1E
 	.db #< ANIM1F
+	.db #< ANIM20
 
 ANIM00:
 	.db #$80, #$08
@@ -260,3 +262,8 @@ ANIM1F:
 	.dw tank02_moving_d1_fr06
 	.dw tank02_moving_d1_fr07
 	.dw tank02_moving_d1_fr08
+
+ANIM20:
+	.db $20, $04
+	.dw EF0D
+	.dw EF0E

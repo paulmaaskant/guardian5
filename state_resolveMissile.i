@@ -47,6 +47,7 @@ state_resolveMissile:
   LDA state_2E_angle, Y
   BCC +continue               ; use carry
   EOR #$FF
+
 +continue:
   ADC list1+8
 
@@ -61,7 +62,7 @@ state_resolveMissile:
   ADC currentObjectYPos
   STA currentEffects+12, X
 
-  LDA #10												; animation #
+  LDA #$20												; animation #
   STA currentEffects+0, X
 
   DEC list1+2

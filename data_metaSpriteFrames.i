@@ -908,3 +908,10 @@ EF0B:
 EF0C:
   .db #%10011000
   .dw EFFB
+
+EF0D:
+  .db #%10011000
+  .dw MIS0
+EF0E:
+  .db #%10011000
+  .dw MIS1
