@@ -278,7 +278,7 @@ volumeEnvelopeTableHi:
 
 eConstant = $00
 volumeEnvelope00:
-  .db #$08
+  .db #$06
   .db #$FF
 
 eFadeIn = $01

@@ -91,5 +91,7 @@ runExplosion:
   LDA #$00
   STA effects
 
+  DEC cameraYDest+1
+
 +done:
   RTS

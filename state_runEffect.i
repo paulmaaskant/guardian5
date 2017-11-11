@@ -49,6 +49,14 @@ state_runEffect:
   ORA event_updateSprites
   STA events
 
+  INC cameraYDest+1               ; start ground shake
+                                  ; because camera move adjustments are mulitples of 2
+                                  ; camera keeps trembling until camera destination
+                                  ; is reset to an even number
+
+  LDY #22                         ; sound: explosion
+  JSR soundLoad
+
   JMP pullState
 
 +done:

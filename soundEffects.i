@@ -17,20 +17,32 @@ sound10_stream00:
 sound11:
   .db #$01                              ; number of streams
 
-  .db #$04                              ; stream #
-  .db #$80                              ; channel (p 1)
-  .db #$B0                              ; initial duty
-  .db #$80                              ; initial tempo
-  .db eShortBlip                        ; initial volume envelope
+  .db $00                               ; assign to stream # (0 to 5)
+  .db %10000010                         ; b7 channel active flag, b6 rest flag, b5-2 not used, b1-0 channel
+  .db $00                               ; b7-6 duty, b5-0 not used
+  .db $50                               ; initial tempo
+  .db eSnareDrum                        ; initial volume envelope
   .dw sound11_stream00                  ; stream address
 sound11_stream00:
-  .db L32th
-  .db setCountLoop1, $10
+  .db setCountLoop1, 2
 -loop:
-  .db A2, Gs2
+  .db L8th
+  .db E3, F3, G3, A3
+  .db B3, C4, B3, A3
+
+  .db F3, G3, A3, B3
+  .db C4, D4, C4, B3
+
+  .db C3, D3, E3, F3
+  .db G3, A3, G3, F3
+
+  .db G3, A3, B3, C4
+  .db D4, E4, D4, C4
+
   .db repeatLoop1
   .dw -loop
   .db endSound
+
 
 sSelect = $12
 sound12:
@@ -100,16 +112,36 @@ sound16:
   .db #$83                              ; channel (noise 1)
   .db #$B0                              ; initial duty
   .db #$80                              ; initial tempo
-  .db eSoftStaccato                      ; initial volume envelope
+  .db eSoftStaccato                     ; initial volume envelope
   .dw sound16_stream00                  ; stream address
 sound16_stream00:
   .db L32th
-  .db setCountLoop1, $0F
+  .db setCountLoop1, 6
 -loop:
-  .db #$0F
+  .db 15 ; noise #15
   .db noteOffset, -1
   .db repeatLoop1
   .dw -loop
+
+  .db noteOffset, 6
+  .db setCountLoop1, 15
+
+-loop:
+  .db 15 ; noise #15
+  .db noteOffset, -1
+  .db repeatLoop1
+  .dw -loop
+
+  .db noteOffset, 15
+  .db setCountLoop1, 50
+
+-loop:
+  .db 15 ; noise #15
+  .db repeatLoop1
+  .dw -loop
+
+
+
   .db endSound
 
 sMechStep = $17
