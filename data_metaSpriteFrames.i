@@ -915,3 +915,30 @@ EF0D:
 EF0E:
   .db #%10011000
   .dw MIS1
+
+EF0F:
+  .db #%10011000
+  .dw MIS2
+EF10:
+  .db #%10011000
+  .dw MIS3
+
+EF11:
+  .db #%10111000, 4
+  .dw MIS4
+EF12:
+  .db #%10111000, 4
+  .dw MIS5
+
+EF13:
+  .db #%10011000
+  .dw MIS6
+EF14:
+  .db #%10011000
+  .dw MIS7
+EF15:
+  .db #%10011000
+  .dw MIS8
+EF16:
+  .db #%10011000
+  .dw MIS9

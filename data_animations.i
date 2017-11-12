@@ -48,6 +48,10 @@ animationL:
 	.db #> ANIM1E			; t2 m d4
 	.db #> ANIM1F			; t2 m d1
 	.db #> ANIM20
+	.db #> ANIM21
+	.db #> ANIM22
+	.db #> ANIM23
+	.db #> ANIM24
 
 animationH:
 	.db #< ANIM00
@@ -82,6 +86,10 @@ animationH:
 	.db #< ANIM1E
 	.db #< ANIM1F
 	.db #< ANIM20
+	.db #< ANIM21
+	.db #< ANIM22
+	.db #< ANIM23
+	.db #< ANIM24
 
 ANIM00:
 	.db #$80, #$08
@@ -267,3 +275,23 @@ ANIM20:
 	.db $20, $04
 	.dw EF0D
 	.dw EF0E
+
+ANIM21:
+	.db $20, $04
+	.dw EF0F
+	.dw EF10
+
+ANIM22:
+	.db $20, $04
+	.dw EF11
+	.dw EF12
+
+ANIM23:
+	.db $20, $04
+	.dw EF13
+	.dw EF14
+
+ANIM24:
+	.db $20, $04
+	.dw EF15
+	.dw EF16

@@ -242,9 +242,32 @@ MIS1	; missile up 2
 	.db %00010000, 0,  $2A
 	.db %00010011, 0,  $3D
 
+MIS2  ; missile right up 1
+	.db %00100000, -4,  $00, $2B
+	.db %00010011, -4,  $3B
 
-MIS2  ; missile right
+MIS3	; missile right up 2
+	.db %00100000, -4,  $00, $2B
+	.db %00010011, -4,  $3E
 
-MIS3	; missile down right
+MIS4  ; missile right 1
+	.db %00100001, -4,  $3C, $2C
 
-MIS4	; missile down
+MIS5	; missile right 2
+	.db %00100001, -4,  $3F, $2C
+
+MIS6  ; missile right down 1
+	.db %00010100, %00000010, -4,  $3B
+	.db %00100111, %00001000, -4,  $00, $2B
+
+MIS7	; missile right down 2
+	.db %00010100, %00000010, -4,  $3E
+	.db %00100111, %00001000, -4,  $00, $2B
+
+MIS8  ; missile right down 1
+	.db %00010100, %00000010, 0,  $3A
+	.db %00010111, %00000010, 0,  $2A
+
+MIS9	; missile right down 2
+	.db %00010100, %00000010, 0,  $3D
+	.db %00010111, %00000010, 0,  $2A
