@@ -7,7 +7,7 @@
 ; list1+07, radius
 ; list1+08, angle
 
-
+; F6C0
 
 
 state_resolveMissile:
@@ -28,6 +28,7 @@ state_resolveMissile:
   LDY list1+2
   LDA list1+0
   LSR
+  LSR
   CLC
   ADC state_2E_offset, Y
   AND #$1F                    ; 0-32
@@ -38,7 +39,7 @@ state_resolveMissile:
   LDA list1+7
   JSR multiply
   LDA par1
-  TAX
+  TAX                         ; set the radius
 
   LDA list1+2
   LSR                         ; set carry
@@ -49,7 +50,8 @@ state_resolveMissile:
   EOR #$FF
 
 +continue:
-  ADC list1+8
+  ADC list1+8                 ; A = angle, X = radius
+  STA list1+3                 ; store to determine animation later
 
   JSR getCircleCoordinates
   TXA
@@ -62,7 +64,23 @@ state_resolveMissile:
   ADC currentObjectYPos
   STA currentEffects+12, X
 
-  LDA #$20												; animation #
+  LDA list1+3
+  CLC
+  ADC #16
+  LSR
+  AND #$40                  ; mirror in Y axis
+  STA currentEffects+24, X
+
+  LDA list1+3
+  CLC
+  ADC #16
+  LSR
+  LSR
+  LSR
+  LSR
+  LSR
+  TAY
+  LDA state_2E_animation, Y
   STA currentEffects+0, X
 
   DEC list1+2
@@ -154,11 +172,13 @@ state_2E_radius:
 .db 230
 .db 255
 
+state_2E_offset:
+  .db 0
+  .db 16
 
-state_2E_offset
-.db 0
-.db 16
+state_2E_side:
+  .db 0
+  .db $FF
 
-state_2E_side
-.db 0
-.db $FF
+state_2E_animation:
+  .db $20, $21, $22, $23, $24, $23, $22, $21

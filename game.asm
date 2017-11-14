@@ -259,7 +259,7 @@ mainGameLoop:
 	LDA cursorGridPos									; cursor location on grid
 	JSR gridPosToScreenPos						; get the screen get screen coordinates
 	BCC +nextEffect										; make sure coordinates are on screen
-	LDY #$00													; cursor animation #
+	LDY #0														; cursor animation #
 	JSR loadAnimationFrame						; set sprites!
 
 +nextEffect:																																		; hit percentage
@@ -724,6 +724,7 @@ gameStateJumpTable:
 	.include sbr_initializeExplosion.i
 	.include sbr_runExplosion.i
 	.include sbr_addToSortedList.i
+	.include sbr_angleToCursor.i
 
 	.include sbr_random.i
 	.include sbr_random100.i

@@ -13,7 +13,19 @@ objectTypeH:
 	.db #> tankType3
 
 tankType0:
+
 tankType1:
+	.db $20 ; 1 animation: facing U, still
+	.db $21 ; 2 animation: facing RU, still
+	.db $23 ; 3 animation: facing RD, still
+	.db $24 ; 4 animation: facing D, still
+
+	.db $20 ; 1 animation: facing U, still
+	.db $21 ; 2 animation: facing RU, still
+	.db $23 ; 3 animation: facing RD, still
+	.db $24 ; 4 animation: facing D, still
+
+
 tankType2:
 	; animations (8 bytes)
 

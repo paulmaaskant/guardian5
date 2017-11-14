@@ -59,7 +59,8 @@ state_playAnimation:
   LDY list1+2
   CPY #$04
   BNE +setTimer
-  LDY #$02
+  LDY #$01
+  STY currentObjectFrameCount
   STY list1+2
 
 +continue:
