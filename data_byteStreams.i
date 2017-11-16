@@ -404,7 +404,7 @@ levelOne:																																				; --- blocked nodes (1 bit for move
 	.db $CA																																				; object 1 grid position
 	.db $05																																				; object 1 pilot ho & facing LD
 	.db $12																																				; object 2 h type 2
-	.db $07																																				; object 2 grid position
+	.db $C4																																			; object 2 grid position
 	.db $25																																				; object 2 pilot ho & facing LD
 
 A = $10

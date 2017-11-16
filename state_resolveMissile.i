@@ -4,6 +4,7 @@
 ; list1+00, frame counter
 ; list1+02, loop control
 ; list1+03, temp
+; list1_04, first impact
 ; list1+07, radius
 ; list1+08, angle
 
@@ -11,49 +12,28 @@
 
 
 state_resolveMissile:
+  LDA #1                      ; set loop count
+  STA list1+2                 ; 2 missiles at the time
+
+-loop:
   LDA activeObjectGridPos
   JSR gridPosToScreenPos      ; sets currentObject coordinats
 
+  LDY list1+2                 ; Y = loop count
 
-  LDA #1
-  STA list1+2
+  LDA list1+0                 ; A = frame count
+  ADC state_2E_offset, Y      ;
+  AND #%00111111              ; 0-63
 
+  CMP #24                     ; if 0..23 -> move sideways
+  BCS +continue
 
--loop:
-  LDA currentObjectYPos
-  CLC
-  ADC #-10
-  STA currentObjectYPos
+  TAX                         ; radius in X
+  LDA list1+8
+  STA list1+3
+  ADC state_2E_angle, Y
 
-  LDY list1+2
-  LDA list1+0
-  LSR
-  LSR
-  CLC
-  ADC state_2E_offset, Y
-  AND #$1F                    ; 0-32
-  PHA
-  TAY                         ; index for radius and angle
-
-  LDX state_2E_radius, Y
-  LDA list1+7
-  JSR multiply
-  LDA par1
-  TAX                         ; set the radius
-
-  LDA list1+2
-  LSR                         ; set carry
-  PLA
-  TAY
-  LDA state_2E_angle, Y
-  BCC +continue               ; use carry
-  EOR #$FF
-
-+continue:
-  ADC list1+8                 ; A = angle, X = radius
-  STA list1+3                 ; store to determine animation later
-
-  JSR getCircleCoordinates
+  JSR getCircleCoordinates    ; X IN radius, A IN angle
   TXA
   CLC
   LDX list1+2
@@ -63,7 +43,63 @@ state_resolveMissile:
   CLC
   ADC currentObjectYPos
   STA currentEffects+12, X
+  JMP +setAnimation
 
++continue:
+  ; if 32-63 -> move towars target
+  LDX list1+2
+
+  LDA currentEffects+6, X
+  STA currentObjectXPos
+  LDA currentEffects+12, X
+  STA currentObjectYPos
+  JSR angleToCursor						; takes currentObject coordinates as IN
+                              ; A = angle
+  CPY #$5
+  BCS +continue
+  BIT list1+4
+  BMI +skip
+  SEC
+  ROR list1+4
+  INC cameraYDest+1                            ; first impact, ground shake
+  INC effects                                  ; start explision sprite
+
+  LDA cursorGridPos
+	JSR gridPosToScreenPos
+
+	LDA currentObjectXPos
+	STA currentEffects+8
+	LDA currentObjectYPos
+	SEC
+	SBC #12
+	STA currentEffects+14
+	LDA #5
+	STA currentEffects+2
+
++skip:
+  LDY #17
+  JSR soundLoad
+  LDX list1+2
+  LDA #11 ; no sprites
+  BNE +setAnimation
+
++continue:
+  STA list1+3
+
+  LDX #4
+  JSR getCircleCoordinates    ; X IN radius, A IN angle
+  TXA
+  CLC
+  LDX list1+2
+  ADC currentEffects+6, X
+  STA currentEffects+6, X
+  TYA
+  CLC
+  ADC currentEffects+12, X
+  STA currentEffects+12, X
+
++setAnimation:
+  LDX list1+2
   LDA list1+3
   CLC
   ADC #16
@@ -81,16 +117,19 @@ state_resolveMissile:
   LSR
   TAY
   LDA state_2E_animation, Y
+
++setAnimation:
   STA currentEffects+0, X
 
   DEC list1+2
-  BPL -loop
+  BMI +continue
+  JMP -loop
 
++continue:
   LDA list1+0
-  CMP #160								; runs for 128 frames
+  CMP #255								; runs for 128 frames
   BEQ +done
-
-  ;CLC											; not really ncessary as long as max is 128 frames
+                          ; CLC not  ncessary because of BEQ
   ADC #1
   STA list1+0
   RTS
@@ -99,86 +138,18 @@ state_resolveMissile:
 ; animation completed , prepare for transition
 ; ------------------------------------------------
 +done:
+  DEC cameraYDest+1
   LDA #$00						; switch off all blinking
   STA menuFlags
   JMP pullState
-
-state_2E_angle:
-.db 96
-.db 96
-.db 96
-.db 96
-.db 96
-.db 96
-.db 96
-.db 96
-.db 92
-.db 88
-.db 84
-.db 80
-.db 76
-.db 72
-.db 68
-.db 64
-.db 60
-.db 56
-.db 52
-.db 48
-.db 44
-.db 40
-.db 36
-.db 32
-.db 28
-.db 24
-.db 20
-.db 16
-.db 12
-.db 8
-.db 4
-.db 0
-
-
-state_2E_radius:
-.db 3
-.db 5
-.db 8
-.db 10
-.db 13
-.db 15
-.db 18
-.db 20
-.db 23
-.db 26
-.db 28
-.db 31
-.db 33
-.db 36
-.db 38
-.db 41
-.db 54
-.db 64
-.db 67
-.db 69
-.db 72
-.db 84
-.db 96
-.db 109
-.db 118
-.db 128
-.db 141
-.db 154
-.db 179
-.db 205
-.db 230
-.db 255
 
 state_2E_offset:
   .db 0
   .db 16
 
-state_2E_side:
-  .db 0
-  .db $FF
+state_2E_angle:
+  .db -80
+  .db 80
 
 state_2E_animation:
   .db $20, $21, $22, $23, $24, $23, $22, $21

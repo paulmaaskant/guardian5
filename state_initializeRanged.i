@@ -97,6 +97,18 @@ state_initializeRanged:
 	LDA #$02										; switch on controlled effects
 	STA effects
 
+	LDA cursorGridPos
+	JSR gridPosToScreenPos
+
+	LDA currentObjectXPos
+	STA currentEffects+8
+	LDA currentObjectYPos
+	SEC
+	SBC #12
+	STA currentEffects+14
+	LDA #5
+	STA currentEffects+2
+
 	JSR pullAndBuildStateStack
 	.db #3											; 3 items
 	.db $2B

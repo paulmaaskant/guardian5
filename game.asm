@@ -538,10 +538,10 @@ mainGameLoop:
 	LDX selectedAction
   LDA actionList, X
   CMP #aCOOLDOWN
-	BNE +continue
+	BNE +skip
 	LDY #18													; GAIN
 
-+continue:
++skip:
 	LDX #26
 	JSR writeToActionMenu						;
 

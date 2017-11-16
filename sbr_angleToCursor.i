@@ -54,26 +54,32 @@ angleToCursor:
 
 +continue:
   LDA currentObjectXPos				; delta X in A
+  STA debug+0
   TAX													; delta X in X
   JSR multiply
   LDA par1										; dX^2 HI
   STA locVar3    ;
   LDA par2										; dX^2 LO
-  STA currentObjectXPos
+  STA locVar4                 ; 
 
   LDA currentObjectYPos				; delta Y
+  STA debug+1
   TAX
   JSR multiply
 
   CLC													; dY^2 + dX^2
   LDA par2										;
-  ADC currentObjectXPos				;
+  ADC locVar4				;
   STA par2
   LDA par1
   ADC locVar3                 ;
   STA par1
 
   JSR squareRoot              ; A and Y = sqrt(dY^2 + dX^2) = radius !
+
+  STA debug+3                 ; radius
+
+
                               ; up next: min(delta X, delta Y) / radius = sin(angle)
   LDA #0											; init
   STA par2										; for upcoming divide
@@ -93,16 +99,16 @@ angleToCursor:
 	LDA par4										; sin(angle)
 	BEQ +continue               ; if sin(angle) = 0 then angle = 0
 
-  STY locVar1
-
 -loop:
 	LDA sinTable, X							; inverse sin function
-	CMP locVar1
+	CMP par4
 	INX
 	BCC -loop
 
 +continue:
 	TXA                         ; angle
+  STA debug+2
+
   BIT locVar3
 	BPL +continue								; if dY >= dX then
 	EOR #%00111111							; angle =  64 - angle
