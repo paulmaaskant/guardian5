@@ -284,18 +284,29 @@ brief1Stream:
 	.db endOfStream
 
 brief2Stream:
-	.db M, I, S, S, I, O, N, space, A, C, C, O, M, P, L, I, S, H, E, D, lineBreak
-	.db lineBreak
+	.db M, I, S, S, I, O, N, space, A, C, C, O, M, P, L, I, S, H, E, D
+	.db waitForA
+	.db nextPage
 	.db Y, O, U, space, H, A, V, E, space, E, L, I, M, I, N, A, T, E, D, lineBreak
-	.db T, H, E, space,  E, N, E, M, Y, space, T, H, R, E, A, T, lineBreak
-	.db lineBreak
-	.db T, H, E, space, C, I, T, Y, space, S, A, F, E, comma, lineBreak
+	.db T, H, E, space,  E, N, E, M, Y, space, T, H, R, E, A, T
+	.db waitForA
+	.db nextPage
+	.db T, H, E, space, C, I, T, Y, space, I, S, space, S, A, F, E
+	.db waitForA
+	.db nextPage
 	.db F, O, R, space, N, O, W, waitForA
 	.db nextPage
 	.db T, H, A, N, K, S, space, F, O, R, space, P, L, A, Y, I, N, G, waitForA
 	.db endOfStream
 
 brief3Stream:
+	.db Y, O, U, R, space, M, E, C, H, space, H, A, S, space, B, E, E, N, lineBreak
+	.db D, E, S, T, R, O, Y, E, D
+	.db waitForA
+	.db nextPage
+	.db Y, O, U, R, space, M, I, S, S, I, O, N, space, H, A, S, space, F, A, I, L, E, D
+	.db waitForA
+	.db nextPage
 	.db T, H, A, N, K, S, space, F, O, R, space, P, L, A, Y, I, N, G, waitForA
 	.db endOfStream
 
@@ -404,7 +415,7 @@ levelOne:																																				; --- blocked nodes (1 bit for move
 	.db $CA																																				; object 1 grid position
 	.db $05																																				; object 1 pilot ho & facing LD
 	.db $12																																				; object 2 h type 2
-	.db $C4																																			; object 2 grid position
+	.db $07																																			; object 2 grid position
 	.db $25																																				; object 2 pilot ho & facing LD
 
 A = $10
