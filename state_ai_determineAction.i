@@ -48,10 +48,12 @@ state_ai_determineAction:
   STA targetObjectTypeAndNumber
   AND #%00000111
 	ASL
-	ASL																																																																										; save X (object list index)
+	ASL
+  TAY																																																																										; save X (object list index)
 	LDA object+3, Y
   STY targetObjectIndex
 	STA cursorGridPos
+  STA debug
 
   LDY activeObjectGridPos
   STY par1
