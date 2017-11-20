@@ -71,8 +71,8 @@ state01_positionLo:
 state01_lastCol:
   .db $1C
   .db $1C
-  .db $1C
-  .db $1C
+  .db $1E
+  .db $1E
   .dsb 5
   .db $1C
   .db $1C
