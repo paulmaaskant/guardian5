@@ -22,7 +22,8 @@ soundsLo:
   .db #< sound19
   .db #< sound1A
   .db #< sound1B
-  .dsb 4, #< sound15
+  .db #< sound1C
+  .dsb 3, #< sound15
 
 soundsHi:
   .db #> sound00
@@ -45,7 +46,8 @@ soundsHi:
   .db #> sound19
   .db #> sound1A
   .db #> sound1B
-  .dsb 4, #> sound15
+  .db #> sound1C
+  .dsb 3, #> sound15
 
 ; sound streams
   .include sound00.i
@@ -94,7 +96,7 @@ soundSilence:
   LDA frameCounter				; wait for next frame
 -	CMP frameCounter
   BEQ -
-  
+
   RTS
 
 ; --------------------------------------

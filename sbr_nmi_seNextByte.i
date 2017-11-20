@@ -111,21 +111,14 @@ soundJumpOpCode:
   .dw seDecreaseVolume-1
   .dw seIncreaseVolume-1
 
--updatePointerGetNextByte:
-  CLC
-  ADC soundStreamPointerLo, X
-  STA soundStreamPointerLo, X
-  LDA soundStreamPointerHi, X
-  ADC #$00
-  STA soundStreamPointerHi, X
-  JMP seNextByte
+
 
 ; opCode FC
 seSetCountLoop1:
   LDA (nmiVar0), Y
   STA soundStreamLoop1Counter, X
-  LDA #$02
-  BNE -updatePointerGetNextByte
+  LDA #2
+  BNE +updatePointerGetNextByte
 
 ; opCode FA
 seTransposeLoop1:
@@ -140,15 +133,15 @@ seTransposeLoop1:
   CLC
   ADC soundStreamNoteOffset, X
   STA soundStreamNoteOffset, X
-  LDA #$03
-  BNE -updatePointerGetNextByte
+  LDA #3
+  BNE +updatePointerGetNextByte
 
 ;opCode FB
 seRepeatLoop1:
   DEC soundStreamLoop1Counter, X
   BNE seLoopSound
-  LDA #$03
-  BNE -updatePointerGetNextByte
+  LDA #3
+  BNE +updatePointerGetNextByte
 
 ; opCode FD
 seNoteOffset:
@@ -156,8 +149,8 @@ seNoteOffset:
   CLC
   ADC soundStreamNoteOffset, X
   STA soundStreamNoteOffset, X
-  LDA #$02
-  BNE -updatePointerGetNextByte
+  LDA #2
+  BNE +updatePointerGetNextByte
 
 ; opCode F9
 seSetDutyCycle:
@@ -165,24 +158,57 @@ seSetDutyCycle:
   AND #%11000000
   STA nmiVar0
   LDA soundStreamDutyVolume, X
-  AND #%00111111
+  AND #%00110000
   ORA nmiVar0
   STA soundStreamDutyVolume, X
-  LDA #$02
-  BNE -updatePointerGetNextByte
-  RTS
+  LDA #2
+  BNE +updatePointerGetNextByte
 
 ; opCode F8
 seSetSweep:
   LDA (nmiVar0), Y
   STA soundStreamSweepControl, X
-  LDA #$02
+;  LDA #$02
 ;  LDA soundStreamDutyVolume, X
 ;  AND #%11011111                    ; enable loop
 ;  STA soundStreamDutyVolume, X
-  LDA #$02
-  BNE -updatePointerGetNextByte
-  RTS
+  LDA #2
+  BNE +updatePointerGetNextByte
+
+
+; F7
+seDecreaseVolume:
+  LDA soundStreamDutyVolume, X
+  AND rightNyble
+  CMP #$0F
+  BEQ +continue
+  INC soundStreamDutyVolume, X
+
++continue:
+  LDA #1
+  BNE +updatePointerGetNextByte                 ; (recursion) get next byte
+
+; F6
+seIncreaseVolume:
+  LDA soundStreamDutyVolume, X
+  AND rightNyble
+  BEQ +continue
+  DEC soundStreamDutyVolume, X
+
++continue:
+  LDA #1
+  BNE +updatePointerGetNextByte                 ; (recursion) get next byte
+
+;---------------
++updatePointerGetNextByte:
+  CLC
+  ADC soundStreamPointerLo, X
+  STA soundStreamPointerLo, X
+  LDA soundStreamPointerHi, X
+  ADC #0
+  STA soundStreamPointerHi, X
+  JMP seNextByte
+
 
 ; opCode FF
 seEndSound:
@@ -201,26 +227,6 @@ seLoopSound:
   STA soundStreamPointerHi, X
   JMP seNextByte                  ; (recursion) get next byte
 
-; F7
-seDecreaseVolume:
-  LDA soundStreamDutyVolume, X
-  AND rightNyble
-  CMP #$0F
-  BEQ +continue
-  INC soundStreamDutyVolume, X
-
-+continue:
-  JMP seNextByte                  ; (recursion) get next byte
-
-; F6
-seIncreaseVolume:
-  LDA soundStreamDutyVolume, X
-  AND rightNyble
-  BEQ +continue
-  DEC soundStreamDutyVolume, X
-
-+continue:
-  JMP seNextByte                  ; (recursion) get next byte
 
 ; --------------------------------------------
 ; Notes

@@ -214,10 +214,31 @@ sound1B:
 
 sound1B_stream00:
   .db L32th
-  .db setCountLoop1, $0A
+  .db setCountLoop1, 10
 -loop:
   .db $1B
   .db noteOffset, -1
+  .db repeatLoop1
+  .dw -loop
+  .db endSound
+
+sound1C:
+  .db $01                              ; number of streams
+
+  .db $04                              ; stream #
+  .db $83                              ; channel (noise 1)
+  .db $C0                              ; initial duty
+  .db $80                              ; initial tempo
+  .db eConstantLoud                   ; initial volume envelope
+  .dw sound1C_stream00                 ; stream address
+
+sound1C_stream00:
+  .db L16th
+  .db setCountLoop1, 15
+  .db 7, REST
+-loop:
+  .db 7, REST
+  .db decreaseVolume
   .db repeatLoop1
   .dw -loop
   .db endSound
