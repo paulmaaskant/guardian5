@@ -5,8 +5,11 @@
 ; list1+02, loop control
 ; list1+03, temp
 ; list1_04, first impact
+; list1+05, animation
+; list1+06, sound
 ; list1+07, radius
 ; list1+08, angle
+; list1+09, trajectory count
 
 ; F6C0
 
@@ -24,10 +27,10 @@ state_resolveMissile:
   LDA list1+0                 ; A = frame count
   ADC state_2E_offset, Y      ;
   AND #%00111111              ; 0-63
-
+  STA list1+9
   CMP #24                     ; if 0..23 -> move sideways
   BCS +continue
-
+  ADC #8
   TAX                         ; radius in X
   LDA list1+8
   STA list1+3
@@ -46,7 +49,7 @@ state_resolveMissile:
   JMP +setAnimation
 
 +continue:
-  ; if 32-63 -> move towars target
+  ; if 24-63 -> move towars target
   LDX list1+2
 
   LDA currentEffects+6, X
@@ -55,37 +58,35 @@ state_resolveMissile:
   STA currentObjectYPos
   JSR angleToCursor						; takes currentObject coordinates as IN
                               ; A = angle
-  CPY #$5
+  CPY #$5                     ; if radius is less than 5,
   BCS +continue
-  BIT list1+4
-  BMI +skip
+  BIT list1+4                 ; then missile impact
+  BMI +skip                   ; is this the first impact?
   SEC
   ROR list1+4
-  INC cameraYDest+1                            ; first impact, ground shake
-  INC effects                                  ; start explision sprite
+  INC cameraYDest+1           ; first impact, ground shake
+  INC effects                 ; start explosion sprite
 
   LDA cursorGridPos
 	JSR gridPosToScreenPos
-
 	LDA currentObjectXPos
 	STA currentEffects+8
 	LDA currentObjectYPos
 	SEC
 	SBC #12
 	STA currentEffects+14
-	LDA #5
-	STA currentEffects+2
+	LDA list1+5
+	STA currentEffects+2       ; explision animation
 
 +skip:
-  LDY #17
-  JSR soundLoad
+  LDY list1+6
+  JSR soundLoad              ; explosion sound
   LDX list1+2
-  LDA #11 ; no sprites
+  LDA #11 ; no sprites       ; hide missile
   BNE +setAnimation
 
-+continue:
-  STA list1+3
-
++continue:                    ; if there is no impact
+  STA list1+3                 ; angle
   LDX #4
   JSR getCircleCoordinates    ; X IN radius, A IN angle
   TXA
@@ -99,6 +100,10 @@ state_resolveMissile:
   STA currentEffects+12, X
 
 +setAnimation:
+  LDA list1+9      ; fix the animation of missle after 25 frames
+  CMP #25          ; so that it doesnt alternate animations
+  BCS +continue    ; as it gets closer
+
   LDX list1+2
   LDA list1+3
   CLC
@@ -121,6 +126,7 @@ state_resolveMissile:
 +setAnimation:
   STA currentEffects+0, X
 
++continue:
   DEC list1+2
   BMI +continue
   JMP -loop

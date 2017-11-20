@@ -147,6 +147,7 @@
 	soundStreamEnvelope						.dsb 6
 	soundStreamNoteOffset					.dsb 6
 	soundStreamLoop1Counter				.dsb 6
+	soundStreamLoop2Counter				.dsb 6
 	soundStreamSweepControl				.dsb 6																					;
 	softApuPorts									.dsb 16
 	currentPortValue							.dsb 4
@@ -207,9 +208,9 @@
 
 	; PRG page 0: tiles
 	.org $8000
+	.include data_tiles.i
 	.include sbr_nmi_writeNextRowToBuffer.i
 	.include sbr_nmi_writeNextColumnToBuffer.i
-	.include data_tiles.i
 	.include sbr_nmi_soundNextFrame.i
 	.include sbr_nmi_seNextByte.i
 	.include sbr_nmi_seWriteToSoftApu.i
@@ -515,6 +516,23 @@ mainGameLoop:
 	STA events
 
 	JSR clearActionMenu																														; set all tiles to blank
+	JSR clearTargetMenu
+
+	BIT activeObjectTypeAndNumber
+	BPL +continue																																	; if player
+
+	LDY #$C5
+	STY actionMenuLine1+5
+	INY
+	STY actionMenuLine1+6
+	LDY #$D5
+	STY actionMenuLine2+5
+	INY
+	STY actionMenuLine2+6
+	; AI
+	JMP +nextEvent
+
++continue:
 	LDY selectedAction																														; update the action menu buffer with the selected action
 	LDA actionList, Y
 	ASL
@@ -546,7 +564,6 @@ mainGameLoop:
 	JSR writeToActionMenu						;
 
 +continue:
-	JSR clearTargetMenu
 	JSR updateTargetMenu
 
 	; ------------------------------

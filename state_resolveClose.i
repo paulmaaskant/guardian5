@@ -43,7 +43,7 @@ state_closeCombatAnimation:
 
 	LDA #$05																																			; $05 hit (explosion) or $08 miss (shield)
 	STA list3+22
-	LDA #sExplosion
+	LDA #17
 	STA list3+23
 	LDA list3+3																																		; value: (01) for hit, (02) for miss
 	CMP #$01

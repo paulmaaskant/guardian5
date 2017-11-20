@@ -15,9 +15,6 @@
 
 
 state_initializeRanged:
-	LDY #sGunFire
-	JSR soundLoad
-
 	JSR calculateAttack
 	JSR clearCurrentEffects
 
@@ -58,7 +55,7 @@ state_initializeRanged:
 	CPX #aRANGED2
 	BEQ +missile
 
-	; set up for gun fire
+	; set up for machine gun animation
 
 	DEC list1+8									; offset angle by 1 bin radian
 	LDA #0											; init
@@ -84,6 +81,9 @@ state_initializeRanged:
 	STA list1+8
 
 +continue:
+	LDY #sGunFire
+	JSR soundLoad
+
 	JSR pullAndBuildStateStack
 	.db #3											; 3 items
 	.db $2B
@@ -92,22 +92,24 @@ state_initializeRanged:
 	; built in RTS
 
 +missile:
+
+															; set up for missile animation
 	LDA #0											; init
 	STA list1+0									; frame counter
 	LDA #$02										; switch on controlled effects
 	STA effects
 
-	LDA cursorGridPos
-	JSR gridPosToScreenPos
+	LDX #5											; explosion animation
+	LDY #17											; explosion sound
+	LDA list3+3
+	CMP #2										   ; if attack is a miss
+	BNE +continue
+	LDX #8											; shield animation
+	LDY #27											; shield sound
 
-	LDA currentObjectXPos
-	STA currentEffects+8
-	LDA currentObjectYPos
-	SEC
-	SBC #12
-	STA currentEffects+14
-	LDA #5
-	STA currentEffects+2
++continue:
+	STX list1+5
+	STY list1+6
 
 	JSR pullAndBuildStateStack
 	.db #3											; 3 items
