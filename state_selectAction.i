@@ -26,6 +26,9 @@ state_selectAction:
 	STA locVar1						; grid Y coor
 
 +continue:
+	LDA #$08							; block input for 08 frames
+	STA blockInputCounter
+
 	LDA buttons
 	; --- process directional buttons ---
 	LSR 									; read RIGHT bit
@@ -37,15 +40,15 @@ state_selectAction:
 	LDA #$0F
 	BCC +xEven
 	CMP locVar1
-	BEQ +setTimer
+	BEQ +updatePos
 	INC locVar1
-	JMP +setTimer
+	JMP +updatePos
 
 +xEven:
 	CMP locVar2
-	BEQ +setTimer
+	BEQ +updatePos
 	INC locVar2
-	JMP +setTimer
+	JMP +updatePos
 
 +next:
 	LSR 									; read LEFT bit
@@ -56,39 +59,39 @@ state_selectAction:
 	LSR
 	BCS +xUnEven
 	LDA locVar1
-	BEQ +setTimer
+	BEQ +updatePos
 	DEC locVar1
-	JMP +setTimer
+	JMP +updatePos
 
 +xUnEven:
 	LDA locVar2
-	BEQ +setTimer
+	BEQ +updatePos
 	DEC locVar2
-	JMP +setTimer
+	JMP +updatePos
 
 +next:
 	LSR
 	BCC +next						; skip if DOWN is not pressed
 	LDA locVar1
-	BEQ +setTimer
+	BEQ +updatePos
 	LDA locVar2
 	CMP #$0F
-	BEQ +setTimer
+	BEQ +updatePos
 	DEC locVar1
 	INC locVar2
-	BNE +setTimer
+	BNE +updatePos
 
 +next:
 	LSR
 	BCC +next						; skip if UP is not pressed
 	LDA locVar2
-	BEQ +setTimer
+	BEQ +updatePos
 	LDA locVar1
 	CMP #$0F
-	BEQ +setTimer
+	BEQ +updatePos
 	DEC locVar2
 	INC locVar1
-	BNE +setTimer
+	BNE +updatePos
 
 +next:
 	LSR 									; start
@@ -105,25 +108,13 @@ state_selectAction:
 +next:
 	LSR 									; select
 	LSR 									; get B button
-	BCC +next
-	LDA events
-	ORA event_releaseAction
-	STA events
-	BNE +setTimer
+	BCS +toggle
 
 +next:
 	LSR 									; get A button
-	BCC +setTimer
+	BCS +lock
 
-	LDA events
-	ORA event_confirmAction
-	STA events
-
-+setTimer:
-	; --- set input timer ---
-	LDA #$08						; block input for 08 frames
-	STA blockInputCounter
-
++updatePos:
 	; --- put update grid X & Y back together ---
 	LDA locVar1
 	ASL
@@ -151,56 +142,14 @@ state_selectAction:
 	STA events
 	JMP updateCamera				; tail chain: update camera in case of new target
 
-	; --- action is locked or confirmed ---
-+continue:
++toggle:
 	LDA events
-	BIT event_confirmAction
-	BEQ +nextEvent
-	EOR event_confirmAction
-	STA events
-
-	; --- try to lock ---
-	LDA actionMessage				; deny message?
-	BPL +lockAction					; no -> lock
-	; deny sound					; yes -> deny lock
-
-	LDY #sDeny
-	JMP soundLoad						; tail chain
-
-+lockAction:
-	; --- lock ---
-	LDA sysFlags
-	ORA sysFlag_lock
-	STA sysFlags
-
-	LDY #sSelect
-	JSR soundLoad
-
-	LDA events
-	ORA event_refreshStatusBar		; buffer to screen
-	STA events
-
-	LDA #$2F ;
-	STA menuIndicator+0
-	LDA #$2E ;
-	STA menuIndicator+1
-
-	LDA #$2F
-  JMP replaceState
-
-	;--------------------------------
-	; release lock or toggle selected action
-	;--------------------------------
-+nextEvent:
-	LDA events
-	BIT event_releaseAction
-	BEQ +nextEvent
-	EOR event_releaseAction
 	ORA event_updateStatusBar
 	STA events
 
 	LDY #sSimpleBlip
 	JSR soundLoad
+
 	INC selectedAction
 	LDA actionList
 	CMP selectedAction
@@ -223,6 +172,7 @@ state_selectAction:
 
 	BIT actionMessage
 	BMI +actionPointCost
+
 	LDA effects
 	ORA #%00010000
 	STA effects
@@ -230,5 +180,26 @@ state_selectAction:
 +actionPointCost:
 	JMP calculateActionPointCost																									; tail chain
 
-+nextEvent:
-	RTS
+
++lock:
+	LDA actionMessage				; deny message?
+	BPL +continue						; no -> lock
+
+	LDY #sDeny
+	JMP soundLoad						; tail chain
+
++continue:
+	LDY #sSelect
+	JSR soundLoad
+
+	LDA events
+	ORA event_refreshStatusBar		; buffer to screen
+	STA events
+
+	LDA #$2F ;
+	STA menuIndicator+0
+	LDA #$2E ;
+	STA menuIndicator+1
+
+	LDA #$2F
+	JMP replaceState
