@@ -74,7 +74,7 @@ state00_screenHi:
 
 state00_sound:
 	.db $00
-	.db $01
+	.db $02
 	.db $C0									; silence
 	.db $04
 	.db $C0									; silence

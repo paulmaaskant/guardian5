@@ -3,14 +3,14 @@ sound10:
   .db #$01                              ; number of streams
 
   .db #$04                              ; stream #
-  .db #$80                              ; channel (suare 1)
+  .db #$82                              ; channel (triangle)
   .db #$40                              ; initial duty
   .db #$80                              ; initial tempo
   .db #eConstant                        ; initial volume envelope
   .dw sound10_stream00                  ; stream address
 sound10_stream00:
   .db L32th
-  .db A4
+  .db A5
   .db endSound
 
 ;sToggle = $11 ; not used

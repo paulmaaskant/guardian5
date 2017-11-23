@@ -33,7 +33,7 @@ updateTargetMenu:
 	STA targetMenuLine1+5
 	STA targetMenuLine2+5
 
-	LDA #$3D
+	LDA #$3A
 	STA targetMenuLine2+3
 
 	BIT actionMessage					; check for invalid target

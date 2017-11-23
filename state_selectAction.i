@@ -3,6 +3,7 @@
 ; ------------------------------------------
 state_selectAction:
 	JSR random																																		; introduce entropy
+
 	LDA blockInputCounter
 	BEQ +continue																																	; if timer is still running,
 	DEC blockInputCounter																													; then dec the counter and skip input processing
@@ -10,41 +11,7 @@ state_selectAction:
 
 +continue:
 	LDA buttons																																		;
-	BNE +continue					; if no buttons are pressed
-
-	LDA sysFlags
-	AND sysFlag_lock
-	BEQ +done
-	LDA targetObjectTypeAndNumber																									; move?
-	BNE +done
-	LDA actionMessage
-	BMI +done
-
-	LDA effects
-	ORA #$01
-	STA effects
-	LDX list2
-	CPX list1
-	BCC +noReset
-	LDX #0
-
-+noReset:
-	INX
-	LDA list1, X
-	STX list2
-	JSR gridPosToScreenPos
-	BCC +done											; off screen!
-	LDA currentObjectXPos
-	STA currentEffects+6
-	LDA currentObjectYPos
-	STA currentEffects+12
-	LDA #10
-	STA currentEffects+0
-	LDA #0
-	STA currentEffects+18
-	STA currentEffects+24
-
-+done:
+	BNE +continue					; if buttons are pressed then proceed
 	RTS										; then skip input processing
 
 +continue:
@@ -57,14 +24,6 @@ state_selectAction:
 	LSR
 	LSR
 	STA locVar1						; grid Y coor
-
-	LDA sysFlags					; if action is locked, mask only A, B, Start & Select
-	AND sysFlag_lock
-	BEQ +continue
-
-	LDA buttons
-	AND #$F0							; clear direction buttons
-	STA buttons
 
 +continue:
 	LDA buttons
@@ -155,6 +114,7 @@ state_selectAction:
 +next:
 	LSR 									; get A button
 	BCC +setTimer
+
 	LDA events
 	ORA event_confirmAction
 	STA events
@@ -181,6 +141,10 @@ state_selectAction:
 	LDY #sSimpleBlip
 	JSR soundLoad
 
+	LDA effects
+	AND #%11000000
+	STA effects
+
 	; --- new target ---
 	LDA events
 	ORA event_updateTarget
@@ -194,25 +158,7 @@ state_selectAction:
 	BEQ +nextEvent
 	EOR event_confirmAction
 	STA events
-	LDA sysFlags
-	BIT sysFlag_lock					; action locked?
-	BEQ +tryLockAction				; no -> lock action
-	EOR sysFlag_lock					; yes -> confirm action,
-	STA sysFlags							; unlock and move to next game state
 
-	; --- action confirmed ---
-	LDX selectedAction
-	LDA actionList, X
-	ASL
-	TAY
-	LDA actionTable, Y
-
-	JSR replaceState
-
-	LDY #sConfirm
-	JMP soundLoad					; tail chain
-
-+tryLockAction:
 	; --- try to lock ---
 	LDA actionMessage				; deny message?
 	BPL +lockAction					; no -> lock
@@ -230,10 +176,6 @@ state_selectAction:
 	LDY #sSelect
 	JSR soundLoad
 
-	;LDA menuFlags
-	;EOR menuFlag_indicator
-	;STA menuFlags
-
 	LDA events
 	ORA event_refreshStatusBar		; buffer to screen
 	STA events
@@ -242,6 +184,9 @@ state_selectAction:
 	STA menuIndicator+0
 	LDA #$2E ;
 	STA menuIndicator+1
+
+	LDA #$2F
+  JMP replaceState
 
 	;--------------------------------
 	; release lock or toggle selected action
@@ -254,31 +199,8 @@ state_selectAction:
 	ORA event_updateStatusBar
 	STA events
 
-	LDA sysFlags
-	BIT sysFlag_lock				; action locked?
-	BEQ +toggle							; no -> toggle
-													; yes -> release lock
-
-	; --- release lock ---
-	EOR sysFlag_lock
-	STA sysFlags
-
-	LDA #$C1 ; 						; "< >"
-	STA menuIndicator+0
-	LDA #$C0 ;
-	STA menuIndicator+1
-
-	LDA effects																																		; clear possible LOS block effect
-	AND #$F0																																; cursor and active unit marker stay on, rest turned off
-	STA effects
-
-	LDY #sRelease
-	JMP soundLoad					; tail chain
-
-+toggle:
 	LDY #sSimpleBlip
 	JSR soundLoad
-
 	INC selectedAction
 	LDA actionList
 	CMP selectedAction

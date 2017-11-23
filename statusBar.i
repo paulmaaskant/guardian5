@@ -26,7 +26,7 @@ showTargetMech:
 	LDA #$30
 	STA targetMenuLine1+0
 	STA targetMenuLine1+2
-	LDA #$3B
+	LDA #$39
 	STA targetMenuLine1+1
 	LDA #$31
 	STA targetMenuLine2+0
@@ -54,8 +54,14 @@ showHexagon:
 showSystemInfo:
 	LDA #$3C
 	STA systemMenuLine1+0
-	LDA #$3D
-	STA systemMenuLine1+3
+
+
+
+
+
+
+
+
 
 	LDA activeObjectStats+6
 	JSR toBCD
@@ -69,6 +75,8 @@ showSystemInfo:
 	AND #%00000111
 	JSR toBCD
 
+	LDA #$3A
+	STA systemMenuLine1+3
 	LDA par2
 	STA systemMenuLine1+4
 	LDA par3

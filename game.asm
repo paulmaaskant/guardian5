@@ -655,6 +655,7 @@ gameStateJumpTable:
 	.dw state_initializeEffect-1								; 2C
 	.dw state_runEffect-1												; 2D
 	.dw state_resolveMissile-1									; 2E
+	.dw state_actionLocked-1										; 2F
 
 :not_used
 
@@ -703,6 +704,7 @@ gameStateJumpTable:
 	.include state_initializeEffect.i
 	.include state_runEffect.i
 	.include state_resolveMissile.i
+	.include state_actionLocked.i
 
 	.include sbr_getStatsAddress.i
 	.include sbr_pushState.i
@@ -785,21 +787,21 @@ gameStateJumpTable:
 
 
 paletteColor1:
-	.db $10, $38, $10, $08, $08, $06, $10, $30
+	.db $0B, $38, $0B, $08, $08, $06, $09, $30
 	.db $08, $18, $0A
 	.dsb 5
 	.db $08, $15, $08
 	.dsb 5
 	.db $1B
 paletteColor2:
-	.db $00, $18, $00, $18, $18, $16, $1B, $2D
+	.db $1B, $18, $1B, $18, $18, $16, $29, $2D
 	.db $18, $28, $19
 	.dsb 5
 	.db $15, $30, $15
 	.dsb 5
 	.db $0A
 paletteColor3:
-	.db $30, $28, $2B, $28, $28, $36, $2B, $37
+	.db $2B, $28, $2B, $28, $28, $36, $39, $37
 	.db $37, $30, $39
 	.dsb 5
 	.db $35, $35, $35

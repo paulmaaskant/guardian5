@@ -15,7 +15,6 @@ showPilot:
 	CLC
 	ADC #$08
 	STA currentPalettes+3
-	STA currentPalettes+6
 
 	PLA							; set address
 	AND #%00001100

@@ -15,13 +15,14 @@ statusBar:
 	.db repeatBlank, $00	; 8 blank rows
 
 	; --- palettes ---
-	.db $FE, 22, $AA
-	.db %10101011 			; pilot face attributes
-	.db %10101110 			; pilot face attributes
-	.db $FE, 6, $AA
-	.db %10111010 			; pilot face attributes
-	.db %11101010 			; pilot face attributes
-	.db $FE, $20, $AA
+	.db $FE, 64, $AA
+	;.db $FE, 22, $AA
+	;.db %10101011 			; pilot face attributes
+	;.db %10101110 			; pilot face attributes
+	;.db $FE, 6, $AA
+	;.db %10111010 			; pilot face attributes
+	;.db %11101010 			; pilot face attributes
+	;.db $FE, $20, $AA
 
 statusMenu:
 	.db repeatBlank, $41, $2B, repeatBlank, 28, $2A, repeatBlank, $41	; 6 rows
@@ -415,7 +416,7 @@ levelOne:																																				; --- blocked nodes (1 bit for move
 	.db $CA																																				; object 1 grid position
 	.db $05																																				; object 1 pilot ho & facing LD
 	.db $12																																				; object 2 h type 2
-	.db $07																																			; object 2 grid position
+	.db $C4																																				; object 2 grid position
 	.db $25																																				; object 2 pilot ho & facing LD
 
 A = $10

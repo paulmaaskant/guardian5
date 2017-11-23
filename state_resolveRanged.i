@@ -15,24 +15,7 @@
 
 ; -----------------------------------------------
 state_resolveRanged:
-	LDA list1+0
-	AND #$F8
-	BEQ +continue												; skip the first 8 frames
 
-	LSR																	; show filling gauge while firing
-	LSR
-	LSR
-	CLC
-	ADC #$0C
-	TAX
-	LDY #$11
-	JSR writeToActionMenu								; write
-
-	LDA events													; refresh menu
-	ORA event_refreshStatusBar					; set flag
-	STA events
-
-+continue:
 	LDA list1+0													; lightning effect
 	AND #$03
 	BNE +continue

@@ -54,7 +54,7 @@ checkTarget:
 +nextCheck:
 	CPX #aCLOSECOMBAT						; if action is CC
 	BEQ +checksDone							; all checks are done
-	
+
 	; --- check line of sight ---
 	LDA activeObjectGridPos
 	JSR checkLineOfSight
@@ -132,8 +132,8 @@ checkTarget:
 	LDA par2
 	STA list3+10
 	LDA par3
-	CLC
-	ADC #$10
+	;CLC
+	;ADC #$10
 	STA list3+11
 	LDY selectedAction
 	LDX actionList, Y							; 1 for weapon 1, 2 for weapon 2

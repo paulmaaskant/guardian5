@@ -89,7 +89,7 @@ str_FFW:
 str_PIVOT_TURN:
 	.db 10, P, I, V, O, T, space, T, U, R, N
 str_ATTK:
-	.db 7, A, T, T, K, space, $80+2, $3F
+	.db 7, A, T, T, K, space, $80+2, $3D
 str_START_GAME:
 	.db 10, S, T, A, R, T, space, G, A, M, E
 str_PLAY_SOUND:
@@ -99,6 +99,6 @@ str_INSTRUCTIONS:
 str_RUN:
 	.db 3, R, U, N
 str_COST
-	.db 10, C, O, S, T, space, $80+0, $3D, space, $80+21, $3C
+	.db 10, C, O, S, T, space, $80+0, $3A, space, $80+21, $3C
 str_GAIN
-	.db 7, G, A, I, N, space, $80+0, $3D
+	.db 7, G, A, I, N, space, $80+0, $3A
