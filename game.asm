@@ -499,10 +499,7 @@ mainGameLoop:
 -	CMP frameCounter																															; to prevent game from freezing (due to half completed stack operations)
 	BEQ -
 
-	LDA #$C1																																			; set indicator tiles
-	STA menuIndicator+0																														; in 'toggle' positions
-	LDA #$C0
-	STA menuIndicator+1
+	JSR menuIndicatorsBlink
 
 	; ------------------------------
 	; update status bar & trigger refresh
@@ -744,6 +741,7 @@ gameStateJumpTable:
 	.include sbr_runExplosion.i
 	.include sbr_addToSortedList.i
 	.include sbr_angleToCursor.i
+	.include sbr_menuIndicatorsBlink.i
 
 	.include sbr_random.i
 	.include sbr_random100.i

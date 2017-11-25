@@ -14,6 +14,9 @@ state_actionLocked:
 
   LDA targetObjectTypeAndNumber																									; move?
   BNE +done
+
+  JSR clearCurrentEffects
+
   LDA effects						; if locked on a valid MOVE
   ORA #$01
   STA effects
@@ -57,11 +60,10 @@ state_actionLocked:
 +next:
   ASL                      ; B button
   BCC +next
-  LDA #$C1  						   ; "< >"
-	STA menuIndicator+0
-	LDA #$C0
-	STA menuIndicator+1
-	LDA effects																																		; clear possible LOS block effect
+
+  JSR menuIndicatorsBlink
+
+  LDA effects																																		; clear possible LOS block effect
 	AND #$F0																																      ; cursor and active unit marker stay on, rest turned off
 	STA effects
   LDA events

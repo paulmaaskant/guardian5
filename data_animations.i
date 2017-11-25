@@ -28,9 +28,10 @@ animationL:
 	.db #> ANIM09			; 09 cooldown flush
 	.db #> ANIM0A			; 0A waypoint
 	.db #> ANIM0B			; 0B no sprites
-	.db #> ANIM0C			; 0B shockwave
-	.db #> ANIM0D			; 0B shockwave
-	.dsb 2
+	.db #> ANIM0C			; 0C shockwave
+	.db #> ANIM0D			; 0D shockwave (upside down)
+	.db #> ANIM0E			; 0E shutdown timer
+	.dsb 1
 	.db #> ANIM10			; ramulen diag down still
 	.db #> ANIM11			; ramulen diag down walking
 	.db #> ANIM12			; ramulen diag up still
@@ -68,7 +69,8 @@ animationH:
 	.db #< ANIM0B
 	.db #< ANIM0C
 	.db #< ANIM0D
-	.dsb 2
+	.db #< ANIM0E
+	.dsb 1
 	.db #< ANIM10
 	.db #< ANIM11
 	.db #< ANIM12
@@ -158,6 +160,8 @@ ANIM0D:
 	.dw EF0C
 
 ANIM0E:
+	.db #$10, #$20
+	.dw CS25
 
 ANIM0F:
 

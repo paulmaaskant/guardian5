@@ -9,10 +9,54 @@ state_selectAction:
 	DEC blockInputCounter																													; then dec the counter and skip input processing
 	RTS
 
-+continue:
-	LDA buttons																																		;
-	BNE +continue					; if buttons are pressed then proceed
-	RTS										; then skip input processing
++continue
+	LDA buttons
+	BNE +continue
+
+	JSR clearCurrentEffects
+
+	LDA effects
+	AND #%11111000
+	STA effects
+
+	LDA frameCounter
+	AND #%00100000
+	BNE +showTimer
+	RTS
+
++showTimer:
+	LDX objectCount
+
+-loop:
+	LDA objectTypeAndNumber-1, X
+	CMP targetObjectTypeAndNumber
+	BEQ +nextObject
+	AND #%00000111
+	ASL
+	ASL
+	TAY
+	LDA object+0, Y
+	BPL +nextObject							; unit not shutdown
+
+	LDA object+3, Y
+	JSR gridPosToScreenPos
+	BCC +nextObject							; unit not on screen
+
+	INC effects
+	LDA effects
+	AND #%00000111
+	TAY
+	LDA #$0E										; timer sprite
+	STA currentEffects-1, Y
+	LDA currentObjectXPos
+	STA currentEffects+5, Y
+	LDA currentObjectYPos
+	STA currentEffects+11, Y
+
++nextObject:
+	DEX
+	BNE -loop
+	RTS
 
 +continue:
 	LDA cursorGridPos
@@ -25,7 +69,6 @@ state_selectAction:
 	LSR
 	STA locVar1						; grid Y coor
 
-+continue:
 	LDA #$08							; block input for 08 frames
 	STA blockInputCounter
 
@@ -124,10 +167,12 @@ state_selectAction:
 	CLC
 	ADC locVar2
 
-	; --- check if it changed ---
-	CMP cursorGridPos
-	STA cursorGridPos
-	BEQ +continue
+	CMP cursorGridPos					; check if it changed
+	BNE +continue							; changed -> continue
+	RTS
+
++continue:
+	STA cursorGridPos					; store new value
 
 	LDY #sSimpleBlip
 	JSR soundLoad
@@ -136,11 +181,11 @@ state_selectAction:
 	AND #%11000000
 	STA effects
 
-	; --- new target ---
 	LDA events
 	ORA event_updateTarget
 	STA events
-	JMP updateCamera				; tail chain: update camera in case of new target
+
+	JMP updateCamera					; tail chain: update camera in case of new target
 
 +toggle:
 	LDA events
@@ -179,7 +224,6 @@ state_selectAction:
 
 +actionPointCost:
 	JMP calculateActionPointCost																									; tail chain
-
 
 +lock:
 	LDA actionMessage				; deny message?

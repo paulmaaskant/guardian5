@@ -16,9 +16,8 @@ state_waitForCamera:
 	BNE +wait
 
 	LDA activeObjectTypeAndNumber
-	;BMI +done
-
 	JSR showSystemInfo
+
   LDA events
 	ORA event_updateTarget
 	STA events

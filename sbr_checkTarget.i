@@ -60,10 +60,14 @@ checkTarget:
 	JSR checkLineOfSight
 	BCC +checksDone
 
+	LDA activeObjectTypeAndNumber
+	BMI +skipMarker							; if AI then skip
+
 	LDA effects
 	ORA #%00100000							; active block marker
 	STA effects
 
++skipMarker:
 	LDA #$85										; deny (b7) + no line of sight (b6-b0)
 	STA actionMessage
 	RTS

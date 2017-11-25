@@ -200,6 +200,9 @@ CUR5: ; transparancy mask (large)
 	.db #%00110111, #$00, #%11111001, $00, $35, $35
 CUR9:	; hit percentage
 	.db %00110001, -8, $11, $31, 10, $31, 11
+CURA:	; hit percentage
+	.db %00100001, -4, $12, $13
+
 
 EFF0:	; explosion frame 1
 	.db #%00100110, #$0E, #%11111100, #$22, #$22
@@ -207,6 +210,7 @@ EFF0:	; explosion frame 1
 EFF4: ; explosion frame 2
 	.db #%00100110, #$0E, #%11111100, #$33, #$33
 	.db #%00100111, #$04, #%11111100, #$33, #$33
+
 EFF1:
 	.db #%00010001, #$00, #$E3
 EFF2:

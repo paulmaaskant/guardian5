@@ -855,13 +855,19 @@ CS22:
 	.dw CUR4
 
 CS23:
-	.db #%10100000
-	.db #$F8
+	.db %10100000
+	.db -8
 	.dw CUR5
 
-CS24:	.db #%10110000
-		.db #$E0
-		.dw CUR9
+CS24:
+  .db %10110000
+	.db -32
+	.dw CUR9
+
+CS25:
+  .db %10110000
+	.db -24
+	.dw CURA
 
 
 EF00:
