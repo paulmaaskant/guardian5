@@ -98,6 +98,8 @@ seNextByte:
    setSweep = $F8
    decreaseVolume = $F7
    increaseVolume = $F6
+   setCountLoop2 = $F5
+   repeatLoop2 = $F4
 
 soundJumpOpCode:
   .dw seEndSound-1
@@ -110,13 +112,21 @@ soundJumpOpCode:
   .dw seSetSweep-1
   .dw seDecreaseVolume-1
   .dw seIncreaseVolume-1
-
+  .dw seSetCountLoop2-1
+  .dw seRepeatLoop2-1
 
 
 ; opCode FC
 seSetCountLoop1:
   LDA (nmiVar0), Y
   STA soundStreamLoop1Counter, X
+  LDA #2
+  BNE +updatePointerGetNextByte
+
+; opCode F5
+seSetCountLoop2:
+  LDA (nmiVar0), Y
+  STA soundStreamLoop2Counter, X
   LDA #2
   BNE +updatePointerGetNextByte
 
@@ -139,6 +149,12 @@ seTransposeLoop1:
 ;opCode FB
 seRepeatLoop1:
   DEC soundStreamLoop1Counter, X
+  BNE seLoopSound
+  LDA #3
+  BNE +updatePointerGetNextByte
+
+seRepeatLoop2:
+DEC soundStreamLoop2Counter, X
   BNE seLoopSound
   LDA #3
   BNE +updatePointerGetNextByte

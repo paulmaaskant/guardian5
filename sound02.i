@@ -28,43 +28,26 @@ sound02:
 sound02_stream00:
   .db L16th
 -restart:
+
+  .db setCountLoop1, 4
+-loop1:
   .db setDutyCycle, $C0
-  .db setCountLoop1, 15
+  .db setCountLoop2, 15
   .db A3, REST
--loop:
+-loop2:
   .db A3, REST
   .db decreaseVolume
+  .db repeatLoop2
+  .dw -loop2
+  .db transposeLoop1
+  .dw +next
   .db repeatLoop1
-  .dw -loop
-
-  .db setDutyCycle, $C0
-  .db setCountLoop1, 15
-  .db F3, REST
--loop:
-  .db F3, REST
-  .db decreaseVolume
-  .db repeatLoop1
-  .dw -loop
-
-  .db setDutyCycle, $C0
-  .db setCountLoop1, 15
-  .db C3, REST
--loop:
-  .db C3, REST
-  .db decreaseVolume
-  .db repeatLoop1
-  .dw -loop
-
-  .db setDutyCycle, $C0
-  .db setCountLoop1, 15
-  .db D3, REST
--loop:
-  .db D3, REST
-  .db decreaseVolume
-  .db repeatLoop1
-  .dw -loop
+  .dw -loop1
   .db loopSound
   .dw -restart
+
++next:
+  .db 7, 2, -5, -4
 
 sound02_stream01:
   .db noteOffset, 7
