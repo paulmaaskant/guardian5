@@ -1,5 +1,5 @@
 ; --------------------------------------------
-; Sounds
+; Sound headers
 ; --------------------------------------------
 soundsLo:
   .db #< sound00
@@ -49,58 +49,9 @@ soundsHi:
   .db #> sound1C
   .dsb 3, #> sound15
 
-; sound streams
-  .include sound00.i
-  .include sound01.i
-  .include sound02.i
-  .include sound03.i
-  .include sound04.i
-  .include sound05.i
-  .include sound06.i
-  .include soundEffects.i
 
 ; --------------------------------------
-; soundDisable, switch off sound
-; --------------------------------------
-soundDisable:
-    LDA #$00
-    STA $4015                             ; silence all channels
-    LDA soundFlags
-    AND #$7F
-    STA soundFlags                        ; set b7 to 0
-    RTS
-
-; --------------------------------------
-; soundInitialize, ready all APU ports, set to silent
-; --------------------------------------
-soundInitialize:
-  LDA #$0F                               ; switch on all 4 channels
-  STA $4015
-  LDA #$30                              ; switch off volume (b4-0) and disables timer (b5)
-  STA softApuPorts+0                    ; $4000 channel 1 (square 1)
-  STA softApuPorts+4                    ; $4004 channel 2 (square 2)
-  STA softApuPorts+12                   ; $400C channel 4 (noise)
-  LDA #$80                              ; switch off volume (b7)
-  STA softApuPorts+8                    ; channel 3 (triangle)
-  STA soundFlags                        ; set sound flags: sound on (b7)
-  LDA #$FF                              ; initialize compare values
-  STA currentPortValue+0                ; current value of $4003
-  STA currentPortValue+1                ; current value of $4007
-  RTS
-
-soundSilence:
-  LDA soundFlags
-  ORA #$40
-  STA soundFlags
-
-  LDA frameCounter				; wait for next frame
--	CMP frameCounter
-  BEQ -
-
-  RTS
-
-; --------------------------------------
-; constants
+; sound constants
 ; --------------------------------------
 
   ;Octave 1
