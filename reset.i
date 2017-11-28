@@ -69,11 +69,15 @@ RESET:
 	LDA #< +returnPoint
 	PHA
 
-
-
+	;JSR buildStateStack
+	;.db 5									; # items
+	;.db $00, 5						; load screen 5: animation screen
+	;.db $0D, 1						; change brightness 1: fade in
+	;.db $30								; play animations
+	; built in RTS
 
 	JSR buildStateStack
-	.db $0E								; # stack items
+	.db 14								; # stack items
 	.db $00, 1						; load screen 01: story background
 	.db $0D, 1						; change brightness 1: fade in
 	.db $01, 0						; load stream 00: story text

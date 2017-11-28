@@ -216,6 +216,15 @@
 	.include sbr_nmi_seWriteToSoftApu.i
 	.include sbr_nmi_seWriteToApu.i
 
+	.include sound00.i
+	.include sound01.i
+	.include sound02.i
+	.include sound03.i
+	.include sound04.i
+	.include sound05.i
+	.include sound06.i
+	.include soundEffects.i
+
 	; PRG page 1: byteStreams
 	.org $A000
 	.include data_dictionary.i
@@ -348,8 +357,8 @@ mainGameLoop:
 	JMP +nextEvent
 
 +next:
-	EOR event_updateSprites
-	STA events
+	;EOR event_updateSprites
+	;STA events
 	LDA #16																																				; sprite 0-15 are reserved for effects, start with sprite 16
 	STA par3																																			; first available sprite
 	LDX #$00																																			; start with object on pos 0
@@ -653,6 +662,7 @@ gameStateJumpTable:
 	.dw state_runEffect-1												; 2D
 	.dw state_resolveMissile-1									; 2E
 	.dw state_actionLocked-1										; 2F
+	.dw state_testFace-1												; 30
 
 :not_used
 
@@ -702,40 +712,57 @@ gameStateJumpTable:
 	.include state_runEffect.i
 	.include state_resolveMissile.i
 	.include state_actionLocked.i
+	.include state_testFace.i
 
 	.include sbr_getStatsAddress.i
 	.include sbr_pushState.i
 	.include sbr_pullState.i
 	.include sbr_replaceState.i
 	.include sbr_buildStateStack.i
-	.include sbr_write32Tiles.i
+
 	.include sbr_gridPosToScreenPos.i
 	.include sbr_gridPosToTilePos.i
-	.include sbr_updateActionList.i
 	.include sbr_calculateActionPointCost.i
 	.include sbr_applyActionPointCost.i
 	.include sbr_calculateAttack.i
 	.include sbr_checkTarget.i
 	.include sbr_checkLineOfSight.i
 	.include sbr_findPath.i
+
 	.include sbr_soundLoad.i
-	.include sbr_updatePalette.i
-	.include sbr_clearCurrentEffects.i
+	;.include sbr_soundDisable.i not used currently
+	.include sbr_soundInitialize.i
+	.include sbr_soundSilence.i
+
 	.include sbr_loadSpriteFrame.i
 	.include sbr_loadSpriteMetaFrame.i
 	.include sbr_loadAnimationFrame.i
+
+	.include sbr_clearCurrentEffects.i
 	.include sbr_clearSprites.i
 	.include sbr_clearList3.i
+	.include sbr_clearActionMenu.i
+	.include sbr_clearTargetMenu.i
+	.include sbr_clearSystemMenu.i
+
+	.include sbr_showTargetMech.i
+	.include sbr_showHexagon.i
 	.include sbr_showPilot.i
+	.include sbr_showSystemInfo.i
+
 	.include sbr_deleteObject.i
 	.include sbr_writeStatusBarToBuffer.i
 	.include sbr_writeStartMenuToBuffer.i
+	.include sbr_writeToActionMenu.i
+	.include sbr_write32Tiles.i
 	.include sbr_setLineFunction.i
 	.include sbr_updateCamera.i
 	.include sbr_updateTarget.i
 	.include sbr_updateTargetMenu.i
 	.include sbr_updateCameraXPos.i
 	.include sbr_updateCameraYPos.i
+	.include sbr_updatePalette.i
+	.include sbr_updateActionList.i
 	.include sbr_centerCameraOnNode.i
 	.include sbr_initializeExplosion.i
 	.include sbr_runExplosion.i
@@ -758,8 +785,7 @@ gameStateJumpTable:
 	.include data_spriteFrames.i
 	.include data_metaSpriteFrames.i
 	.include data_animations.i
-	.include statusBar.i
-	.include audio.i
+	.include data_soundHeaders.i
 
 
 
@@ -826,7 +852,6 @@ event_gameMenu:							.db %00000010
 ; --- system flags remain set ---
 sysFlag_scrollRight:				.db %10000000
 sysFlag_scrollDown:					.db %01000000
-sysFlag_lock:								.db %00100000
 sysFlag_splitScreen:				.db %00010000
 sysFlag_NTSC:								.db %00001000
 sysFlag_scrollAdjustment:		.db %00000001
