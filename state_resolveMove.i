@@ -93,7 +93,7 @@ state_resolveMove:
 	BEQ +continue
 	JMP +calculateOffset			; frame 32-1? -> calculate
 
-+continue:							; frame 0 -> new node
++continue:									; frame 0 -> new node
 	;-------------------------------------
 	; New node
 	;-------------------------------------
@@ -133,24 +133,17 @@ state_resolveMove:
 	AND #%11111000
 	ORA list2, X
 	STA object, Y
+																														; used in embedded effect 4
+	STX list5+0										; temp store X
 
-	AND #%00000110																																; mirror sprite if direction is 2 or 3
-	CMP	#%00000010
-	BNE +next
-	LDA #%01100000
-	BNE +store
-
-+next:
-	LDA #%00100000																																; used in embedded effect 4
-
-+store:
-	STA currentEffects+28										; mirror settings for mask
+	AND #%00000111
+	TAX
+	LDA state_resolveMoveMirrorTable-1, X
+	STA list5+1										; temp mirror settings for mask
 
 	LDA effects
 	AND #%11111000
 	STA effects
-
-	STX currentEffects+29										; store X
 
 	LDX activeObjectGridPos
 	LDA nodeMap, X
@@ -169,12 +162,12 @@ state_resolveMove:
 	STA currentEffects+6
 	LDA currentObjectYPos
 	STA currentEffects+12
-	LDA currentEffects+28
+	LDA list5+1
 	EOR #%01000000
 	STA currentEffects+24									; mirror
 
 +continue:
-	LDX currentEffects+29
+	LDX list5+0
 	LDA list1, X							; update active object's grid position
 	STA activeObjectGridPos		;
 	STA object+3, Y						;
@@ -183,7 +176,7 @@ state_resolveMove:
 	AND #%00100000
 	BEQ +continue
 
-	TYA
+	TYA												; obscured!
 	JSR gridPosToScreenPos
 	BCC +continue							; not on screen!
 	LDA effects
@@ -197,48 +190,23 @@ state_resolveMove:
 	STA currentEffects+6, X
 	LDA currentObjectYPos
 	STA currentEffects+12, X
-	LDA currentEffects+28
+	LDA list5+1
 	STA currentEffects+24, X								; mirror
 
 +continue:
-	LDX currentEffects+29
-	LDA #$00
-	STA actionList+1					; reset X offset (Y offset is always overwritten)
 
-	;-----------------------------------
-	; update action+3
-	;-----------------------------------
-	LDA list2, X					; determine interpolation toggle
-	CMP #$01							; 1 = vertical interpolation only (16 pixels)
-	BEQ +									; 0 = vertical & horizontal interpolation (8 pixels and 24 pixels)
-	CMP #$04
-	BEQ +
-	CLC
-+	ROR actionList+3				; set (b5)
-
-	CMP #$05						; Y neg if direction is 5, 3 or 4
-	BEQ +							; 1 = Y is negative
-	CMP #$03						; 0 = Y is positive
-	BEQ +
-	CMP #$04
-	BEQ +
-	CLC
-+	ROR actionList+3				; set (b6)
-
-	CMP #$03						; X neg if direction is 3 or 2
-	BEQ +							; 1 = Y is negative
-	CMP #$02						; 0 = Y is positive
-	BEQ +
-	CLC
-+	ROR actionList+3				; set (b7)
 
 	;-------------------------------
 	; manage object sequence
 	; objects closest to the bottom screen edge have highest sprite priority
 	;-------------------------------
 	JSR calculateObjectSequence		; determines horizontal row of each object (between 0 and 31)
-	BIT actionList+3
-	BVS +movingUp					; if Y is positive
+
+	LDX actionList							; X = index for 'list 1' and 'list2'
+	LDY list2, X
+	LDA state_resolveMoveUpDownTable, Y
+	BNE +movingUp
+
 	JSR objectListSweepUp			; then object is moving down
 	JMP +calculateOffset
 +movingUp:							; otherwise, object is moving up
@@ -248,47 +216,32 @@ state_resolveMove:
 	; Frame 32 to 1: calculate the offset
 	;-------------------------------
 +calculateOffset:
+
+	LDX actionList							; X = index for 'list 1' and 'list2'
+	LDY list2, X
+	LDX state_resolveMoveRadiusTable-1, Y
+	LDA actionCounter
+	JSR multiply
+
+	LDX actionList							; X = index for 'list 1' and 'list2'
+	LDY list2, X
+	LDA state_resolveMoveAngleTable-1, Y
+	LDX par1
+
+	JSR getCircleCoordinates
+	STX actionList+1
+	STY actionList+2
+
 	LDA actionCounter
 	BIT rightNyble
 	BNE +continue
 	LDY #sMechStep
 	JSR soundLoad
-	LDA actionCounter
+
 
 +continue:
-	STA actionList+2
-	LSR actionList+2				; Y = frame # / 2, X = 0
 
-	LDA actionList+3
-	AND #%00100000					; diagonal move?
-	BNE +checkSigns					; no -> offset calculation is complete
-									; yes -> continue calculation
-
-	LSR actionList+2				; Y = frame # / 4
-
-	LDA actionCounter
-	STA actionList+1
-	ASL
-	ADC actionList+1
-	STA actionList+1
-	LSR actionList+1
-	LSR actionList+1				; X = (3 * frame #)/4
-
-+checkSigns:
-	BIT actionList+3				; X negative?
-	BPL +										; no -> keep X as is
-	LDA actionList+1				; yes -> negate X
-	EOR #$FF
-	STA actionList+1
-	INC actionList+1
-+	BIT actionList+3				; Y negative?
-	BVC +							; no -> keep Y as is
-	LDA actionList+2				; yes -> negate Y
-	EOR #$FF
-	STA actionList+2
-	INC actionList+2
-
-+	DEC actionCounter
+	DEC actionCounter
 	RTS
 
 
@@ -406,3 +359,36 @@ calculateObjectSequence:
 	DEX
 	BPL -
 	RTS
+
+state_resolveMoveMirrorTable:
+	.db %00100000
+	.db %01100000
+	.db %01100000
+	.db %00100000
+	.db %00100000
+	.db %00100000
+
+state_resolveMoveAngleTable:
+	.db 128
+	.db 128+51
+	.db -51
+	.db 0
+	.db 51
+	.db 128-51
+
+
+state_resolveMoveRadiusTable:
+	.db 128
+	.db 192
+	.db 192
+	.db 128
+	.db 192
+	.db 192
+
+state_resolveMoveUpDownTable:
+	.db 1
+	.db 1
+	.db 0
+	.db 0
+	.db 0
+	.db 1
