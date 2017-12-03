@@ -53,7 +53,6 @@ state_ai_determineAction:
 	LDA object+3, Y
   STY targetObjectIndex
 	STA cursorGridPos
-  STA debug
 
   LDY activeObjectGridPos
   STY par1

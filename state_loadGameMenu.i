@@ -8,5 +8,6 @@ state_loadGameMenu:
 
 	; --- load complete ---
 +continue:
+	INC debug
 
   JMP pullState

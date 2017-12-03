@@ -54,16 +54,14 @@ angleToCursor:
 
 +continue:
   LDA currentObjectXPos				; delta X in A
-  STA debug+0
   TAX													; delta X in X
   JSR multiply
   LDA par1										; dX^2 HI
   STA locVar3    ;
   LDA par2										; dX^2 LO
-  STA locVar4                 ; 
+  STA locVar4                 ;
 
   LDA currentObjectYPos				; delta Y
-  STA debug+1
   TAX
   JSR multiply
 
@@ -77,7 +75,6 @@ angleToCursor:
 
   JSR squareRoot              ; A and Y = sqrt(dY^2 + dX^2) = radius !
 
-  STA debug+3                 ; radius
 
 
                               ; up next: min(delta X, delta Y) / radius = sin(angle)
@@ -107,7 +104,6 @@ angleToCursor:
 
 +continue:
 	TXA                         ; angle
-  STA debug+2
 
   BIT locVar3
 	BPL +continue								; if dY >= dX then

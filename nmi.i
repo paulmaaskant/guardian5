@@ -193,7 +193,8 @@ NMI:
 											; bit that falls on left goes into the carry flag
 	BCC -loop						; stop looping if carry flag is 1
 
-;+skipRead:
+	LDA softCHRBank1
+	STA $B001
 
 	; -------------------------------------------
 	; scrolling
@@ -392,9 +393,9 @@ NMI:
 	STA cameraX+0			; 3
 
 +setFlag:
-	LDA events				; set flag
-	ORA event_updateSprites
-	STA events
+	;LDA events				; set flag
+	;ORA event_updateSprites
+	;STA events
 
 +doneX:
 	LDA cameraY+0
@@ -430,9 +431,9 @@ NMI:
 	STA cameraY+0
 
 +setFlag:
-	LDA events					; set flag
-	ORA event_updateSprites
-	STA events
+	;LDA events					; set flag
+	;ORA event_updateSprites
+	;STA events
 
 +doneY:
 

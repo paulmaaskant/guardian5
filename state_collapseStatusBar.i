@@ -7,7 +7,7 @@ state_collapseStatusBar:
   LDA #%11000000
   STA effects
   LDA events
-  ORA event_updateSprites
+  ;ORA event_updateSprites
   ORA event_updateTarget
   STA events
   LDA #$2E			; y pos

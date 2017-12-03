@@ -99,7 +99,7 @@ RESET:
 	STA $0203			; x pos
 	LDA #$2E			; y pos
 	STA $0200			; y pos
-	LDA #$31			; pattern
+	LDA #$4F			; pattern
 	STA $0201			; pattern
 	LDA #$20			; show behind background tiles
 	STA $0202			; show behind background tiles
@@ -112,13 +112,13 @@ RESET:
 
 
 
-	LDA #$00			;
+	LDA #3			;
 	STA $B000			; into CHR slot 0
-	LDA #$01
-	STA $B001
-	LDA #$02
+	LDA #0
+	STA softCHRBank1
+	LDA #2
 	STA $C000
-	LDA #$03
+	LDA #3
 	STA $C001
 
 	LDA #$04			; bank 4
@@ -149,5 +149,10 @@ RESET:
 	JSR updatePalette
 
 	JSR soundInitialize
+
+	LDA #1													; start with sprite 1 (sprite 0 is permanently reserved)
+	STA par3												;
+	LDA #63													; clear up to (including) sprite 63
+	JSR clearSprites
 
 	JMP mainGameLoop

@@ -31,8 +31,7 @@ state_showResults:
 	LDA #$00																																			; opcode processed
 	STA list3+3, X
 
-	LDA targetObjectTypeAndNumber
-	JSR deleteObject																															; tail chain
+																															; tail chain
 
 	JSR buildStateStack
 	.db $05								; # stack items

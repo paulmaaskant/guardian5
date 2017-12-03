@@ -121,10 +121,15 @@ state_runDialog:
 +continue:
 	CMP #setPortrait
 	BNE +continue
+
+	LDA #32
+	STA portraitXPos
+	LDA #40
+	STA portraitYPos
+
 	JSR getNextByte
 	AND #$F0
-	LDY #$A4
-	JMP showPilot
+	JMP updatePortrait
 
 +continue:
 

@@ -29,6 +29,7 @@ showPilot:
 	ROL							; Carry clear
 	ADC #$08
 	STA $D001
+	STA $B000
 
 	TSX							; switch stack pointers
 	STX	stackPointer1

@@ -102,5 +102,9 @@ state_initializeMap:
 	LDA #$F4							; start the camera one screen down
 	STA cameraY+1					; camera automatically scrolls back up, loading the tiles!
 
+	LDA events					; set flag
+	ORA event_updateSprites
+	STA events
+
 	LDA #$05
 	JMP replaceState

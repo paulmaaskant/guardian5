@@ -4,15 +4,6 @@
 state_selectAction:
 	JSR random																																		; introduce entropy
 
-	LDA blockInputCounter
-	BEQ +continue																																	; if timer is still running,
-	DEC blockInputCounter																													; then dec the counter and skip input processing
-	RTS
-
-+continue
-	LDA buttons
-	BNE +continue
-
 	JSR clearCurrentEffects
 
 	LDA effects
@@ -21,8 +12,7 @@ state_selectAction:
 
 	LDA frameCounter
 	AND #%00100000
-	BNE +showTimer
-	RTS
+	BEQ +continue
 
 +showTimer:
 	LDX objectCount
@@ -56,7 +46,18 @@ state_selectAction:
 +nextObject:
 	DEX
 	BNE -loop
+
++continue:
+	LDA blockInputCounter
+	BEQ +continue																																	; if timer is still running,
+	DEC blockInputCounter																													; then dec the counter and skip input processing
+
+-done:
 	RTS
+
++continue
+	LDA buttons
+	BEQ -done
 
 +continue:
 	LDA cursorGridPos
@@ -178,7 +179,7 @@ state_selectAction:
 	JSR soundLoad
 
 	LDA effects
-	AND #%11000000
+	AND #%11000111
 	STA effects
 
 	LDA events

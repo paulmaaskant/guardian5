@@ -75,7 +75,7 @@
 	seed													.dsw 1	; used to generate random numbers
 	cursorGridPos									.dsb 1  ; grid coordinates of cursor XXXX YYYY
 
-	stateStack										.dsb 22 ; used to control state transitions in the game
+	stateStack										.dsb 25 ; used to control state transitions in the game
 
 																				; the object that is currently being handled
 	currentObjectType 						.dsw 1	; pointer to the object type (all constants for the object)
@@ -128,6 +128,9 @@
 	pal_color3										.dsb 8
 
 	list5													.dsb 10	; all purpose
+	portraitXPos									.dsb 1
+	portraitYPos									.dsb 1
+	softCHRBank1									.dsb 1
 
 	.ende
 	.enum $0300																																		; sound variables
@@ -182,10 +185,11 @@
 	targetMenuLine1				.dsb 6
 	targetMenuLine2				.dsb 6
 	targetMenuLine3				.dsb 6
-	;targetMenuLine4				.dsb 3 							; not used
 	systemMenuLine1				.dsb 3
 	systemMenuLine2				.dsb 3
 	systemMenuLine3				.dsb 3
+
+	characterPortrait			.dsb 16
 
 	currentEffects				.dsb 30							; effects
 																						; 6 sprites, 5 bytes per sprite
@@ -248,9 +252,9 @@ mainGameLoop:
 	; event: update effect sprites
 	;---------------------------
 +nextEvent:
-	LDA #$01													; start with sprite 1 (sprite 0 is permanently reserved)
+	LDA #1													; start with sprite 1 (sprite 0 is permanently reserved)
 	STA par3													; parameter to "loadAnimationFrame"
-	LDA #$0F													; clear up to (including) sprite 15
+	LDA #63													; clear up to (including) sprite 15
 	JSR clearSprites
 
 	LDA effects
@@ -276,7 +280,7 @@ mainGameLoop:
 	LDA effects
 	AND #%00010000										; check b4
 	BEQ +nextEffect
-	LDY #$07													; hit probability
+	LDY #7														; hit probability animation
 	JSR loadAnimationFrame						; set sprites!
 
 +nextEffect:
@@ -286,7 +290,7 @@ mainGameLoop:
 	LDA activeObjectGridPos						; active unit location on grid
 	JSR gridPosToScreenPos						; get the screen coordinates
 	BCC +nextEffect										; make sure coordinates are on screen
-	LDY #$01													; cursor animation #
+	LDY #1														; cursor animation #
 	JSR loadAnimationFrame						; set sprites!
 
 +nextEffect:																																		; blocking node marker, sprite 5
@@ -296,7 +300,7 @@ mainGameLoop:
 	LDA list1+9																																		; node that is blocking line of sight
 	JSR gridPosToScreenPos																												; get the screen coordinates
 	BCC +nextEffect																																; off screen!
-	LDY #$02																																			; cursor animation #
+	LDY #2																																				; cursor animation #
 	JSR loadAnimationFrame																												; set sprites!
 
 
@@ -420,8 +424,6 @@ mainGameLoop:
 	PLP
 	JMP +done
 
-
-
 +next:
 	LDX object+3, Y
 	LDA nodeMap, X
@@ -482,8 +484,47 @@ mainGameLoop:
 	JMP -loopObjects																															;
 
 +continue:
-	LDA #$3F																																			; clear remaining unused sprites up to and including sprite 63 (last sprite)
-	JSR clearSprites																															;
+	;LDA #51																																				; clear remaining unused sprites up to and including sprite 63 (last sprite)
+	;JSR clearSprites
+
++nextEvent:
+	;LDA #52
+	;STA	par3
+
+	LDA sysFlags
+	AND sysFlag_showPortrait
+	BNE +continue
+
+	;LDA #63																														; clear remaining unused sprites up to and including sprite 63 (last sprite)
+	;JSR clearSprites
+	JMP +nextEvent
+
++continue:
+	LDY #11
+
+-loop:
+	TYA
+	ASL
+	ASL
+	TAX
+
+	LDA characterPortrait, Y
+	STA $0201+208, X
+
+	LDA portraitBaseXPos, Y
+	ADC portraitXPos
+	STA $0203+208, X
+
+	LDA portraitBaseYPos, Y
+	ADC portraitYPos
+	STA $0200+208, X
+
+	LDA #%00000010
+	STA $0202+208, X
+
+	DEY
+	BPL -loop
+
 
 	;---------------------------
 	; update target / available actions
@@ -655,7 +696,7 @@ gameStateJumpTable:
 	.dw state_initializePlayAnimation-1					; 26
 	.dw state_ai_determineAction-1							; 27
 	.dw state_ai_determineAttackPosition-1 			; 28
-	.dw state_ai_test-1 												; 29
+	.dw state_testFace-1												; 29
 	.dw state_newTurn-1													; 2A
 	.dw state_centerCameraOnAttack-1						; 2B
 	.dw state_initializeEffect-1								; 2C
@@ -705,7 +746,6 @@ gameStateJumpTable:
 	.include state_initializePlayAnimation.i
 	.include state_ai_determineAction.i
 	.include state_ai_determineAttackPosition.i
-	.include state_ai_test.i
 	.include state_newTurn.i
 	.include state_centerCameraOnAttack.i
 	.include state_initializeEffect.i
@@ -747,7 +787,7 @@ gameStateJumpTable:
 
 	.include sbr_showTargetMech.i
 	.include sbr_showHexagon.i
-	.include sbr_showPilot.i
+	;.include sbr_showPilot.i
 	.include sbr_showSystemInfo.i
 
 	.include sbr_deleteObject.i
@@ -769,6 +809,7 @@ gameStateJumpTable:
 	.include sbr_addToSortedList.i
 	.include sbr_angleToCursor.i
 	.include sbr_menuIndicatorsBlink.i
+	.include sbr_updatePortrait.i
 
 	.include sbr_random.i
 	.include sbr_random100.i
@@ -845,16 +886,17 @@ event_confirmAction:				.db %10000000
 event_updateSprites:				.db %01000000
 event_updateTarget:					.db %00100000
 event_updateStatusBar:			.db %00010000
-event_releaseAction:				.db %00001000
 event_refreshStatusBar:			.db %00000100
 event_gameMenu:							.db %00000010
 
 ; --- system flags remain set ---
 sysFlag_scrollRight:				.db %10000000
 sysFlag_scrollDown:					.db %01000000
+sysFlag_showPortrait:				.db %00100000
 sysFlag_splitScreen:				.db %00010000
 sysFlag_NTSC:								.db %00001000
 sysFlag_scrollAdjustment:		.db %00000001
+
 
 ; --- menu flags control menu tile animation ---
 menuFlag_blink:							.db %10000000
@@ -890,8 +932,20 @@ hitProbability:
 
 ; maps object byte 0, b3-0 (direction+move) to the address in the object type table
 ; that holds the matching animation #
+
 directionLookup:
 	.db 0, 0, 1, 2, 3, 2, 1, 0, 0, 4, 5, 6, 7, 6, 5
+
+portraitBaseXPos:
+  .db 0, 8, 16, 24
+	.db 0, 8, 16, 24
+	.db 0, 8, 16, 24
+
+portraitBaseYPos:
+  .db 0, 0, 0, 0
+  .db 8, 8, 8, 8
+  .db 16, 16, 16, 16
+
 
 
 

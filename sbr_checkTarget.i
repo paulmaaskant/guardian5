@@ -4,10 +4,6 @@
 ; list3+2			Damage value
 ; list3+3..9	Result messages / streams
 
-
-;
-; list3+10		hit probability BCD digit 10
-; list3+11		hit probability BCD digit 01
 ; list3+12		target dial BCD digit 10
 ; list3+13		target dial BCD digit 01
 
@@ -16,6 +12,10 @@
 ; list3+22		attacker dail
 ; list3+22		close combat animation
 ; list3+23		close combat sound
+
+; list3+30		sprite
+; list3+31
+; list3+32
 
 
 
@@ -134,11 +134,16 @@ checkTarget:
 	STA list3+1										; store hit probability
 	JSR toBCD											; convert to BCD for display purposes
 	LDA par2
-	STA list3+10
+	CLC
+	ADC #$40
+	STA list3+31
 	LDA par3
-	;CLC
-	;ADC #$10
-	STA list3+11
+	CLC
+	ADC #$40
+	STA list3+32
+	LDA #$51
+	STA list3+30
+
 	LDY selectedAction
 	LDX actionList, Y							; 1 for weapon 1, 2 for weapon 2
 	LDA activeObjectStats+3				; default weapon 1 (primary) damage

@@ -47,6 +47,14 @@ state_initializeScreen:
 	LDA #$20																																			; full screen 32 rows
 	STA list1+0
 
+	LDA sysFlags
+	AND #%11011111			; switch off portrait
+	STA sysFlags
+
+	LDA events
+	AND #%10111111			; switch off unit sprits
+	STA events
+
 	; next game state ---
 	LDA #$0E
 	JMP pushState

@@ -65,9 +65,9 @@ state_faceTarget:
   ORA identity, X
   STA object, Y
 
-  LDA events
-  ORA event_updateSprites
-  STA events
+  ;LDA events
+  ;ORA event_updateSprites
+  ;STA events
 
   JMP pullState
 

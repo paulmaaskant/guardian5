@@ -41,12 +41,17 @@ state_newTurn:
   LDA object+3, Y
   STA activeObjectGridPos
 
+
+  LDA #14
+  STA portraitXPos
+  LDA #16
+  STA portraitYPos
+
   LDA object+0, Y
   ASL
   PLP
   ROR
-  LDY #$42
-  JSR showPilot
+  JSR updatePortrait
 
   ; --- retrieve type data ---
   LDA activeObjectTypeAndNumber

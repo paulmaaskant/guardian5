@@ -62,7 +62,7 @@ state_initializeMove:
 
 initializeMove:
 	LDA effects
-	AND #%10111111							; switch off active marker
+	AND #%10000000						; switch off active marker
 	STA effects
 
 	LDY activeObjectIndex				; set object's move animation bit (b3)
@@ -79,15 +79,21 @@ initializeMove:
 	STA actionCounter
 	STA actionList+0						; node number on path in list1
 
+	LDA #1
+	STA softCHRBank1
+
 	JMP clearCurrentEffects
 
 ; ----------------------------------------
 ; loop to resolve move
 ; ----------------------------------------
 state_resolveMove:
-	LDA events
-	ORA event_updateSprites
-	STA events
+	;LDA events
+	;ORA event_updateSprites
+	;STA events
+
+	LDA #1
+	STA softCHRBank1
 
 	LDA actionCounter
 	BEQ +continue
@@ -116,7 +122,11 @@ state_resolveMove:
 	LDA nodeMap, Y
 	ORA #$C0
 	STA nodeMap, Y
-	JMP pullState								; tail chain
+
+	LDA #0
+	STA softCHRBank1
+
+	JMP pullState
 
 	; ---------------
 	; New node

@@ -95,8 +95,8 @@ state_selectDirection:
 	LDA #$08
 	STA blockInputCounter
 
-	LDA events
-	ORA event_updateSprites
-	STA events
+	;LDA events
+	;ORA event_updateSprites
+	;STA events
 
 	RTS

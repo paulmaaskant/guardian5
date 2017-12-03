@@ -31,11 +31,17 @@ closeCombatDirection:
 state_initializeCloseCombat:
 	LDA #$04										; clear from list3+4
 	LDX #$09										; up to and including list3+9
+
 	JSR clearList3
 
 	JSR calculateAttack
 
+
+
 state_closeCombatAnimation:
+	LDA #1			; set CHR bank for mech move animation
+	STA softCHRBank1
+
 	LDA #$00
 	STA actionCounter
 	STA currentEffects+18
@@ -104,9 +110,9 @@ state_closeCombatAnimation:
 ; game state 18: close combat animation
 ; --------------------------------------------------
 state_resolveClose:
-	LDA events
-	ORA event_updateSprites
-	STA events
+	;LDA events
+	;ORA event_updateSprites
+	;STA events
 
 	LDA actionCounter
 	AND #%00001111
@@ -151,10 +157,18 @@ state_resolveClose:
 	EOR #%00001000											; object move bit (b3) OFF
 	STA object, Y
 
-	LDA #$00
+	LDA #0
 	STA effects
 
+	;LDA #0
+	STA softCHRBank1
+
 	JMP pullState
+
+	;LDA #$31										; switch back bank
+	;JMP replaceState
+
+	; tailchain
 
 
 interpolate:
