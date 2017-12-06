@@ -894,15 +894,10 @@ EF06:
 	.db #%10010000
   .dw EFF5
 
-EF07:			; flush
-	.db #%10011000
-	.dw EFF6
-EF08:			; flush
-	.db #%10011000
-	.dw EFF7
-EF09:			; flush
-	.db #%10011000
-	.dw EFF8
+EF07:
+EF08:			
+EF09:
+
 
 EF0A:
   .db #%10011000

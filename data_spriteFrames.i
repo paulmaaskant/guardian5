@@ -207,9 +207,6 @@ CURA:	; hit percentage
 EFF0:	; explosion frame 1
 	.db %00100110, $0E, -4, $6F, $6F
 	.db %00100111, $04, -4, $6F, $6F
-EFF4: ; explosion frame 2
-	.db %00100110, $0E, -4, $6E, $6E
-	.db %00100111, $04, -4, $6E, $6E
 
 EFF1:
 
@@ -217,16 +214,20 @@ EFF2:
 
 EFF3: ; machine bullets
 	.db %00010001, 0, $71
+
+EFF4: ; explosion frame 2
+	.db %00100110, $0E, -4, $6E, $6E
+	.db %00100111, $04, -4, $6E, $6E
+
 EFF5: ; defence shield
 	.db %00010001, 0, $4E
 
-; flush effect for cooldown
 EFF6:
-	.db #%00010001, #$00, #$66
+
 EFF7:
-	.db #%00010001, #$00, #$76
+
 EFF8:
-	.db #%00010001, #$00, #$67
+
 EFF9: ; waypoint
 	.db #%00010001, #$00, #$60
 

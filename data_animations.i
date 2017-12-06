@@ -25,7 +25,7 @@ animationL:
 	.db #> ANIM06			; 06 gun bullets
 	.db #> ANIM07			; 07 hit percentage
 	.db #> ANIM08			; 08 shield (close combat miss)
-	.db #> ANIM09			; 09 cooldown flush
+	.db #> ANIM09			; 09 NOT USED
 	.db #> ANIM0A			; 0A waypoint
 	.db #> ANIM0B			; 0B no sprites
 	.db #> ANIM0C			; 0C shockwave
@@ -138,10 +138,6 @@ ANIM08:
 	.dw EF06
 
 ANIM09:
-	.db $30, $04
-	.dw EF07
-	.dw EF08
-	.dw EF09
 
 ANIM0A:
 	.db $10, $10
