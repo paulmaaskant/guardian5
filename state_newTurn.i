@@ -23,16 +23,16 @@ state_newTurn:
   LDA locVar1
   CMP #$06								; cycle between 0 and 5
   BNE -loop
+
+
+
   STX locVar1							; reset index to 0
-  BEQ -loop								; JMP
+  INC roundCount
+  BNE -loop								; JMP
 
 +setNext:
   LDA objectTypeAndNumber, X
   STA	activeObjectTypeAndNumber
-  CMP #$80
-  PHP
-
-  ; --- retrieve object data ---
   AND #$07
   ASL
   ASL
@@ -41,17 +41,11 @@ state_newTurn:
   LDA object+3, Y
   STA activeObjectGridPos
 
-
+  ; --- set portrait location
   LDA #14
   STA portraitXPos
   LDA #16
   STA portraitYPos
-
-  LDA object+0, Y
-  ASL
-  PLP
-  ROR
-  JSR updatePortrait
 
   ; --- retrieve type data ---
   LDA activeObjectTypeAndNumber
@@ -115,16 +109,19 @@ state_newTurn:
   BMI +aiControlled
 
   JSR buildStateStack
-  .db $04							; 4 states
+  .db 6							  ; 5 states
+  .db $30             ; set active unit portrait
   .db $0B 						; center camera
-  .db $0C							; wait for camera to center
+  .db $34             ; start of turn events
+  .db $0C						  ; wait for camera to center
   .db $06							; wait for user action
   .db $08             ; end turn
   ; built in RTS
 
 +shutDown:
   JSR buildStateStack
-  .db $05							; 5 states
+  .db $06							; 5 states
+  .db $30
   .db $0B 						; center camera
   .db $0C							; wait for camera to center
   .db $1F							; handle shut down
@@ -134,7 +131,8 @@ state_newTurn:
 
 +aiControlled:
   JSR buildStateStack
-  .db $04							; 4 states
+  .db $05							; 4 states
+  .db $30
   .db $0B 						; center camera
   .db $0C							; wait for camera to center
   .db $27							; ai determines action

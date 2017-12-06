@@ -34,8 +34,8 @@ state01_streamLo:
   .db #> brief2Stream
   .db #> brief3Stream
   .dsb 5
-  .db #> accomplishedStream
-  .db #> pausedStream
+  .db #> hudConversation02
+  .db #> hudConversation01
   .db #> instructionStream
   .db #> failedStream
 state01_streamHi:
@@ -44,8 +44,8 @@ state01_streamHi:
   .db #< brief2Stream
   .db #< brief3Stream
   .dsb 5
-  .db #< accomplishedStream
-  .db #< pausedStream
+  .db #< hudConversation02
+  .db #< hudConversation01
   .db #< instructionStream
   .db #< failedStream
 state01_positionHi:
@@ -54,37 +54,38 @@ state01_positionHi:
   .db $25
   .db $25
   .dsb 5
-  .db $27
-  .db $27
+  .db $24
+  .db $24
   .db $25
-  .db $27
+  .db $24
 state01_positionLo:
   .db $44
   .db $64
   .db $88
   .db $64
   .dsb 5
-  .db $6A
-  .db $6A
+  .db $47
+  .db $47
   .db $44
-  .db $6A
+  .db $47
 state01_lastCol:
   .db $1C
   .db $1C
   .db $1E
   .db $1E
   .dsb 5
+  .db $1E
+  .db $1E
   .db $1C
-  .db $1C
-  .db $1C
-  .db $1C
+  .db $1E
+
 state01_lineCount:
   .db 6
   .db 13
   .db 8
   .db 13
   .dsb 5
-  .db 6
-  .db 6
+  .db 3
+  .db 3
   .db 8
-  .db 6
+  .db 3

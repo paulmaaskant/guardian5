@@ -59,6 +59,8 @@ state_runDialog:
 	JMP +pushChar
 
 +nextGameState:
+	LDA #$10
+	STA blockInputCounter
 	JMP pullState
 
 +readStream:
@@ -121,11 +123,6 @@ state_runDialog:
 +continue:
 	CMP #setPortrait
 	BNE +continue
-
-	LDA #32
-	STA portraitXPos
-	LDA #40
-	STA portraitYPos
 
 	JSR getNextByte
 	AND #$F0

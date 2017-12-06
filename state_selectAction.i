@@ -142,15 +142,32 @@ state_selectAction:
 	BCC +next
 
 	JSR buildStateStack
-	.db 6
-	.db $20, 0					; load menu backgorund 0
-	.db $23
-	.db $01, 10					; load stream 10: game paused
-	.db $25
+	.db 13
+	.db $20, 2					; load hud menu
+	.db $32, %00000100	; clear sys flag: object sprites
+	.db $23							; expand menu
+	.db $24							; load stream 10: game paused
+	.db $20, 1					; load hud
+	.db $31, #eRefreshStatusBar
+	.db $25							; collapse menu
+	.db $29, %00000100	; set sys flag: object sprites
+
 	; RTS built in
 
 +next:
 	LSR 									; select
+	BCC +next
+
+	JSR buildStateStack
+	.db 9
+	.db $20, 0					; load menu backgorund 0
+	.db $01, 10					; load stream 10: start level 1
+	.db $30							; restore active unit portrait
+	.db $20, 1					; load menu backgorund 0
+	.db $31, #eRefreshStatusBar
+	; RTS built in
+
++next:
 	LSR 									; get B button
 	BCS +toggle
 

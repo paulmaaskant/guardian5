@@ -131,6 +131,8 @@
 	portraitXPos									.dsb 1
 	portraitYPos									.dsb 1
 	softCHRBank1									.dsb 1
+	level													.dsb 1
+	roundCount										.dsb 1
 
 	.ende
 	.enum $0300																																		; sound variables
@@ -355,16 +357,14 @@ mainGameLoop:
 	; event: update object sprites
 	;---------------------------
 +nextEvent:
-	LDA events
-	BIT event_updateSprites
+	LDA sysFlags
+	AND #sysObjectSprites
 	BNE +next
 	JMP +nextEvent
 
 +next:
-	;EOR event_updateSprites
-	;STA events
-	LDA #16																																				; sprite 0-15 are reserved for effects, start with sprite 16
-	STA par3																																			; first available sprite
+	;LDA #16																																				; sprite 0-15 are reserved for effects, start with sprite 16
+	;STA par3																																			; first available sprite
 	LDX #$00																																			; start with object on pos 0
 
 -loopObjects
@@ -691,19 +691,23 @@ gameStateJumpTable:
 	.dw state_playAnimation-1										; 21
 	.dw state_loadGameMenu-1										; 22
 	.dw state_expandStatusBar-1									; 23
-	.dw state_statusBarOpened-1									; 24
+	.dw state_hudMenu-1													; 24
 	.dw state_collapseStatusBar-1								; 25
 	.dw state_initializePlayAnimation-1					; 26
 	.dw state_ai_determineAction-1							; 27
 	.dw state_ai_determineAttackPosition-1 			; 28
-	.dw state_testFace-1												; 29
+	.dw state_setSysFlags-1											; 29
 	.dw state_newTurn-1													; 2A
 	.dw state_centerCameraOnAttack-1						; 2B
 	.dw state_initializeEffect-1								; 2C
 	.dw state_runEffect-1												; 2D
 	.dw state_resolveMissile-1									; 2E
 	.dw state_actionLocked-1										; 2F
-	.dw state_testFace-1												; 30
+	.dw state_setActiveObjectPortrait-1					; 30
+	.dw state_raiseEvents-1											; 31
+	.dw state_clearSysFlags-1										; 32
+	.dw state_initializeLevel-1									; 33
+	.dw state_startTurn-1												; 34
 
 :not_used
 
@@ -717,6 +721,7 @@ gameStateJumpTable:
 	.include state_initializeTitleMenu.i
 	.include state_initializeScreen.i
 	.include state_initializeGameMenu.i
+	.include state_initializeLevel.i
 	.include state_fadeInOut.i
 	.include state_loadLevelMapTiles.i
 	.include state_centerCameraOnCursor.i
@@ -736,7 +741,7 @@ gameStateJumpTable:
 	.include state_showResults.i
 	.include state_shutDown.i
 	.include state_expandStatusBar.i
-	.include state_statusBarOpened.i
+	.include state_hudMenu.i
 	.include state_collapseStatusBar.i
 	.include state_changeBrightness.i
 	.include state_loadGameMenu.i
@@ -752,7 +757,11 @@ gameStateJumpTable:
 	.include state_runEffect.i
 	.include state_resolveMissile.i
 	.include state_actionLocked.i
-	.include state_testFace.i
+	.include state_setActiveObjectPortrait.i
+	.include state_raiseEvents.i
+	.include state_setSysFlags.i
+	.include state_clearSysFlags.i
+	.include state_startTurn.i
 
 	.include sbr_getStatsAddress.i
 	.include sbr_pushState.i
@@ -883,11 +892,12 @@ identity:
 
 ; --- events are automatically unflagged after they are executed
 event_confirmAction:				.db %10000000
-event_updateSprites:				.db %01000000
 event_updateTarget:					.db %00100000
 event_updateStatusBar:			.db %00010000
 event_refreshStatusBar:			.db %00000100
-event_gameMenu:							.db %00000010
+
+eRefreshStatusBar = %00000100
+eUpdateStatusBar 	= %00010000
 
 ; --- system flags remain set ---
 sysFlag_scrollRight:				.db %10000000
@@ -895,7 +905,10 @@ sysFlag_scrollDown:					.db %01000000
 sysFlag_showPortrait:				.db %00100000
 sysFlag_splitScreen:				.db %00010000
 sysFlag_NTSC:								.db %00001000
+sysFlag_objectSprites:			.db %00000100
 sysFlag_scrollAdjustment:		.db %00000001
+
+sysObjectSprites = %00000100
 
 
 ; --- menu flags control menu tile animation ---

@@ -9,24 +9,41 @@ statusBar:
 	.db $2D, repeatBlank, 5, $2C
 	.db $2D, repeatBlank, 13, $2C
 	.db $2D, repeatBlank, 6, $2C
-	.db repeatBlank, $01
+	.db repeatBlank, $62	; 7 rows
 	.db repeatBlank, $00	; 8 blank rows
 	.db repeatBlank, $00  ; 8 blank rows
-	.db repeatBlank, $00	; 8 blank rows
+												; 5 to go
+
+	.db repeatBlank, 23, $2B, repeatBlank, 5, $2A
+	.db repeatBlank, $22 ; 1 rows
+	.db $2B, repeatBlank, 21, $2A, repeatBlank, 7
+	.db repeatBlank, $41 ; 2 rows
+
 
 	; --- palettes ---
 	.db $FE, 64, $AA
-	;.db $FE, 22, $AA
-	;.db %10101011 			; pilot face attributes
-	;.db %10101110 			; pilot face attributes
-	;.db $FE, 6, $AA
-	;.db %10111010 			; pilot face attributes
-	;.db %11101010 			; pilot face attributes
-	;.db $FE, $20, $AA
 
-statusMenu:
-	.db repeatBlank, $41, $2B, repeatBlank, 28, $2A, repeatBlank, $41	; 6 rows
-	.db repeatBlank, $01, $2D, repeatBlank, 28, $2C, repeatBlank, $01
+hudDialog:
+	.db repeatBlank, 33, $2B, repeatBlank, 28, $2A, repeatBlank, 98
+	.db $2D, repeatBlank, 5, $0A, repeatBlank, 22, $2C, repeatBlank, 01
+
+hudMenu:
+	.db repeatBlank, 63
+	.db repeatBlank, 98
+	.db $2D, repeatBlank, 5, $0A, repeatBlank, 15, $2C, $2D, repeatBlank, 5, $2C
+	.db repeatBlank, $01
+
+
+hud:
+	.db repeatBlank, 33 	; 2 rows + 3 blank tiles
+	.db $2B, repeatBlank, 5, $2A
+	.db $2B, repeatBlank, 13, $2A
+	.db $2B, repeatBlank, 6, $2A
+	.db repeatBlank, $62
+	.db $2D, repeatBlank, 5, $2C
+	.db $2D, repeatBlank, 13, $2C
+	.db $2D, repeatBlank, 6, $2C
+	.db repeatBlank, $01
 
 ;titleScreen:
 ;	.db repeatBlank, $00	; 8 blank rows
@@ -311,9 +328,14 @@ brief3Stream:
 	.db T, H, A, N, K, S, space, F, O, R, space, P, L, A, Y, I, N, G, waitForA
 	.db endOfStream
 
-accomplishedStream:
-	.db M, I, S, S, I, O, N, lineBreak
-	.db A, C, C, O, M, P, L, I, S, H, E, D, waitForA
+hudConversation02:
+	.db A, L, L, space, H, O, S, T, I, L, E, S, space, H, A, V, E, space, B, E, E, N, lineBreak
+	.db D, E, S, T, R, O, Y, E, D, waitForA
+	.db nextPage
+	.db setPortrait, $20
+	.db W, E, L, L, space, D, O, N, E, comma, space, C, A, P, T, A, I, N, waitForA
+	.db nextPage
+	.db R, E, P, O, R, T, space, B, A, C, K, space, T, O, space, B, A, S, E, waitForA
 	.db endOfStream
 
 failedStream:
@@ -325,6 +347,11 @@ pausedStream:
 	.db G, A, M, E, space, P, A, U, S, E, D, waitForA
 	.db endOfStream
 
+hudConversation01:
+	.db H, O, S, T, I, L, E, space, A, C, T, I, V, I, T, Y, lineBreak, D, E, T, E, C, T, E, D, waitForA
+	.db nextPage
+	.db I, space, A, M, space, E, N, G, A, G, I, N, G, space, N, O, W, waitForA
+	.db endOfStream
 
 resultTargetHit:
 	.db nextPage

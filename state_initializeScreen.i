@@ -47,17 +47,16 @@ state_initializeScreen:
 	LDA #$20																																			; full screen 32 rows
 	STA list1+0
 
-	LDA sysFlags
-	AND #%11011111			; switch off portrait
-	STA sysFlags
+	LDA #32
+	STA portraitXPos
+	LDA #40
+	STA portraitYPos
 
-	LDA events
-	AND #%10111111			; switch off unit sprits
-	STA events
+	JSR buildStateStack
+	.db 3 								; # items
+	.db $32, %00100100		; clear sys flags
+	.db $0E								; load screen
 
-	; next game state ---
-	LDA #$0E
-	JMP pushState
 
 
 state00_screenLo:

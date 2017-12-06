@@ -1,13 +1,11 @@
 ; list1+0 = number of cycles
 state_loadGameMenu:
 
-	JSR write32Tiles				; push 64 tiles per cycle
+	JSR write32Tiles				; push 32 tiles per cycle
 	DEC list1
 	BEQ +continue
 	RTS
 
 	; --- load complete ---
 +continue:
-	INC debug
-
   JMP pullState

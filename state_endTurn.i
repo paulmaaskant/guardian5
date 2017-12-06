@@ -35,9 +35,8 @@ state_endTurn:
 
 +missionAccomplished:
 	JSR buildStateStack
-	.db $15							; # items
-	.db $20, 0
-	.db $23 						; expand status bar
+	.db $14							; # items
+	.db $20, 0					; load hud: conversation box
 	.db $01, 9					; load stream 09: mission accomplished
 	.db $0D, 0					; change brightness 0: fade out
 	.db $00, 6					; load screen 06: mission accomplished screen
@@ -52,9 +51,8 @@ state_endTurn:
 
 +missionFailed:
 	JSR buildStateStack
-	.db $15								; # items
-	.db $20, 0
-	.db $23 							; expand status bar
+	.db $14								; # items
+	.db $20, 0						; load hud: conversation box
 	.db $01, 12						; load stream 12: mission failed
 	.db $0D, 0						; change brightness 0: fade out
 	.db $00, 7						; load screen 07: failed screen
