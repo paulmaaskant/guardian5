@@ -2,7 +2,7 @@
 ;
 ;
 
-state_actionLocked:
+state_confirmAction:
   LDA blockInputCounter
   BEQ +continue																																	; if timer is still running,
   DEC blockInputCounter																													; then dec the counter and skip input processing
@@ -55,7 +55,8 @@ state_actionLocked:
 	LDA actionTable, Y
 	JSR replaceState
 	LDY #sConfirm
-	JMP soundLoad					   ; tail chain
+	JSR soundLoad					   ; tail chain
+  JMP +setTimer
 
 +next:
   ASL                      ; B button

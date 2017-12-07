@@ -702,7 +702,7 @@ gameStateJumpTable:
 	.dw state_initializeEffect-1								; 2C
 	.dw state_runEffect-1												; 2D
 	.dw state_resolveMissile-1									; 2E
-	.dw state_actionLocked-1										; 2F
+	.dw state_confirmAction-1										; 2F
 	.dw state_setActiveObjectPortrait-1					; 30
 	.dw state_raiseEvents-1											; 31
 	.dw state_clearSysFlags-1										; 32
@@ -758,7 +758,7 @@ gameStateJumpTable:
 	.include state_initializeEffect.i
 	.include state_runEffect.i
 	.include state_resolveMissile.i
-	.include state_actionLocked.i
+	.include state_confirmAction.i
 	.include state_setActiveObjectPortrait.i
 	.include state_raiseEvents.i
 	.include state_setSysFlags.i
