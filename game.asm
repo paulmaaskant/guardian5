@@ -708,6 +708,8 @@ gameStateJumpTable:
 	.dw state_clearSysFlags-1										; 32
 	.dw state_initializeLevel-1									; 33
 	.dw state_startTurn-1												; 34
+	.dw state_initializeModifiers-1							; 35
+	.dw state_showModifiers-1										; 36
 
 :not_used
 
@@ -762,6 +764,8 @@ gameStateJumpTable:
 	.include state_setSysFlags.i
 	.include state_clearSysFlags.i
 	.include state_startTurn.i
+	.include state_initializeModifiers.i
+	.include state_showModifiers.i
 
 	.include sbr_getStatsAddress.i
 	.include sbr_pushState.i
@@ -898,6 +902,7 @@ event_refreshStatusBar:			.db %00000100
 
 eRefreshStatusBar = %00000100
 eUpdateStatusBar 	= %00010000
+eUpdateTarget = 		%00100000
 
 ; --- system flags remain set ---
 sysFlag_scrollRight:				.db %10000000

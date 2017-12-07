@@ -36,21 +36,13 @@ state_initializeCoolDown:
 	DEX
 	BPL -loop
 
-	LDA #$54
-	STA list3+30
-
-	LDA list3+0
-	CLC
-	ADC #$40
-	STA list3+31
-
-	LDA #$55
-	STA list3+32
 
 
 	JSR pullAndBuildStateStack
-	.db 1			; 2 items
+	.db 2			; 2 items
 	.db $15
+	.db $35
+
 	;.db $16
 	; built in RTS
 
@@ -64,37 +56,11 @@ state_resolveCoolDown:
 	JSR gridPosToScreenPos
 
 	LDA list1+0
-	CMP #$A0
+	CMP #$40
 	BNE +continue
 
 	JSR clearCurrentEffects
 	JMP pullState
-
-+continue:
-	CMP #$40
-	BCC +continue
-
-	BNE +rise
-
-	LDA #7
-	STA currentEffects+0
-
-	LDA currentObjectXPos
-	STA currentEffects+6
-
-	LDA currentObjectYPos
-	STA currentEffects+12
-
-	LDA #1
-	STA effects
-
-	LDA list1+0
-
-+rise:
-	AND #$03
-	BNE +done
-	DEC currentEffects+12
-	BNE +done
 
 +continue:
 	CMP #$10

@@ -15,15 +15,7 @@ state_waitForCamera:
 	CMP cameraY+1
 	BNE +wait
 
-	LDA activeObjectTypeAndNumber
-	JSR showSystemInfo
-
-  LDA events
-	ORA event_updateTarget
-	STA events
-
-+done:
-  JMP pullState
+	JMP pullState
 
 +wait:
 	RTS

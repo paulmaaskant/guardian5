@@ -112,29 +112,31 @@ state_newTurn:
   .db 6							  ; 5 states
   .db $30             ; set active unit portrait
   .db $0B 						; center camera
-  .db $34             ; start of turn events
   .db $0C						  ; wait for camera to center
+  .db $34             ; start of turn events
   .db $06							; wait for user action
   .db $08             ; end turn
   ; built in RTS
 
 +shutDown:
   JSR buildStateStack
-  .db $06							; 5 states
-  .db $30
+  .db 7							; 5 states
+  .db $30             ; set active unit portrait
   .db $0B 						; center camera
   .db $0C							; wait for camera to center
+  .db $34             ; start of turn events
   .db $1F							; handle shut down
-  .db $16							; show results
+  .db $35							; show modifiers
   .db $08             ; end turn
   ; built in RTS
 
 +aiControlled:
   JSR buildStateStack
-  .db $05							; 4 states
-  .db $30
+  .db 6							; 4 states
+  .db $30             ; set active unit portrait
   .db $0B 						; center camera
   .db $0C							; wait for camera to center
+  .db $34             ; start of turn events
   .db $27							; ai determines action
   .db $08             ; end turn
   ; built in RTS

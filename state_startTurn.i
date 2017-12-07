@@ -4,6 +4,8 @@
 ;
 ;
 state_startTurn:
+  LDA activeObjectTypeAndNumber
+  JSR showSystemInfo
 
   LDA activeObjectIndex
   BNE +done
@@ -17,7 +19,9 @@ state_startTurn:
 	.db $01, 10					              ; load stream 10: start level 1
 	.db $30							              ; restore active unit portrait
 	.db $20, 1					              ; load menu backgorund 0
-	.db $31, #eRefreshStatusBar       ; raise event
+	.db $31, #eUpdateTarget            ; raise event
 
 +done:
-  JMP pullState
+  JSR pullAndBuildStateStack
+  .db 2
+  .db $31, #eUpdateTarget            ; raise event
