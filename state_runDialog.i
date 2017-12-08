@@ -7,7 +7,7 @@
 ; list1+3 address start tile lo
 ; list1+4 # tiles margin left
 ; list1+5 # tiles margin right
-; list1+6 stream control (b7 end, b6 wait for A, b4 speed up)
+; list1+6 stream control (b7 end, b6 wait for A, b5 speed mode)
 ; list1+7 line count  (used to clear dialog)
 ; list1+8 number of lines
 ; list1+9 number of buffered characters
@@ -31,10 +31,12 @@ state_runDialog:
 	BCS +waitForConfirm
 	ASL
 	BCS +readStream
-
 	LDA buttons
 	BPL +readStream
-	LDA list1+6
+	LDA blockInputCounter
+	BNE +readStream
+
+	LDA list1+6						; A pressed while not waiting
 	ORA #$20							; speed mode (b5)
 	STA list1+6
 
@@ -50,9 +52,10 @@ state_runDialog:
 	BNE -done
 	LDA buttons
 	BPL -done				; A button pressed
-	;RTS
 
-;+confirmed:
+	LDA #$10
+	STA blockInputCounter
+
 	LDA #$00
 	STA list1+6						; open stream again
 	LDA #$0F							; replace blinking cursor

@@ -31,7 +31,7 @@ animationL:
 	.db #> ANIM0C			; 0C shockwave
 	.db #> ANIM0D			; 0D shockwave (upside down)
 	.db #> ANIM0E			; 0E shutdown timer
-	.dsb 1
+	.db #> ANIM0F			; 0F dmg counter
 	.db #> ANIM10			; ramulen diag down still
 	.db #> ANIM11			; ramulen diag down walking
 	.db #> ANIM12			; ramulen diag up still
@@ -70,7 +70,7 @@ animationH:
 	.db #< ANIM0C
 	.db #< ANIM0D
 	.db #< ANIM0E
-	.dsb 1
+	.db #< ANIM0F
 	.db #< ANIM10
 	.db #< ANIM11
 	.db #< ANIM12
@@ -160,6 +160,8 @@ ANIM0E:
 	.dw CS25
 
 ANIM0F:
+	.db #$10, #$20
+	.dw CS26
 
 ANIM10:
 	.db $10, $20

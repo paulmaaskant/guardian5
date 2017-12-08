@@ -127,7 +127,7 @@ state_titleScreen:
 	.db $0D, 0						; change brightness 0: fade out
 	.db $00, 5						; load screen 5: animation screen
 	.db $0D, 1						; change brightness 1: fade in
-	.db $30								; play animations
+	.db $21								; play animations
 	.db $0D, 0						; change brightness 0: fade out
 	.db $00, 0						; load screen 00: title screen
 	.db $1E								; load title menu
