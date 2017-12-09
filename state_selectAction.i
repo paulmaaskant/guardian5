@@ -236,9 +236,8 @@ state_selectAction:
 	BIT actionMessage
 	BMI +actionPointCost
 
-	LDA effects
-	ORA #%00010000
-	STA effects
+	LDA #7
+	JSR setTargetToolTip
 
 +actionPointCost:
 	JMP calculateActionPointCost																									; tail chain

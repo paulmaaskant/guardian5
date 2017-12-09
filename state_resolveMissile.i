@@ -11,9 +11,6 @@
 ; list1+08, angle
 ; list1+09, trajectory count
 
-; F6C0
-
-
 state_resolveMissile:
   LDA #1                      ; set loop count
   STA list1+2                 ; 2 missiles at the time
@@ -60,10 +57,9 @@ state_resolveMissile:
                               ; A = angle
   CPY #$5                     ; if radius is less than 5,
   BCS +continue
-  BIT list1+4                 ; then missile impact
-  BMI +skip                   ; is this the first impact?
-  SEC
-  ROR list1+4
+  LDA list1+4                 ; then missile impact
+  BNE +skip                   ; is this the first impact?
+  INC list1+4
   INC cameraYDest+1           ; first impact, ground shake
   INC effects                 ; start explosion sprite
 
@@ -133,7 +129,7 @@ state_resolveMissile:
 
 +continue:
   LDA list1+0
-  CMP #255								; runs for 128 frames
+  CMP #192								; runs for 128 frames
   BEQ +done
                           ; CLC not  ncessary because of BEQ
   ADC #1

@@ -133,6 +133,7 @@
 	softCHRBank1									.dsb 1
 	level													.dsb 1
 	roundCount										.dsb 1
+	targetEffectAnimation					.dsb 1
 
 	.ende
 	.enum $0300																																		; sound variables
@@ -269,7 +270,7 @@ mainGameLoop:
 	LDA effectCounter									; all embedded effects share the same timer
 	STA currentObjectFrameCount
 
-	; --- cursor, sprite 3 to 5 sprites ---
+	; --- cursor ---
 	BIT effects
 	BPL +nextEffect										; check b7
 	LDA cursorGridPos									; cursor location on grid
@@ -278,11 +279,15 @@ mainGameLoop:
 	LDY #0														; cursor animation #
 	JSR loadAnimationFrame						; set sprites!
 
+	; --- target tool tip effect ---
 +nextEffect:																																		; hit percentage
 	LDA effects
 	AND #%00010000										; check b4
 	BEQ +nextEffect
-	LDY #7														; hit probability animation
+	LDY targetObjectIndex
+	LDA object+3, Y										; target's grid coordinates
+	JSR gridPosToScreenPos						; get the screen get screen coordinates
+	LDY targetEffectAnimation					; hit probability animation
 	JSR loadAnimationFrame						; set sprites!
 
 +nextEffect:
@@ -310,7 +315,6 @@ mainGameLoop:
 	LDA effects
 	AND #%00001000										; check b4
 	BEQ +nextEffect
-
 	JSR runExplosion
 
 +nextEffect:																																		; manage counter for all embedded effects
@@ -823,6 +827,8 @@ gameStateJumpTable:
 	.include sbr_angleToCursor.i
 	.include sbr_menuIndicatorsBlink.i
 	.include sbr_updatePortrait.i
+	.include sbr_setTargetToolTip.i
+	.include sbr_setDamageToolTip.i
 
 	.include sbr_random.i
 	.include sbr_random100.i

@@ -80,10 +80,10 @@ updateActionList:
 													; such as line of sight
 	BIT actionMessage
 	BMI +done
-	LDA effects
-	ORA #%00010000
-	STA effects
-	
+
+	LDA #7
+	JSR setTargetToolTip
+
 +done:
 	RTS
 

@@ -96,6 +96,7 @@ state_initializeRanged:
 															; set up for missile animation
 	LDA #0											; init
 	STA list1+0									; frame counter
+	STA list1+4									; first hit counter
 	LDA #$02										; switch on controlled effects
 	STA effects
 

@@ -160,7 +160,7 @@ ANIM0E:
 	.dw CS25
 
 ANIM0F:
-	.db #$10, #$20
+	.db #$10, #$40
 	.dw CS26
 
 ANIM10:

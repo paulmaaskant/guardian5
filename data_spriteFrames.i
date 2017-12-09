@@ -204,8 +204,8 @@ CURA:	; hit percentage
 	.db %00100001, -4, $52, $53
 
 CURB:	; damage counter
-	.db %00010000, -8, $62
-	.db %00110011, -8, $72, $58, $59
+	.db %00010000, -8, $31, 40
+	.db %00110011, -8, $31, 41, $58, $59
 
 
 EFF0:	; explosion frame 1
