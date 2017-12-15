@@ -11,8 +11,11 @@ state_initializeScreen:
 	LDA state00_screenLo, Y
 	STA bytePointer+1
 
+	LDA #$0
+	STA $E008
+
 	LDA state00_tileBank1, Y
-	STA $D001
+	STA $E000
 
 	LDA state00_tilePall0, Y
 	STA currentPalettes+0

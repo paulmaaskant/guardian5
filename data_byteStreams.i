@@ -45,38 +45,18 @@ hud:
 	.db $2D, repeatBlank, 6, $2C
 	.db repeatBlank, $01
 
-;titleScreen:
-;	.db repeatBlank, $00	; 8 blank rows
-;	.db repeatBlank, $0F, $E1, $E0
-;	.db repeatBlank, $1E, $5B, $5A, $59
-;	.db repeatBlank, $1D, $6B, $6A, $69
-;	.db repeatBlank, $1D, $7B, $7A, $79
-;	.db repeatBlank, $1D, $48, $47, $46
-;	.db repeatBlank, $1D, $58, $57, $0F
-;	.db repeatBlank, $1D, $68, $67, $66
-;	.db repeatBlank, $16
-;	.db $41, $40, $42, $44, $61, $62, $42, $61, $60, $61, $60, $61, $62, $42, $42, $41, $74; GUARDIAN5
-;	.db repeatBlank, $0F
-;	.db $51, $50, $64, $54, $73, $70, $63, $53, $72, $71, $70, $73, $70, $53, $52, $51, $43;
-;	.db repeatBlank, $A7
-;	.db repeatBlank, $00			; 8 blank rows
-;	; --- palettes ---
-;	.db $FE, $20, $00	; 1 rows, palette
-;	.db $FE, $18, $00	; 1 rows, palette
-;	.db $FE, $08, $05	;
-
 titleScreen2:
 	.db repeatBlank, 0	; 8 rows
-	.db repeatBlank, 21, $4D, $4C, $4B
-	.db repeatBlank, 29, $5D, $5C, $5B, $5A, $59, $58, $57
-	.db repeatBlank, 25, $6D, $6C, $6B, $6A, $69, $68, $67
-	.db repeatBlank, 26, $7C, $0F, $7A, $79, $78, $77
-	.db repeatBlank, 26, $7E, $7D, $7B, $44, $63, $50
-	.db repeatBlank, 25, $41, $40, $4A, $49, $48, $47
-	.db repeatBlank, 26, $46, $45, $0F, $43, $42
-	.db repeatBlank, 27, $56, $55, $54, $53, $52, $51
-	.db repeatBlank, 26, $66, $65, $64, $0F, $62, $61, $60
-	.db repeatBlank, 25, $76, $75, $74, $73, $72, $71, $70
+	.db repeatBlank, 21, $8D, $8C, $8B
+	.db repeatBlank, 29, $9D, $9C, $9B, $9A, $99, $98, $97
+	.db repeatBlank, 25, $AD, $AC, $AB, $AA, $A9, $A8, $A7
+	.db repeatBlank, 26, $BC, $0F, $BA, $B9, $B8, $B7
+	.db repeatBlank, 26, $BE, $BD, $BB, $84, $A3, $90
+	.db repeatBlank, 25, $81, $80, $8A, $89, $88, $87
+	.db repeatBlank, 26, $86, $85, $0F, $83, $82
+	.db repeatBlank, 27, $96, $95, $94, $93, $92, $91
+	.db repeatBlank, 26, $A6, $A5, $A4, $0F, $A2, $A1, $A0
+	.db repeatBlank, 25, $B6, $B5, $B4, $B3, $B2, $B1, $B0
 	.db repeatBlank, 132	; 4 rows + 4 tiles
 	.db repeatBlank, 0	; 8 rows
 
@@ -90,13 +70,13 @@ titleScreen2:
 missionAccomplishedScreen:
 	.db repeatBlank, 0	; 8 blank rows
 	.db repeatBlank, 128	; 4 blank rows
-	.db repeatBlank, 26, $E1, $E0									; 17
-	.db repeatBlank, 30, $5B, $5A, $59						; 33
-	.db repeatBlank, 29, $6B, $6A, $69
-	.db repeatBlank, 29, $7B, $7A, $79
-	.db repeatBlank, 29, $48, $47, $46
-	.db repeatBlank, 29, $58, $57, $0F
-	.db repeatBlank, 29, $68, $67, $66
+	.db repeatBlank, 26, $61, $60									; 17
+	.db repeatBlank, 30, $9B, $9A, $99						; 33
+	.db repeatBlank, 29, $AB, $AA, $A9
+	.db repeatBlank, 29, $BB, $BA, $B9
+	.db repeatBlank, 29, $88, $87, $86
+	.db repeatBlank, 29, $98, $97, $0F
+	.db repeatBlank, 29, $A8, $A7, $A6
 	.db repeatBlank, 163	; 5 rows + 3 tiles
 	.db repeatBlank, 192	; 8 blank rows
 	.db repeatChar, $40, $00	; 2 rows, palette 0

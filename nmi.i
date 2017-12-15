@@ -263,7 +263,7 @@ NMI:
 	LSR
 	AND #$03
 	ADC #$0C
-	STA $E001
+	STA $D001
 
 	; tile blinking
 	;---------------------------

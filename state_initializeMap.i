@@ -102,9 +102,25 @@ state_initializeMap:
 	LDA #$F4							; start the camera one screen down
 	STA cameraY+1					; camera automatically scrolls back up, loading the tiles!
 
-	LDA sysFlags				; set flag
-	ORA #sysObjectSprites
-	STA sysFlags
 
-	LDA #$05
-	JMP replaceState
+	LDY #18
+	STY $E000
+	INY
+	STY $E001
+
+	LDY #$1
+	STY $E008
+	STY $E009
+
+
+	;LDA sysFlags				; set flag
+	;ORA #sysObjectSprites
+	;STA sysFlags
+
+	;LDA #$05
+	;JMP replaceState
+
+	JSR pullAndBuildStateStack
+	.db 3
+	.db $05								; load map
+	.db $29, %00000100 		; set sys flag: show object sprites

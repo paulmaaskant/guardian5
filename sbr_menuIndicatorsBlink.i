@@ -1,10 +1,10 @@
 menuIndicatorsBlink:
   LDA activeObjectTypeAndNumber
   BMI +done
-  LDA #$C1																																			; set indicator tiles
+  LDA #$41																																			; set indicator tiles
   STA menuIndicator+0																														; in 'toggle' positions
-  LDA #$C0
+  LDA #$40
   STA menuIndicator+1
-  
+
 +done:
   RTS

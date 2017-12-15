@@ -112,7 +112,7 @@ state_runDialog:
 	BNE +continue
 	LDA #$40				; wait for A button (b6)
 	STA list1+6
-	LDA #$F1				; blink cursor
+	LDA #$71				; blink cursor
 	BNE +pushChar
 
 +continue:

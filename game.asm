@@ -1,7 +1,7 @@
 ;; 1 - iNes header
 	.db "NES", $1A	; iNes Identifier
 	.db $02			; number of PRG-Rom (16kb) blocks the game has
-	.db $02			; number of CHR-Rom (8kb) blocks the game has
+	.db $04			; number of CHR-Rom (8kb) blocks the game has
 	; mapper 25
 	.db $90 		; left nyble = mapper low nyble
 	.db $10			; left nyble = mapper high nyble
@@ -174,12 +174,15 @@
 	; +------- this node is blocks movement
 	; ------------------------------------------------------------
 	nodeMap								.dsb 256
+	list6									.dsb 64							; used by AI for scoring
+	list7									.dsb 64							; used by AI for scoring
+	list8									.dsb 128
+
 
 	list3									.dsb 64							; path finding and action control
 	list4									.dsb 64							; path finding
 
-	list6									.dsb 64							; used by AI for scoring
-	list7									.dsb 64							; used by AI for scoring
+
 
 	actionMenuLine1				.dsb 13							; Buffers used to render the status menu
 	actionMenuLine2				.dsb 13
@@ -572,11 +575,11 @@ mainGameLoop:
 	BIT activeObjectTypeAndNumber
 	BPL +continue																																	; if player
 
-	LDY #$C5
+	LDY #$45
 	STY actionMenuLine1+5
 	INY
 	STY actionMenuLine1+6
-	LDY #$D5
+	LDY #$55
 	STY actionMenuLine2+5
 	INY
 	STY actionMenuLine2+6
@@ -993,3 +996,8 @@ portraitBaseYPos:
 	.incbin "bank_04_07.chr" 		; 4 x 1k CHR for tiles
 	.incbin "bank_08_11.chr" 		; 4 x 1k CHR for tiles
 	.incbin "bank_12_15.chr" 		; 4 x 1k CHR for tiles
+
+	.incbin "bank_16_19.chr" 		; 4 x 1k CHR for tiles
+	.incbin "bank_16_19.chr" 		; 4 x 1k CHR for tiles
+	.incbin "bank_16_19.chr" 		; 4 x 1k CHR for tiles
+	.incbin "bank_16_19.chr" 		; 4 x 1k CHR for tiles
