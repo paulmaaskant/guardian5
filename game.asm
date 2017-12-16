@@ -573,20 +573,12 @@ mainGameLoop:
 	JSR clearTargetMenu
 
 	BIT activeObjectTypeAndNumber
-	BPL +continue																																	; if player
+	BMI +radar
 
-	LDY #$45
-	STY actionMenuLine1+5
-	INY
-	STY actionMenuLine1+6
-	LDY #$55
-	STY actionMenuLine2+5
-	INY
-	STY actionMenuLine2+6
-	; AI
-	JMP +nextEvent
+	LDY activeObjectIndex
+	LDA object+0, Y
+	BMI +radar
 
-+continue:
 	LDY selectedAction																														; update the action menu buffer with the selected action
 	LDA actionList, Y
 	ASL
@@ -619,6 +611,18 @@ mainGameLoop:
 
 +continue:
 	JSR updateTargetMenu
+	JMP +nextEvent
+
++radar:
+	LDY #$45
+	STY actionMenuLine1+5
+	INY
+	STY actionMenuLine1+6
+	LDY #$55
+	STY actionMenuLine2+5
+	INY
+	STY actionMenuLine2+6
+
 
 	; ------------------------------
 	; refresh status bar

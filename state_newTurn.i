@@ -120,7 +120,7 @@ state_newTurn:
 
 +shutDown:
   JSR buildStateStack
-  .db 7							; 5 states
+  .db 7							  ; 5 states
   .db $30             ; set active unit portrait
   .db $0B 						; center camera
   .db $0C							; wait for camera to center

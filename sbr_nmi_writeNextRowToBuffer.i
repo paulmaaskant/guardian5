@@ -85,7 +85,7 @@ writeNextRowToBuffer:
 	LSR
 	STA nmiVar2				; # of tiles after which wrap around occurs
 
-	LDA #$20				; initialize loop count
+	LDA #$20					; initialize loop count
 	STA nmiVar4				; to 32 tile
 	SEC
 	SBC nmiVar2
