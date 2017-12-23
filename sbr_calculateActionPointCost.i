@@ -33,8 +33,11 @@ calculateActionPointCost:
 
 +restoreHeatsinks:
 	STA list3+0
-  LDA activeObjectTypeAndNumber
-  JSR getStatsAddress
+
+	LDY activeObjectIndex
+	LDA object+0, Y
+
+	JSR getStatsAddress
   LDY #$00                                                                      ; type max health / heatsinks
   LDA (pointer1), Y
 	AND #$07

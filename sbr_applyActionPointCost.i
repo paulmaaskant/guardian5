@@ -16,10 +16,10 @@ applyActionPointCost:
   BCC +less
   LDA #$08                                                                      ; msg shutdown
   STA list3+8
-  ;LDY activeObjectIndex
-  LDA object+0, Y                                                               ; set shutdown flag
+
+  LDA object+2, Y                                                               ; set shutdown flag
   ORA #$80
-  STA object+0, Y
+  STA object+2, Y
   LDA locVar1
 
 +less:
@@ -39,7 +39,9 @@ applyActionPointCost:
   LDA #$04																																			; msg heatsinks restore
   STA list3+7
 
-  LDA activeObjectTypeAndNumber
+  LDY activeObjectIndex
+  LDA object+0, Y
+
   JSR getStatsAddress
   LDY #$00                                                                      ; type max health / heatsinks
   LDA (pointer1), Y
@@ -47,10 +49,10 @@ applyActionPointCost:
   CMP locVar1
 	BNE +continue
   LDY activeObjectIndex
-  LDA object+0, Y                                                               ;
+  LDA object+2, Y                                                               ;
   BPL +continue                                                                 ; if shut down
   AND #$7F                                                                      ; unset shutdown flag
-  STA object+0, Y
+  STA object+2, Y
   LDA #$0A
   STA list3+8
 

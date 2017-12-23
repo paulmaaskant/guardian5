@@ -71,6 +71,13 @@ writeNextColumnToBuffer:
 	ADC #$02				;
 	STA nmiVar1
 
+	LDA nmiVar0				; shadow pointer
+	ADC #$90
+	STA nmiVar5
+	LDA nmiVar1
+	ADC #$03
+	STA nmiVar6
+
 	; ---- move pointer down by 15 meta tile rows for each Y screen
 	; not implemented, as map is never more than 2 screens high
 
@@ -94,13 +101,14 @@ writeNextColumnToBuffer:
 	ADC identity, X									; add 1 (row) to Y in the event that this frame will also scroll down
 	SEC
 	SBC #$06
-	BPL +
+	BPL +continue
 	LDA #$00
-+
+
++continue:
 	STA nmiVar2				; number of tiles after which wrap has to occur
 
 	; --- get ready to loop ---
-	LDA #$1E				; 30
+	LDA #30						; 30
 	STA nmiVar4				; loops
 	SEC
 	SBC nmiVar2				;
@@ -116,21 +124,28 @@ writeNextColumnToBuffer:
 	LDA nmiVar2				; check for wrap around
 	BNE +noWrapAround
 
-	LDA nmiVar0				; wrap around -> move down 15 meta tile map rows
 	CLC
+	LDA nmiVar0				; wrap around -> move down 15 meta tile map rows
 	ADC #$D0
 	STA nmiVar0				;
 	LDA nmiVar1				;
 	ADC #$02
 	STA nmiVar1				; nmi 1 = CD nmi 0 = 4F
 
+	LDA nmiVar5				; shadow pointer
+	ADC #$D0
+	STA nmiVar5				;
+	LDA nmiVar6				;
+	ADC #$02
+	STA nmiVar6				;
+
 +noWrapAround:
 	DEC nmiVar2				; dec wrap count
 
 	; --- retrieve meta tile ---
-	LDY #$00				; because we need it for some indirect addressing
+	LDY #$00						; because we need it for some indirect addressing
 	LDA (nmiVar0), Y		; retrieve the metaTile # from meta tile map ( nmiTemp is the row, Y is the col)
-	TAX						; move the meta tile # to X
+	TAX									; move the meta tile # to X
 
 	; --- determine the appropriate tile within the meta tile ---
 	LDA nmiVar4
@@ -140,18 +155,47 @@ writeNextColumnToBuffer:
 	BCC +lowerRight			; changed BCS->BCC
 	LDA metaTileBlock01, X	; upper right
 	JMP +done
+
 +lowerRight:
 	LDA metaTileBlock03, X	; lower right
 	JMP +done
+
 +left:
 	BCC +lowerLeft			; changed BCS->BCC
 	LDA metaTileBlock00, X	; upper left
 	JMP +done
+
 +lowerLeft:
 	LDA metaTileBlock02, X	; lower left
 	JMP +done
+
 +done:
+	CMP #64
+	BCC +objectTile
+	PHA						; background tile: push tile to buffer
+	BCS +done
+
++objectTile:
+	CMP #6							; set carry flag
+	AND #3
+	STA nmiVar7
+	TYA 								; set A to 0
+	BCC +continue				; check carry flag
+	LDA #14 						; 14+1carry
+
++continue:
+	ADC (nmiVar5), Y
+	TAY
+	LDA nodeMap, Y
+	ASL
+	ASL
+	CLC
+	ADC nmiVar7
+	TAX
+	LDA objectTiles, X
 	PHA
+
++done:
 
 	; --- update pointer to meta tile map ---
 	LDA nmiVar4				;
@@ -164,13 +208,24 @@ writeNextColumnToBuffer:
 	LDA nmiVar1
 	SBC #$00
 	STA nmiVar1
+
+	SEC
+	LDA nmiVar5				; move one meta tile up by adding the no. of meta tiles in a row (48)
+	SBC #$30
+	STA nmiVar5
+	LDA nmiVar6
+	SBC #$00
+	STA nmiVar6
+
 +stayOnMetaTile:
 
 	; --- loop back ---
 	INY
 	DEC nmiVar4
-	BNE -loop1
+	BEQ +continue
+	JMP -loop1
 
++continue:
 	; --- done, finish up ---
 	LDA cameraX+1			; determine VRAM column
 	LSR						;

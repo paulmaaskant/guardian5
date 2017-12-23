@@ -14,9 +14,9 @@ statusBar:
 	.db repeatBlank, $00  ; 8 blank rows
 												; 5 to go
 
-	.db repeatBlank, 23, $2B, repeatBlank, 5, $2A
+	.db repeatBlank, 22, $2B, repeatBlank, 6, $2A
 	.db repeatBlank, $22 ; 1 rows
-	.db $2B, repeatBlank, 21, $2A, repeatBlank, 7
+	.db $2B, repeatBlank, 20, $2A, repeatBlank, 8
 	.db repeatBlank, $41 ; 2 rows
 
 
@@ -28,11 +28,19 @@ hudDialog:
 	.db $2D, repeatBlank, 5, $0A, repeatBlank, 22, $2C, repeatBlank, 01
 
 hudMenu:
-	.db repeatBlank, 63
-	.db repeatBlank, 98
-	.db $2D, repeatBlank, 5, $0A, repeatBlank, 15, $2C, $2D, repeatBlank, 5, $2C
-	.db repeatBlank, $01
-
+	.db repeatBlank, 24
+	.db 9, 9, $0F, S, Y, S
+	.db repeatBlank, 26
+	.db 9, 9, $0F, T,C,A
+	.db repeatBlank, 26
+	.db 9, 9, $0F, C, C, A
+	.db repeatBlank, 26
+	.db 9, 9, $0F, F, E, D
+	.db repeatBlank, 26
+	.db 9, 9, $0F, V, O, M
+	.db repeatBlank, 3
+	.db $2D, repeatBlank, 5, $0A, repeatBlank, 14, $2C, $2D, repeatBlank, 6, $2C
+	.db $0F
 
 hud:
 	.db repeatBlank, 33 	; 2 rows + 3 blank tiles
@@ -401,30 +409,55 @@ resultUnitRestart:
 	.db U, N, I, T, space, O, N, L, I, N, E, waitForA
 	.db endOfStream
 
-levelOne:																																				; --- blocked nodes (1 bit for movement + 1 bit for line of sight) ---
-	.db $00, $00, $80, $00																												; row 0
-	.db $00, $00, $00, %00110000																									; row 1
-	.db $00, $C0, $80, %11000000																									; row 2
-	.db %10001010, $A8, %10000001, $00																						;	row 3
-	.db %10000000, %00001000, $80, $00																						; row 4
-	.db %10000011, %00001010, $8A, $00																						; row 5
-	.db %10000100, $C0, %00001010, $AA																						; row 6
-	.db %10000001, $00, %00001010, $AA																						; row 7
-	.db %10000000, %00001010, %10001010, $00																			; row 8
-	.db %10001010, %10101000, %00001010, $00																			; row 9
-	.db %00000000, %00000000, %00001010, $00																			; row 10
-	.db $FE, 20, $00																															; row 11-15
+levelOne:
+	.db 7, 1
+	.hex 37 38 29 39 49 8C 9C
+	.db 12, 2
+	.hex 23 25 26 5D 5E 5F 83 84 85 77 78 4B
+	.db 4, 3
+	.hex 27 19 79 4C
+	.db 2, 4
+	.hex 47 5C
+
+	.db 3, 5
+	.hex 00 51 A0
+	.db 10, 6
+	.hex 10 31 41 61 71 81 B0 C0 D0 E0
+	.db 2, 7
+	.hex 20 F0
+	.db 1, 8
+	.hex 21
+	.db 2, 9
+	.hex F3 F9
+	.db 9, 10
+	.hex F1 F2 F4 F5 F6 F7 F8 FA FB
+
+	.db 11, 11+128+64
+	.hex 24 53 64 1D 30 40 50 60 70 80 90
+
+	.db 21, 128
+	.hex 32 33 34 35 36 46 56 57 58 48 38 28 08
+	.hex 92 93 94 95 96 86 87 88
+
+	.db 1, 12
+	.hex 15
+
+	.db 0
+																																								; --- blocked nodes (1 bit for movement + 1 bit for line of sight) ---
 																																								; --- initial objects ---
 	.db	$03																																				; number of objects (2)
-	.db $03																																				; object 0 f type 3
+
+	.db $00																																				; object 0 pilot
 	.db $13																																				; object 0 grid position
-	.db $03																																				; object 0 pilot f0 & facing RD
-	.db $12																																				; object 1 h type 2
+	.db $33																																				; object 0 type & facing RD
+
+	.db $80																																				; object 1 pilot
 	.db $CA																																				; object 1 grid position
-	.db $05																																				; object 1 pilot ho & facing LD
-	.db $12																																				; object 2 h type 2
+	.db $25																																				; object 1 type & facing LD
+
+	.db $A0																																				; object 2 pilot
 	.db $C4																																				; object 2 grid position
-	.db $25																																				; object 2 pilot ho & facing LD
+	.db $25																																				; object 2 type & facing LD
 
 A = $10
 B = $11

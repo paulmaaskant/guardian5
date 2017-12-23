@@ -10,69 +10,49 @@ state_initializeMap:
 	LDA #$18			; pallete 1 for map 1
 	STA currentPalettes
 
-	; --- map collision data ---
-	LDX #$00
+	; --- map collision & object tile data ---
 
--loop:
-	JSR getNextByte								; holds data for 4 nodes (2 bits per node)
-	LDY #$04
+-outterLoop:
+	JSR getNextByte
+	CMP #0
+	BEQ +continue
+	STA list1+0					; iterations
+	JSR getNextByte
+	STA list1+1					; tile byte
 
--shift:
-	PHA
-	AND #%11000000
-	CMP #$40
-	BNE +store
-	LDA #$20
-+store:
-	STA nodeMap, X								; only b7, b6 are relevant
-	PLA
-	ASL
-	ASL
-	INX
-	DEY
-	BNE -shift
-	CPX #$00
-	BNE -loop
+-innerLoop:
+	JSR getNextByte
+	TAX
+	LDA list1+1
+	STA nodeMap, X
+	DEC list1+0
+	BNE -innerLoop
+	BEQ -outterLoop
 
++continue:
 	; -- object info ---
 	JSR getNextByte
 	STA objectCount
 	STA activeObjectTypeAndNumber	; set to the last object so that the next is the first
-	LDX #$00
+
+	LDX #0
 
 -nextObject:
 	CPX objectCount
 	BEQ +done
 
-	TXA
-	PHA								; push X
+	STX list1+2
 
 	JSR getNextByte
-	ASL
-	ASL
-	ASL
 	CLC
 	ADC identity, X
 	STA objectTypeAndNumber, X
 
-	JSR getStatsAddress				; breaks X, sets pointer1
-
-	PLA
-	TAX
-	PHA
-
-	LDY #$00
-	LDA (pointer1), Y
-	PHA												; push init stats
-
 	TXA
 	ASL
 	ASL
 	TAX
-
-	PLA
-	AND #%11111110
-	STA object+1, X						; set health and heatsinks
+	STX list1+3
 
 	JSR getNextByte
 	STA object+3, X						; set grid position
@@ -80,13 +60,21 @@ state_initializeMap:
 	LDA #$C0
 	STA nodeMap, Y
 
-	JSR getNextByte						; get pilot & initial facing direction
+	JSR getNextByte						; get type & initial facing direction
 	STA object+0, X
 
-	PLA							; pull X
-	TAX
-	INX
+	LDY list1+3								; object index
+	JSR getStatsAddress				; breaks X, sets pointer1
 
+	LDY #0
+	LDA (pointer1), Y
+
+	LDX list1+3
+	AND #%11111110
+	STA object+1, X						; set health and actionpoints
+
+	LDX list1+2
+	INX
 	JMP -nextObject
 
 +done:
@@ -102,23 +90,13 @@ state_initializeMap:
 	LDA #$F4							; start the camera one screen down
 	STA cameraY+1					; camera automatically scrolls back up, loading the tiles!
 
-
-	LDY #18
+	LDY #18								; hardcoded bank change to level 1 tiles
 	STY $E000
 	INY
 	STY $E001
-
 	LDY #$1
 	STY $E008
 	STY $E009
-
-
-	;LDA sysFlags				; set flag
-	;ORA #sysObjectSprites
-	;STA sysFlags
-
-	;LDA #$05
-	;JMP replaceState
 
 	JSR pullAndBuildStateStack
 	.db 3

@@ -88,10 +88,6 @@ initializeMove:
 ; loop to resolve move
 ; ----------------------------------------
 state_resolveMove:
-	;LDA events
-	;ORA event_updateSprites
-	;STA events
-
 	LDA #1
 	STA softCHRBank1
 
@@ -250,7 +246,6 @@ state_resolveMove:
 
 
 +continue:
-
 	DEC actionCounter
 	RTS
 
@@ -261,8 +256,8 @@ state_resolveMove:
 ; assumption: list is sorted, except for 1 item which needs to move down in the list
 ;
 ; IN objectCount
-; IN OUT actionList +4 ... +9
-; IN OUT objectTypeAndNumber +0 ... +5
+; IN OUT list4 +0 ... +15
+; IN OUT objectTypeAndNumber +0 ... +15
 ; LOCAL X
 ;------------------------------------
 objectListSweepDown:
@@ -273,15 +268,15 @@ objectListSweepDown:
 	TAX
 	DEX				; object count - 1
 -loop2:
-	LDA actionList+4, X
-	CMP actionList+3, X
+	LDA list4+1, X
+	CMP list4+0, X
 	BCS +next2
 
 	PHA								; swap
-	LDA actionList+3, X
-	STA actionList+4, X
+	LDA list4+0, X
+	STA list4+1, X
 	PLA
-	STA actionList+3, X
+	STA list4+0, X
 
 	LDA objectTypeAndNumber+0, X
 	PHA
@@ -301,8 +296,8 @@ objectListSweepDown:
 ; assumption: list is sorted, except for 1 item which needs to move up in the list
 ;
 ; IN objectCount
-; IN OUT actionList +4 ... +9
-; IN OUT objectTypeAndNumber +0 ... +5
+; IN OUT actionList +0 ... +15
+; IN OUT objectTypeAndNumber +0 ... +15
 ; LOCAL X
 ;------------------------------------
 objectListSweepUp:
@@ -312,15 +307,15 @@ objectListSweepUp:
 
 	LDX #$01
 -loop:
-	LDA actionList+4, X
-	CMP actionList+3, X
+	LDA list4+1, X
+	CMP list4+0, X
 	BCS +next
 
 	PHA								; swap
-	LDA actionList+3, X
-	STA actionList+4, X
+	LDA list4+0, X
+	STA list4+1, X
 	PLA
-	STA actionList+3, X
+	STA list4+0, X
 
 	LDA objectTypeAndNumber+0, X
 	PHA
@@ -340,8 +335,8 @@ objectListSweepUp:
 ; calculate sprite priority
 ;
 ;
-; IN 	objects  +0 ... +5
-; OUT	actionList +4 ... +9
+; IN 	objects  +0 ... +15
+; OUT	list4 +0 ... +15
 ; LOCAL locVar1
 ;------------------------------
 calculateObjectSequence:
@@ -365,7 +360,7 @@ calculateObjectSequence:
 	LSR
 	CLC
 	ADC locVar1
-	STA actionList+4, X
+	STA list4, X
 	DEX
 	BPL -
 	RTS
@@ -385,7 +380,6 @@ state_resolveMoveAngleTable:
 	.db 0
 	.db 51
 	.db 128-51
-
 
 state_resolveMoveRadiusTable:
 	.db 128

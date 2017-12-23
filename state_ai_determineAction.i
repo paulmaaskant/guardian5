@@ -46,7 +46,7 @@ state_ai_determineAction:
   LDA objectTypeAndNumber, X
   BMI -loop                               ; get first available player unit
   STA targetObjectTypeAndNumber
-  AND #%00000111
+  AND #%00001111
 	ASL
 	ASL
   TAY																																																																										; save X (object list index)

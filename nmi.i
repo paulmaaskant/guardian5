@@ -224,19 +224,6 @@ NMI:
 
 
 +continue:
-	LDA cameraX+1			; detect if horizontal scrolling is needed
-	AND #%00000111
-	CMP #$04
-	BNE +doneX
-	JSR writeNextColumnToBuffer
-
-+doneX:
-	LDA sysFlags
-	LSR
-	BCC +doneY
-	JSR writeNextRowToBuffer
-
-+doneY:
 
 
 
@@ -350,6 +337,19 @@ NMI:
 
 +skip:
 
+	LDA cameraX+1			; detect if horizontal scrolling is needed
+	AND #%00000111
+	CMP #$04
+	BNE +continue
+	JSR writeNextColumnToBuffer
+
++continue:
+	LDA sysFlags
+	LSR
+	BCC +continue
+	JSR writeNextRowToBuffer
+
++continue:
 
 
 
@@ -436,6 +436,7 @@ NMI:
 	;STA events
 
 +doneY:
+
 
 
 

@@ -75,8 +75,15 @@ writeNextRowToBuffer:
 	ADC nmiVar0
 	STA nmiVar0				;
 	LDA nmiVar1				;
-	ADC #$00				;
+	ADC #$00					;
 	STA nmiVar1				;
+
+	LDA nmiVar0				; shadow pointer
+	ADC #$90
+	STA nmiVar5
+	LDA nmiVar1
+	ADC #$03
+	STA nmiVar6
 
 	; --- prepare loop ---
 	LDA cameraX+1			; now determine the first meta tile
@@ -101,13 +108,21 @@ writeNextRowToBuffer:
 	; --- wrap around? ---
 	LDA nmiVar2				;
 	BNE +skipOffset			; on name table edge
-	LDA nmiVar0				; reset meta tile map pointer 16 meta tiles to the right
+
 	CLC
+	LDA nmiVar0				; reset meta tile map pointer 16 meta tiles to the right
 	ADC #$10
 	STA nmiVar0				;
 	LDA nmiVar1				;
 	ADC #$00
 	STA nmiVar1				;
+
+	LDA nmiVar5				; do the same for shadow pointer
+	ADC #$10
+	STA nmiVar5
+	LDA nmiVar6
+	ADC #$00
+	STA nmiVar6
 
 +skipOffset:
 	DEC nmiVar2
@@ -141,8 +156,32 @@ writeNextRowToBuffer:
 	JMP +done
 
 +done:
-	PHA						; push tile to buffer
+	CMP #64
+	BCC +objectTile
+	PHA						; background tile: push tile to buffer
+	BCS +done
 
++objectTile:
+	CMP #6							; set carry flag
+	AND #3
+	STA nmiVar7
+	TYA 								; set A to 0
+	BCC +continue				; check carry flag
+	LDA #14 						; 14+1carry
+
++continue:
+	ADC (nmiVar5), Y		; determine grid pos using look up table (for speed)
+	TAY
+	LDA nodeMap, Y			; retrieve the meta tile for the grid pos
+	ASL
+	ASL
+	CLC
+	ADC nmiVar7					; determine which of the 4 tiles in th meta tile
+	TAX
+	LDA objectTiles, X	; retrieve the tile
+	PHA
+
++done:
 	; --- move to next meta tile? ---
 	LDA nmiVar4
 	LSR
@@ -154,11 +193,19 @@ writeNextRowToBuffer:
 +noDec:
 	DEC nmiVar0
 
+	LDA nmiVar5
+	BNE +noDec
+	DEC nmiVar6
++noDec:
+	DEC nmiVar5
+
 +stayOnMetaTile:
 	; --- loop back ---
 	DEC nmiVar4
-	BNE -loop
+	BEQ +continue
+	JMP -loop
 
++continue:
 	; --- done ---
 	LDA #$00
 	STA nmiVar2

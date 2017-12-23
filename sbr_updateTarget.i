@@ -12,9 +12,10 @@ updateTargetObject:
 	LDX #$00
 	STX targetObjectIndex
 	STX targetObjectTypeAndNumber
+
 -loop:
 	LDA objectTypeAndNumber, X
-	AND #$07
+	AND #$0F
 	ASL
 	ASL
 	TAY
@@ -25,6 +26,7 @@ updateTargetObject:
 	CPX objectCount
 	BNE -loop
 	RTS
+
 +setObjectAsTarget:
 	STY targetObjectIndex
 	LDA objectTypeAndNumber, X

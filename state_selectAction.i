@@ -21,11 +21,11 @@ state_selectAction:
 	LDA objectTypeAndNumber-1, X
 	CMP targetObjectTypeAndNumber
 	BEQ +nextObject
-	AND #%00000111
+	AND #%00001111
 	ASL
 	ASL
 	TAY
-	LDA object+0, Y
+	LDA object+2, Y
 	BPL +nextObject							; unit not shutdown
 
 	LDA object+3, Y

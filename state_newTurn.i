@@ -3,14 +3,14 @@
 ; ------------------------
 state_newTurn:
   LDA activeObjectTypeAndNumber
-  AND #$07
+  AND #$0F
   STA locVar1
   INC locVar1
   LDX #$00
 
 -loop:
   LDA objectTypeAndNumber, X
-  AND #$07
+  AND #$0F
   CMP locVar1
   BEQ +setNext
 
@@ -33,7 +33,7 @@ state_newTurn:
 +setNext:
   LDA objectTypeAndNumber, X
   STA	activeObjectTypeAndNumber
-  AND #$07
+  AND #$0F
   ASL
   ASL
   STA activeObjectIndex
@@ -48,7 +48,10 @@ state_newTurn:
   STA portraitYPos
 
   ; --- retrieve type data ---
-  LDA activeObjectTypeAndNumber
+
+  LDY activeObjectIndex
+  LDA object+0, Y
+  
   JSR getStatsAddress
   STA activeObjectStats+6
   LDA (pointer1), Y				; attack & defence
@@ -102,7 +105,7 @@ state_newTurn:
   JSR clearTargetMenu
 
   LDY activeObjectIndex
-  LDA object+0, Y
+  LDA object+2, Y
   BMI +shutDown
 
   LDA activeObjectTypeAndNumber

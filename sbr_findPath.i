@@ -42,27 +42,19 @@ oppositeDirection:
 	LSR
 	LSR
 	LSR
-	LSR													; ISSUE this can never be more than 15
+	LSR														; ISSUE this can never be more than 15
 	TAX
-	STX list1										; number of nodes in path
+	STX list1											; number of nodes in path
+	LDA par1											; destination node
 
-	LDA par1										; destination node
 -loop:
-
-	;CPX #$0A
-	;STA locVar1
-	;BCS +continue
-	STA list1, X								; only store if X is 9 or less
-
-;+continue:
+	STA list1, X
 	TAY
-	LDA nodeMap, Y
-	AND #$07										; direction to get to preceding node
-
-	;BCS +continue								; only store if X is 9 or less
+	LDA list8, Y
+	AND #$07											; direction to get to preceding node
 	TAY
-	LDA oppositeDirection-1, Y	; determine opposite direction
-	STA list2, X								; and store in list 2 (used for animation)
+	LDA oppositeDirection-1, Y		; determine opposite direction
+	STA list2, X									; and store in list 2 (used for animation)
 	TYA
 
 ;+continue:
@@ -71,7 +63,6 @@ oppositeDirection:
 	TAY
 	LDA directionTable-1, Y
 	CLC
-	;ADC locVar1 ;
 	ADC list1+1, X							;
 	JMP -loop
 
@@ -102,17 +93,15 @@ findPath:
 	LDA par2										; if moves available
 	CMP distanceToTarget				; is less than Manhattan distance
 	BCC -outOfRange							; we are done
-
-
-
 	LDX #$00										;
+
 -loop:
 	LDA nodeMap, x
-	AND leftNyble								; clears right nyble
-	STA nodeMap, x							;
+	AND #%10000000
+	STA list8, x
 	INX													;
 	BNE -loop										; node map initialized
-	LDA #$01										; 1 open node
+	LDA #1											; 1 open node
 	STA list3										; open node stack size
 	TAY													;
 
@@ -132,9 +121,9 @@ findPath:
 
 	DEC list3										; and remove current node from open node stack, by dec stack size
 
-	LDA nodeMap, X							; make current node a closed node
-	ORA #$08										; set closed flag
-	STA nodeMap, X
+	LDA list8, X								; make current node a closed node
+	ORA #$08										; set closed flag (b3)
+	STA list8, X
 
 	; --------------------------------
 	; list neighbouring nodes of the current node
@@ -215,7 +204,7 @@ findPath:
 	; ------------------------------
 -neighbourLoop:
 	LDX list2, Y
-	LDA nodeMap, X				; first, check of node is relevant
+	LDA list8, X					; first, check of node is relevant
 	AND #$88							; blocked flag, closed flag
 	BEQ +continue					; this neighbour has already been processed, try the next neighbour
 	JMP +next
@@ -256,7 +245,7 @@ findPath:
 	;---------------------------------
 +continue:
 	LDX list2, Y
-	LDA nodeMap, X
+	LDA list8, X
 	BIT directionBits					; if the direction is set, its not a new node
 	BEQ +openNewNode					; open a new node
 	LDA list2, Y							; or update existing node
@@ -302,10 +291,10 @@ findPath:
 	CPX list3
 	BCC -loop
 	LDX list2, Y						; update direction neighbour->current
-	LDA nodeMap, X
+	LDA list8, X
 	AND #$F8								; clear direction
 	ORA list1, Y
-	STA nodeMap, X
+	STA list8, X
 
 	JMP +next
 	; ----------------------------
@@ -313,7 +302,7 @@ findPath:
 	; ----------------------------
 +openNewNode:
 	ORA list1, Y					; direction neighbour->current
-	STA nodeMap, X				; save direction in node map
+	STA list8, X					; save direction in node map
 	LDA list2, Y					; store neighbour node
 	INC list3							; at new spot at the end of the list
 	LDX list3							; X = end of the list

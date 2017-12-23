@@ -113,7 +113,10 @@ checkTarget:
 	LSR
 	ADC #$05																																			; CLC guaranteed
 	PHA 																																					; ACCURACY on stack
-	LDA targetObjectTypeAndNumber																									; then get targets health & defence value
+
+	LDY targetObjectIndex
+	LDA object+0, Y
+
 	JSR getStatsAddress
 	STA list3+20																																	; target health points
 	JSR toBCD																																			; convert health points to BCD for display purposes

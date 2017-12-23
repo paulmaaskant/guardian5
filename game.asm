@@ -16,6 +16,8 @@
 	nmiVar3											.dsb 1
 	nmiVar4											.dsb 1
 	nmiVar5											.dsb 1
+	nmiVar6											.dsb 1
+	nmiVar7											.dsb 1
 
 																				; ---------------------------------
 																				; The following are variables that have a lifespan limited to a single frame
@@ -41,9 +43,6 @@
 	cameraYDest										.dsw 1	; upper left of camera in relation to background tiles
 	cameraXDest										.dsw 1	; upper left of camera in relation to background tiles
 	cameraYStatus									.dsb 1
-
-	oamVar												.dsb 10 ; use for sprite operations, not used yet
-
 																				; ---------------------------------
 																				; The following are variables that have a life span that goes across frames
 																				; typically used to carry information from one game state to the next
@@ -105,9 +104,9 @@
 																				; stored memory objects
 																				; object grid position is stored separately as it will be sorted regularly
 	objectCount										.dsb 1	; number of objects presently in memory
-	objectTypeAndNumber						.dsb 6	; (b7) hostile (b6-3) objectType (b2-0) object number
+	objectTypeAndNumber						.dsb 8	; (b7) hostile (b7-4) pilot (b3-0) object index
 																				; the rest of the object information is stored (4 bytes each) so that it does not require sorting whenever the object's position changes
-	object												.dsb 1	; +0: (b7) shutdown (b6-4) pilot, (b3) move/still, (b2-0) direction
+	object												.dsb 1	; +0: (b7-4) type, (b3) move/still, (b2-0) direction
 																.dsb 1	; +1: health dial (b7-3), heat dial (b2-0)
 																.dsb 1	; +2: frame count (b7-0)
 																.dsb 1	; +3: grid pos
@@ -116,6 +115,8 @@
 	object3												.dsb 4	;
 	object4												.dsb 4	;
 	object5												.dsb 4	;
+	object6												.dsb 4	;
+	object7												.dsb 4	;
 
 	actionList										.dsb 10	; ------------------------------------------------------
 	selectedAction								.dsb 1	; various
@@ -174,15 +175,10 @@
 	; +------- this node is blocks movement
 	; ------------------------------------------------------------
 	nodeMap								.dsb 256
-	list6									.dsb 64							; used by AI for scoring
-	list7									.dsb 64							; used by AI for scoring
-	list8									.dsb 128
-
-
 	list3									.dsb 64							; path finding and action control
 	list4									.dsb 64							; path finding
-
-
+	list6									.dsb 64							; used by AI for scoring
+	list7									.dsb 64							; used by AI for scoring
 
 	actionMenuLine1				.dsb 13							; Buffers used to render the status menu
 	actionMenuLine2				.dsb 13
@@ -210,8 +206,10 @@
 																						; 05 sprite: hostile units
 																						; 06 sprite: cursor
 																						; 07 sprite: effects
+	.ende
 
-
+	.enum $0700																; generic look up table
+	list8 .dsb 256
 
 
 	.ende
@@ -370,14 +368,17 @@ mainGameLoop:
 	JMP +nextEvent
 
 +next:
-	;LDA #16																																				; sprite 0-15 are reserved for effects, start with sprite 16
-	;STA par3																																			; first available sprite
 	LDX #$00																																			; start with object on pos 0
 
 -loopObjects
 	LDA objectTypeAndNumber, X																										; get next object
-	AND #%01111000																																; mask the Object Type
-	LSR																																						; (part of the object in CODE)
+	AND #$0F
+	ASL
+	ASL
+	TAY
+	LDA object+0, Y
+	LSR
+	LSR																																						;
 	LSR																																						;
 	LSR																																						;
 	TAY																																						; and store it in Y
@@ -387,7 +388,7 @@ mainGameLoop:
 	STA currentObjectType+1																												; and store it as the current object type
 
 	LDA objectTypeAndNumber, X																										; reload the object
-	AND #%00000111																																; and mask the object number
+	AND #%00001111																																; and mask the object number
 	ASL																																						; mulitply by 4 to get the
 	ASL																																						; object index
 	TAY																																						; (part of the object stored in memory)
@@ -395,6 +396,7 @@ mainGameLoop:
 	TXA																																						;
 	PHA																																						; save X (object list index)
 	LDA object+2, Y
+	AND #%01111111
 	STA currentObjectFrameCount
 	LDA object+3, Y																																; on screen check
 	JSR gridPosToScreenPos																												; get and set screen X & Y
@@ -402,7 +404,7 @@ mainGameLoop:
 
 	LDA objectTypeAndNumber, X																										; get B7 (neg flag)
 	PHP																																						; store neg flag
-	LDA object, Y
+	LDA object+0, Y
 	AND #%00001000																																; object move bit (b3) ON
 	BEQ +next
 	CLC																																						; if moving, then add displacement
@@ -432,25 +434,26 @@ mainGameLoop:
 	JMP +done
 
 +next:
-	LDX object+3, Y
-	LDA nodeMap, X
-	AND #%00100000																																; is position obscured?
-	BEQ +notObscured
-	LDA #$20																																			; yes -> set up sprite mask to parially hide object
-	STA par4																																			; sprite priority 1
-	TYA																																						; store Y (object )
-	PHA
-	LDY #$03																																			; mask srpite to obscure part of the object sprite
-	JSR loadAnimationFrame
-	PLA
-	TAY
-	LDX #%00010000																																; restore Y
-	JMP +skip
+	;LDX object+3, Y
+	;LDA nodeMap, X
+	;AND #%01000000																																		; is position obscured?
+	JMP +notObscured				; fix
+
+	;LDA #$20								; this can go																									; yes -> set up sprite mask to parially hide object
+	;STA par4																																			; sprite priority 1
+	;TYA																																						; store Y (object )
+	;PHA
+	;LDY #$03																																			; mask srpite to obscure part of the object sprite
+	;JSR loadAnimationFrame	; loads mask
+	;PLA
+	;TAY
+	;LDX #%00010000																																; restore Y
+	;JMP +skip
 
 +notObscured:																																		; next, determine mirror, palette & which animation
 	LDX #%00000000																																; default value for par4 (b7-6 no mirror, b5 no mask, b4 not obscured, b0 no palette flip)
 
-+skip:
+;+skip:
 	LDA object+0, Y																																; derive the animation # based on object's direction and move
 	AND rightNyble																																; (b3) moving? (b2-0) direction
 	TAY
@@ -482,28 +485,22 @@ mainGameLoop:
 	PLA																																						; restore X
 	TAX																																						; from the stack
 	PLA																																						; restore Y
-	TAY																																						; in order to save the object's updated frame count
-	LDA currentObjectFrameCount																										; object frame count
-	STA object+2, Y																																;
+	TAY
+	LDA object+2, Y
+	AND #$80
+	ORA currentObjectFrameCount																										; object frame count
+	STA object+2, Y
 	INX																																						; next object
 	CPX objectCount																																; number of objects presently in memory
 	BEQ +continue
 	JMP -loopObjects																															;
 
 +continue:
-	;LDA #51																																				; clear remaining unused sprites up to and including sprite 63 (last sprite)
-	;JSR clearSprites
 
 +nextEvent:
-	;LDA #52
-	;STA	par3
-
 	LDA sysFlags
 	AND sysFlag_showPortrait
 	BNE +continue
-
-	;LDA #63																														; clear remaining unused sprites up to and including sprite 63 (last sprite)
-	;JSR clearSprites
 	JMP +nextEvent
 
 +continue:
@@ -576,7 +573,7 @@ mainGameLoop:
 	BMI +radar
 
 	LDY activeObjectIndex
-	LDA object+0, Y
+	LDA object+2, Y
 	BMI +radar
 
 	LDY selectedAction																														; update the action menu buffer with the selected action
