@@ -83,10 +83,19 @@ state_selectDirection:
 	BEQ +done						; JMP
 
 +setDirection:
-	LDA object, X
-	AND #$F8					; clear direction bits
+	LDA object+0, X
+	AND #%11111000					; clear direction bits
 	ORA locVar1					; set new direction
 	STA object, X
+
+
+	LDY activeObjectGridPos
+	AND #%00000111
+	ORA #%11000000
+	STA nodeMap, Y
+	AND #%00000111
+	TAX
+	JSR setTile
 
 	LDY #sMechStep
 	JSR soundLoad

@@ -158,15 +158,6 @@ state_selectAction:
 	LSR 									; select
 	BCC +next
 
-	JSR buildStateStack
-	.db 9
-	.db $20, 0					; load menu backgorund 0
-	.db $01, 10					; load stream 10: start level 1
-	.db $30							; restore active unit portrait
-	.db $20, 1					; load menu backgorund 0
-	.db $31, #eRefreshStatusBar
-	; RTS built in
-
 +next:
 	LSR 									; get B button
 	BCS +toggle
@@ -204,6 +195,13 @@ state_selectAction:
 	STA events
 
 	JMP updateCamera					; tail chain: update camera in case of new target
+
+	;LDY cursorGridPos
+	;LDX #1
+	;JMP setTile
+
+														; end
+
 
 +toggle:
 	LDA events

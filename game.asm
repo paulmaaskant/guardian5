@@ -611,11 +611,11 @@ mainGameLoop:
 	JMP +nextEvent
 
 +radar:
-	LDY #$45
+	LDY #$44
 	STY actionMenuLine1+5
 	INY
 	STY actionMenuLine1+6
-	LDY #$55
+	LDY #$54
 	STY actionMenuLine2+5
 	INY
 	STY actionMenuLine2+6
@@ -808,7 +808,6 @@ gameStateJumpTable:
 
 	.include sbr_showTargetMech.i
 	.include sbr_showHexagon.i
-	;.include sbr_showPilot.i
 	.include sbr_showSystemInfo.i
 
 	.include sbr_deleteObject.i
@@ -832,7 +831,8 @@ gameStateJumpTable:
 	.include sbr_menuIndicatorsBlink.i
 	.include sbr_updatePortrait.i
 	.include sbr_setTargetToolTip.i
-	.include sbr_setDamageToolTip.i
+	;.include sbr_setDamageToolTip.i
+	.include sbr_setTile.i
 
 	.include sbr_random.i
 	.include sbr_random100.i
@@ -875,21 +875,21 @@ gameStateJumpTable:
 
 
 paletteColor1:
-	.db $0B, $38, $0B, $08, $08, $06, $09, $30
+	.db $0B, $38, $0B, $08, $0F, $0F, $09, $30
 	.db $08, $18, $0A
 	.dsb 5
 	.db $08, $15, $08
 	.dsb 5
 	.db $1B
 paletteColor2:
-	.db $1B, $18, $1B, $18, $18, $16, $29, $2D
+	.db $1B, $18, $1B, $18, $0A, $0A, $29, $2D
 	.db $18, $28, $19
 	.dsb 5
 	.db $15, $30, $15
 	.dsb 5
 	.db $0A
 paletteColor3:
-	.db $2B, $28, $2B, $28, $28, $36, $39, $37
+	.db $2B, $28, $2B, $28, $3B, $3B, $39, $37
 	.db $37, $30, $39
 	.dsb 5
 	.db $35, $35, $35

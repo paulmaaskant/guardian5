@@ -70,10 +70,12 @@ initializeMove:
 	ORA #%00001000
 	STA object, Y
 
+
 	LDY activeObjectGridPos			; unblock position in nodeMap
-	LDA nodeMap, Y
-	AND #%00111111
+	LDA #0											; FIX: show original meta tile
 	STA nodeMap, Y
+	TAX
+	JSR setTile
 
 	LDA #$00
 	STA actionCounter
@@ -109,15 +111,17 @@ state_resolveMove:
 	STA effects
 
 	LDY activeObjectIndex
-
-	LDA object, Y
+	LDA object+0, Y
 	EOR #%00001000							; object move bit (b3) OFF
-	STA object, Y
+	STA object+0, Y
+	AND #%00000111							; get direction
 
 	LDY activeObjectGridPos			; block final position, move (b7) and sight (b6)
-	LDA nodeMap, Y
-	ORA #$C0
+	ORA #%11000000							; blocked for movement and los
 	STA nodeMap, Y
+	AND #%00000111
+	TAX
+	JSR setTile
 
 	LDA #0
 	STA softCHRBank1

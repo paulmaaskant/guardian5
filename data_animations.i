@@ -53,6 +53,7 @@ animationL:
 	.db #> ANIM22
 	.db #> ANIM23
 	.db #> ANIM24
+	.db #> ANIM25
 
 animationH:
 	.db #< ANIM00
@@ -92,6 +93,7 @@ animationH:
 	.db #< ANIM22
 	.db #< ANIM23
 	.db #< ANIM24
+	.db #< ANIM25
 
 ANIM00:
 	.db #$80, #$08
@@ -297,3 +299,7 @@ ANIM24:
 	.db $20, $04
 	.dw EF15
 	.dw EF16
+
+ANIM25:
+	.db $10, $20
+	.dw tank03_stationary_d4_f

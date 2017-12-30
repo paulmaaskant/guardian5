@@ -60,14 +60,17 @@ state_faceTarget:
   LDX state29_direction, Y
 
   LDY activeObjectIndex
-  LDA object, Y
+  LDA object+0, Y
   AND #%11111000
   ORA identity, X
-  STA object, Y
+  STA object+0, Y
+  LDY activeObjectGridPos
+  AND #%00000111
+  ORA #%11000000
+  STA nodeMap, Y
+  JSR setTile
 
-  ;LDA events
-  ;ORA event_updateSprites
-  ;STA events
+
 
   JMP pullState
 

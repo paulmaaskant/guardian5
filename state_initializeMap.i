@@ -56,12 +56,14 @@ state_initializeMap:
 
 	JSR getNextByte
 	STA object+3, X						; set grid position
-	TAY												; and block it in the node map
-	LDA #$C0
-	STA nodeMap, Y
 
 	JSR getNextByte						; get type & initial facing direction
 	STA object+0, X
+
+	AND #%00000111											; and block it in the node map
+	ORA #%11000000
+	LDY object+3, X
+	STA nodeMap, Y
 
 	LDY list1+3								; object index
 	JSR getStatsAddress				; breaks X, sets pointer1

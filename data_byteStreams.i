@@ -410,46 +410,38 @@ resultUnitRestart:
 	.db endOfStream
 
 levelOne:
-	.db 7, 1
-	.hex 37 38 29 39 49 8C 9C
-	.db 12, 2
-	.hex 23 25 26 5D 5E 5F 83 84 85 77 78 4B
-	.db 4, 3
-	.hex 27 19 79 4C
-	.db 2, 4
-	.hex 47 5C
 
-	.db 3, 5
-	.hex 00 51 A0
-	.db 10, 6
-	.hex 10 31 41 61 71 81 B0 C0 D0 E0
-	.db 2, 7
-	.hex 20 F0
-	.db 1, 8
-	.hex 21
-	.db 2, 9
-	.hex F3 F9
-	.db 9, 10
-	.hex F1 F2 F4 F5 F6 F7 F8 FA FB
+	.db 8, 7
+	.hex 00 01 02 03 04 05 06 20
 
-	.db 11, 11+128+64
-	.hex 24 53 64 1D 30 40 50 60 70 80 90
+	.db 23, 8
+	.hex 10 11 12 13 14 15 16 17 18
+	.hex 61 62 63 75 76 77 78
+	.hex B0 B1 B3 B4 B5 B6 B7
 
-	.db 21, 128
+	.db 16, 9
+	.hex F2 E2 D2 C2
+	.hex F8 E8 D8 C8
+	.hex 29 39 49 59 69 89 99 A9
+
+	.db 8, 10
+	.hex 19 64 74 B2 79 7A B8 B9
+
+	.db 7, 11
+	.hex 1C 2B 1D 2C 3B 2D 3C
+
+	.db 41, 128 ; impassable
 	.hex 32 33 34 35 36 46 56 57 58 48 38 28 08
 	.hex 92 93 94 95 96 86 87 88
+	.hex 5A 5B 6A 6B 6C 6D 6E 6F 7A 7B 7C 7D 7E 7F 8A 8B 9A 9B AA AB
 
-	.db 1, 12
-	.hex 15
-
-	.db 0
-																																								; --- blocked nodes (1 bit for movement + 1 bit for line of sight) ---
+	.db 0																																						; --- blocked nodes (1 bit for movement + 1 bit for line of sight) ---
 																																								; --- initial objects ---
 	.db	$03																																				; number of objects (2)
 
 	.db $00																																				; object 0 pilot
 	.db $13																																				; object 0 grid position
-	.db $33																																				; object 0 type & facing RD
+	.db $23																																				; object 0 type & facing RD
 
 	.db $80																																				; object 1 pilot
 	.db $CA																																				; object 1 grid position

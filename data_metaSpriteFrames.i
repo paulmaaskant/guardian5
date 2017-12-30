@@ -24,36 +24,29 @@
 ; -------------------------------------
 
 tank01_stationary_d1_f:
-  .db %00100000
+  .db %10100000
 	.db -22
 	.dw tank01_d1_top
-	.db %10100000
-	.db -6
-	.dw tank_all_d1_bottom
 
 tank02_stationary_d1_f:
-  .db %00100000
+  .db %10100000
 	.db -22
 	.dw tank02_d1_top
-	.db %10100000
-	.db -6
-	.dw tank_all_d1_bottom
 
 tank01_stationary_d4_f:
-	.db %00100000
+	.db %10100000
 	.db -22
 	.dw tank01_d4_top
-	.db %10100000
-	.db -6
-	.dw tank_all_d4_bottom
 
 tank02_stationary_d4_f:
-  .db %00100000
-	.db -22
+  .db %10100000
+	.db -24
 	.dw tank02_d4_top
-	.db %10100000
-	.db -6
-	.dw tank_all_d4_bottom
+
+tank03_stationary_d4_f:
+  .db %10100000
+	.db -24
+	.dw tank03_d4_top
 
 tank01_stationary_d5_f:
   .db %00100000
@@ -64,12 +57,9 @@ tank01_stationary_d5_f:
   .dw tank01_d5_left
 
 tank02_stationary_d5_f:
-  .db %00100000
-  .db -13
-  .dw tank02_d5_right
   .db %10100000
   .db -16
-  .dw tank02_d5_left
+  .dw tank02_d5
 
 tank01_stationary_d6_f:
 	.db %00100000
@@ -80,12 +70,9 @@ tank01_stationary_d6_f:
 	.dw tank01_d6_left
 
 tank02_stationary_d6_f:
-	.db %00100000
-	.db -16
-	.dw tank02_d6_right
 	.db %10100000
-	.db -13
-	.dw tank02_d6_left
+	.db -16
+	.dw tank02_d6
 
 tank01_moving_d5_fr01:
   .db %00100000
