@@ -39,17 +39,20 @@ state_ai_determineAction:
   ;     lowest score wins:
   ;     (100-ranged attack hit probability) + target hp + distance
   ; ----------------------------------------
-  LDX objectCount
+  LDX objectListSize
 
 -loop:
   DEX
-  LDA objectTypeAndNumber, X
+  LDA objectList, X
   BMI -loop                               ; get first available player unit
   STA targetObjectTypeAndNumber
   AND #%00001111
 	ASL
 	ASL
-  TAY																																																																										; save X (object list index)
+  TAY
+  LDA object+0, Y                         ; exclude object type 0
+  CMP #$10                                ; because
+  BCC -loop							                  ; buildings can't be targets																																																																; save X (object list index)
 	LDA object+3, Y
   STY targetObjectIndex
 	STA cursorGridPos

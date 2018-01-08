@@ -4,34 +4,40 @@
 state_newTurn:
   LDA activeObjectTypeAndNumber
   AND #$0F
-  STA locVar1
-  INC locVar1
-  LDX #$00
+  STA locVar1             ; current active object number
+  INC locVar1             ; object number that is up next
+  LDX #$00                ; cycle 0 through 7
 
 -loop:
-  LDA objectTypeAndNumber, X
+  LDA objectList, X
   AND #$0F
   CMP locVar1
-  BEQ +setNext
+  BNE +noMatch            ; if this object's number is next number
 
+  ASL
+  ASL
+  TAY
+  LDA object+0, Y
+  CMP #$10                ; type 0 = inanimate object
+  BCS +setNext
+
++noMatch:
   INX
-  CPX objectCount
-  BNE -loop
+  CPX objectListSize
+  BNE -loop               ; cycle through all objects in objectList
 
-  LDX #$00								; increase index and try again
-  INC locVar1
+  LDX #$00								; if no object is found
+  INC locVar1             ; increase "next number" and try again
   LDA locVar1
-  CMP #$06								; cycle between 0 and 5
+  CMP #$08								; cycle between 0 and 7
   BNE -loop
-
-
 
   STX locVar1							; reset index to 0
   INC roundCount
   BNE -loop								; JMP
 
 +setNext:
-  LDA objectTypeAndNumber, X
+  LDA objectList, X
   STA	activeObjectTypeAndNumber
   AND #$0F
   ASL
@@ -47,43 +53,46 @@ state_newTurn:
   LDA #16
   STA portraitYPos
 
-  ; --- retrieve type data ---
-
   LDY activeObjectIndex
-  LDA object+0, Y
-  
-  JSR getStatsAddress
-  STA activeObjectStats+6
-  LDA (pointer1), Y				; attack & defence
-  STA activeObjectStats+5
-  INY								; damage & movement
-  LDA (pointer1), Y
-  PHA
-  AND #$07
-  STA activeObjectStats+3			; weapon damage 1
-  PLA						; 3c, 1b
-  LSR						; 6c, 3b
-  LSR
-  LSR
-  PHA						; 3c, 1b
-  AND #$07
-  STA activeObjectStats+4			; weapon damage 2
-  PLA
+  LDA object+1, Y
   LSR
   LSR
   LSR
-  CLC
-  ADC #$02
-  STA activeObjectStats+2			; movement
+  STA activeObjectStats+6       ; set current hit points
 
-  LDY #$01
-  LDA (pointer1), Y						; wpn range 1
-  STA activeObjectStats+0
-  INY
-  LDA (pointer1), Y
-  STA activeObjectStats+1			; wpn range 2
+  JSR getStatsAddress           ; get type data
 
-  LDA #$C0										; switch on cursor and active marker
+  LDY #2                        ; #2 action points per turn
+  LDA (pointer1), Y
+  STA activeObjectStats+9       ; action points per turn
+
+  INY                           ; #3 movement
+  LDA (pointer1), Y             ;
+  STA activeObjectStats+2			  ;
+
+  INY                           ; #4 accuracy
+  LDA (pointer1), Y				      ;
+  STA activeObjectStats+5       ; store
+
+  LDY #9                        ; #9 wpn 1 damage
+  LDA (pointer1), Y				      ;
+  STA activeObjectStats+3			  ; store
+
+  INY                           ; #10 wpn 1 range
+  LDA (pointer1), Y				      ;
+  STA activeObjectStats+0       ; store
+
+  LDY #12                       ; #12 wpn 2 damage
+  LDA (pointer1), Y
+  STA activeObjectStats+4			  ; store
+
+  INY                           ; #13 wpn 2 range
+  LDA (pointer1), Y				      ;
+  STA activeObjectStats+1			  ; store
+
+
+
+  LDA #$C0										  ; switch on cursor and active marker
   STA effects
 
   LDA activeObjectGridPos
@@ -118,6 +127,7 @@ state_newTurn:
   .db $0C						  ; wait for camera to center
   .db $34             ; start of turn events
   .db $06							; wait for user action
+  .db $37             ; end action
   .db $08             ; end turn
   ; built in RTS
 
@@ -135,11 +145,12 @@ state_newTurn:
 
 +aiControlled:
   JSR buildStateStack
-  .db 6							; 4 states
+  .db 7							  ; 7 states
   .db $30             ; set active unit portrait
   .db $0B 						; center camera
   .db $0C							; wait for camera to center
   .db $34             ; start of turn events
   .db $27							; ai determines action
+  .db $37             ; end action
   .db $08             ; end turn
   ; built in RTS

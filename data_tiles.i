@@ -1,19 +1,20 @@
 
 ; object tile tables
 objectTiles:
-.hex 81 82 91 92
-.hex 68 69 78 79
-.hex 6A 6B 7A 7B
-.hex 4A 4B 5A 5B
-.hex 48 49 58 59
-.hex 46 47 56 57
-.hex 66 67 76 77
-.hex A6 A6 B6 B7
-.hex A1 A2 B1 B2
+.hex 81 82 91 92 ; #00
+.hex 68 69 78 79 ; #01
+.hex 6A 6B 7A 7B ; #02
+.hex 4A 4B 5A 5B ; #03
+.hex 48 49 58 59 ; #04
+.hex 46 47 56 57 ; #05
+.hex 66 67 76 77 ; #06
+.hex A6 A6 B6 B7 ; #07
+.hex A1 A2 B1 B2 ;
 .hex A3 A4 B3 B4
 .hex A1 A4 B3 B2
 .hex 42 43 52 53
 .hex 6E 6F 7E 7F
+.hex C7 70 B9 BA ; #12
 
 metaTileBlock00:
 	.hex 62 89 99 89 99 BC 01 9C 01 AE 01 80 01 64 8C 01

@@ -83,7 +83,7 @@ state_resolveMissile:
 
 +continue:                    ; if there is no impact
   STA list1+3                 ; angle
-  LDX #4
+  LDX #6
   JSR getCircleCoordinates    ; X IN radius, A IN angle
   TXA
   CLC

@@ -14,7 +14,7 @@ updateTargetObject:
 	STX targetObjectTypeAndNumber
 
 -loop:
-	LDA objectTypeAndNumber, X
+	LDA objectList, X
 	AND #$0F
 	ASL
 	ASL
@@ -23,12 +23,12 @@ updateTargetObject:
 	CMP cursorGridPos
 	BEQ +setObjectAsTarget
 	INX
-	CPX objectCount
+	CPX objectListSize
 	BNE -loop
 	RTS
 
 +setObjectAsTarget:
 	STY targetObjectIndex
-	LDA objectTypeAndNumber, X
+	LDA objectList, X
 	STA targetObjectTypeAndNumber
 	RTS

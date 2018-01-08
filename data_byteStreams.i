@@ -435,21 +435,26 @@ levelOne:
 	.hex 92 93 94 95 96 86 87 88
 	.hex 5A 5B 6A 6B 6C 6D 6E 6F 7A 7B 7C 7D 7E 7F 8A 8B 9A 9B AA AB
 
-	.db 0																																						; --- blocked nodes (1 bit for movement + 1 bit for line of sight) ---
-																																								; --- initial objects ---
-	.db	$03																																				; number of objects (2)
+	.db 0
 
-	.db $00																																				; object 0 pilot
-	.db $13																																				; object 0 grid position
-	.db $23																																				; object 0 type & facing RD
+	.db	$04			; number of objects (4)
 
-	.db $80																																				; object 1 pilot
-	.db $CA																																				; object 1 grid position
-	.db $25																																				; object 1 type & facing LD
+	.db $00			; object 0 pilot
+	.db $13			; object 0 grid position
+	.db $13			; object 0 type & facing RD
 
-	.db $A0																																				; object 2 pilot
-	.db $C4																																				; object 2 grid position
-	.db $25																																				; object 2 type & facing LD
+	.db $80			; object 1 pilot
+	.db $CA			; object 1 grid position
+	.db $25			; object 1 type & facing LD
+
+	.db $A0			; object 2 pilot
+	.db $C4			; object 2 grid position
+	.db $25			; object 2 type & facing LD
+
+	.db $00			; object 3 building
+	.db $14			; object 2 grid position
+	.db $0D			; object 2 type & facing LD
+
 
 A = $10
 B = $11

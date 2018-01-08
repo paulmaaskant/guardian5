@@ -45,12 +45,16 @@ state_runEffect:
 
   JSR initializeExplosion
 
-  ;LDA events											; update so that the unit is no longer shown
-  ;ORA event_updateSprites
-  ;STA events
+  LDX #12
+  LDY cursorGridPos
+  TXA
+  STA nodeMap, Y
+  JSR setTile
 
   LDA targetObjectTypeAndNumber
-	JSR deleteObject	
+	JSR deleteObject
+
+
 
   INC cameraYDest+1               ; start ground shake
                                   ; because camera move adjustments are mulitples of 2

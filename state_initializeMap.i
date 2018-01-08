@@ -32,13 +32,13 @@ state_initializeMap:
 +continue:
 	; -- object info ---
 	JSR getNextByte
-	STA objectCount
+	STA objectListSize
 	STA activeObjectTypeAndNumber	; set to the last object so that the next is the first
 
 	LDX #0
 
 -nextObject:
-	CPX objectCount
+	CPX objectListSize
 	BEQ +done
 
 	STX list1+2
@@ -46,7 +46,7 @@ state_initializeMap:
 	JSR getNextByte
 	CLC
 	ADC identity, X
-	STA objectTypeAndNumber, X
+	STA objectList, X
 
 	TXA
 	ASL
@@ -58,9 +58,12 @@ state_initializeMap:
 	STA object+3, X						; set grid position
 
 	JSR getNextByte						; get type & initial facing direction
+	PHA
+	AND #%11110111
 	STA object+0, X
 
-	AND #%00000111											; and block it in the node map
+	PLA
+	AND #%00001111											; and block it in the node map
 	ORA #%11000000
 	LDY object+3, X
 	STA nodeMap, Y
@@ -68,12 +71,10 @@ state_initializeMap:
 	LDY list1+3								; object index
 	JSR getStatsAddress				; breaks X, sets pointer1
 
-	LDY #0
-	LDA (pointer1), Y
-
 	LDX list1+3
-	AND #%11111110
-	STA object+1, X						; set health and actionpoints
+	LDY #1										; initial hit points / heat points
+	LDA (pointer1), Y
+	STA object+1, X						; set health and heat points
 
 	LDX list1+2
 	INX

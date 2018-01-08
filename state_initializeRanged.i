@@ -15,12 +15,8 @@
 
 
 state_initializeRanged:
-	JSR calculateAttack
-	JSR clearCurrentEffects
-
-	; --------------------------------------------------
-	; Prepare the menu
-	; --------------------------------------------------
+	JSR calculateAttack					; calculate hit / miss
+	JSR clearCurrentEffects			; clear remaining effects
 	JSR clearActionMenu					; clear the menu
 
 	LDA #$0F 										; hide menu indicators
@@ -31,90 +27,28 @@ state_initializeRanged:
 	ORA menuFlag_line1					; set flag
 	STA menuFlags
 
-	LDX #$00										; write to menu
+	LDX #$00										; position 0
 	LDY #$06										; "opening fire"
 	JSR writeToActionMenu
 
-	LDA events									; refresh menu
-	ORA event_refreshStatusBar	; set flag
-	STA events
-
-	; --------------------------------------------------
-	; Calculate radius and angle
-	; --------------------------------------------------
-	LDA activeObjectGridPos			; attacking unit position
-	JSR gridPosToScreenPos			; attacking unit screen coordinates
-
-	JSR angleToCursor						; takes currentObject coordinates as IN
-	STY list1+7									; radius
-	STA list1+8									; angle
-
 	LDY selectedAction
-	LDX actionList, Y							; 1 for weapon 1, 2 for weapon 2
-	LDA activeObjectStats+3				; default weapon 1 (primary) damage
+	LDX actionList, Y						; 1 for weapon 1, 2 for weapon 2
 	CPX #aRANGED2
 	BEQ +missile
 
-	; set up for machine gun animation
-
-	DEC list1+8									; offset angle by 1 bin radian
-	LDA #0											; init
-	STA list1+0									; frame counter
-	STA list1+1									; effect counter
-	STA par1										; divide input parameter
-	LDA list1+7									; radius
-	STA par2										; divide input parameter
-	LDA #3											; divide input parameter
-	JSR divide
-	LDA par4										; radius / 3
-	STA list1+3									;
-	LDA #$04										; switch on controlled effects
-	STA effects									;
-	LDA list3+3
-	CMP #$02										; if attack is a miss
-	BNE +continue
-	LDA list1+7									; then adjust angle
-	ADC #20											; and radius
-	STA list1+7
-	LDA list1+8
-	ADC #5
-	STA list1+8
-
-+continue:
-	LDY #sGunFire
-	JSR soundLoad
-
 	JSR pullAndBuildStateStack
-	.db #3											; 3 items
-	.db $2B
-	.db $13 										; resolve ranged
+	.db #6											; 6 items
+	.db $31, eRefreshStatusBar	; raise event
+	.db $1C											; face target
+	.db $2B											; center camera on attack area
+	.db $38											; start machine gun animation
 	.db $16											; show results
-	; built in RTS
 
 +missile:
-
-															; set up for missile animation
-	LDA #0											; init
-	STA list1+0									; frame counter
-	STA list1+4									; first hit counter
-	LDA #$02										; switch on controlled effects
-	STA effects
-
-	LDX #5											; explosion animation
-	LDY #17											; explosion sound
-	LDA list3+3
-	CMP #2										   ; if attack is a miss
-	BNE +continue
-	LDX #8											; shield animation
-	LDY #27											; shield sound
-
-+continue:
-	STX list1+5
-	STY list1+6
-
 	JSR pullAndBuildStateStack
-	.db #3											; 3 items
-	.db $2B
-	.db $2E 										; resolve ranged
+	.db #6											; 6 items
+	.db $31, eRefreshStatusBar	; raise event
+	.db $1C											; turn active unit to face target
+	.db $2B											; center camera on attack area
+	.db $39											; start missile animation
 	.db $16											; show results
-	; built in RTS

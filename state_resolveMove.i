@@ -259,13 +259,13 @@ state_resolveMove:
 ; rearranges the order of the objects, making sure that object sprites that are closer to the bottom are rendered first
 ; assumption: list is sorted, except for 1 item which needs to move down in the list
 ;
-; IN objectCount
+; IN objectListSize
 ; IN OUT list4 +0 ... +15
-; IN OUT objectTypeAndNumber +0 ... +15
+; IN OUT objectList +0 ... +15
 ; LOCAL X
 ;------------------------------------
 objectListSweepDown:
-	LDA objectCount
+	LDA objectListSize
 	CMP #$02
 	BCC +done2
 
@@ -282,12 +282,12 @@ objectListSweepDown:
 	PLA
 	STA list4+0, X
 
-	LDA objectTypeAndNumber+0, X
+	LDA objectList+0, X
 	PHA
-	LDA objectTypeAndNumber-1, X
-	STA objectTypeAndNumber+0, X
+	LDA objectList-1, X
+	STA objectList+0, X
 	PLA
-	STA objectTypeAndNumber-1, X
+	STA objectList-1, X
 +next2
 	DEX
 	BNE -loop2
@@ -299,13 +299,13 @@ objectListSweepDown:
 ; rearranges the order of the objects, making sure that object sprites that are closer to the bottom are rendered first
 ; assumption: list is sorted, except for 1 item which needs to move up in the list
 ;
-; IN objectCount
-; IN OUT actionList +0 ... +15
-; IN OUT objectTypeAndNumber +0 ... +15
+; IN objectListSize
+; IN OUT list4 +0 ... +15
+; IN OUT objectList +0 ... +15
 ; LOCAL X
 ;------------------------------------
 objectListSweepUp:
-	LDA objectCount
+	LDA objectListSize
 	CMP #$02
 	BCC +done
 
@@ -321,16 +321,16 @@ objectListSweepUp:
 	PLA
 	STA list4+0, X
 
-	LDA objectTypeAndNumber+0, X
+	LDA objectList+0, X
 	PHA
-	LDA objectTypeAndNumber-1, X
-	STA objectTypeAndNumber+0, X
+	LDA objectList-1, X
+	STA objectList+0, X
 	PLA
-	STA objectTypeAndNumber-1, X
+	STA objectList-1, X
 
 +next:
 	INX
-	CPX objectCount
+	CPX objectListSize
 	BCC -loop
 +done
 	RTS
@@ -344,9 +344,9 @@ objectListSweepUp:
 ; LOCAL locVar1
 ;------------------------------
 calculateObjectSequence:
-	LDX objectCount
+	LDX objectListSize
 	DEX
--	LDA objectTypeAndNumber, X
+-	LDA objectList, X
 	AND #$07
 	ASL
 	ASL

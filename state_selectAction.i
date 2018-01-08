@@ -15,10 +15,10 @@ state_selectAction:
 	BEQ +continue
 
 +showTimer:
-	LDX objectCount
+	LDX objectListSize
 
 -loop:
-	LDA objectTypeAndNumber-1, X
+	LDA objectList-1, X
 	CMP targetObjectTypeAndNumber
 	BEQ +nextObject
 	AND #%00001111

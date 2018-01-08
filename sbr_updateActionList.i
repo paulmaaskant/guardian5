@@ -72,6 +72,10 @@ updateActionList:
 	JSR addPossibleAction
 	PLP
 	BEQ +skipCharge
+	LDA activeObjectStats+9
+	CMP #2
+	BCC +skipCharge
+
 	LDA #aCHARGE
 	JSR addPossibleAction
 
@@ -95,7 +99,12 @@ updateActionList:
 	LDA cursorGridPos
 	STA par1										; par1 = destination node
 	LDA activeObjectStats+2			;
+	LDX activeObjectStats+9
+	CPX #2
+	BCC +continue
 	ASL
+
++continue:
 	STA par2										; par2 = # moves allowed
 	LDX par1
 	LDA nodeMap, X

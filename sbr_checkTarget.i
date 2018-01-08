@@ -38,11 +38,11 @@ checkTarget:
 	BEQ +chargeChecks																															; continue to charge checks
 
 	; --- check arc ---																														; otherwise, check field of vision
-	JSR checkFiringArc																														; note: leaves X intact
-	BCS +nextCheck
-	LDA #$8A																																			; deny (b7) + outside of arc (b6-b0)
-	STA actionMessage
-	RTS
+	; JSR checkFiringArc																														; note: leaves X intact
+	; BCS +nextCheck
+	; LDA #$8A																																			; deny (b7) + outside of arc (b6-b0)
+	; STA actionMessage
+	; RTS
 
 +nextCheck:
 	; --- check min / max distance for ranged attacks ---
@@ -102,40 +102,34 @@ checkTarget:
 	; condition for charge: adjacent to exactly 1 hostile
 	; JSR isChargePossible
 
-	LDA #$01
-	STA list3+21																																	; 1 charge damage sustained
+	;LDA #$01
+	;STA list3+21																																	; 1 charge damage sustained
 
 +checksDone:
-	LDA activeObjectStats+5																												; calculate hit chance
-	AND #%00111000																																; first get attacker accuracy
-	LSR
-	LSR
-	LSR
-	ADC #$05																																			; CLC guaranteed
-	PHA 																																					; ACCURACY on stack
-
 	LDY targetObjectIndex
-	LDA object+0, Y
-
-	JSR getStatsAddress
-	STA list3+20																																	; target health points
-	JSR toBCD																																			; convert health points to BCD for display purposes
-	LDA par2																																			; the tens
+	LDA object+1, Y
+ 	LSR
+	LSR
+	LSR
+	STA list3+20														; target hit points
+	JSR toBCD																; convert health points to BCD for display purposes
+	LDA par2																; the tens
 	STA list3+12
-	LDA par3																																			; the ones
+	LDA par3																; the ones
 	STA list3+13
-	PLA
-	TAX														; move ACCURACY to X
-	LDA (pointer1), Y							; retrieve target's defence
-	AND #$07
-	CLC
-	ADC #$0F											; target's DEFENSE
+
+	LDA activeObjectStats+5
+
+	JSR getStatsAddress											; set pointer to target type data
+	LDY #5
+	LDA (pointer1), Y												; retrieve target's defence
+
+	EOR #$FF
 	SEC
-	SBC identity, X								; minus active unit's ACCURACY
-	TAY
-	LDA hitProbability, Y					; look up the hit probability
-	STA list3+1										; store hit probability
-	JSR toBCD											; convert to BCD for display purposes
+	ADC activeObjectStats+5									; - DEF + ACC
+	STA list3+1															; store hit probability
+
+	JSR toBCD																; convert to BCD for display purposes
 	LDA par2
 	CLC
 	ADC #$40
@@ -173,21 +167,21 @@ checkTarget:
 ; -----------------------------------------
 checkRange:
 	; -- determine which weapon is selected ---
-	LDA #%00010000									; default: close combat (max 1, min 0)
+	LDA #%00010000									; default range for close combat (max 1, min 0)
 
 	LDY selectedAction
 	LDX actionList, Y								; 1 for weapon 1, 2 for weapon 2
 	CPX #aCLOSECOMBAT
 	BEQ +continue										; if true, stick with current value of A
+
 	LDA activeObjectStats-1, X			; max range (b7-4) min range (b3-2)
 
 +continue:
-	LSR
-	LSR
 	STA locVar2
-	INC locVar2											; minimum range
 	LSR
 	LSR
+	LSR
+	LSR										; max range
 	CMP distanceToTarget
 	BCS +checkMinRange
 	LDA #$88							; deny (b7) + out of range (b6-b0)
@@ -195,8 +189,8 @@ checkRange:
 	RTS
 
 +checkMinRange:
-	LDA locVar2							; minimum distance
-	AND #$03								; distance
+	LDA locVar2							; minimum range
+	AND #$0F								; distance
 	CMP distanceToTarget
 	BEQ +done
 	BCC +done

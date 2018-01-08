@@ -54,6 +54,7 @@ animationL:
 	.db #> ANIM23
 	.db #> ANIM24
 	.db #> ANIM25
+	.db #> ANIM26
 
 animationH:
 	.db #< ANIM00
@@ -94,6 +95,7 @@ animationH:
 	.db #< ANIM23
 	.db #< ANIM24
 	.db #< ANIM25
+	.db #< ANIM26
 
 ANIM00:
 	.db #$80, #$08
@@ -303,3 +305,7 @@ ANIM24:
 ANIM25:
 	.db $10, $20
 	.dw tank03_stationary_d4_f
+
+ANIM26:
+	.db $10, $20
+	.dw OB00

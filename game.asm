@@ -95,21 +95,23 @@
 																.dsb 1	; 2 movement
 																.dsb 1  ; 3 weapon 1 damage
 																.dsb 1 	; 4 weapon 2 damage
-																.dsb 1 	; 5 accuracy & defence (b7-4) acc, (b3-0) def
-																.dsb 1	; 6 armor (dail)
+																.dsb 1 	; 5 accuracy
+																.dsb 1	; 6 hit points
 																.dsb 1	; 7 weapon 1 details
 																.dsb 1	; 8 weapon 2 details
-																.dsb 1	; 9 not used
+																.dsb 1	; 9 remaining action points
 
 																				; stored memory objects
 																				; object grid position is stored separately as it will be sorted regularly
-	objectCount										.dsb 1	; number of objects presently in memory
-	objectTypeAndNumber						.dsb 8	; (b7) hostile (b7-4) pilot (b3-0) object index
+	objectListSize								.dsb 1	; number of objects presently in memory
+	objectList										.dsb 8	; (b7) hostile (b6-4) pilot (b3-0) object index
 																				; the rest of the object information is stored (4 bytes each) so that it does not require sorting whenever the object's position changes
+
 	object												.dsb 1	; +0: (b7-4) type, (b3) move/still, (b2-0) direction
 																.dsb 1	; +1: health dial (b7-3), heat dial (b2-0)
-																.dsb 1	; +2: frame count (b7-0)
+																.dsb 1	; +2: (b7) shut down (b6-0) frame count
 																.dsb 1	; +3: grid pos
+
 	object1												.dsb 4	;
 	object2												.dsb 4	;
 	object3												.dsb 4	;
@@ -371,7 +373,7 @@ mainGameLoop:
 	LDX #$00																																			; start with object on pos 0
 
 -loopObjects
-	LDA objectTypeAndNumber, X																										; get next object
+	LDA objectList, X																										; get next object
 	AND #$0F
 	ASL
 	ASL
@@ -387,7 +389,7 @@ mainGameLoop:
 	LDA objectTypeH, Y
 	STA currentObjectType+1																												; and store it as the current object type
 
-	LDA objectTypeAndNumber, X																										; reload the object
+	LDA objectList, X																										; reload the object
 	AND #%00001111																																; and mask the object number
 	ASL																																						; mulitply by 4 to get the
 	ASL																																						; object index
@@ -402,7 +404,7 @@ mainGameLoop:
 	JSR gridPosToScreenPos																												; get and set screen X & Y
 	BCC +done																																			; off screen -> done (no need to show sprites)
 
-	LDA objectTypeAndNumber, X																										; get B7 (neg flag)
+	LDA objectList, X																										; get B7 (neg flag)
 	PHP																																						; store neg flag
 	LDA object+0, Y
 	AND #%00001000																																; object move bit (b3) ON
@@ -491,7 +493,7 @@ mainGameLoop:
 	ORA currentObjectFrameCount																										; object frame count
 	STA object+2, Y
 	INX																																						; next object
-	CPX objectCount																																; number of objects presently in memory
+	CPX objectListSize																																; number of objects presently in memory
 	BEQ +continue
 	JMP -loopObjects																															;
 
@@ -561,7 +563,10 @@ mainGameLoop:
 +nextEvent:
 	LDA events																																		;
 	BIT event_updateStatusBar																											;
-	BEQ +nextEvent																																;
+	BNE +continue
+	JMP +nextEvent
+
++continue:																															;
 	ORA event_refreshStatusBar																										; raise event to trigger buffer to screen
 	EOR event_updateStatusBar																											;
 	STA events
@@ -593,13 +598,35 @@ mainGameLoop:
 
 +continue:
 	LDA actionMessage
-	BMI +continue
+	BMI +continue										; if not denied,
+																	; show COST
+	LDX #2													; AP per turn
 
-	LDY #13													; COST
+-loop:
+	LDY #$0D
+	CPX activeObjectStats+9					; remaining AP this turn
+	BEQ +next
+	BCS +store
+
++next:
+	LDY #$50
+	LDA activeObjectStats+9
+	SEC
+	SBC list3+0
+	SBC identity, X
+	BCC +store
+	LDY #$3A
+
++store:
+	TYA
+	STA actionMenuLine3-1, X
+	DEX
+	BNE -loop
+
 	LDX selectedAction
   LDA actionList, X
   CMP #aCOOLDOWN
-	BNE +skip
+	BNE +continue
 	LDY #18													; GAIN
 
 +skip:
@@ -682,14 +709,14 @@ gameStateJumpTable:
 	.dw state_initializeMove-1									; 10
 	.dw state_resolveMove-1											; 11
 	.dw state_initializeRanged-1								; 12
-	.dw state_resolveRanged-1										; 13
+	.dw state_resolveMachineGun-1								; 13
 	.dw state_initializeCoolDown-1							; 14
 	.dw state_resolveCoolDown-1									; 15
 	.dw state_showResults-1											; 16
 	.dw state_initializeCloseCombat-1						; 17
 	.dw state_resolveClose-1										; 18
 	.dw state_initializePivotTurn-1							; 19
-	.dw state_initializeFreeSpin-1							; 1A
+	.dw not_used																; 1A NOT USED
 	.dw state_initializeCharge-1								; 1B
 	.dw state_faceTarget-1											; 1C
 	.dw state_closeCombatAnimation-1						; 1D
@@ -718,6 +745,9 @@ gameStateJumpTable:
 	.dw state_startTurn-1												; 34
 	.dw state_initializeModifiers-1							; 35
 	.dw state_showModifiers-1										; 36
+	.dw state_endAction-1												; 37
+	.dw state_initializeMachineGun-1						; 38
+	.dw state_initializeMissile-1								; 39
 
 :not_used
 
@@ -746,7 +776,7 @@ gameStateJumpTable:
 	.include state_resolveSpin.i
 	.include state_resolveCoolDown.i
 	.include state_initializeRanged.i
-	.include state_resolveRanged.i
+	.include state_resolveMachineGun.i
 	.include state_resolveClose.i
 	.include state_showResults.i
 	.include state_shutDown.i
@@ -774,6 +804,9 @@ gameStateJumpTable:
 	.include state_startTurn.i
 	.include state_initializeModifiers.i
 	.include state_showModifiers.i
+	.include state_endAction.i
+	.include state_initializeMachineGun.i
+	.include state_initializeMissile.i
 
 	.include sbr_getStatsAddress.i
 	.include sbr_pushState.i
@@ -935,28 +968,6 @@ menuFlag_line3:							.db %00001000
 
 leftNyble:					.db #$F0
 rightNyble:					.db #$0F
-
-hitProbability:
-	.db 100	; dif 0 100% (97 due to crit miss
-	.db 100 ; dif 1 100% (97 due to crit miss
-	.db 100	; dif 2 100% (97 due to crit miss
-	.db 100	; dif 3 100% (97 due to crit miss
-	.db 100	; dif 4 100% (97 due to crit miss
-	.db 99	; dif 5  99% (97 due to crit miss
-	.db 96	; dif 6  96%
-	.db 91	; dif 7  91%
-	.db 84	; dif 8  84%
-	.db 75	; dif 9  75%
-	.db 63	; dif 10 63%
-	.db 50	; dif 11 50%
-	.db 38	; dif 12 38%
-	.db 26	; dif 13 26%
-	.db 17	; dif 14 17%
-	.db 10	; dif 15 10%
-	.db 5		; dif 16  5%
-	.db 2		; dif 17  2% (3% due to crit
-	.db 1		; dif 18  1% (3% due to crit
-	.db 0		; dif 19  0% (3% due to crit
 
 ; maps object byte 0, b3-0 (direction+move) to the address in the object type table
 ; that holds the matching animation #

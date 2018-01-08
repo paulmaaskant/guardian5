@@ -63,7 +63,7 @@ str_MOVE:
 str_OPENING_FIRE:
 	.db $0C, $1E, $1F, $14, $1D, $18, $1D, $16, $0F, $15, $18, $21, $14
 str_COOL_DOWN:
-	.db 9, C, O, O, L, space, D, O, W, N
+	.db 8, E, N, D, space, T, U, R, N
 str_CHARGE:
 	.db 6, C, H, A, R, G, E
 str_CLOSE_COMBAT:
@@ -99,6 +99,6 @@ str_INSTRUCTIONS:
 str_RUN:
 	.db 3, R, U, N
 str_COST
-	.db 10, C, O, S, T, space, $80+0, $3A, space, $80+21, $3C
+	.db 7, C, O, S, T, space, $80+0, $3A
 str_GAIN
-	.db 7, G, A, I, N, space, $80+0, $3A
+	.db 10, R, E, S, T, O, R, E, space, $80+0, $3B

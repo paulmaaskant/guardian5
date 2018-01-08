@@ -15,10 +15,11 @@ showSystemInfo:
 	AND #%00000111
 	JSR toBCD
 
-	LDA #$3A
+	LDA #$3B
 	STA systemMenuLine1+3
 	LDA par2
 	STA systemMenuLine1+4
 	LDA par3
 	STA systemMenuLine1+5
+
 	RTS

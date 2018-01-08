@@ -421,7 +421,7 @@ isChargePossible:
 	STX par2
 -nextObject
 	; --- set current object attributes --
-	LDA objectTypeAndNumber, X
+	LDA objectList, X
 	AND #%00000111
 	ASL
 	ASL
@@ -435,7 +435,7 @@ isChargePossible:
 	INC par2
 +continue
 	INX									; next object
-	CPX objectCount						; number of objects presently in memory
+	CPX objectListSize				; number of objects presently in memory
 	BNE -nextObject
 
 	LDA par2

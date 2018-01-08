@@ -14,8 +14,7 @@
 ;
 
 ; -----------------------------------------------
-state_resolveRanged:
-
+state_resolveMachineGun:
 	LDA list1+0													; lightning effect
 	AND #$03
 	BNE +continue

@@ -30,7 +30,7 @@ tank01_stationary_d1_f:
 
 tank02_stationary_d1_f:
   .db %10100000
-	.db -22
+	.db -24
 	.dw tank02_d1_top
 
 tank01_stationary_d4_f:
@@ -754,6 +754,11 @@ tank02_moving_d1_fr08:
 	.db -6
 	.dw W1F2F
 
+
+OB00:
+  .db %10100000
+  .db -24
+  .dw OBS0
 
 
 CS00:	.db #%00110000

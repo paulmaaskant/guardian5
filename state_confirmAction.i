@@ -12,12 +12,14 @@ state_confirmAction:
 	LDA buttons																																		;
 	BNE +continue					; if buttons are pressed then proceed
 
-  LDA targetObjectTypeAndNumber																									; move?
-  BNE +done
+  LDY selectedAction
+	LDX actionList, Y
+	CPX #aMOVE																													; move?
+  BNE +done             ; if locked on a valid MOVE
 
   JSR clearCurrentEffects
 
-  LDA effects						; if locked on a valid MOVE
+  LDA effects
   ORA #$01
   STA effects
   LDX list2

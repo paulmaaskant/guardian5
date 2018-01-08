@@ -59,7 +59,13 @@ firstPass:
   STX list6									                                                  ;
   STX actionList+0                                                              ; reset eligble node count
   LDA activeObjectStats+2
+
+  LDY activeObjectStats+9
+  CPY #2
+  BCC +noRunning
   ASL
+
++noRunning:
   STA actionList+1                                                              ; act obj run distance
   INC actionList+1                                                              ; +1 to make compare easier
 
@@ -96,11 +102,6 @@ firstPass:
   TAX
   BCS +discardNode                                                              ; node has no visibility on target unit
 
-;  INC actionList+0
-;  LDA nodeMap, X                                                                ; eligible node
-;  ORA #%00010000
-;  STA nodeMap, X
-
   STX par1
   JSR random
   LDX par1            ; restore X
@@ -133,7 +134,13 @@ secondPass:
   STX list6							                                                  ;
   STX actionList+0                                                              ; reset eligble node count
   LDA activeObjectStats+2
+
+  LDY activeObjectStats+9
+  CPY #2
+  BCC +noRunning
   ASL
+
++noRunning:
   STA actionList+1                                                              ; act obj run distance
   LDX #$00
 
@@ -147,11 +154,6 @@ secondPass:
   CMP actionList+1
   BNE +discardNode                                                              ; node too far from active unit
 
-;  INC actionList+0
-;  LDA nodeMap, X                                                                ; eligible node
-;  ORA #%00010000
-;  STA nodeMap, X
-
   LDA cursorGridPos
   JSR distance
   JSR addToSortedList
@@ -159,9 +161,6 @@ secondPass:
   BNE +nextNode
 
 +discardNode:
-;  LDA nodeMap, X
-;  AND #%11101111
-;  STA nodeMap, X
 
 +nextNode:
   INX
@@ -187,9 +186,14 @@ evaluateNodes:
   LDA activeObjectGridPos
   JSR distance
   STA distanceToTarget                                                          ; update dtt
-
   LDA activeObjectStats+2
+
+  LDY activeObjectStats+9
+  CPY #2
+  BCC +noRunning
   ASL
+
++noRunning:
   STA par2                                                                      ; set max number of moves
   LDA activeObjectGridPos                                                       ; set start node
   JSR findPath                                                                  ; find path
@@ -199,10 +203,4 @@ evaluateNodes:
   RTS
 
 +continue:
-;  LDX par1
-;  LDA nodeMap, X
-;  AND #%11101111
-;  STA nodeMap, X
-
-;  DEC actionList+0
   JMP -nextNode
