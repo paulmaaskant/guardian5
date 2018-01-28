@@ -19,6 +19,16 @@ actionTable:
 	.db $19, $13				; 06 PIVOT TURN
 	.db $10, $18				; 07 RUN
 
+actionTableWaypoints:
+	.db $80
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $80
+	.db $00
+	.db $80
+
 	aMOVE = $00
 	aRANGED1 = $01
 	aRANGED2 = $02
@@ -75,13 +85,11 @@ updateActionList:
 	LDA activeObjectStats+9
 	CMP #2
 	BCC +skipCharge
-
 	LDA #aCHARGE
 	JSR addPossibleAction
 
 +skipCharge:
 	JSR checkTarget					; tail chain, check conditions for attack
-													; such as line of sight
 	BIT actionMessage
 	BMI +done
 
@@ -89,7 +97,8 @@ updateActionList:
 	JSR setTargetToolTip
 
 +done:
-	RTS
+	LDA #aCOOLDOWN						; COOL DOWN
+	JMP addPossibleAction			; tail chain
 
 	; ----------------------------------
 	; Cursor on EMPTY SPACE

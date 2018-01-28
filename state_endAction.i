@@ -1,20 +1,21 @@
 state_endAction:
-; ---------------------
-; end of turn event : mission accomplished if only friendly units remain
-; ---------------------
-LDX objectListSize
-LDA #00
+  ; ---------------------
+  ; end of turn event : mission accomplished if only friendly units remain
+  ; ---------------------
+  LDX objectListSize
+  LDA #00
+  JMP +continue
 
 -loop:
-ORA objectList-1, X
-DEX
-BNE -loop
-ASL
-BCC +missionAccomplished
+  ORA objectList-1, X
+  DEX
+  BNE -loop
+  ASL
+  BCC +missionAccomplished
 
-; ---------------------
-; end of turn event : mission failed if only hostile units remain
-; ---------------------
+  ; ---------------------
+  ; end of turn event : mission failed if only hostile units remain
+  ; ---------------------
   LDX objectListSize
   LDA #$80
 

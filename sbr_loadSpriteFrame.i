@@ -6,7 +6,7 @@
 ; IN 		par2 Y draw position
 ; IN 		par3 sprite address
 ; IN 		par4 b7, b6 -> mirror
-; IN		par4 b5 -> mask
+; IN		par4 b5 -> mask (REMOVED)
 ; IN    par4 b4 -> obs
 ; IN 		par4 b0 -> palette switch
 ;
@@ -20,7 +20,7 @@
 ;
 ; -- row header --
 ; pppp = number of patterns in row
-; H = 1, hide sprites in this row if object is obscured
+; H = 1, hide sprites in this row if object is obscured REMOVED
 ; F = 1, optional flip bit byte included
 ; N = 1, move one row down
 ; L = 1, last row
@@ -53,14 +53,14 @@ loadSpriteFrame:
 
 +continue:
 	LSR										; H into carry
-	BCC +continue
-	TAX										; store A
-	LDA par4
-	AND #$10
-	BNE +prepNextRow
-	TXA										; restore A
+	;BCC +continue
+	;TAX										; store A
+	;LDA par4
+	;AND #$10
+	;BNE +prepNextRow
+	;TXA										; restore A
 
-+continue:
+;+continue:
 	STA locVar4						; locVar4 := no. of sprites in current row
 	INY
 	LDA (pointer1), Y			; x offset

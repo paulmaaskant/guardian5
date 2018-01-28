@@ -13,86 +13,69 @@
 ; IN list1, nodes in path
 ; IN list2, directions corresponding to the nodes in path
 ;
-;
-; OUT selectedAction
-; OUT actionList+0, 		index for list1 and list2
-; OUT actionList+1, 		X offset in pixels
-; OUT actionList+2, 		Y offset in pixels
-; OUT actionList+3, 		sign X offset (b7), sign Y offset (b6), interpolation toggle (b5) (diagonal or vertical)
-;
-; LOCAL actionList+4..+9	temp store for sprite priority score
+; LOCAL selectedAction
+; LOCAL actionList+0, 		index for list1 and list2
+; LOCAL actionList+1, 		X offset in pixels
+; LOCAL actionList+2, 		Y offset in pixels
+
+; LOCAL list4temp store for sprite priority score
 ;
 ; UPDATES object				grid position on active object
 ;
 ;--------------------
 
 state_initializeCharge:
-	DEC list1										; remove the final node from the path (defending unit position)
+	DEC list1										; remove the final node from the path (= defending unit position)
 
-	JSR calculateAttack
-
-	JSR initializeMove					; tail chain
+	JSR calculateAttack					; includes a call to applyActionPointCost
 
 	JSR pullAndBuildStateStack
-	.db $03							; 3 states
-	.db $11 						; initialize move animation
+	.db 8								; 8 items
+	.db $3A, 1					; switch CHR bank 1 to 1
+	.db $3B 						; move animation loop
 	.db $1C							; turn to face target
 	.db $1D							; close combat animation
+	.db $3A, 0					; switch CHR bank 1 back to 0
 	.db $16							; show results
 	; built in RTS
-
 
 ;-------------------------------------
 ; initialize action resolution: MOVE
 ;-------------------------------------
-state_initializeMove:
+state_initializeMoveAction:
 	LDA #$03										; clear from list3+4
 	LDX #$09										; up to and including list3+9
 	JSR clearList3
 
 	JSR applyActionPointCost
-	JSR initializeMove
+
+	JSR clearActionMenu					; clear the menu
+	
+	LDA #$0F 										; hide menu indicators
+	STA menuIndicator+0
+	STA menuIndicator+1
+
+	LDA menuFlags								; switch on blinking for line 2
+	ORA menuFlag_line2					; set flag
+	STA menuFlags
+
+	LDX #13											; line 2
+	LDY #$0A										; "moving"
+	JSR writeToActionMenu
 
 	JSR pullAndBuildStateStack
-	.db $03							; 3 states
-	.db $11 						; resolve move
+	.db 7								; 7 items
+	.db $3A, 1					; switch CHR bank 1 to 1
+	.db $3B 						; init and resolve move
+	.db $3A, 0					; switch CHR bank 1 back to 0
 	.db $0A							; set direction
 	.db $16							; show results
 	; built in RTS
-
-initializeMove:
-	LDA effects
-	AND #%10000000						; switch off active marker
-	STA effects
-
-	LDY activeObjectIndex				; set object's move animation bit (b3)
-	LDA object, Y
-	ORA #%00001000
-	STA object, Y
-
-
-	LDY activeObjectGridPos			; unblock position in nodeMap
-	LDA #0											; FIX: show original meta tile
-	STA nodeMap, Y
-	TAX
-	JSR setTile
-
-	LDA #$00
-	STA actionCounter
-	STA actionList+0						; node number on path in list1
-
-	LDA #1
-	STA softCHRBank1
-
-	JMP clearCurrentEffects
 
 ; ----------------------------------------
 ; loop to resolve move
 ; ----------------------------------------
 state_resolveMove:
-	LDA #1
-	STA softCHRBank1
-
 	LDA actionCounter
 	BEQ +continue
 	JMP +calculateOffset			; frame 32-1? -> calculate
@@ -103,6 +86,7 @@ state_resolveMove:
 	;-------------------------------------
 	DEC list1
 	BPL +continue
+
 	;-------------------------------
 	; Move complete
 	;-------------------------------
@@ -115,7 +99,6 @@ state_resolveMove:
 	EOR #%00001000							; object move bit (b3) OFF
 	STA object+0, Y
 	AND #%00000111							; get direction
-
 	LDY activeObjectGridPos			; block final position, move (b7) and sight (b6)
 	ORA #%11000000							; blocked for movement and los
 	STA nodeMap, Y
@@ -123,15 +106,13 @@ state_resolveMove:
 	TAX
 	JSR setTile
 
-	LDA #0
-	STA softCHRBank1
-
 	JMP pullState
 
 	; ---------------
 	; New node
 	; ---------------
 +continue:
+
 	LDA #$20										; 32 frames
 	STA actionCounter
 
@@ -139,71 +120,14 @@ state_resolveMove:
 	LDX actionList							; X = index for 'list 1' and 'list2'
 	LDY activeObjectIndex				; Y = index	for 'objectTypeAndNumber'
 
-	LDA object, Y								; reset direction bits (b2-0) on active object
+	LDA object, Y								; set new direction bits (b2-0) on active object
 	AND #%11111000
 	ORA list2, X
 	STA object, Y
-																														; used in embedded effect 4
-	STX list5+0										; temp store X
 
-	AND #%00000111
-	TAX
-	LDA state_resolveMoveMirrorTable-1, X
-	STA list5+1										; temp mirror settings for mask
-
-	LDA effects
-	AND #%11111000
-	STA effects
-
-	LDX activeObjectGridPos
-	LDA nodeMap, X
-	AND #%00100000
-	BEQ +continue
-
-	TXA
-	JSR gridPosToScreenPos
-	BCC +continue													; not on screen!
-
-	INC effects
-
-	LDA #$04
-	STA currentEffects+0
-	LDA currentObjectXPos
-	STA currentEffects+6
-	LDA currentObjectYPos
-	STA currentEffects+12
-	LDA list5+1
-	EOR #%01000000
-	STA currentEffects+24									; mirror
-
-+continue:
-	LDX list5+0
-	LDA list1, X							; update active object's grid position
-	STA activeObjectGridPos		;
-	STA object+3, Y						;
-	TAY
-	LDA nodeMap, Y
-	AND #%00100000
-	BEQ +continue
-
-	TYA												; obscured!
-	JSR gridPosToScreenPos
-	BCC +continue							; not on screen!
-	LDA effects
-	AND #%00000001
-	TAX
-	INC effects
-
-	LDA #$04
-	STA currentEffects+0, X
-	LDA currentObjectXPos
-	STA currentEffects+6, X
-	LDA currentObjectYPos
-	STA currentEffects+12, X
-	LDA list5+1
-	STA currentEffects+24, X								; mirror
-
-+continue:
+	LDA list1, X								; update active object's grid position
+	STA activeObjectGridPos			;
+	STA object+3, Y							;
 
 
 	;-------------------------------
@@ -272,15 +196,15 @@ objectListSweepDown:
 	TAX
 	DEX				; object count - 1
 -loop2:
-	LDA list4+1, X
-	CMP list4+0, X
+	LDA list4+0, X
+	CMP list4-1, X
 	BCS +next2
 
 	PHA								; swap
-	LDA list4+0, X
-	STA list4+1, X
-	PLA
+	LDA list4-1, X
 	STA list4+0, X
+	PLA
+	STA list4-1, X
 
 	LDA objectList+0, X
 	PHA
@@ -311,15 +235,15 @@ objectListSweepUp:
 
 	LDX #$01
 -loop:
-	LDA list4+1, X
-	CMP list4+0, X
+	LDA list4+0, X
+	CMP list4-1, X
 	BCS +next
 
 	PHA								; swap
-	LDA list4+0, X
-	STA list4+1, X
-	PLA
+	LDA list4-1, X
 	STA list4+0, X
+	PLA
+	STA list4-1, X
 
 	LDA objectList+0, X
 	PHA
@@ -347,7 +271,7 @@ calculateObjectSequence:
 	LDX objectListSize
 	DEX
 -	LDA objectList, X
-	AND #$07
+	AND #$0F
 	ASL
 	ASL
 	TAY

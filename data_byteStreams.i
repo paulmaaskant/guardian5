@@ -1,31 +1,41 @@
 
 ; --- byte stream to load status bar ( in reverse )	---
+hud:
 statusBar:
-	.db repeatBlank, $21 	; 2 rows + 3 blank tiles
+	.db repeatBlank, 33 	; 2 rows + 3 blank tiles
 	.db $2B, repeatBlank, 5, $2A
 	.db $2B, repeatBlank, 13, $2A
 	.db $2B, repeatBlank, 6, $2A
-	.db repeatBlank, $62
+	.db repeatBlank, 88
+	.db $2D, repeatBlank, 6, $2C
+	.db repeatBlank, 2
 	.db $2D, repeatBlank, 5, $2C
 	.db $2D, repeatBlank, 13, $2C
-	.db $2D, repeatBlank, 6, $2C
-	.db repeatBlank, $62	; 7 rows
+	.db repeatBlank, 9
+
+	.db repeatBlank, $61	; 7 rows
 	.db repeatBlank, $00	; 8 blank rows
 	.db repeatBlank, $00  ; 8 blank rows
-												; 5 to go
 
-	.db repeatBlank, 22, $2B, repeatBlank, 6, $2A
-	.db repeatBlank, $22 ; 1 rows
-	.db $2B, repeatBlank, 20, $2A, repeatBlank, 8
-	.db repeatBlank, $41 ; 2 rows
-
+	; offset is 1 blank
+	.db repeatBlank, 25, $2B, repeatBlank, 3, $2A
+	.db repeatBlank, 20
+	.db $2F, T, O, L, I, P
+	.db repeatBlank, 26
+	.db $2F, A, H, C, E, M
+	.db repeatBlank, 8
+	.db repeatBlank, 25, $2D, repeatBlank, 3, $2C
+	.db repeatBlank, $21 ; 2 rows
 
 	; --- palettes ---
 	.db $FE, 64, $AA
 
 hudDialog:
-	.db repeatBlank, 33, $2B, repeatBlank, 28, $2A, repeatBlank, 98
-	.db $2D, repeatBlank, 5, $0A, repeatBlank, 22, $2C, repeatBlank, 01
+	.db repeatBlank, 33, $2B
+	.db repeatBlank, 23, $2A, $2B, repeatBlank, 3, $2A, repeatBlank, 91
+	.db $2D, repeatBlank, 3, $2C
+	.db repeatBlank, 2
+	.db $2D, repeatBlank, 5, $0A, repeatBlank, 17, $2C, repeatBlank, 06
 
 hudMenu:
 	.db repeatBlank, 24
@@ -42,16 +52,18 @@ hudMenu:
 	.db $2D, repeatBlank, 5, $0A, repeatBlank, 14, $2C, $2D, repeatBlank, 6, $2C
 	.db $0F
 
-hud:
-	.db repeatBlank, 33 	; 2 rows + 3 blank tiles
-	.db $2B, repeatBlank, 5, $2A
-	.db $2B, repeatBlank, 13, $2A
-	.db $2B, repeatBlank, 6, $2A
-	.db repeatBlank, $62
-	.db $2D, repeatBlank, 5, $2C
-	.db $2D, repeatBlank, 13, $2C
-	.db $2D, repeatBlank, 6, $2C
-	.db repeatBlank, $01
+;hud:
+	;.db repeatBlank, 33 	; 2 rows + 3 blank tiles
+	;.db $2B, repeatBlank, 5, $2A
+	;.db $2B, repeatBlank, 13, $2A
+	;.db $2B, repeatBlank, 6, $2A
+	;.db repeatBlank, 88
+	;.db $2D, repeatBlank, 6, $2C
+	;.db repeatBlank, 2
+	;.db $2D, repeatBlank, 5, $2C
+	;.db $2D, repeatBlank, 13, $2C
+	;.db repeatBlank, 9
+
 
 titleScreen2:
 	.db repeatBlank, 0	; 8 rows
@@ -437,11 +449,15 @@ levelOne:
 
 	.db 0
 
-	.db	$04			; number of objects (4)
+	.db	$02			; number of objects (4)
 
-	.db $00			; object 0 pilot
-	.db $13			; object 0 grid position
-	.db $13			; object 0 type & facing RD
+	.db $20			; object 0 pilot 2
+	.db $03			; object 0 grid position
+	.db $13			; object 0 type 1 & facing RD
+
+	.db $00			; object 3 building
+	.db $14			; object 3 grid position
+	.db $0D			; object 3 type obstacle & tile D
 
 	.db $80			; object 1 pilot
 	.db $CA			; object 1 grid position
@@ -450,10 +466,6 @@ levelOne:
 	.db $A0			; object 2 pilot
 	.db $C4			; object 2 grid position
 	.db $25			; object 2 type & facing LD
-
-	.db $00			; object 3 building
-	.db $14			; object 2 grid position
-	.db $0D			; object 2 type & facing LD
 
 
 A = $10

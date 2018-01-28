@@ -2,20 +2,96 @@
 ; gameState 06: Wait for player to select action
 ; ------------------------------------------
 state_selectAction:
-	JSR random																																		; introduce entropy
+	JSR random									; introduce entropy
 
-	JSR clearCurrentEffects
-
+	JSR clearCurrentEffects			; repeats?
 	LDA effects
 	AND #%11111000
 	STA effects
 
+	LDA events																																		;
+	BIT event_updateStatusBar																											;
+	BNE +continue
+	JMP +nextStep
+
++continue:														;
+	ORA event_refreshStatusBar					; raise event to trigger buffer to screen
+	EOR event_updateStatusBar						;
+	STA events
+
+	JSR clearActionMenu
+	JSR clearTargetMenu
+
+	LDY selectedAction									; update the action menu buffer with the selected action
+	LDA actionList, Y
+	ASL
+	TAX
+	LDY actionTable+1, X								; Y is the string ID
+	LDX #$00														; Show on position 0
+	JSR writeToActionMenu								;
+
+	LDA actionMessage
+	BPL +next														; if there is an action (deny) message
+	AND #$7F														; show it on line 3
+	TAY
+	BNE +writeLine											; JMP
+
++next:
+	BEQ +next														; there is an action (inform) message
+	TAY
+	LDX #13
+	JSR writeToActionMenu								;
+
++next:
+	LDY #13
+	LDX #26
+	JSR writeToActionMenu
+
+	LDX #2															; AP per turn
+
+-loop:
+	LDY #$0D
+	CPX activeObjectStats+9							; remaining AP this turn
+	BEQ +next
+	BCS +store
+
++next:
+	LDY #$50
+	LDA activeObjectStats+9
+	SEC
+	SBC list3+0
+	SBC identity, X
+	BCC +store
+	LDY #$3A
+
++store:
+	TYA
+	STA actionMenuLine3+4, X
+	DEX
+	BNE -loop
+
+	LDX selectedAction
+  LDA actionList, X
+  CMP #aCOOLDOWN
+	BNE +continue
+	LDY #18													; GAIN
+
++writeLine:
+	LDX #26
+	JSR writeToActionMenu						;
+
++continue:
+	JSR updateTargetMenu
+
+
+
++nextStep
 	LDA frameCounter
 	AND #%00100000
 	BEQ +continue
 
 +showTimer:
-	LDX objectListSize
+	LDX objectListSize					; show timer icon above all shutdown units
 
 -loop:
 	LDA objectList-1, X
@@ -26,11 +102,11 @@ state_selectAction:
 	ASL
 	TAY
 	LDA object+2, Y
-	BPL +nextObject							; unit not shutdown
+	BPL +nextObject							; unit not shutdown, next unit
 
 	LDA object+3, Y
 	JSR gridPosToScreenPos
-	BCC +nextObject							; unit not on screen
+	BCC +nextObject							; unit not on screen, next unit
 
 	INC effects
 	LDA effects
@@ -49,17 +125,19 @@ state_selectAction:
 
 +continue:
 	LDA blockInputCounter
-	BEQ +continue																																	; if timer is still running,
-	DEC blockInputCounter																													; then dec the counter and skip input processing
+	BEQ +continue								; if timer is still running,
+	DEC blockInputCounter				; then dec the counter and skip input processing
 
 -done:
 	RTS
 
 +continue
-	LDA buttons
+	LDA buttons									; if no buttons are pushed, this frame is done
 	BEQ -done
 
 +continue:
+	LDA #$08							; button pressed -> block input for 08 frames
+	STA blockInputCounter
 	LDA cursorGridPos
 	AND #$0F							;
 	STA locVar2						; grid X coor
@@ -69,12 +147,7 @@ state_selectAction:
 	LSR
 	LSR
 	STA locVar1						; grid Y coor
-
-	LDA #$08							; block input for 08 frames
-	STA blockInputCounter
-
-	LDA buttons
-	; --- process directional buttons ---
+	LDA buttons						; process directional buttons ---
 	LSR 									; read RIGHT bit
 	BCC +next							; skip if RIGHT not pressed
 	CLC
@@ -141,30 +214,33 @@ state_selectAction:
 	LSR 									; start
 	BCC +next
 
-	JSR buildStateStack
-	.db 13
-	.db $20, 2					; load hud menu
-	.db $32, %00000100	; clear sys flag: object sprites
-	.db $23							; expand menu
-	.db $24							; load stream 10: game paused
-	.db $20, 1					; load hud
+	JSR buildStateStack		; open start menu
+	.db 18
+	.db $32, %00100100		; clear sys flag: portrait & object sprites
+	.db $20, 2						; load hud menu
+	.db $3D								; load hud menu values
+	.db $23								; expand menu
+	.db $30								; load portrait
+	.db $24								;
+	.db $32, %00100000		; clear sys flag: portrait & object sprites
+	.db $20, 1						; load hud
 	.db $31, #eRefreshStatusBar
-	.db $25							; collapse menu
-	.db $29, %00000100	; set sys flag: object sprites
-
+	.db $25								; collapse menu
+	.db $29, %00000100		; set sys flag: object sprites
+	.db $30								; load portrait
 	; RTS built in
 
 +next:
 	LSR 									; select
-	BCC +next
+	BCC +next							; no function
 
 +next:
 	LSR 									; get B button
-	BCS +toggle
+	BCS +toggle						; toggle
 
 +next:
 	LSR 									; get A button
-	BCS +lock
+	BCS +lock							; lock
 
 +updatePos:
 	; --- put update grid X & Y back together ---
@@ -194,14 +270,7 @@ state_selectAction:
 	ORA event_updateTarget
 	STA events
 
-	JMP updateCamera					; tail chain: update camera in case of new target
-
-	;LDY cursorGridPos
-	;LDX #1
-	;JMP setTile
-
-														; end
-
+	JMP updateCamera					; tail chain: update camera in case of new cursor position
 
 +toggle:
 	LDA events
@@ -251,14 +320,12 @@ state_selectAction:
 	LDY #sSelect
 	JSR soundLoad
 
-	LDA events
-	ORA event_refreshStatusBar		; buffer to screen
-	STA events
-
 	LDA #$2F ;
 	STA menuIndicator+0
 	LDA #$2E ;
 	STA menuIndicator+1
 
-	LDA #$2F
-	JMP replaceState
+	JSR pullAndBuildStateStack
+	.db #3
+	.db $31, #eUpdateStatusBar
+	.db $2F

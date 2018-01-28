@@ -142,21 +142,21 @@ LDA menuFlags
 	BPL -loop2
 +done:
 
-	LDA #$0F			; separator blank space
-	PHA					; twice
+	;LDA #$0F			; separator blank space
+	;PHA					; twice
 
-	LDX #$02			; 03
--loop:
-	LDA systemMenuLine3, X
-	PHA
-	DEX
-	BPL -loop
+	;LDX #$02			; 03
+;-loop:
+	;LDA systemMenuLine3, X
+	;PHA
+	;DEX
+	;BPL -loop
 
-	LDA #$86
+	LDA #$8A
 	PHA
 	LDA #$24
 	PHA
-	LDA #50								; 25 * 2 = 50
+	LDA #42								; 21 * 2 = 42
 	PHA
 
 

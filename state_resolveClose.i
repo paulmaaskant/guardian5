@@ -1,67 +1,45 @@
-closeCombatDirection:
-	.db #$F1									;up
-	.db #$F0									;up right
-	.db #$FF									;dw right
-	.db #$0F									;dw
-	.db #$10									;dw left
-	.db #$01									;up left
-
-	.db #$00									; X 0
-	.db #$12									; X +18
-	.db #$12									; X +18
-	.db #$00									; X 0
-	.db #$EE									; X -18
-	.db #$EE									; X -18
-
-	.db #$F4									; Y -12
-	.db #$FA									; Y -6
-	.db #$06									; Y +6
-	.db #$0C									; Y +12
-	.db #$06									; Y +6
-	.db #$FA									; Y -6
-
 ; --------------------------------------------------
 ; game state 17: initialize close combat
 ; --------------------------------------------------
-;
-; list1+0 X delta
-; list1+1 Y delta
-; list1+2	b7 x sign, b6 y sign
-;
 state_initializeCloseCombat:
-	LDA #$04										; clear from list3+4
-	LDX #$09										; up to and including list3+9
-
+	LDA #4										; clear from list3+4
+	LDX #9										; up to and including list3+9
 	JSR clearList3
 
 	JSR calculateAttack
 
+  JSR pullAndBuildStateStack
+  .db $06							; 6 items
+  .db $3A, 1					; switch CHR bank 1 to 1
+  .db $1D 						; close combat animation
+  .db $3A, 0					; switch CHR bank 1 back to 0
+  .db $16							; show results
+  ; built in RTS
 
-
+; --------------------------------------------------
+; game state 1D: initialize close combat
+; --------------------------------------------------
 state_closeCombatAnimation:
-	LDA #1			; set CHR bank for mech move animation
-	STA softCHRBank1
-
 	LDA #$00
 	STA actionCounter
 	STA currentEffects+18
 	TAX
 
-	LDA #$05																																			; $05 hit (explosion) or $08 miss (shield)
+	LDA #5													      ;Animation 5 = hit (explosion)
 	STA list3+22
 	LDA #17
 	STA list3+23
-	LDA list3+3																																		; value: (01) for hit, (02) for miss
+	LDA list3+3													  ; value: (01) for hit, (02) for miss
 	CMP #$01
 	BEQ +continue
-	LDA #$08																																			; $05 hit (explosion) or $08 miss (shield)
+	LDA #8															  ; Animation 8 = miss (shield)
 	STA list3+22
 	LDA #$1B
 	STA list3+23
 
 +continue:
-	LDA activeObjectGridPos
-	SEC
+	LDA activeObjectGridPos              ; determine in which direction unit
+	SEC                                  ; is attacking
 	SBC cursorGridPos
 
 -loop:
@@ -71,16 +49,22 @@ state_closeCombatAnimation:
 	BNE -loop
 
 +setDelta:
-	LDA closeCombatDirection+12, X
-	STA list1+1													; Y
+	LDA closeCombatDirection+12, X       ; direction is X
+	STA list1+1													 ; Y offset
 
 	LDA closeCombatDirection+6, X
-	STA list1+0													; X
+	STA list1+0													 ; X offset
 
 	LDY activeObjectIndex
 	LDA object, Y
-	EOR #%00001000											; object move bit (b3) ON
+	EOR #%00001000											; set object's move bit (b3) ON
 	STA object, Y
+
+  LDY activeObjectGridPos			        ; unblock position in nodeMap
+  LDA #0											        ; FIX: show original meta tile
+  STA nodeMap, Y
+  TAX
+  JSR setTile
 
 	LDA activeObjectGridPos
 	JSR gridPosToScreenPos
@@ -100,20 +84,13 @@ state_closeCombatAnimation:
 	LDA list3+22
 	STA currentEffects+0
 
-	JSR pullAndBuildStateStack
-	.db $02							; 2 states
-	.db $18 						; resolve close combat
-	.db $16							; show results
-	; built in RTS
+  LDA #$18
+  JMP replaceState
 
 ; --------------------------------------------------
 ; game state 18: close combat animation
 ; --------------------------------------------------
 state_resolveClose:
-	;LDA events
-	;ORA event_updateSprites
-	;STA events
-
 	LDA actionCounter
 	AND #%00001111
 	TAX
@@ -152,24 +129,21 @@ state_resolveClose:
 	RTS
 
 +animationComplete:
-	LDY activeObjectIndex
-	LDA object, Y
-	EOR #%00001000											; object move bit (b3) OFF
-	STA object, Y
-
+  LDY activeObjectIndex
+  LDA object+0, Y
+  EOR #%00001000							; object move bit (b3) OFF
+  STA object+0, Y
+  AND #%00000111							; get direction
+  LDY activeObjectGridPos			; block final position, move (b7) and sight (b6)
+  ORA #%11000000							; blocked for movement and los
+  STA nodeMap, Y
+  AND #%00000111
+  TAX
+  JSR setTile
 	LDA #0
 	STA effects
 
-	;LDA #0
-	STA softCHRBank1
-
-	JMP pullState
-
-	;LDA #$31										; switch back bank
-	;JMP replaceState
-
-	; tailchain
-
+	JMP pullState                        ; next state
 
 interpolate:
 	CLC
@@ -193,3 +167,25 @@ interpolate:
 
 +pos:
 	RTS
+
+	closeCombatDirection:
+		.db #$F1									;up
+		.db #$F0									;up right
+		.db #$FF									;dw right
+		.db #$0F									;dw
+		.db #$10									;dw left
+		.db #$01									;up left
+
+		.db #$00									; X 0
+		.db #$12									; X +18
+		.db #$12									; X +18
+		.db #$00									; X 0
+		.db #$EE									; X -18
+		.db #$EE									; X -18
+
+		.db #$F4									; Y -12
+		.db #$FA									; Y -6
+		.db #$06									; Y +6
+		.db #$0C									; Y +12
+		.db #$06									; Y +6
+		.db #$FA									; Y -6

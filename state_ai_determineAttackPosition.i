@@ -40,11 +40,11 @@ state_ai_determineAttackPosition:
 
 +continue:
   JSR applyActionPointCost
-  JSR initializeMove
+  ; JSR initializeMove
   JSR pullAndBuildStateStack
 	.db $04							        ; 3 states
   .db $0B 						        ; center camera
-	.db $11 						        ; resolve move
+	.db $3B 						        ; resolve move
 	.db $1C							        ; face target
 	.db $16							        ; show results
 	; built in RTS

@@ -107,19 +107,6 @@
 	objectList										.dsb 8	; (b7) hostile (b6-4) pilot (b3-0) object index
 																				; the rest of the object information is stored (4 bytes each) so that it does not require sorting whenever the object's position changes
 
-	object												.dsb 1	; +0: (b7-4) type, (b3) move/still, (b2-0) direction
-																.dsb 1	; +1: health dial (b7-3), heat dial (b2-0)
-																.dsb 1	; +2: (b7) shut down (b6-0) frame count
-																.dsb 1	; +3: grid pos
-
-	object1												.dsb 4	;
-	object2												.dsb 4	;
-	object3												.dsb 4	;
-	object4												.dsb 4	;
-	object5												.dsb 4	;
-	object6												.dsb 4	;
-	object7												.dsb 4	;
-
 	actionList										.dsb 10	; ------------------------------------------------------
 	selectedAction								.dsb 1	; various
 	debug 												.dsb 5	; possible actions used for player and AI
@@ -161,27 +148,6 @@
 	softApuPorts									.dsb 16
 	currentPortValue							.dsb 4
 
-	.ende
-	.enum $0400
-	; ------------------------------------------------------------
-	; nodeMap
-	; hashmap for grid map based stuff
-	;
-	; bbbbbbbb
-	; ||||||||
-	; |||||+++ reference to neighbour node (used in findPath)
-	; ||||+--- closed node (used in findPath)
-	; |||+---- possible destination (used in AI determine move)
-	; ||+----- not used
-	; |+------ this node blocks line of sight
-	; +------- this node is blocks movement
-	; ------------------------------------------------------------
-	nodeMap								.dsb 256
-	list3									.dsb 64							; path finding and action control
-	list4									.dsb 64							; path finding
-	list6									.dsb 64							; used by AI for scoring
-	list7									.dsb 64							; used by AI for scoring
-
 	actionMenuLine1				.dsb 13							; Buffers used to render the status menu
 	actionMenuLine2				.dsb 13
 	actionMenuLine3				.dsb 13
@@ -194,7 +160,6 @@
 	systemMenuLine3				.dsb 3
 
 	characterPortrait			.dsb 16
-
 	currentEffects				.dsb 30							; effects
 																						; 6 sprites, 5 bytes per sprite
 																						; (X, Y, animation #, counter, mirror pallette control)
@@ -208,11 +173,41 @@
 																						; 05 sprite: hostile units
 																						; 06 sprite: cursor
 																						; 07 sprite: effects
+
+
 	.ende
+	.enum $0400
+	
+	; ------------------------------------------------------------
+	; nodeMap
+	; hashmap for grid map based stuff
+	;
+	; bbbbbbbb
+	; ||||||||
+	; ||++++++ meta tile
+	; |+------ this node blocks line of sight
+	; +------- this node is blocks movement
+	; ------------------------------------------------------------
+	nodeMap								.dsb 256
+	list3									.dsb 64				; path finding and action control
+	list4									.dsb 64				; path finding
+	list6									.dsb 64				; used by AI for scoring
+	list7									.dsb 64				; used by AI for scoring
+	list8 								.dsb 256			; generic look up table
 
-	.enum $0700																; generic look up table
-	list8 .dsb 256
+	.enum $0700
+	object								.dsb 1				; +0: (b7-4) type, (b3) move/still, (b2-0) direction
+												.dsb 1				; +1: health dial (b7-3), heat dial (b2-0)
+												.dsb 1				; +2: (b7) shut down (b6-0) frame count
+												.dsb 1				; +3: grid pos
 
+	object1								.dsb 4	;
+	object2								.dsb 4	;
+	object3								.dsb 4	;
+	object4								.dsb 4	;
+	object5								.dsb 4	;
+	object6								.dsb 4	;
+	object7								.dsb 4	;
 
 	.ende
 
@@ -258,9 +253,9 @@ mainGameLoop:
 	; event: update effect sprites
 	;---------------------------
 +nextEvent:
-	LDA #1													; start with sprite 1 (sprite 0 is permanently reserved)
+	LDA #1														; start with sprite 1 (sprite 0 is permanently reserved)
 	STA par3													; parameter to "loadAnimationFrame"
-	LDA #63													; clear up to (including) sprite 15
+	LDA #63														; clear up to (including) sprite 15
 	JSR clearSprites
 
 	LDA effects
@@ -303,28 +298,27 @@ mainGameLoop:
 	LDY #1														; cursor animation #
 	JSR loadAnimationFrame						; set sprites!
 
-+nextEffect:																																		; blocking node marker, sprite 5
++nextEffect:												; blocking node marker, sprite 5
 	LDA effects
 	AND #%00100000										; check b5
 	BEQ +nextEffect
-	LDA list1+9																																		; node that is blocking line of sight
-	JSR gridPosToScreenPos																												; get the screen coordinates
-	BCC +nextEffect																																; off screen!
-	LDY #2																																				; cursor animation #
-	JSR loadAnimationFrame																												; set sprites!
+	LDA list1+9												; node that is blocking line of sight
+	JSR gridPosToScreenPos						; get the screen coordinates
+	BCC +nextEffect										; off screen!
+	LDY #2														; cursor animation #
+	JSR loadAnimationFrame						; set sprites!
 
-
-+nextEffect:																																		; explode effect, sprite 4
++nextEffect:												; explode effect, sprite 4
 	LDA effects
 	AND #%00001000										; check b4
 	BEQ +nextEffect
 	JSR runExplosion
 
-+nextEffect:																																		; manage counter for all embedded effects
-	LDA currentObjectFrameCount																										; FIX
-	CMP #$40																																			; when all effects are off screen, the count continues and does not get reset
-	BEQ +nextEffect																																; so here we have hard check to make sure the effect never exceeds 64
-	ADC #$01																																			; guarnteed CLC
++nextEffect:												; manage counter for all embedded effects
+	LDA currentObjectFrameCount				; FIX
+	CMP #$40													; when all effects are off screen, the count continues and does not get reset
+	BEQ +nextEffect										; so here we have hard check to make sure the effect never exceeds 64
+	ADC #$01													; guarnteed CLC
 	STA effectCounter
 
 +nextEffect:																																		; cycle through all non-embedded effects
@@ -366,111 +360,88 @@ mainGameLoop:
 +nextEvent:
 	LDA sysFlags
 	AND #sysObjectSprites
-	BNE +next
+	BNE +continue
 	JMP +nextEvent
 
-+next:
-	LDX #$00																																			; start with object on pos 0
++continue:
+	LDX #0													; start with object on pos 0
 
--loopObjects
-	LDA objectList, X																										; get next object
+-loopObjects:
+	LDA objectList, X								; get next object
 	AND #$0F
 	ASL
 	ASL
 	TAY
-	LDA object+0, Y
-	LSR
-	LSR																																						;
-	LSR																																						;
-	LSR																																						;
-	TAY																																						; and store it in Y
-	LDA objectTypeL, Y																														; get the object type data address
+	STY locVar1											;
+
+	LDA object+0, Y									; get the object's type
+	LSR															;
+	LSR															;
+	LSR															;
+	LSR															;
+	TAY															; and store it in Y
+	LDA objectTypeL, Y							; get the object type data address
 	STA currentObjectType+0
 	LDA objectTypeH, Y
-	STA currentObjectType+1																												; and store it as the current object type
+	STA currentObjectType+1					; and store it as the current object type
 
-	LDA objectList, X																										; reload the object
-	AND #%00001111																																; and mask the object number
-	ASL																																						; mulitply by 4 to get the
-	ASL																																						; object index
-	TAY																																						; (part of the object stored in memory)
-	PHA																																						; save Y (object index) on stack
-	TXA																																						;
-	PHA																																						; save X (object list index)
+	LDA locVar1											; object's index
+	TAY															;
+	PHA															; save Y (object index) on stack
+	TXA															;
+	PHA															; save X (object list index)
 	LDA object+2, Y
 	AND #%01111111
 	STA currentObjectFrameCount
-	LDA object+3, Y																																; on screen check
-	JSR gridPosToScreenPos																												; get and set screen X & Y
-	BCC +done																																			; off screen -> done (no need to show sprites)
-
-	LDA objectList, X																										; get B7 (neg flag)
-	PHP																																						; store neg flag
+	LDA object+3, Y									; on screen check
+	JSR gridPosToScreenPos					; get and set screen X & Y
+	BCC +done												; off screen -> done (no need to show sprites)
+	;LDA objectList, X								; get B7 = AI unit
+	;PHP															; store neg flag
 	LDA object+0, Y
-	AND #%00001000																																; object move bit (b3) ON
-	BEQ +next
-	CLC																																						; if moving, then add displacement
-	LDA currentObjectYPos																													; displacement is updated every frame
-	ADC actionList+2																															; by the 'resolve move' game state
+	AND #%00001000									; if object move bit (b3) is set
+	BEQ +continue										;
+	CLC															; then add displacement
+	LDA currentObjectYPos						; displacement is updated every frame
+	ADC actionList+2								; by the 'resolve move' game state
 	STA currentObjectYPos
-
 	CLC
 	LDA currentObjectXPos
 	TAX
 	ADC actionList+1
 	STA currentObjectXPos
 
-	CPX #$20																																			; the following code ensures
-	BCS +rightEdge																																; that sprites arent wrapped
-	LDA actionList+1																															; to other side of screen
-	BPL +notObscured
-	PLP
+	CPX #$20												; the following code ensures
+	BCS +rightEdge									; that sprites are not wrapped
+	LDA actionList+1								; to other side of screen
+	BPL +continue
+	;PLP
 	JMP +done
 
 +rightEdge:
 	CPX #$E0
-	BCC +notObscured
+	BCC +continue
 	LDA actionList+1
-	BMI +notObscured
-	PLP
+	BMI +continue
+	;PLP
 	JMP +done
 
-+next:
-	;LDX object+3, Y
-	;LDA nodeMap, X
-	;AND #%01000000																																		; is position obscured?
-	JMP +notObscured				; fix
-
-	;LDA #$20								; this can go																									; yes -> set up sprite mask to parially hide object
-	;STA par4																																			; sprite priority 1
-	;TYA																																						; store Y (object )
-	;PHA
-	;LDY #$03																																			; mask srpite to obscure part of the object sprite
-	;JSR loadAnimationFrame	; loads mask
-	;PLA
-	;TAY
-	;LDX #%00010000																																; restore Y
-	;JMP +skip
-
-+notObscured:																																		; next, determine mirror, palette & which animation
-	LDX #%00000000																																; default value for par4 (b7-6 no mirror, b5 no mask, b4 not obscured, b0 no palette flip)
-
-;+skip:
-	LDA object+0, Y																																; derive the animation # based on object's direction and move
-	AND rightNyble																																; (b3) moving? (b2-0) direction
++continue:												; next, determine mirror, palette & which animation
+	LDX #%00000000									; default value for par4 (b7-6 no mirror, b5 no mask, b4 not obscured, b0 no palette flip)
+	LDA object+0, Y									; derive the animation # based on object's direction and move
+	AND #$0F												; (b3) moving? (b2-0) direction
 	TAY
-
-	AND #%00000110																																; mirror sprite if direction is 2 or 3
+	AND #%00000110									; mirror sprite if direction is 2 or 3
 	CMP	#%00000010
 	BNE +next
-	TXA																																						; set b6 in X to mirror
+	TXA															; set b6 in X to mirror
 	ORA #%01000000
 	TAX
 
-+next:																																					; palette 0 for friendly, palette 1 for hostile
-	PLP																																						; object type flags
-	BPL +next																																			; if hostile (b7) then do unit palette switch
-	INX																																						; palette switch
+;+next:														; palette 0 for friendly, palette 1 for hostile
+;	PLP															; object type flags
+;	BPL +next												; if hostile (b7) then do unit palette switch
+;	INX															; palette switch
 
 +next:
 	STX par4
@@ -558,97 +529,6 @@ mainGameLoop:
 	JSR menuIndicatorsBlink
 
 	; ------------------------------
-	; update status bar & trigger refresh
-	; ------------------------------
-+nextEvent:
-	LDA events																																		;
-	BIT event_updateStatusBar																											;
-	BNE +continue
-	JMP +nextEvent
-
-+continue:																															;
-	ORA event_refreshStatusBar																										; raise event to trigger buffer to screen
-	EOR event_updateStatusBar																											;
-	STA events
-
-	JSR clearActionMenu																														; set all tiles to blank
-	JSR clearTargetMenu
-
-	BIT activeObjectTypeAndNumber
-	BMI +radar
-
-	LDY activeObjectIndex
-	LDA object+2, Y
-	BMI +radar
-
-	LDY selectedAction																														; update the action menu buffer with the selected action
-	LDA actionList, Y
-	ASL
-	TAX
-	LDY actionTable+1, X																													; Y is the string ID
-	LDX #$00																																			; Show on position 0
-	JSR writeToActionMenu																													;
-
-	LDA actionMessage
-	BEQ +continue
-	AND #$7F
-	TAY
-	LDX #$0D
-	JSR writeToActionMenu						;
-
-+continue:
-	LDA actionMessage
-	BMI +continue										; if not denied,
-																	; show COST
-	LDX #2													; AP per turn
-
--loop:
-	LDY #$0D
-	CPX activeObjectStats+9					; remaining AP this turn
-	BEQ +next
-	BCS +store
-
-+next:
-	LDY #$50
-	LDA activeObjectStats+9
-	SEC
-	SBC list3+0
-	SBC identity, X
-	BCC +store
-	LDY #$3A
-
-+store:
-	TYA
-	STA actionMenuLine3-1, X
-	DEX
-	BNE -loop
-
-	LDX selectedAction
-  LDA actionList, X
-  CMP #aCOOLDOWN
-	BNE +continue
-	LDY #18													; GAIN
-
-+skip:
-	LDX #26
-	JSR writeToActionMenu						;
-
-+continue:
-	JSR updateTargetMenu
-	JMP +nextEvent
-
-+radar:
-	LDY #$44
-	STY actionMenuLine1+5
-	INY
-	STY actionMenuLine1+6
-	LDY #$54
-	STY actionMenuLine2+5
-	INY
-	STY actionMenuLine2+6
-
-
-	; ------------------------------
 	; refresh status bar
 	; ------------------------------
 +nextEvent:
@@ -706,7 +586,7 @@ gameStateJumpTable:
 	.dw state_changeBrightness-1								; 0D
 	.dw state_loadScreen-1											; 0E
 	.dw state_clearDialog-1											; 0F
-	.dw state_initializeMove-1									; 10
+	.dw state_initializeMoveAction-1						; 10
 	.dw state_resolveMove-1											; 11
 	.dw state_initializeRanged-1								; 12
 	.dw state_resolveMachineGun-1								; 13
@@ -716,7 +596,7 @@ gameStateJumpTable:
 	.dw state_initializeCloseCombat-1						; 17
 	.dw state_resolveClose-1										; 18
 	.dw state_initializePivotTurn-1							; 19
-	.dw not_used																; 1A NOT USED
+	.dw state_waitFrame-1												; 1A
 	.dw state_initializeCharge-1								; 1B
 	.dw state_faceTarget-1											; 1C
 	.dw state_closeCombatAnimation-1						; 1D
@@ -748,6 +628,10 @@ gameStateJumpTable:
 	.dw state_endAction-1												; 37
 	.dw state_initializeMachineGun-1						; 38
 	.dw state_initializeMissile-1								; 39
+	.dw state_switchBank-1											; 3A
+	.dw state_initializeMove-1									; 3B
+	.dw state_showHourGlass-1										; 3C
+	.dw state_updateOverview-1									; 3D
 
 :not_used
 
@@ -807,6 +691,11 @@ gameStateJumpTable:
 	.include state_endAction.i
 	.include state_initializeMachineGun.i
 	.include state_initializeMissile.i
+	.include state_waitFrame.i
+	.include state_switchBank.i
+	.include state_initializeMove.i
+	.include state_showHourGlass.i
+	.include state_updateOverview.i
 
 	.include sbr_getStatsAddress.i
 	.include sbr_pushState.i
@@ -883,6 +772,7 @@ gameStateJumpTable:
 	.include data_metaSpriteFrames.i
 	.include data_animations.i
 	.include data_soundHeaders.i
+	.include data_pilots.i
 
 
 

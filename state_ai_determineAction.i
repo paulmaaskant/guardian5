@@ -44,17 +44,16 @@ state_ai_determineAction:
 -loop:
   DEX
   LDA objectList, X
-  BMI -loop                               ; get first available player unit
+  BMI -loop                               ; skip other AI (pilot 1xxx )
+  BIT leftNyble
+  BEQ -loop                               ; skip obstacles (pilot 0000 )
   STA targetObjectTypeAndNumber
   AND #%00001111
 	ASL
 	ASL
   TAY
-  LDA object+0, Y                         ; exclude object type 0
-  CMP #$10                                ; because
-  BCC -loop							                  ; buildings can't be targets																																																																; save X (object list index)
-	LDA object+3, Y
   STY targetObjectIndex
+  LDA object+3, Y
 	STA cursorGridPos
 
   LDY activeObjectGridPos

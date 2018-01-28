@@ -1,8 +1,21 @@
 ; game state 2F
-;
-;
 
 state_confirmAction:
+  LDA events																																		;
+  BIT event_updateStatusBar																											;
+  BNE +continue
+  JMP +nextStep
+
++continue:														;
+  ORA event_refreshStatusBar					; raise event to trigger buffer to screen
+  EOR event_updateStatusBar						;
+  STA events
+
+  LDY #17 ; confirm >A
+  LDX #26
+  JSR writeToActionMenu
+
++nextStep:
   LDA blockInputCounter
   BEQ +continue																																	; if timer is still running,
   DEC blockInputCounter																													; then dec the counter and skip input processing
@@ -14,9 +27,12 @@ state_confirmAction:
 
   LDY selectedAction
 	LDX actionList, Y
-	CPX #aMOVE																													; move?
-  BNE +done             ; if locked on a valid MOVE
 
+  LDA actionTableWaypoints, X
+  BMI +showWayPoints
+  RTS
+
++showWayPoints:
   JSR clearCurrentEffects
 
   LDA effects
@@ -69,14 +85,25 @@ state_confirmAction:
   LDA effects																																		; clear possible LOS block effect
 	AND #$F0																																      ; cursor and active unit marker stay on, rest turned off
 	STA effects
-  LDA events
-	ORA event_updateStatusBar
-	STA events
+
+  ;LDA events
+	;ORA event_updateStatusBar
+	;STA events
+
   LDY #sRelease
 	JSR soundLoad					; tail chain
-  LDA #6
-  JSR replaceState
-  JMP +setTimer
+
+  LDA #8						       ; --- set input timer ---
+	STA blockInputCounter
+
+;  LDA #6
+;  JSR replaceState
+
+  JSR pullAndBuildStateStack
+  .db #3
+  .db $31, #eUpdateStatusBar
+  .db $06
+  ; built in RTS
 
 +next:
   ASL                      ; select button

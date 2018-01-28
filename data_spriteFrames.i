@@ -184,7 +184,7 @@ CUR0: ; cursor
 CUR1: ; cursor
 	.db %00010001, 0, $5F
 CUR2: ; active
-	.db %00010001, 0, $61
+	.db %00010001, 0, $4D
 CUR3: ; blokcing tile
 	.db %00100110, $0E, -4, $70, $70
 	.db %00100111, $04, -4, $70, $70

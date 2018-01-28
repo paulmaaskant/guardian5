@@ -17,36 +17,29 @@
 ; list3+31
 ; list3+32
 
+; list3+40 .. 49 used in informative message
+
 
 
 ; -----------------------------------------
 ; the following subroutines are used to determine the visibility of a target
 
-; - is the target within the firing arc (ranged, close combat)
 ; - is the target within range (ranged)
 ; - is the line of sight unblocked (ranged)
 ; - is the grid pos in contact with only one hostile (charge)
 ; -----------------------------------------
 checkTarget:
-	LDA #$00																																			; set charge damage to 0
-	STA list3+21
-
-	; --- retrieve action ---
-	LDY selectedAction
+	LDY selectedAction					; retrieve selected action
 	LDX actionList, Y
-	CPX #aCHARGE																																	; if action is CHARGE
-	BEQ +chargeChecks																															; continue to charge checks
+	CPX #aCHARGE								; if action is CHARGE
+	BEQ +chargeChecks						; continue to charge checks
 
-	; --- check arc ---																														; otherwise, check field of vision
-	; JSR checkFiringArc																														; note: leaves X intact
-	; BCS +nextCheck
-	; LDA #$8A																																			; deny (b7) + outside of arc (b6-b0)
-	; STA actionMessage
-	; RTS
+	CPX #aCOOLDOWN
+	BNE +nextCheck
+	RTS
 
 +nextCheck:
-	; --- check min / max distance for ranged attacks ---
-	JSR checkRange							; destroys X
+	JSR checkRange							; --- check min / max distance for ranged attacks ---
 	LDA actionMessage
 	BEQ +nextCheck
 	RTS
@@ -55,9 +48,8 @@ checkTarget:
 	CPX #aCLOSECOMBAT						; if action is CC
 	BEQ +checksDone							; all checks are done
 
-	; --- check line of sight ---
 	LDA activeObjectGridPos
-	JSR checkLineOfSight
+	JSR checkLineOfSight					;  check line of sight ---
 	BCC +checksDone
 
 	LDA activeObjectTypeAndNumber
@@ -70,6 +62,8 @@ checkTarget:
 +skipMarker:
 	LDA #$85										; deny (b7) + no line of sight (b6-b0)
 	STA actionMessage
+
+-done:
 	RTS
 
 +chargeChecks:
@@ -96,14 +90,7 @@ checkTarget:
 	STA nodeMap, X
 
 	LDA actionMessage
-	BMI +return
-
-	; TODO
-	; condition for charge: adjacent to exactly 1 hostile
-	; JSR isChargePossible
-
-	;LDA #$01
-	;STA list3+21																																	; 1 charge damage sustained
+	BMI -done
 
 +checksDone:
 	LDY targetObjectIndex
@@ -118,12 +105,31 @@ checkTarget:
 	LDA par3																; the ones
 	STA list3+13
 
-	LDA activeObjectStats+5
+	JSR getStatsAddress											; set pointer1 to target type data
 
-	JSR getStatsAddress											; set pointer to target type data
-	LDY #5
-	LDA (pointer1), Y												; retrieve target's defence
+	LDA activeObjectGridPos
+	JSR gridPosToScreenPos
+	JSR angleToCursor												; detrmine the angle of attack
+	CLC																			; to derive the appropriate defense value
+	ADC #32																	; rotate by 45 degrees (32 radial)
+	LSR
+	LSR
+	LSR
+	LSR
+	LSR
+	TAY 																	; Y is the defending direction for the target
+	LDA angleToTargetTable, Y
+	SEC																		;
+	LDX targetObjectIndex
+	LDA object+0, X
+	AND #$07															; target's facing direction
+	SBC angleToTargetTable, Y							; subtract target's defending direction
+	JSR absolute													; A absolute value
+	TAX
+	LDY defenseValueIndexTable, X					; set Y to correct type index for front, flank or rear def value
 
+	LDA (pointer1), Y												; retrieve target's defense value
+	STA debug
 	EOR #$FF
 	SEC
 	ADC activeObjectStats+5									; - DEF + ACC
@@ -154,9 +160,21 @@ checkTarget:
 	CLC
 	ADC #$01											; add one damage if CHARGing
 
-+continue:
-	STA list3+2										; damage
-	LDA #$14											; STR4 RNG 2-8
++continue:											; set inform message indicating expected damage
+	STA list3+2
+	LDA #$0F
+	LDX #10
+
+-loop:
+	CPX list3+2										; damage
+	BNE +store
+	LDA #$3D
+
++store:
+	STA list3+39, X
+	DEX
+	BNE -loop
+	LDA #$14											; DAMG XXXXXXXX
 	STA actionMessage
 
 +return
@@ -196,102 +214,13 @@ checkRange:
 	BCC +done
 	LDA #$8C								; deny (b7) + target too close (b6-b0)
 	STA actionMessage
+
 +done:
 	RTS
-; -----------------------------------------
-; is target in firing arc?
-;
-; - firing arc always spans 120 degrees
-; - facing directions always are aligned with the X, Y & Z axis
-;
-; algorithm
-; using the firing node as the origin, the target is within the
-; firing arc if it is within the sextant left or right of the axis
-; that aligns with the facing direction
-;
-; to determine this locVar5 is created first:
-;
-; bbbbbbbb
-; ||||||||
-; |||||||+ 1: Z target <= Z source
-; ||||||+- 1: Z target >= Z source
-; |||||+-- 1: Y target <= Y source
-; ||||+--- 1: Y target >= Y source
-; |||+---- 1: X target <= X source
-; ||+----- 1: X target >= X source
-; ++------ not used
-;
-; -----------------------------------------
-checkFiringArc:
-	LDA cursorGridPos
-	LSR
-	LSR
-	LSR
-	LSR
-	STA locVar2									; target grid Y
-	LDA cursorGridPos
-	AND #$0F										; x mask
-	STA locVar1									; target grid X
 
-	LDA activeObjectGridPos
-	LSR
-	LSR
-	LSR
-	LSR
-	STA locVar4									; firing unit grid Y
-	LDA activeObjectGridPos
-	AND #$0F										; x mask
-	STA locVar3									; firing unit grid X
 
-	LDA locVar1
-	CMP locVar3
-	ROL locVar5
+angleToTargetTable:
+	.db 4, 4, 5, 6, 1, 1, 2, 3
 
-	LDA locVar3
-	CMP locVar1
-	ROL locVar5
-
-	LDA locVar2
-	CMP locVar4
-	ROL locVar5
-
-	LDA locVar4
-	CMP locVar2
-	ROL locVar5
-
-	LDA locVar1
-	CLC
-	ADC locVar2
-	STA locVar1
-
-	LDA locVar3
-	CLC
-	ADC locVar4
-	STA locVar3
-
-	LDA locVar1
-	CMP locVar3
-	ROL locVar5
-
-	LDA locVar3
-	CMP locVar1
-	ROL locVar5
-
-	LDY activeObjectIndex
-	LDA object, Y
-	AND #$07
-	TAY
-	LDA fireArc-1, Y	;
-	AND locVar5			;
-	CMP fireArc-1, Y
-	BEQ +
-	CLC								; clear if not in firing arc
-+	RTS
-
-fireArc:
-	.db #%00011000		;1 Xt<, Yt>
-	.db #%00001010		;2 Yt>, Zt>
-	.db #%00100010		;3 Xt>, Zt>
-	.db #%00100100		;4 Yt<, Xt>
-	.db #%00000101		;5 Yt<, Zt<
-	.db #%00010001		;6 Xt<, Zt<
+defenseValueIndexTable:
+	.db 5, 6, 6, 7, 6, 6

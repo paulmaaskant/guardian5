@@ -14,12 +14,9 @@ state_newTurn:
   CMP locVar1
   BNE +noMatch            ; if this object's number is next number
 
-  ASL
-  ASL
-  TAY
-  LDA object+0, Y
-  CMP #$10                ; type 0 = inanimate object
-  BCS +setNext
+  LDA objectList, X
+  BIT leftNyble           ; make sure pilot <> 0
+  BNE +setNext            ;
 
 +noMatch:
   INX
@@ -37,7 +34,6 @@ state_newTurn:
   BNE -loop								; JMP
 
 +setNext:
-  LDA objectList, X
   STA	activeObjectTypeAndNumber
   AND #$0F
   ASL
@@ -48,9 +44,9 @@ state_newTurn:
   STA activeObjectGridPos
 
   ; --- set portrait location
-  LDA #14
+  LDA #12
   STA portraitXPos
-  LDA #16
+  LDA #11
   STA portraitYPos
 
   LDY activeObjectIndex
@@ -60,19 +56,11 @@ state_newTurn:
   LSR
   STA activeObjectStats+6       ; set current hit points
 
-  JSR getStatsAddress           ; get type data
+  JSR getStatsAddress           ; Y goes in; sets pointer1
 
-  LDY #2                        ; #2 action points per turn
-  LDA (pointer1), Y
-  STA activeObjectStats+9       ; action points per turn
-
-  INY                           ; #3 movement
+  LDY #3                        ; #3 movement
   LDA (pointer1), Y             ;
   STA activeObjectStats+2			  ;
-
-  INY                           ; #4 accuracy
-  LDA (pointer1), Y				      ;
-  STA activeObjectStats+5       ; store
 
   LDY #9                        ; #9 wpn 1 damage
   LDA (pointer1), Y				      ;
@@ -90,6 +78,15 @@ state_newTurn:
   LDA (pointer1), Y				      ;
   STA activeObjectStats+1			  ; store
 
+  LDA activeObjectTypeAndNumber ; get pilot based stats
+  AND #$F0
+  LSR
+  LSR
+  TAY
+  LDA pilotTable-3, Y           ;
+  STA activeObjectStats+9			  ; action points per turn
+  LDA pilotTable-2, Y           ;
+  STA activeObjectStats+5       ; base accuracy
 
 
   LDA #$C0										  ; switch on cursor and active marker
@@ -121,7 +118,7 @@ state_newTurn:
   BMI +aiControlled
 
   JSR buildStateStack
-  .db 6							  ; 5 states
+  .db 6							  ; 6 items
   .db $30             ; set active unit portrait
   .db $0B 						; center camera
   .db $0C						  ; wait for camera to center
@@ -133,8 +130,9 @@ state_newTurn:
 
 +shutDown:
   JSR buildStateStack
-  .db 7							  ; 5 states
+  .db 8							  ; 8 items
   .db $30             ; set active unit portrait
+  .db $3C             ; show hourglass
   .db $0B 						; center camera
   .db $0C							; wait for camera to center
   .db $34             ; start of turn events
@@ -145,8 +143,9 @@ state_newTurn:
 
 +aiControlled:
   JSR buildStateStack
-  .db 7							  ; 7 states
+  .db 8							  ; 8 states
   .db $30             ; set active unit portrait
+  .db $3C             ; show hourglass
   .db $0B 						; center camera
   .db $0C							; wait for camera to center
   .db $34             ; start of turn events
