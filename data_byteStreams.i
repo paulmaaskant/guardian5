@@ -25,7 +25,8 @@ statusBar:
 	.db $2F, A, H, C, E, M
 	.db repeatBlank, 8
 	.db repeatBlank, 25, $2D, repeatBlank, 3, $2C
-	.db repeatBlank, $21 ; 2 rows
+	.db repeatBlank, 2 ;
+	.db $2B, repeatBlank, 28, $2A, $0F
 
 	; --- palettes ---
 	.db $FE, 64, $AA
@@ -267,7 +268,7 @@ instructionStream:
 	.db endOfStream
 
 brief1Stream:
-	.db setPortrait, $20
+	.db setPortrait, $02
 	.db G, U, A, R, D, I, A, N, space, 5, comma, lineBreak
 	.db T, H, I, S, space, I, S, space, C, O, M, M, A, N, D, space, 1, lineBreak
 	.db lineBreak
@@ -279,7 +280,7 @@ brief1Stream:
 	.db lineBreak
 	.db S, T, A, N, D, I, N, G, space, B, Y, waitForA
 	.db nextPage
-	.db setPortrait, $20
+	.db setPortrait, $02
 	.db C, A, P, T, A, I, N, comma, lineBreak
 	.db lineBreak
 	.db T, W, O, space, E, N, E, M, Y, space, U, N, I, T, S, space, H, A, V, E, lineBreak
@@ -451,7 +452,7 @@ levelOne:
 
 	.db	$02			; number of objects (4)
 
-	.db $20			; object 0 pilot 2
+	.db $02			; object 0 pilot 2
 	.db $03			; object 0 grid position
 	.db $13			; object 0 type 1 & facing RD
 

@@ -1,19 +1,21 @@
 ; IN A (b7-b4) pilot ID
+
 updatePortrait:
-  PHA
-  AND #%11000000
   ASL
-  ROL
-  ROL							; clears carry
-  ADC #$08
-  STA $B000       ; set the bank (8, 9, 10 or 11)
+  LDY #8
+  BCC +continue
+  LDY #10
 
-  PLA
-  AND #%00110000
-  LSR
-  LSR            ; clears carry
++continue:
+  BIT bit3
+  BEQ +continue
+  INY
+
++continue:
+  STY $B000
+  ASL
+  AND #%00011100
   STA locVar1
-
   LDY #15
 
 -loop:

@@ -50,7 +50,7 @@ state_initializeMoveAction:
 	JSR applyActionPointCost
 
 	JSR clearActionMenu					; clear the menu
-	
+
 	LDA #$0F 										; hide menu indicators
 	STA menuIndicator+0
 	STA menuIndicator+1
@@ -271,9 +271,7 @@ calculateObjectSequence:
 	LDX objectListSize
 	DEX
 -	LDA objectList, X
-	AND #$0F
-	ASL
-	ASL
+	AND #%01111000
 	TAY
 	LDA object+3, Y
 	AND #$0F				; X

@@ -40,19 +40,20 @@ state_initializeMap:
 -nextObject:
 	CPX objectListSize
 	BEQ +done
-
 	STX list1+2
 
-	JSR getNextByte
-	CLC
-	ADC identity, X
-	STA objectList, X
+	JSR getNextByte					; get pilot (b7, b2-b0)
+	STA locVar1
 
 	TXA
+	ASL											; 8 bytes per object
 	ASL
 	ASL
+	ORA locVar1
+	STA objectList, X
+	AND #%01111000
 	TAX
-	STX list1+3
+	STX list1+3								; index
 
 	JSR getNextByte
 	STA object+3, X						; set grid position
@@ -63,7 +64,7 @@ state_initializeMap:
 	STA object+0, X
 
 	PLA
-	AND #%00001111											; and block it in the node map
+	AND #%00001111						; and block it in the node map
 	ORA #%11000000
 	LDY object+3, X
 	STA nodeMap, Y

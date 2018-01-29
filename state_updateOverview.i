@@ -1,11 +1,14 @@
 ; state 3D
 
 state_updateOverview:
+  LDA activeObjectTypeAndNumber ; get pilot based stats
+  ASL
+  AND #%00001110
+  BCC +continue
+  ORA #%00010000
 
-  LDA activeObjectTypeAndNumber
-  AND #$F0
-  LSR
-  LSR
++continue:
+  ASL
   TAX
   LDY pilotTable-4, X    ; pilot name
   LDX #0

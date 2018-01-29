@@ -15,9 +15,10 @@ updateTargetObject:
 
 -loop:
 	LDA objectList, X
-	AND #$0F
-	ASL
-	ASL
+	AND #%01111000
+	;AND #$0F
+	;ASL
+	;ASL
 	TAY
 	LDA object+3, Y
 	CMP cursorGridPos

@@ -128,7 +128,6 @@ state_runDialog:
 	BNE +continue
 
 	JSR getNextByte
-	AND #$F0
 	JMP updatePortrait
 
 +continue:

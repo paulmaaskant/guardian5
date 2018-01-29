@@ -177,7 +177,7 @@
 
 	.ende
 	.enum $0400
-	
+
 	; ------------------------------------------------------------
 	; nodeMap
 	; hashmap for grid map based stuff
@@ -200,14 +200,12 @@
 												.dsb 1				; +1: health dial (b7-3), heat dial (b2-0)
 												.dsb 1				; +2: (b7) shut down (b6-0) frame count
 												.dsb 1				; +3: grid pos
-
-	object1								.dsb 4	;
-	object2								.dsb 4	;
-	object3								.dsb 4	;
-	object4								.dsb 4	;
-	object5								.dsb 4	;
-	object6								.dsb 4	;
-	object7								.dsb 4	;
+												.dsb 1
+												.dsb 1
+												.dsb 1
+												.dsb 1
+												.dsb 120			; 15 more objects (15x8)
+																			; code contains 6 places where index is calced
 
 	.ende
 
@@ -368,9 +366,10 @@ mainGameLoop:
 
 -loopObjects:
 	LDA objectList, X								; get next object
-	AND #$0F
-	ASL
-	ASL
+	AND #%01111000
+	;ASL															; every object has 8 bytes
+	;ASL
+	;ASL
 	TAY
 	STY locVar1											;
 
@@ -437,11 +436,6 @@ mainGameLoop:
 	TXA															; set b6 in X to mirror
 	ORA #%01000000
 	TAX
-
-;+next:														; palette 0 for friendly, palette 1 for hostile
-;	PLP															; object type flags
-;	BPL +next												; if hostile (b7) then do unit palette switch
-;	INX															; palette switch
 
 +next:
 	STX par4
@@ -833,9 +827,13 @@ event_updateTarget:					.db %00100000
 event_updateStatusBar:			.db %00010000
 event_refreshStatusBar:			.db %00000100
 
+bit3												.db %00001000
+pilotBits										.db %10000111	
+
 eRefreshStatusBar = %00000100
 eUpdateStatusBar 	= %00010000
 eUpdateTarget = 		%00100000
+
 
 ; --- system flags remain set ---
 sysFlag_scrollRight:				.db %10000000

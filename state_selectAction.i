@@ -83,8 +83,6 @@ state_selectAction:
 +continue:
 	JSR updateTargetMenu
 
-
-
 +nextStep
 	LDA frameCounter
 	AND #%00100000
@@ -97,9 +95,7 @@ state_selectAction:
 	LDA objectList-1, X
 	CMP targetObjectTypeAndNumber
 	BEQ +nextObject
-	AND #%00001111
-	ASL
-	ASL
+	AND #%01111000
 	TAY
 	LDA object+2, Y
 	BPL +nextObject							; unit not shutdown, next unit

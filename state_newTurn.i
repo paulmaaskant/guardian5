@@ -15,7 +15,7 @@ state_newTurn:
   BNE +noMatch            ; if this object's number is next number
 
   LDA objectList, X
-  BIT leftNyble           ; make sure pilot <> 0
+  BIT pilotBits           ; make sure pilot <> 0
   BNE +setNext            ;
 
 +noMatch:
@@ -35,9 +35,7 @@ state_newTurn:
 
 +setNext:
   STA	activeObjectTypeAndNumber
-  AND #$0F
-  ASL
-  ASL
+  AND #%01111000
   STA activeObjectIndex
   TAY
   LDA object+3, Y
@@ -79,15 +77,18 @@ state_newTurn:
   STA activeObjectStats+1			  ; store
 
   LDA activeObjectTypeAndNumber ; get pilot based stats
-  AND #$F0
-  LSR
-  LSR
-  TAY
+  ASL
+  AND #%00001110
+  BCC +continue
+  ORA #%00010000
+
++continue:
+  ASL
+  TAY                           ; pilot number x 4
   LDA pilotTable-3, Y           ;
   STA activeObjectStats+9			  ; action points per turn
   LDA pilotTable-2, Y           ;
   STA activeObjectStats+5       ; base accuracy
-
 
   LDA #$C0										  ; switch on cursor and active marker
   STA effects
