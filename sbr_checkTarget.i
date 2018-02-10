@@ -18,70 +18,63 @@
 ; list3+32
 
 ; list3+40 .. 49 used in informative message
-
-
-
-; -----------------------------------------
-; the following subroutines are used to determine the visibility of a target
-
+;
+; make sure target is valid
 ; - is the target within range (ranged)
 ; - is the line of sight unblocked (ranged)
-; - is the grid pos in contact with only one hostile (charge)
+; - is target within charge distance (charge)
+; - is the action actually an attack (cooldown)
 ; -----------------------------------------
 checkTarget:
 	LDY selectedAction					; retrieve selected action
 	LDX actionList, Y
-	CPX #aCHARGE								; if action is CHARGE
-	BEQ +chargeChecks						; continue to charge checks
+	LDA actionPropertiesTable, X
+	STA locVar5
 
-	CPX #aCOOLDOWN
-	BNE +nextCheck
-	RTS
-
-+nextCheck:
-	JSR checkRange							; --- check min / max distance for ranged attacks ---
+	AND #%01000000							; b6 - range check?
+	BEQ +nextCheck
+	JSR checkRange							; check min / max distance for ranged attacks
 	LDA actionMessage
 	BEQ +nextCheck
+	RTS													; deny -> done
+
++nextCheck:
+	LDA locVar5									; action properties
+	AND #%00100000							; b5 - los check?
+	BEQ +nextCheck
+
+	LDA activeObjectGridPos			; set parameter A
+	JSR checkLineOfSight				; check line of sight
+	BCC +nextCheck
+
+	LDA activeObjectTypeAndNumber
+	BMI +noMarker								; active unit is player controlled then
+	LDA effects
+	ORA #%00100000							; show the blocking node marker
+	STA effects
+
++noMarker:
+	LDA #$85										; deny (b7) + no line of sight (b6-b0)
+	STA actionMessage
 	RTS
 
 +nextCheck:
-	CPX #aCLOSECOMBAT						; if action is CC
-	BEQ +checksDone							; all checks are done
+	LDA locVar5									; action properties
+	AND #%00010000							; b4 - charge distance check?
+	BEQ +nextCheck
 
-	LDA activeObjectGridPos
-	JSR checkLineOfSight					;  check line of sight ---
-	BCC +checksDone
-
-	LDA activeObjectTypeAndNumber
-	BMI +skipMarker							; if AI then skip
-
-	LDA effects
-	ORA #%00100000							; active block marker
-	STA effects
-
-+skipMarker:
-	LDA #$85										; deny (b7) + no line of sight (b6-b0)
-	STA actionMessage
-
--done:
-	RTS
-
-+chargeChecks:
-	LDX cursorGridPos						; unblock target node first: to make sure findPath works
-	LDA nodeMap, X							;
+	LDX cursorGridPos						; first, unblock target node
+	LDA nodeMap, X							; so that findPath() works
 	AND #$7F										; unset blocked flag
 	STA nodeMap, X
 
-	; --------------------------
-	; Call find path
-	; --------------------------
 	LDA cursorGridPos
-	STA par1										; par1 = destination node
+	STA par1										; IN par1 = destination node
 	LDA activeObjectStats+2			; movement stat
-	ASL													; x 2
-	STA par2										; par2 = # moves allowed
-	INC par2										; one extra (specific to charge)
-	LDA activeObjectGridPos			; A =  start node
+	ASL													; move x 2
+	STA par2										; IN par2 = # moves allowed
+	INC par2										; one extra move point to account for target node itself
+	LDA activeObjectGridPos			; IN A = start node
 	JSR findPath								; CALL: A* search path, may take more than 1 frame
 
 	LDX cursorGridPos						; re-block target node
@@ -90,10 +83,11 @@ checkTarget:
 	STA nodeMap, X
 
 	LDA actionMessage
-	BMI -done
+	BPL +nextCheck
+	RTS
 
-+checksDone:
-	LDY targetObjectIndex
++nextCheck
+	LDY targetObjectIndex										; retrieve target's hit points and show in menu
 	LDA object+1, Y
  	LSR
 	LSR
@@ -105,11 +99,27 @@ checkTarget:
 	LDA par3																; the ones
 	STA list3+13
 
+	LDX selectedAction											; retrieve selected action
+	LDA actionList, X
+	CMP #aAIM
+	BNE +continue
+	;LDA #29																; "INC ACCURACY"
+	;STA actionMessage
+	RTS
+
++continue:
+	TAX
+	LDA actionPropertiesTable, X
+	AND #%00001000													; b3 - calculate hit % and damage?
+	BNE +continue
+	RTS																			; done, no more checks
+
++continue:
 	JSR getStatsAddress											; set pointer1 to target type data
 
 	LDA activeObjectGridPos
 	JSR gridPosToScreenPos
-	JSR angleToCursor												; detrmine the angle of attack
+	JSR angleToCursor												; determine the angle of attack
 	CLC																			; to derive the appropriate defense value
 	ADC #32																	; rotate by 45 degrees (32 radial)
 	LSR
@@ -117,19 +127,18 @@ checkTarget:
 	LSR
 	LSR
 	LSR
-	TAY 																	; Y is the defending direction for the target
+	TAY 																		; Y is the defending direction for the target
 	LDA angleToTargetTable, Y
-	SEC																		;
+	SEC																			;
 	LDX targetObjectIndex
 	LDA object+0, X
-	AND #$07															; target's facing direction
-	SBC angleToTargetTable, Y							; subtract target's defending direction
-	JSR absolute													; A absolute value
+	AND #$07																; target's facing direction
+	SBC angleToTargetTable, Y								; subtract target's defending direction
+	JSR absolute														; A absolute value
 	TAX
-	LDY defenseValueIndexTable, X					; set Y to correct type index for front, flank or rear def value
+	LDY defenseValueIndexTable, X						; set Y to correct type index for front, flank or rear def value
 
 	LDA (pointer1), Y												; retrieve target's defense value
-	STA debug
 	EOR #$FF
 	SEC
 	ADC activeObjectStats+5									; - DEF + ACC
@@ -174,50 +183,12 @@ checkTarget:
 	STA list3+39, X
 	DEX
 	BNE -loop
+
 	LDA #$14											; DAMG XXXXXXXX
 	STA actionMessage
 
-+return
++return:
 	RTS
-
-; -----------------------------------------
-;
-; -----------------------------------------
-checkRange:
-	; -- determine which weapon is selected ---
-	LDA #%00010000									; default range for close combat (max 1, min 0)
-
-	LDY selectedAction
-	LDX actionList, Y								; 1 for weapon 1, 2 for weapon 2
-	CPX #aCLOSECOMBAT
-	BEQ +continue										; if true, stick with current value of A
-
-	LDA activeObjectStats-1, X			; max range (b7-4) min range (b3-2)
-
-+continue:
-	STA locVar2
-	LSR
-	LSR
-	LSR
-	LSR										; max range
-	CMP distanceToTarget
-	BCS +checkMinRange
-	LDA #$88							; deny (b7) + out of range (b6-b0)
-	STA actionMessage
-	RTS
-
-+checkMinRange:
-	LDA locVar2							; minimum range
-	AND #$0F								; distance
-	CMP distanceToTarget
-	BEQ +done
-	BCC +done
-	LDA #$8C								; deny (b7) + target too close (b6-b0)
-	STA actionMessage
-
-+done:
-	RTS
-
 
 angleToTargetTable:
 	.db 4, 4, 5, 6, 1, 1, 2, 3

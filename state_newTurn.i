@@ -89,6 +89,7 @@ state_newTurn:
   STA activeObjectStats+9			  ; action points per turn
   LDA pilotTable-2, Y           ;
   STA activeObjectStats+5       ; base accuracy
+  STA debug
 
   LDA #$C0										  ; switch on cursor and active marker
   STA effects
@@ -119,7 +120,7 @@ state_newTurn:
   BMI +aiControlled
 
   JSR buildStateStack
-  .db 6							  ; 6 items
+  .db 7							  ; 7 items
   .db $30             ; set active unit portrait
   .db $0B 						; center camera
   .db $0C						  ; wait for camera to center

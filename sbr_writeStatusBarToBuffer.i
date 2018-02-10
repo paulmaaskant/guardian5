@@ -48,20 +48,17 @@ writeStatusBarToBuffer:
 	; --- line 1 tile 22 ---
 	LDA menuIndicator+0
 	PHA
-	; --- line 1 tile 23 to 26 ---
-	LDX #$02
-								;
--loop:
-	LDA systemMenuLine1, X
+	LDA #$0F
 	PHA
-	DEX
-	BPL -loop
 
-	LDA #$46
+	LDA systemMenuLine1+0
+	PHA
+
+	LDA #$47
 	PHA
 	LDA #$24
 	PHA
-	LDA #50								; 25 * 2 = 50
+	LDA #48							; 24 * 2 = 50
 	PHA
 
 	; --- line 2 ---
@@ -98,19 +95,17 @@ writeStatusBarToBuffer:
 
 	LDA #$0F			; separator blank space
 	PHA
-
-	LDX #$02			; 03
--loop:
-	LDA systemMenuLine2, X
 	PHA
-	DEX
-	BPL -loop
 
-	LDA #$66
+	LDA systemMenuLine1+1
+	PHA
+
+
+	LDA #$67
 	PHA
 	LDA #$24
 	PHA
-	LDA #50								; 25 * 2 = 50
+	LDA #48								; 24 * 2 = 50
 	PHA
 
 	; --- line 3 ---
@@ -120,10 +115,14 @@ writeStatusBarToBuffer:
 	PHA
 	DEX
 	BPL -loop
+
+	LDA #$2C
+	PHA
+
+
 	LDX #$0C
 	LDA #$0F			; separator blank space
 	PHA					;
-	PHA
 LDA menuFlags
 	BPL +set
 	BIT menuFlag_line3
@@ -142,37 +141,34 @@ LDA menuFlags
 	BPL -loop2
 +done:
 
-	;LDA #$0F			; separator blank space
-	;PHA					; twice
+	LDA #$0F			; separator blank space
+	PHA					; twice
+	PHA
+	LDA systemMenuLine1+2
+	PHA
 
-	;LDX #$02			; 03
-;-loop:
-	;LDA systemMenuLine3, X
-	;PHA
-	;DEX
-	;BPL -loop
 
-	LDA #$8A
+	LDA #$87
 	PHA
 	LDA #$24
 	PHA
-	LDA #42								; 21 * 2 = 42
+	LDA #48							; 24 * 2
 	PHA
 
 
 
-	;LDA targetMenuLine4+2
-	;PHA
-	;LDA targetMenuLine4+1
-	;PHA
-	;LDA targetMenuLine4+0
-	;PHA
-	;LDA #$B9
-	;PHA
-	;LDA #$24
-	;PHA
-	;LDA #$06								;
-	;PHA
+	LDA systemMenuLine3+2
+	PHA
+	LDA systemMenuLine3+1
+	PHA
+	LDA systemMenuLine3+0
+	PHA
+	LDA #$A2
+	PHA
+	LDA #$24
+	PHA
+	LDA #$06								;
+	PHA
 
 	TSX											; switch stack pointers
 	STX	stackPointer2

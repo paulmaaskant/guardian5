@@ -1,8 +1,8 @@
 showHexagon:
-	LDA #$36
+	LDA #$34
 	STA targetMenuLine2+0
-	LDA #$37
+	LDA #$35
 	STA targetMenuLine2+1
-	LDA #$38
-	STA targetMenuLine2+2
+	LDA #$2D
+	STA targetMenuLine3+2
 	RTS

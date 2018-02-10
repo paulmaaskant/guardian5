@@ -1,4 +1,4 @@
-; IN A (b7-b4) pilot ID
+; IN A (b7 + b2-0 pilot ID
 
 updatePortrait:
   ASL
@@ -14,7 +14,7 @@ updatePortrait:
 +continue:
   STY $B000
   ASL
-  AND #%00011100
+  AND #%00001100
   STA locVar1
   LDY #15
 

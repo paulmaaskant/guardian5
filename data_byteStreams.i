@@ -2,16 +2,16 @@
 ; --- byte stream to load status bar ( in reverse )	---
 hud:
 statusBar:
-	.db repeatBlank, 33 	; 2 rows + 3 blank tiles
-	.db $2B, repeatBlank, 5, $2A
+	.db repeatBlank, 36 	; 2 rows + 3 blank tiles
+	.db $2B, repeatBlank, 2, $2A
 	.db $2B, repeatBlank, 13, $2A
-	.db $2B, repeatBlank, 6, $2A
-	.db repeatBlank, 88
-	.db $2D, repeatBlank, 6, $2C
-	.db repeatBlank, 2
-	.db $2D, repeatBlank, 5, $2C
-	.db $2D, repeatBlank, 13, $2C
-	.db repeatBlank, 9
+	.db $0F, T, $0F
+	.db $2B, repeatBlank, 3, $2A
+	.db repeatBlank, 91
+	.db $2D, repeatBlank, 3, $2C
+	.db repeatBlank, 8, $0A, $2D, repeatBlank, 13, $2C, repeatBlank, 9
+
+	; keep first 6 rows separate
 
 	.db repeatBlank, $61	; 7 rows
 	.db repeatBlank, $00	; 8 blank rows
@@ -26,7 +26,7 @@ statusBar:
 	.db repeatBlank, 8
 	.db repeatBlank, 25, $2D, repeatBlank, 3, $2C
 	.db repeatBlank, 2 ;
-	.db $2B, repeatBlank, 28, $2A, $0F
+	.db $2B, repeatBlank, 18, $2A, $2B, repeatBlank, 8, $2A, $0F
 
 	; --- palettes ---
 	.db $FE, 64, $AA
@@ -39,18 +39,18 @@ hudDialog:
 	.db $2D, repeatBlank, 5, $0A, repeatBlank, 17, $2C, repeatBlank, 06
 
 hudMenu:
+	.db repeatBlank, 22
+	.db $0B, $0B, $3C, $3C, $0F, S, Y, S
 	.db repeatBlank, 24
-	.db 9, 9, $0F, S, Y, S
-	.db repeatBlank, 26
-	.db 9, 9, $0F, T,C,A
-	.db repeatBlank, 26
-	.db 9, 9, $0F, C, C, A
-	.db repeatBlank, 26
-	.db 9, 9, $0F, F, E, D
-	.db repeatBlank, 26
-	.db 9, 9, $0F, V, O, M
+	.db $0B, $0B, $0B, $3C, $0F, T,C,A
+	.db repeatBlank, 24
+	.db $0B, $0B, $0B, $3C, $0F, C, C, A
+	.db repeatBlank, 24
+	.db $0B, $3C, $3C, $3C, $0F, F, E, D
+	.db repeatBlank, 24
+	.db $0B, $0B, $3C, $3C, $0F, V, O, M
 	.db repeatBlank, 3
-	.db $2D, repeatBlank, 5, $0A, repeatBlank, 14, $2C, $2D, repeatBlank, 6, $2C
+	.db $2D, repeatBlank, 5, $0A, repeatBlank, 12, $2C, $2D, repeatBlank, 8, $2C
 	.db $0F
 
 ;hud:
@@ -268,19 +268,19 @@ instructionStream:
 	.db endOfStream
 
 brief1Stream:
-	.db setPortrait, $02
+	.db setPortrait, 0
 	.db G, U, A, R, D, I, A, N, space, 5, comma, lineBreak
 	.db T, H, I, S, space, I, S, space, C, O, M, M, A, N, D, space, 1, lineBreak
 	.db lineBreak
 	.db S, T, A, N, D, space, B, Y, space, T, O, space, R, E, C, E, I, V, E, lineBreak
 	.db N, E, W, space, O, R, D, E, R, S, waitForA
 	.db nextPage
-	.db setPortrait, $00
+	.db setPortrait, 4
 	.db T, H, I, S, space, I, S, space, G, U, A, R, D, I, A, N, space, 5, comma, lineBreak
 	.db lineBreak
 	.db S, T, A, N, D, I, N, G, space, B, Y, waitForA
 	.db nextPage
-	.db setPortrait, $02
+	.db setPortrait, 0
 	.db C, A, P, T, A, I, N, comma, lineBreak
 	.db lineBreak
 	.db T, W, O, space, E, N, E, M, Y, space, U, N, I, T, S, space, H, A, V, E, lineBreak
@@ -295,7 +295,7 @@ brief1Stream:
 	.db A, N, D, space, E, L, I, M, I, N, A, T, E, space, T, H, E, space, R, O, G, U, E, lineBreak
 	.db E, N, E, M, Y, space, U, N, I, T, S, waitForA
 	.db nextPage
-	.db setPortrait, $00
+	.db setPortrait, 4
 	.db O, R, D, E, R, S, space, C, O, N, F, I, R, M, E, D, lineBreak
 	.db lineBreak
 	.db M, O, V, I, N, G, space, O, U, T, space, T, O, space, F, I, N, D, space, A, N, D, lineBreak
@@ -452,12 +452,12 @@ levelOne:
 
 	.db	$02			; number of objects (4)
 
-	.db $02			; object 0 pilot 2
+	.db $04			; object 0 pilot 4
 	.db $03			; object 0 grid position
 	.db $13			; object 0 type 1 & facing RD
 
 	.db $00			; object 3 building
-	.db $14			; object 3 grid position
+	.db $23			; object 3 grid position
 	.db $0D			; object 3 type obstacle & tile D
 
 	.db $80			; object 1 pilot

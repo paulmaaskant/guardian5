@@ -28,7 +28,7 @@ state_confirmAction:
   LDY selectedAction
 	LDX actionList, Y
 
-  LDA actionTableWaypoints, X
+  LDA actionPropertiesTable, X
   BMI +showWayPoints
   RTS
 
@@ -74,6 +74,11 @@ state_confirmAction:
 	JSR replaceState
 	LDY #sConfirm
 	JSR soundLoad					   ; tail chain
+
+  LDA effects																																		; clear possible LOS block effect
+  AND #$F0																																      ; cursor and active unit marker stay on, rest turned off
+  STA effects
+
   JMP +setTimer
 
 +next:
@@ -86,18 +91,11 @@ state_confirmAction:
 	AND #$F0																																      ; cursor and active unit marker stay on, rest turned off
 	STA effects
 
-  ;LDA events
-	;ORA event_updateStatusBar
-	;STA events
-
   LDY #sRelease
 	JSR soundLoad					; tail chain
 
   LDA #8						       ; --- set input timer ---
 	STA blockInputCounter
-
-;  LDA #6
-;  JSR replaceState
 
   JSR pullAndBuildStateStack
   .db #3
@@ -108,15 +106,6 @@ state_confirmAction:
 +next:
   ASL                      ; select button
   ASL                      ; start button
-  BCC +setTimer
-
-	JSR buildStateStack
-	.db 6
-	.db $20, 0					; load menu backgorund 0
-	.db $23
-	.db $01, 10					; load stream 10: game paused
-	.db $25
-	; RTS built in
 
 +setTimer:
 	LDA #8						       ; --- set input timer ---

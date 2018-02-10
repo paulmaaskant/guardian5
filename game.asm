@@ -490,7 +490,7 @@ mainGameLoop:
 	ADC portraitYPos
 	STA $0200+208, X
 
-	LDA #%00000010
+	LDA #%00100010
 	STA $0202+208, X
 
 	DEY
@@ -626,6 +626,11 @@ gameStateJumpTable:
 	.dw state_initializeMove-1									; 3B
 	.dw state_showHourGlass-1										; 3C
 	.dw state_updateOverview-1									; 3D
+	.dw state_initializeAim-1										; 3E
+	.dw state_resolveAim-1											; 3F
+	.dw state_initializeTargetLockMarker-1			; 40
+	.dw state_resolveTargetLockMarker-1					; 41
+
 
 :not_used
 
@@ -690,6 +695,10 @@ gameStateJumpTable:
 	.include state_initializeMove.i
 	.include state_showHourGlass.i
 	.include state_updateOverview.i
+	.include state_initializeAim.i
+	.include state_resolveAim.i
+	.include state_initializeTargetLockMarker.i
+	.include state_resolveTargetLockMarker.i
 
 	.include sbr_getStatsAddress.i
 	.include sbr_pushState.i
@@ -703,6 +712,7 @@ gameStateJumpTable:
 	.include sbr_applyActionPointCost.i
 	.include sbr_calculateAttack.i
 	.include sbr_checkTarget.i
+	.include sbr_checkRange.i
 	.include sbr_checkLineOfSight.i
 	.include sbr_findPath.i
 
@@ -721,9 +731,6 @@ gameStateJumpTable:
 	.include sbr_clearActionMenu.i
 	.include sbr_clearTargetMenu.i
 	.include sbr_clearSystemMenu.i
-
-	.include sbr_showTargetMech.i
-	.include sbr_showHexagon.i
 	.include sbr_showSystemInfo.i
 
 	.include sbr_deleteObject.i
@@ -792,7 +799,7 @@ gameStateJumpTable:
 
 
 paletteColor1:
-	.db $0B, $38, $0B, $08, $0F, $0F, $09, $30
+	.db $0B, $38, $0B, $08, $0F, $1A, $09, $30
 	.db $08, $18, $0A
 	.dsb 5
 	.db $08, $15, $08
@@ -828,7 +835,7 @@ event_updateStatusBar:			.db %00010000
 event_refreshStatusBar:			.db %00000100
 
 bit3												.db %00001000
-pilotBits										.db %10000111	
+pilotBits										.db %10000111
 
 eRefreshStatusBar = %00000100
 eUpdateStatusBar 	= %00010000

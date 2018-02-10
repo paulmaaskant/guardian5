@@ -29,8 +29,8 @@ objectType1:
 	.db $1C 				; D3 / D5 (moving)
 	.db $1E 				; D4 (moving)
 
-	.db 27					; 00 mech name
-	.db %01010110	; 01 max hit points / max heat points
+	.db 26					; 00 mech name
+	.db %10100110	; 01 max hit points / max heat points
 	.db 2					; 02 action points per turn PILOT??
 	.db 3					; 03 movement points
 	.db 80				; 04 base accuracy PILOT??

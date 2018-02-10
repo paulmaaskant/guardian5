@@ -3,15 +3,15 @@
 ; -------------------------------------------------
 state_initializeCoolDown:
 
-	LDA #$03						; clear from list3+3
-	LDX #$09						; up to and including list3+9
-	JSR clearList3
+	;LDA #$03						; clear from list3+3
+	;LDX #$09						; up to and including list3+9
+	;JSR clearList3
 
 	JSR applyActionPointCost
 
-	LDA #$00
-	STA list1+0
-	STA list1+2
+	LDA #0
+	STA list1+0 				; animation frame count
+	STA list1+2					;
 
 	LDA activeObjectGridPos
 	JSR gridPosToScreenPos
@@ -43,7 +43,6 @@ state_initializeCoolDown:
 	.db $15
 	.db $35
 
-	;.db $16
 	; built in RTS
 
 ; -------------------------------------------------
@@ -67,11 +66,11 @@ state_resolveCoolDown:
 	BCC +expand
 	CMP	#$30
 	BCC +rotate
-	CMP #$40
-	BCC +collapse
-	LDA #1
-	STA effects
-	BNE +done
+	;CMP #$40
+	BCS +collapse
+	;LDA #1
+	;STA effects
+	;BNE +done
 
 
 +rotate:

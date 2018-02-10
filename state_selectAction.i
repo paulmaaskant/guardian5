@@ -26,25 +26,25 @@ state_selectAction:
 	LDA actionList, Y
 	ASL
 	TAX
-	LDY actionTable+1, X								; Y is the string ID
-	LDX #$00														; Show on position 0
+	LDY actionTable+1, X								; "<action>"
+	LDX #$00														; line 1
 	JSR writeToActionMenu								;
 
 	LDA actionMessage
-	BPL +next														; if there is an action (deny) message
+	BPL +next														; if there is an action deny message
 	AND #$7F														; show it on line 3
 	TAY
 	BNE +writeLine											; JMP
 
 +next:
-	BEQ +next														; there is an action (inform) message
-	TAY
-	LDX #13
+	BEQ +next														; there is an action message
+	TAY																	;
+	LDX #13															; line 2
 	JSR writeToActionMenu								;
 
 +next:
-	LDY #13
-	LDX #26
+	LDY #13															; "Cost"
+	LDX #26															; line 3
 	JSR writeToActionMenu
 
 	LDX #2															; AP per turn
@@ -62,7 +62,7 @@ state_selectAction:
 	SBC list3+0
 	SBC identity, X
 	BCC +store
-	LDY #$3A
+	LDY #$0C
 
 +store:
 	TYA
@@ -74,7 +74,7 @@ state_selectAction:
   LDA actionList, X
   CMP #aCOOLDOWN
 	BNE +continue
-	LDY #18													; GAIN
+	LDY #18													; restore AP
 
 +writeLine:
 	LDX #26

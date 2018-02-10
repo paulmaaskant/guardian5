@@ -3,6 +3,12 @@
 
 state_playAnimation:
 
+  LDA #$00
+  STA pal_transparant
+
+  ;LDA #$0
+  ;JSR updatePalette
+
   LDA blockInputCounter
 	BEQ +continue
 	DEC blockInputCounter
@@ -17,12 +23,13 @@ state_playAnimation:
 +continue:
   LSR                   ; right
   BCC +continue
-  INC list1+0
-  LDY list1+0
-  CPY #$06
-  BNE +setTimer
-  LDY #$00
-  STY list1+0
+  INC currentObjectFrameCount
+  ;INC list1+0
+  ;LDY list1+0
+  ;CPY #$06
+  ;BNE +setTimer
+  ;LDY #$00
+  ;STY list1+0
 
 +continue:
   LSR                   ; left
@@ -98,7 +105,8 @@ state_playAnimation:
   ADC list1+1
   TAY
   LDA (currentObjectType), Y 																										; retrieve sequence from the type
-	TAY																																						; IN parameter Y = animation sequence
+	TAY
+  LDY #$1D																																	   ; IN parameter Y = animation sequence
   JSR loadAnimationFrame
 	INC currentObjectFrameCount
   RTS

@@ -35,7 +35,7 @@ state_updateOverview:
   DEX
   BPL -loop
 
-  LDA #$4E
+  LDA #$47
   PHA
   LDA #$27
   PHA
@@ -50,7 +50,7 @@ state_updateOverview:
   DEX
   BPL -loop
 
-  LDA #$6E
+  LDA #$67
   PHA
   LDA #$27
   PHA

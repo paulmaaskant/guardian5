@@ -7,8 +7,7 @@ state_initializeModifiers:
     LDA #$54
     STA list3+30
     LDA list3+0
-    CLC
-    ADC #$40
+    ORA #$40              ; add name table position
     STA list3+31
     LDA #$55
     STA list3+32

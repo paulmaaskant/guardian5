@@ -123,9 +123,10 @@ state_titleScreen:
 
 +animation:
 	JSR pullAndBuildStateStack
-	.db 15								; # items
+	.db 17								; # items
 	.db $0D, 0						; change brightness 0: fade out
 	.db $00, 5						; load screen 5: animation screen
+	.db $3A, 1					; switch CHR bank 1 to 1
 	.db $0D, 1						; change brightness 1: fade in
 	.db $21								; play animations
 	.db $0D, 0						; change brightness 0: fade out

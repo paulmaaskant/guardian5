@@ -1,12 +1,4 @@
-actionPointCostTable:
-	.db $01				                                                                ; 00 MOVE
-	.db $01  			                                                                ; 01 RANGED ATK 1
-	.db $01    		                                                                ; 02 RANGED ATK 2
-	.db $00      	                                                                ; 03 COOL DOWN
-	.db $01                                                                       ; 04 CLOSE COMBAT
-	.db $03                                                                       ; 05 CHARGE
-	.db $01                                                                       ; 06 PIVOT TURN
-	.db $02                                                                       ; 07 RUN
+                                                            ; 07 RUN
 
 calculateActionPointCost:
 	BIT actionMessage

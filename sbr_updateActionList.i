@@ -8,26 +8,46 @@
 ;---------------------------------------
 
 ; --- action attributes ----
-; byte1: game state, byte2: char string
+; byte1: game state, byte2: dictionary
 actionTable:
-	.db $10, $02				; 00 MOVE
-	.db $12, $00				; 01 RANGED ATK 1
-	.db $12, $01				; 02 RANGED ATK 2
-	.db $14, $04				; 03 COOL DOWN
-	.db $17, $07				; 04 CLOSE COMBAT
-	.db $1B, $03				; 05 CHARGE
-	.db $19, $13				; 06 PIVOT TURN
-	.db $10, $18				; 07 RUN
+	.db $10, 2				; 00 MOVE
+	.db $12, 0				; 01 RANGED ATK 1
+	.db $12, 1				; 02 RANGED ATK 2
+	.db $14, 4				; 03 COOL DOWN
+	.db $17, 7				; 04 CLOSE COMBAT
+	.db $1B, 3				; 05 CHARGE
+	.db $19, 19				; 06 PIVOT TURN
+	.db $10, 24				; 07 RUN
+	.db $3E, 28				; 08 AIM
 
-actionTableWaypoints:
-	.db $80
-	.db $00
-	.db $00
-	.db $00
-	.db $00
-	.db $80
-	.db $00
-	.db $80
+
+; b7 show waypoints when confirming action?
+; b6 check range?
+; b5 check line of sight?
+; b4 check charge distance?
+; b3 calculate hit %?
+
+actionPropertiesTable:
+	.db %10000000			; 00 MOVE
+	.db %01101000			; 01 RANGED ATK 1
+	.db %01101000			; 02 RANGED ATK 2
+	.db %00000000			; 03 COOL DOWN
+	.db %01001000			; 04 CLOSE COMBAT
+	.db %10011000			; 05 CHARGE
+	.db %00000000			; 06 PIVOT TURN
+	.db %10000000			; 07 RUN
+	.db %00100000			; 08 AIM
+
+actionPointCostTable:
+	.db 1				                                                                ; 00 MOVE
+	.db 1  			                                                                ; 01 RANGED ATK 1
+	.db 1    		                                                                ; 02 RANGED ATK 2
+	.db 0      	                                                                ; 03 COOL DOWN
+	.db 1                                                                       ; 04 CLOSE COMBAT
+	.db 3                                                                       ; 05 CHARGE
+	.db 1                                                                       ; 06 PIVOT TURN
+	.db 2
+	.db 1
 
 	aMOVE = $00
 	aRANGED1 = $01
@@ -37,12 +57,13 @@ actionTableWaypoints:
 	aCHARGE = $05
 	aPIVOT = $06
 	aRUN = $07
+	aAIM = $08
 
 updateActionList:
 	LDA #$00
 	STA actionMessage																															; clear message
 	LDX #$09																																			; clear list of possible actions
--	STA actionList, X
+-	STA actionList, X					; clear action list
 	DEX
 	BPL -
 	LDA #$01
@@ -79,6 +100,8 @@ updateActionList:
 	LDA #aRANGED1
 	JSR addPossibleAction
 	LDA #aRANGED2
+	JSR addPossibleAction
+	LDA #aAIM
 	JSR addPossibleAction
 	PLP
 	BEQ +skipCharge

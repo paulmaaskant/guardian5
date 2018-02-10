@@ -27,6 +27,8 @@ stringListL:
 	.db #< str_CAPT_ORTEGA							; 25
 	.db #< str_DEMON										; 26
 	.db #< str_UNKNOWN									; 27
+	.db #< str_TARGET_LOCK											; 28
+	.db #< str_INC_ACCURACY							; 29
 
 stringListH:
 	.db #> str_RANGED_ATK_1
@@ -57,6 +59,8 @@ stringListH:
 	.db #> str_CAPT_ORTEGA
 	.db #> str_DEMON
 	.db #> str_UNKNOWN
+	.db #> str_TARGET_LOCK
+	.db #> str_INC_ACCURACY
 
 str_LOS_BLOCKED:
 	.db 20, L, I, N, E, dash, O, F, dash, S, I, G, H, T, B, L, O, C, K, E, D
@@ -114,3 +118,7 @@ str_DEMON:
 	.db 5, D, E, M, O, N
 str_UNKNOWN:
 	.db 7, U, N, K, N, O, W, N
+str_TARGET_LOCK:
+	.db 11, T, A, R, G, E, T, space, L, O, C, K
+str_INC_ACCURACY:
+	.db 12, I, N, C, space, A, C, C, U, R, A, C, Y

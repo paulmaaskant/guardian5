@@ -32,28 +32,30 @@ animationL:
 	.db #> ANIM0D			; 0D shockwave (upside down)
 	.db #> ANIM0E			; 0E shutdown timer
 	.db #> ANIM0F			; 0F dmg counter
-	.db #> ANIM10			; ramulen diag down still
-	.db #> ANIM11			; ramulen diag down walking
-	.db #> ANIM12			; ramulen diag up still
-	.db #> ANIM13			; ramulen diag up walking
-	.db #> ANIM14			; ramulen down still
-	.db #> ANIM15			; ramulen down walking
-	.db #> ANIM16			; ramulen up still
-	.db #> ANIM17			; ramulen up walking
-	.db #> ANIM18			; t2
-	.db #> ANIM19			; t2
-	.db #> ANIM1A			; t2
-	.db #> ANIM1B			; t2
-	.db #> ANIM1C			; t2 m d5
-	.db #> ANIM1D			; t2 m d6
-	.db #> ANIM1E			; t2 m d4
-	.db #> ANIM1F			; t2 m d1
+	;.db #> ANIM10			; mech 01 stationary
+	;.db #> ANIM11			; mech 01 stationary
+	;.db #> ANIM12			; mech 01 stationary
+	;.db #> ANIM13			; mech 01 stationary
+	;.db #> ANIM14			; mech 01 moving
+	;.db #> ANIM15			; mech 01 moving
+	;.db #> ANIM16			; mech 01 moving
+	;.db #> ANIM17			; mech 01 moving
+	.dsb 8
+	.db #> ANIM18			; mech 02 stationary
+	.db #> ANIM19			; mech 02 stationary
+	.db #> ANIM1A			; mech 02 stationary
+	.db #> ANIM1B			; mech 02 stationary
+	.db #> ANIM1C			; mech 02 m d5
+	.db #> ANIM1D			; mech 02 m d6
+	.db #> ANIM1E			; mech 02 m d4
+	.db #> ANIM1F			; mech 02 m d1
 	.db #> ANIM20
 	.db #> ANIM21
 	.db #> ANIM22
 	.db #> ANIM23
 	.db #> ANIM24
-	.db #> ANIM25
+	;.db #> ANIM25
+	.dsb 1
 	.db #> ANIM26
 
 animationH:
@@ -73,14 +75,15 @@ animationH:
 	.db #< ANIM0D
 	.db #< ANIM0E
 	.db #< ANIM0F
-	.db #< ANIM10
-	.db #< ANIM11
-	.db #< ANIM12
-	.db #< ANIM13
-	.db #< ANIM14
-	.db #< ANIM15
-	.db #< ANIM16
-	.db #< ANIM17
+	;.db #< ANIM10
+	;.db #< ANIM11
+	;.db #< ANIM12
+	;.db #< ANIM13
+	;.db #< ANIM14
+	;.db #< ANIM15
+	;.db #< ANIM16
+	;.db #< ANIM17
+	.dsb 8
 	.db #< ANIM18
 	.db #< ANIM19
 	.db #< ANIM1A
@@ -94,7 +97,8 @@ animationH:
 	.db #< ANIM22
 	.db #< ANIM23
 	.db #< ANIM24
-	.db #< ANIM25
+	;.db #< ANIM25
+	.dsb 1
 	.db #< ANIM26
 
 ANIM00:
@@ -167,115 +171,115 @@ ANIM0F:
 	.db #$10, #$40
 	.dw CS26
 
-ANIM10:
-	.db $10, $20
-	.dw tank01_stationary_d5_f
-ANIM11:
-	.db $80, $04
-	.dw tank01_moving_d5_fr01
-	.dw tank01_moving_d5_fr02
-	.dw tank01_moving_d5_fr03
-	.dw tank01_moving_d5_fr04
-	.dw tank01_moving_d5_fr05
-	.dw tank01_moving_d5_fr06
-	.dw tank01_moving_d5_fr07
-	.dw tank01_moving_d5_fr08
-ANIM12:
-	.db $10, $20
-	.dw tank01_stationary_d6_f
-ANIM13:
-	.db $80, $04
-	.dw tank01_moving_d6_fr01
-	.dw tank01_moving_d6_fr02
-	.dw tank01_moving_d6_fr03
-	.dw tank01_moving_d6_fr04
-	.dw tank01_moving_d6_fr05
-	.dw tank01_moving_d6_fr06
-	.dw tank01_moving_d6_fr07
-	.dw tank01_moving_d6_fr08
-ANIM14:
-	.db $10, $20
-	.dw tank01_stationary_d4_f
-ANIM15:
-	.db $80, $04
-	.dw tank01_moving_d4_fr01
-	.dw tank01_moving_d4_fr02
-	.dw tank01_moving_d4_fr03
-	.dw tank01_moving_d4_fr04
-	.dw tank01_moving_d4_fr05
-	.dw tank01_moving_d4_fr06
-	.dw tank01_moving_d4_fr07
-	.dw tank01_moving_d4_fr08
-ANIM16:
-	.db $10, $20
-	.dw tank01_stationary_d1_f
-ANIM17:
-	.db $80, $04
-	.dw tank01_moving_d1_fr01
-	.dw tank01_moving_d1_fr02
-	.dw tank01_moving_d1_fr03
-	.dw tank01_moving_d1_fr04
-	.dw tank01_moving_d1_fr05
-	.dw tank01_moving_d1_fr06
-	.dw tank01_moving_d1_fr07
-	.dw tank01_moving_d1_fr08
+;ANIM10:
+;	.db $10, $20
+;	.dw tank01_stationary_d5_f
+;ANIM11:
+;	.db $80, $04
+;	.dw tank01_moving_d5_fr01
+;	.dw tank01_moving_d5_fr02
+;	.dw tank01_moving_d5_fr03
+;	.dw tank01_moving_d5_fr04
+;	.dw tank01_moving_d5_fr05
+;	.dw tank01_moving_d5_fr06
+;	.dw tank01_moving_d5_fr07
+;	.dw tank01_moving_d5_fr08
+;ANIM12:
+;	.db $10, $20
+;	.dw tank01_stationary_d6_f
+;ANIM13:
+;	.db $80, $04
+;	.dw tank01_moving_d6_fr01
+;	.dw tank01_moving_d6_fr02
+;	.dw tank01_moving_d6_fr03
+;	.dw tank01_moving_d6_fr04
+;	.dw tank01_moving_d6_fr05
+;	.dw tank01_moving_d6_fr06
+;	.dw tank01_moving_d6_fr07
+;	.dw tank01_moving_d6_fr08
+;ANIM14:
+;	.db $10, $20
+;	.dw tank01_stationary_d4_f
+;ANIM15:
+;	.db $80, $04
+;	.dw tank01_moving_d4_fr01
+;	.dw tank01_moving_d4_fr02
+;	.dw tank01_moving_d4_fr03
+;	.dw tank01_moving_d4_fr04
+;	.dw tank01_moving_d4_fr05
+;	.dw tank01_moving_d4_fr06
+;	.dw tank01_moving_d4_fr07
+;	.dw tank01_moving_d4_fr08
+;ANIM16:
+;	.db $10, $20
+;	.dw tank01_stationary_d1_f
+;ANIM17:
+;	.db $80, $04
+;	.dw tank01_moving_d1_fr01
+;	.dw tank01_moving_d1_fr02
+;	.dw tank01_moving_d1_fr03
+;	.dw tank01_moving_d1_fr04
+;	.dw tank01_moving_d1_fr05
+;	.dw tank01_moving_d1_fr06
+;	.dw tank01_moving_d1_fr07
+;	.dw tank01_moving_d1_fr08
 
 ANIM18:
 	.db $10, $20
-	.dw tank02_stationary_d6_f
+	.dw mech02_stationary_d6_f0
 
 ANIM19:
 	.db $10, $20
-	.dw tank02_stationary_d4_f
+	.dw mech02_stationary_d4_f0
 
 ANIM1A:
 	.db $10, $20
-	.dw tank02_stationary_d1_f
+	.dw mech02_stationary_d1_f0
 
 ANIM1B:
 	.db $10, $20
-	.dw tank02_stationary_d5_f
+	.dw mech02_stationary_d5_f0
 
 ANIM1C:
 	.db $80, $04
-	.dw tank02_moving_d5_fr01
-	.dw tank02_moving_d5_fr02
-	.dw tank02_moving_d5_fr03
-	.dw tank02_moving_d5_fr04
-	.dw tank02_moving_d5_fr05
-	.dw tank02_moving_d5_fr06
-	.dw tank02_moving_d5_fr07
-	.dw tank02_moving_d5_fr08
+	.dw mech02_moving_d5_fr00
+	.dw mech02_moving_d5_fr01
+	.dw mech02_moving_d5_fr02
+	.dw mech02_moving_d5_fr03
+	.dw mech02_moving_d5_fr04
+	.dw mech02_moving_d5_fr05
+	.dw mech02_moving_d5_fr06
+	.dw mech02_moving_d5_fr07
 ANIM1D:
 	.db $80, $04
-	.dw tank02_moving_d6_fr01
-	.dw tank02_moving_d6_fr02
-	.dw tank02_moving_d6_fr03
-	.dw tank02_moving_d6_fr04
-	.dw tank02_moving_d6_fr05
-	.dw tank02_moving_d6_fr06
-	.dw tank02_moving_d6_fr07
-	.dw tank02_moving_d6_fr08
+	.dw mech02_moving_d6_fr00
+	.dw mech02_moving_d6_fr01
+	.dw mech02_moving_d6_fr02
+	.dw mech02_moving_d6_fr03
+	.dw mech02_moving_d6_fr04
+	.dw mech02_moving_d6_fr05
+	.dw mech02_moving_d6_fr06
+	.dw mech02_moving_d6_fr07
 ANIM1E:
 	.db $80, $04
-	.dw tank02_moving_d4_fr01
-	.dw tank02_moving_d4_fr02
-	.dw tank02_moving_d4_fr03
-	.dw tank02_moving_d4_fr04
-	.dw tank02_moving_d4_fr05
-	.dw tank02_moving_d4_fr06
-	.dw tank02_moving_d4_fr07
-	.dw tank02_moving_d4_fr08
+	.dw mech02_moving_d4_fr00
+	.dw mech02_moving_d4_fr01
+	.dw mech02_moving_d4_fr02
+	.dw mech02_moving_d4_fr03
+	.dw mech02_moving_d4_fr04
+	.dw mech02_moving_d4_fr05
+	.dw mech02_moving_d4_fr06
+	.dw mech02_moving_d4_fr07
 ANIM1F:
 	.db $80, $04
-	.dw tank02_moving_d1_fr01
-	.dw tank02_moving_d1_fr02
-	.dw tank02_moving_d1_fr03
-	.dw tank02_moving_d1_fr04
-	.dw tank02_moving_d1_fr05
-	.dw tank02_moving_d1_fr06
-	.dw tank02_moving_d1_fr07
-	.dw tank02_moving_d1_fr08
+	.dw mech02_moving_d1_fr00
+	.dw mech02_moving_d1_fr01
+	.dw mech02_moving_d1_fr02
+	.dw mech02_moving_d1_fr03
+	.dw mech02_moving_d1_fr04
+	.dw mech02_moving_d1_fr05
+	.dw mech02_moving_d1_fr06
+	.dw mech02_moving_d1_fr07
 
 ANIM20:
 	.db $20, $04
@@ -302,9 +306,9 @@ ANIM24:
 	.dw EF15
 	.dw EF16
 
-ANIM25:
-	.db $10, $20
-	.dw tank03_stationary_d4_f
+;ANIM25:
+;	.db $10, $20
+;	.dw tank03_stationary_d4_f
 
 ANIM26:
 	.db $10, $20
