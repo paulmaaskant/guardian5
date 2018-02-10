@@ -47,7 +47,7 @@ checkTarget:
 	JSR checkLineOfSight				; check line of sight
 	BCC +nextCheck
 
-	LDA activeObjectTypeAndNumber
+	LDA activeObjectIndexAndPilot
 	BMI +noMarker								; active unit is player controlled then
 	LDA effects
 	ORA #%00100000							; show the blocking node marker

@@ -1,4 +1,4 @@
 state_setActiveObjectPortrait:
-  LDA activeObjectTypeAndNumber
+  LDA activeObjectIndexAndPilot
   JSR updatePortrait
   JMP pullState

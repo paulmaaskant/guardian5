@@ -2,7 +2,7 @@
 ; game state 2A
 ; ------------------------
 state_newTurn:
-  LDA activeObjectTypeAndNumber
+  LDA activeObjectIndexAndPilot
   AND #$0F
   STA locVar1             ; current active object number
   INC locVar1             ; object number that is up next
@@ -34,7 +34,7 @@ state_newTurn:
   BNE -loop								; JMP
 
 +setNext:
-  STA	activeObjectTypeAndNumber
+  STA	activeObjectIndexAndPilot
   AND #%01111000
   STA activeObjectIndex
   TAY
@@ -76,7 +76,7 @@ state_newTurn:
   LDA (pointer1), Y				      ;
   STA activeObjectStats+1			  ; store
 
-  LDA activeObjectTypeAndNumber ; get pilot based stats
+  LDA activeObjectIndexAndPilot ; get pilot based stats
   ASL
   AND #%00001110
   BCC +continue
@@ -116,7 +116,7 @@ state_newTurn:
   LDA object+2, Y
   BMI +shutDown
 
-  LDA activeObjectTypeAndNumber
+  LDA activeObjectIndexAndPilot
   BMI +aiControlled
 
   JSR buildStateStack

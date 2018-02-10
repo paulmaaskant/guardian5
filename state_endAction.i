@@ -65,7 +65,7 @@ state_endAction:
   BEQ +endTurn                  ; if max APs are spent, end turn
   STA activeObjectStats+9
 
-  LDA activeObjectTypeAndNumber
+  LDA activeObjectIndexAndPilot
   JSR showSystemInfo
 
   LDY activeObjectIndex         ; if unit is down, end turn
@@ -76,7 +76,7 @@ state_endAction:
   ORA #$C0
   STA effects
 
-  LDA activeObjectTypeAndNumber
+  LDA activeObjectIndexAndPilot
   BMI +ai
 
   JSR buildStateStack

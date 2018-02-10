@@ -87,7 +87,7 @@
 	targetObjectTypeAndNumber			.dsb 1	; target object type / number
 	targetObjectIndex							.dsb 1	; index in objects table
 
-	activeObjectTypeAndNumber			.dsb 1	; active object type / number
+	activeObjectIndexAndPilot			.dsb 1	; active object type / number
 	activeObjectIndex							.dsb 1	; index in objects table
 	activeObjectGridPos						.dsb 1	; position of the object that has the turn
 	activeObjectStats							.dsb 1	; 0 weapon 1 max range (b7-4) min range (b3-2) and type (b1-0)
@@ -200,7 +200,7 @@
 												.dsb 1				; +1: health dial (b7-3), heat dial (b2-0)
 												.dsb 1				; +2: (b7) shut down (b6-0) frame count
 												.dsb 1				; +3: grid pos
-												.dsb 1
+												.dsb 1				; +4: (b7) target locked (b6-0) target object index + pilot
 												.dsb 1
 												.dsb 1
 												.dsb 1
@@ -626,8 +626,8 @@ gameStateJumpTable:
 	.dw state_initializeMove-1									; 3B
 	.dw state_showHourGlass-1										; 3C
 	.dw state_updateOverview-1									; 3D
-	.dw state_initializeAim-1										; 3E
-	.dw state_resolveAim-1											; 3F
+	.dw state_initializeTargetLock-1						; 3E
+	.dw state_resolveTargetLock-1								; 3F ; not implemented
 	.dw state_initializeTargetLockMarker-1			; 40
 	.dw state_resolveTargetLockMarker-1					; 41
 
@@ -695,8 +695,8 @@ gameStateJumpTable:
 	.include state_initializeMove.i
 	.include state_showHourGlass.i
 	.include state_updateOverview.i
-	.include state_initializeAim.i
-	.include state_resolveAim.i
+	.include state_initializeTargetLock.i
+	.include state_resolveTargetLock.i
 	.include state_initializeTargetLockMarker.i
 	.include state_resolveTargetLockMarker.i
 

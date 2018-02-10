@@ -1,5 +1,9 @@
-state_initializeAim:
+state_initializeTargetLock:
   JSR applyActionPointCost
+
+
+
+  
 
   LDA #0
   STA list1+0 				; animation frame count
@@ -30,7 +34,7 @@ state_initializeAim:
 
   JSR pullAndBuildStateStack
   .db 2			; 2 items
-  .db $15
-  .db $40
+  .db $15   ; focus animation
+  .db $40   ; LOCK marker animation
 
   ; built in RTS

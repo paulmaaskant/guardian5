@@ -4,7 +4,7 @@
 ;
 ;
 state_startTurn:
-  LDA activeObjectTypeAndNumber
+  LDA activeObjectIndexAndPilot
   JSR showSystemInfo
 
   LDA activeObjectIndex

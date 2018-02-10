@@ -1,7 +1,7 @@
 ; state 3D
 
 state_updateOverview:
-  LDA activeObjectTypeAndNumber ; get pilot based stats
+  LDA activeObjectIndexAndPilot ; get pilot based stats
   ASL
   AND #%00001110
   BCC +continue

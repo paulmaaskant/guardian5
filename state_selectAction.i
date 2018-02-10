@@ -286,7 +286,7 @@ state_selectAction:
 +toggleDone:																																		; redo checks for newly selected action on other unit																														;
 	LDA targetObjectTypeAndNumber																									; cursor is on unit?
 	BEQ +actionPointCost																													; no -> point cost
-	CMP activeObjectTypeAndNumber																									; yes -> on self?
+	CMP activeObjectIndexAndPilot																									; yes -> on self?
 	BEQ +actionPointCost																													; no -> point cost
 
 	LDA #$00																																			; clear action message
