@@ -87,9 +87,9 @@ state_newTurn:
   TAY                           ; pilot number x 4
   LDA pilotTable-3, Y           ;
   STA activeObjectStats+9			  ; action points per turn
+
   LDA pilotTable-2, Y           ;
   STA activeObjectStats+5       ; base accuracy
-  STA debug
 
   LDA #$C0										  ; switch on cursor and active marker
   STA effects
@@ -132,7 +132,7 @@ state_newTurn:
 
 +shutDown:
   JSR buildStateStack
-  .db 8							  ; 8 items
+  .db 9							  ; 8 items
   .db $30             ; set active unit portrait
   .db $3C             ; show hourglass
   .db $0B 						; center camera
@@ -140,6 +140,7 @@ state_newTurn:
   .db $34             ; start of turn events
   .db $1F							; handle shut down
   .db $35							; show modifiers
+  .db $42							; show temp gauge change
   .db $08             ; end turn
   ; built in RTS
 

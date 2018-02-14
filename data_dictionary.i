@@ -63,11 +63,11 @@ stringListH:
 	.db #> str_INC_ACCURACY
 
 str_LOS_BLOCKED:
-	.db 20, L, I, N, E, dash, O, F, dash, S, I, G, H, T, B, L, O, C, K, E, D
+	.db 12, L, I, N, E, space, B, L, O, C, K, E, D
 str_RANGED_ATK_1:
-	.db 12, $21, $10, $1D, $16, $14, $13, $0F, $10, $23, $1A, $0F, $10
+	.db 12, R, A, N, G, E, D, space, A, T, K, space, A
 str_RANGED_ATK_2:
-	.db 12, $21, $10, $1D, $16, $14, $13, $0F, $10, $23, $1A, $0F, $11
+	.db 12, R, A, N, G, E, D, space, A, T, K, space, B
 str_MOVE:
 	.db 4, M, O, V, E
 str_OPENING_FIRE:

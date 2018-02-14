@@ -87,17 +87,17 @@ OBS0: ; obstacle
 
 CLR0: ; empty sprite
 	.db %00010001, 0, $00
-CUR0: ; cursor
+CUR0: ; cursor top
 	.db %00010001, 0, $5E
-CUR1: ; cursor
+CUR1: ; cursor side
 	.db %00010001, 0, $5F
-CUR2: ; active
+CUR2: ; active marker
 	.db %00010001, 0, $7E
-CUR3: ; blokcing tile
+CUR3: ; LOS block marker
 	.db %00100110, $0E, -4, $70, $70
 	.db %00100111, $04, -4, $70, $70
-CUR4:	; transparancy mask (small)
-	.db %00100111, #$04, #%11111100, #$5D, #$5D
+CUR4:	; LOCK marker
+	.db %00110001, -8, $58, $59, $5A
 CUR5: ; transparancy mask (large)
 	.db %00110110, $14, -4, $5D, $5D, $4D
 	.db %00110111, $00, #%11111001, $00, $6D, $6D

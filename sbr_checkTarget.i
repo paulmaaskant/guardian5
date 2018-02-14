@@ -144,6 +144,22 @@ checkTarget:
 	ADC activeObjectStats+5									; - DEF + ACC
 	STA list3+1															; store hit probability
 
+	LDY activeObjectIndex
+	LDA object+4, Y													; target lock?
+	BPL +continue														; no -> continue
+
+	LDA targetObjectTypeAndNumber						; yes, is this the target?
+	ORA #%10000000
+	CMP object+4, Y
+	BNE +continue														; no -> continue
+
+	CLC
+	LDA #10
+	ADC list3+1
+	STA list3+1
+
++continue:
+	LDA list3+1
 	JSR toBCD																; convert to BCD for display purposes
 	LDA par2
 	CLC
@@ -167,7 +183,7 @@ checkTarget:
 	CPX #aCHARGE
 	BNE +continue
 	CLC
-	ADC #$01											; add one damage if CHARGing
+	ADC #$01											; add one damage if charging
 
 +continue:											; set inform message indicating expected damage
 	STA list3+2

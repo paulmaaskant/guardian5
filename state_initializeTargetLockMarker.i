@@ -5,17 +5,10 @@ state_initializeTargetLockMarker:
   JSR gridPosToScreenPos
   JSR clearCurrentEffects
 
-  LDA #$58
-  STA list3+30
-  LDA #$59
-  STA list3+31
-  LDA #$5A
-  STA list3+32
-
   LDA #$60                ; frame counter
   STA list1+0
 
-  LDA #7
+  LDA #3
   STA currentEffects+0    ; # animation
 
   LDA currentObjectXPos   ; x cursor position

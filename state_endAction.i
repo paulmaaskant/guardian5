@@ -65,8 +65,7 @@ state_endAction:
   BEQ +endTurn                  ; if max APs are spent, end turn
   STA activeObjectStats+9
 
-  LDA activeObjectIndexAndPilot
-  JSR showSystemInfo
+  JSR updateSystemMenu
 
   LDY activeObjectIndex         ; if unit is down, end turn
   LDA object+2, Y

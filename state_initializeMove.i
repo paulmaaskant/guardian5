@@ -1,6 +1,6 @@
 state_initializeMove:
   LDA effects
-  AND #%10000000						  ; switch off active marker
+  AND #%10000000						  ; switch off everything but the cursor
   STA effects
 
   LDY activeObjectIndex				; set object's move animation bit (b3)
@@ -8,8 +8,9 @@ state_initializeMove:
   ORA #%00001000
   STA object, Y
 
+  LDA object+5, Y
+  AND #%00111111
   LDY activeObjectGridPos			; unblock position in nodeMap
-  LDA #0											; FIX: show original meta tile
   STA nodeMap, Y
   TAX
   JSR setTile

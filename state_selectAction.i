@@ -94,21 +94,38 @@ state_selectAction:
 -loop:
 	LDA objectList-1, X
 	CMP targetObjectTypeAndNumber
-	BEQ +nextObject
+	BEQ +nextObject									; no marker on target unit, next unit
+
+	LDY activeObjectIndex
+	ORA #%10000000
+	CMP object+4, Y
+	BEQ +targetLock
+
 	AND #%01111000
 	TAY
 	LDA object+2, Y
-	BPL +nextObject							; unit not shutdown, next unit
+	BPL +nextObject									; unit not shutdown, next unit
+	LDA #14													; timer animation
+	STA locVar5
+	TYA
+
+
++targetLock:
+	AND #%01111000
+	TAY
+	LDA #3													; lock
+	STA locVar5
 
 	LDA object+3, Y
 	JSR gridPosToScreenPos
-	BCC +nextObject							; unit not on screen, next unit
+	BCC +nextObject									; unit not on screen, next unit
 
 	INC effects
 	LDA effects
 	AND #%00000111
 	TAY
-	LDA #$0E										; timer sprite
+	LDA locVar5											; #$0E		timer sprite
+
 	STA currentEffects-1, Y
 	LDA currentObjectXPos
 	STA currentEffects+5, Y
@@ -118,6 +135,7 @@ state_selectAction:
 +nextObject:
 	DEX
 	BNE -loop
+
 
 +continue:
 	LDA blockInputCounter
@@ -310,7 +328,17 @@ state_selectAction:
 	BPL +continue						; no -> lock
 
 	LDY #sDeny
-	JMP soundLoad						; tail chain
+	JSR soundLoad						; tail chain
+
+	LDA #64
+	STA blockInputCounter
+
+	JSR buildStateStack
+	.db 7									; 7 items
+	.db $45, %00001000		; blink action menu line 3 (switch on)
+	.db $1A								; wait
+	.db $45, %00000000		; blink action menu (switch off)
+	.db $31, #eRefreshStatusBar
 
 +continue:
 	LDY #sSelect

@@ -1,6 +1,8 @@
 ; state 3D
 
 state_updateOverview:
+  JSR clearActionMenu
+
   LDA activeObjectIndexAndPilot ; get pilot based stats
   ASL
   AND #%00001110

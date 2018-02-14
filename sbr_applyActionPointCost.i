@@ -58,4 +58,5 @@ applyActionPointCost:
   AND #%11111000
   ORA locVar1
   STA object+1, Y
+
   RTS

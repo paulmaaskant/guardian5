@@ -48,28 +48,23 @@ state_initializeMoveAction:
 	JSR clearList3
 
 	JSR applyActionPointCost
-
 	JSR clearActionMenu					; clear the menu
 
-	LDA #$0F 										; hide menu indicators
-	STA menuIndicator+0
-	STA menuIndicator+1
-
-	LDA menuFlags								; switch on blinking for line 2
-	ORA menuFlag_line2					; set flag
-	STA menuFlags
-
 	LDX #13											; line 2
-	LDY #$0A										; "moving"
+	LDY #10											; "moving"
 	JSR writeToActionMenu
 
 	JSR pullAndBuildStateStack
-	.db 7								; 7 items
-	.db $3A, 1					; switch CHR bank 1 to 1
-	.db $3B 						; init and resolve move
-	.db $3A, 0					; switch CHR bank 1 back to 0
-	.db $0A							; set direction
-	.db $16							; show results
+	.db 13								; 13 items
+	.db $45, %00111000		; blink action menu (all lines)
+	.db $31, #eRefreshStatusBar
+	.db $3A, 1						; switch CHR bank 1 to 1
+	.db $3B 							; init and resolve move
+	.db $3A, 0						; switch CHR bank 1 back to 0
+	.db $0B								; center camera on cursor
+	.db $0A								; set direction
+	.db $42								; show temp gauge change
+	.db $16								; show results
 	; built in RTS
 
 ; ----------------------------------------
@@ -95,15 +90,20 @@ state_resolveMove:
 	STA effects
 
 	LDY activeObjectIndex
+	LDX activeObjectGridPos			; block final position, move (b7) and sight (b6)
+	LDA nodeMap, X
+	AND #%00111111
+	STA object+5, Y							; store the current tile
+
 	LDA object+0, Y
 	EOR #%00001000							; object move bit (b3) OFF
 	STA object+0, Y
 	AND #%00000111							; get direction
-	LDY activeObjectGridPos			; block final position, move (b7) and sight (b6)
 	ORA #%11000000							; blocked for movement and los
-	STA nodeMap, Y
+	STA nodeMap, X
 	AND #%00000111
 	TAX
+	LDY activeObjectGridPos
 	JSR setTile
 
 	JMP pullState

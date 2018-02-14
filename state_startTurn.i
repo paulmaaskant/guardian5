@@ -5,12 +5,11 @@
 ;
 state_startTurn:
   LDA activeObjectIndexAndPilot
-  JSR showSystemInfo
+  JSR updateSystemMenu
 
   LDA activeObjectIndex
   BNE +done
   LDA roundCount
-  CMP #1
   BNE +done
 
   JSR pullAndBuildStateStack

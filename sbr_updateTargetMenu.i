@@ -20,7 +20,7 @@ updateTargetMenu:
 	;--- determine the target type (unit or empty node)
 	LDA targetObjectTypeAndNumber
 	BNE +displayTarget
-	LDA #$34
+	LDA #$34												; show empty hex
 	STA targetMenuLine2+0
 	LDA #$35
 	STA targetMenuLine2+1
@@ -33,13 +33,14 @@ updateTargetMenu:
 	; --- target stats ---
 	LDA #$3F
 	STA targetMenuLine1+5
-	LDA #$0F
+	LDA systemMenuLine3+0
 	STA targetMenuLine1+3
-	LDA #$0B
+	LDA systemMenuLine3+1
 	STA targetMenuLine1+4
 
-	BIT actionMessage					 ; check for invalid target
-	BMI +done							     ; skip power & hit
+	LDA cursorGridPos 							; check for target
+	CMP activeObjectGridPos
+	BEQ +done							     			; skip hp
 
 	; --- hit points ---
 	LDA list3+12

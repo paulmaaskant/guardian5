@@ -19,8 +19,8 @@ animationL:
 	.db #> ANIM00			; 00 cursor
 	.db #> ANIM01			; 01 active unit
 	.db #> ANIM02			; 02 blocked node (LOS)
-	.db #> ANIM03			; 03 obscure mask (small)
-	.db #> ANIM04			; 04 obscure mask (large)
+	.db #> ANIM03			; 03 LOCK marker
+	.db #> ANIM04			; 04 obscure mask (large) NOT USED
 	.db #> ANIM05			; 05 explosion
 	.db #> ANIM06			; 06 gun bullets
 	.db #> ANIM07			; 07 hit percentage

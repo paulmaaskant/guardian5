@@ -23,10 +23,6 @@ state_initializeRanged:
 	STA menuIndicator+0
 	STA menuIndicator+1
 
-	LDA menuFlags								; switch on blinking for line 1
-	ORA menuFlag_line1					; set flag
-	STA menuFlags
-
 	LDX #$00										; position 0
 	LDY #$06										; "opening fire"
 	JSR writeToActionMenu
@@ -37,18 +33,22 @@ state_initializeRanged:
 	BEQ +missile
 
 	JSR pullAndBuildStateStack
-	.db #6											; 6 items
+	.db #9											; 8 items
+	.db $45, %00111000					; blink action menu ON
 	.db $31, eRefreshStatusBar	; raise event
 	.db $1C											; face target
 	.db $2B											; center camera on attack area
 	.db $38											; start machine gun animation
 	.db $16											; show results
+	.db $42											; show temp gauge change
 
 +missile:
 	JSR pullAndBuildStateStack
-	.db #6											; 6 items
+	.db #9											; 8 items
+	.db $45, %00111000					; blink action menu ON
 	.db $31, eRefreshStatusBar	; raise event
 	.db $1C											; turn active unit to face target
 	.db $2B											; center camera on attack area
 	.db $39											; start missile animation
 	.db $16											; show results
+	.db $42											; show temp gauge change

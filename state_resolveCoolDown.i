@@ -36,12 +36,11 @@ state_initializeCoolDown:
 	DEX
 	BPL -loop
 
-
-
 	JSR pullAndBuildStateStack
-	.db 2			; 2 items
-	.db $15
-	.db $35
+	.db 3			; 3 items
+	.db $15		; resolve cool down
+	.db $35		; show modifier
+	.db $42		; show temp gauge difference
 
 	; built in RTS
 

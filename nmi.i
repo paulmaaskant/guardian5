@@ -197,7 +197,7 @@ NMI:
 	STA $B001
 
 	; -------------------------------------------
-	; scrolling
+	; prepare for scrolling
 	; -------------------------------------------
 	LDA #%10010000 		; turn on NMI
 	STA $2000					;
@@ -222,13 +222,7 @@ NMI:
 	ORA #$01
 	STA sysFlags
 
-
 +continue:
-
-
-
-
-
 	; --- wait for vBlank to end (and rendering to start) ---
 -	BIT $2002				; need to make sure v-blank has ended, otherwise code to wait for h-blank won't work
 	BVS -						; sprite 0 is reset?
@@ -237,19 +231,18 @@ NMI:
 	; !!! unused processor time, waiting for sprite 0
 	;-------------------------------------------
 
-	; MUSIC here
+	; music
 	JSR soundNextFrame
 
 	; tile animation
 	LDA frameCounter
-	AND #$07
+	BIT bit2to0
 	BNE +continue
-	LDA frameCounter
 	LSR
 	LSR
 	LSR
 	AND #$03
-	ADC #$0C
+	ADC #12
 	STA $D001
 
 	; tile blinking
@@ -263,10 +256,9 @@ NMI:
 	BEQ +done													; JMP
 
 +blink:
-	INC menuCounter
 	LDA menuCounter
-	AND #$0F													; every 16 frames
-	BNE +done
+	AND #$0F													; every 8 frames
+	BNE +increment
 	LDA menuFlags
 	EOR menuFlag_blink								; toggle the blink flag
 	STA menuFlags
@@ -275,7 +267,11 @@ NMI:
 	ORA event_refreshStatusBar				; raise event to trigger buffer to screen
 	STA events
 
++increment:
+	INC menuCounter
+	
 +done:
+
 	;-------------------------------------------
 	; !!! unused processor time, waiting for sprite 0
 	;-------------------------------------------

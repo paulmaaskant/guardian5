@@ -5,17 +5,6 @@ state_selectDirection:
 	LDA blockInputCounter
 	BEQ +takeInput					  ; if timer is still running, then skip input processing
 	DEC blockInputCounter			; timer still running
-
-	; ---- direction is confirmed ----
-	LDA events
-	BIT event_confirmAction
-	BEQ +done
-	EOR event_confirmAction
-	STA events
-
-	JMP pullState
-
-+done:
 	RTS
 
 +takeInput:
@@ -55,7 +44,7 @@ state_selectDirection:
 	JMP +setDirection
 
 +controlCamera:
-	LSR buttons					; roll bits into carry flag
+	LSR buttons							; roll bits into carry flag
 	BCC +
 	LDA #$10
 	JSR updateCameraXPos
@@ -74,18 +63,19 @@ state_selectDirection:
 +	JMP +done
 
 +confirm:
-	LDA events
-	ORA event_confirmAction
-	STA events
+	;LDA events
+	;ORA event_confirmAction
+	;STA events
 
 	LDA #$00
 	STA menuFlags
-	BEQ +done						; JMP
+	JMP pullState
+	; BEQ +done						; JMP
 
 +setDirection:
 	LDA object+0, X
 	AND #%11111000					; clear direction bits
-	ORA locVar1					; set new direction
+	ORA locVar1							; set new direction
 	STA object, X
 
 
@@ -103,9 +93,4 @@ state_selectDirection:
 +done:
 	LDA #$08
 	STA blockInputCounter
-
-	;LDA events
-	;ORA event_updateSprites
-	;STA events
-
 	RTS

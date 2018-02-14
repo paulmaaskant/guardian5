@@ -232,6 +232,7 @@
 	.org $A000
 	.include data_dictionary.i
 	.include data_byteStreams.i
+	.include data_lvl1_objects.i
 	.include sbr_getNextByte.i
 
 	; PRG page 2 and 3 (FIXED): main loop
@@ -540,7 +541,7 @@ mainGameLoop:
 
 ; --- events have been handled, now launch game state subroutine ---
 +nextEvent:
-	JSR launchStateSubroutine
+	JSR executeState
 	JMP mainGameLoop					; restart loop
 ;-----------------------------------------
 ; END of main loop
@@ -549,7 +550,7 @@ mainGameLoop:
 ; ------------------------------------------
 ; Subroutine to launch game state subroutine, use RTS to jump to address
 ; ------------------------------------------
-launchStateSubroutine:
+executeState:
 	LDX stateStack
 	LDA stateStack, X
 	CMP #$FF
@@ -627,12 +628,15 @@ gameStateJumpTable:
 	.dw state_showHourGlass-1										; 3C
 	.dw state_updateOverview-1									; 3D
 	.dw state_initializeTargetLock-1						; 3E
-	.dw state_resolveTargetLock-1								; 3F ; not implemented
+	.dw state_resolveTargetLock-1								; 3F ; not implemented, uses state 15
 	.dw state_initializeTargetLockMarker-1			; 40
 	.dw state_resolveTargetLockMarker-1					; 41
+	.dw state_initializeTempGauge-1							; 42
+	.dw state_resolveTempGauge-1								; 43
+	.dw state_showActionMenuMessage-1						; 44	NOT USED
+	.dw state_setMenuFlags-1										; 45
 
-
-:not_used
+:not_used																			; label for depricated states
 
 ; -------------------------
 ; includes
@@ -699,6 +703,10 @@ gameStateJumpTable:
 	.include state_resolveTargetLock.i
 	.include state_initializeTargetLockMarker.i
 	.include state_resolveTargetLockMarker.i
+	.include state_initializeTempGauge.i
+	.include state_resolveTempGauge.i
+	.include state_showActionMenuMessage.i
+	.include state_setMenuFlags.i
 
 	.include sbr_getStatsAddress.i
 	.include sbr_pushState.i
@@ -731,7 +739,8 @@ gameStateJumpTable:
 	.include sbr_clearActionMenu.i
 	.include sbr_clearTargetMenu.i
 	.include sbr_clearSystemMenu.i
-	.include sbr_showSystemInfo.i
+	.include sbr_updateSystemMenu.i
+	.include sbr_updateTargetMenu.i
 
 	.include sbr_deleteObject.i
 	.include sbr_writeStatusBarToBuffer.i
@@ -741,7 +750,6 @@ gameStateJumpTable:
 	.include sbr_setLineFunction.i
 	.include sbr_updateCamera.i
 	.include sbr_updateTarget.i
-	.include sbr_updateTargetMenu.i
 	.include sbr_updateCameraXPos.i
 	.include sbr_updateCameraYPos.i
 	.include sbr_updatePalette.i
