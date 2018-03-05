@@ -1,6 +1,5 @@
 state_initializeGameMenu:
-  JSR pullState							; discard state
-  JSR pullState							; pull state parameter
+  JSR pullParameter				; pull state parameter
   TAY
 
   LDA state20_screenHi, Y
@@ -14,7 +13,7 @@ state_initializeGameMenu:
   STA list1+1																															; $[24]00
   LDA #$00
   STA list1+2																															; $24[00]
-  LDA state20_rows, Y																																			;  8 rows
+  LDA state20_rows, Y																																			;
   STA list1+0
 
   ; next game state ---

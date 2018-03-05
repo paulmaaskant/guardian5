@@ -7,6 +7,25 @@
 ; IN list3+20, target life points
 
 calculateAttack:
+	JSR getSelectedWeaponTypeIndex
+	BCS +continue
+
+	ASL activeObjectStats-1, X
+	LDA weaponType+3, Y
+	ASL
+	ROR activeObjectStats-1, X			; set once per turn bit
+
+	AND #%00011110									; uses ammo?
+	BEQ +continue										; no -> continue
+
+	LDA activeObjectIndex
+	CLC
+	ADC identity, X
+	TAX
+	DEC object+5, X
+
+
++continue:
 	LDA #$03										; clear from list3+3
 	LDX #$09										; up to and including list3+9
 	JSR clearList3

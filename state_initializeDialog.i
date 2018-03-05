@@ -1,6 +1,5 @@
 state_initializeDialog:
-  JSR pullState           ; discard current state_initializeDialog
-  JSR pullState           ; get parameter
+  JSR pullParameter        ; get parameter
   TAY
 
   LDA state01_streamHi, Y

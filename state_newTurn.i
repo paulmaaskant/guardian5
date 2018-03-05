@@ -3,14 +3,15 @@
 ; ------------------------
 state_newTurn:
   LDA activeObjectIndexAndPilot
-  AND #$0F
-  STA locVar1             ; current active object number
-  INC locVar1             ; object number that is up next
-  LDX #$00                ; cycle 0 through 7
+  AND #%01111000
+  CLC
+  ADC #8
+  STA locVar1             ; object number that is up nex
+  LDX #0                  ; cycle 0 through 7
 
 -loop:
   LDA objectList, X
-  AND #$0F
+  AND #%01111000
   CMP locVar1
   BNE +noMatch            ; if this object's number is next number
 
@@ -23,10 +24,12 @@ state_newTurn:
   CPX objectListSize
   BNE -loop               ; cycle through all objects in objectList
 
-  LDX #$00								; if no object is found
-  INC locVar1             ; increase "next number" and try again
-  LDA locVar1
-  CMP #$08								; cycle between 0 and 7
+  LDX #0								  ; if no object is found
+  LDA locVar1             ; increase "next number" and try again
+  CLC
+  ADC #8
+  STA locVar1
+  CMP #%01111000					; cycle between 0 and 7
   BNE -loop
 
   STX locVar1							; reset index to 0
@@ -54,29 +57,19 @@ state_newTurn:
   LSR
   STA activeObjectStats+6       ; set current hit points
 
-  JSR getStatsAddress           ; Y goes in; sets pointer1
+  LDA #0
+  STA activeObjectStats+0       ; reset weapon 1 byte
+  STA activeObjectStats+1       ; reset weapon 2 byte
 
+  ;-----------------------------  get object type stats
+  JSR getStatsAddress           ; Y goes in; sets pointer1
   LDY #3                        ; #3 movement
   LDA (pointer1), Y             ;
   STA activeObjectStats+2			  ;
 
-  LDY #9                        ; #9 wpn 1 damage
-  LDA (pointer1), Y				      ;
-  STA activeObjectStats+3			  ; store
 
-  INY                           ; #10 wpn 1 range
-  LDA (pointer1), Y				      ;
-  STA activeObjectStats+0       ; store
-
-  LDY #12                       ; #12 wpn 2 damage
-  LDA (pointer1), Y
-  STA activeObjectStats+4			  ; store
-
-  INY                           ; #13 wpn 2 range
-  LDA (pointer1), Y				      ;
-  STA activeObjectStats+1			  ; store
-
-  LDA activeObjectIndexAndPilot ; get pilot based stats
+  ;-----------------------------  get pilot based stats
+  LDA activeObjectIndexAndPilot ;
   ASL
   AND #%00001110
   BCC +continue
@@ -100,12 +93,8 @@ state_newTurn:
   LDA #$00
   STA targetObjectTypeAndNumber
 
-  LDA #$0F ;
-  STA menuIndicator+0
-  STA menuIndicator+1
-
   LDA events
-  ORA event_refreshStatusBar
+  ORA #eRefreshStatusBar
   STA events
 
   JSR clearSystemMenu
@@ -132,15 +121,14 @@ state_newTurn:
 
 +shutDown:
   JSR buildStateStack
-  .db 9							  ; 8 items
+  .db 8							  ; 8 items
   .db $30             ; set active unit portrait
   .db $3C             ; show hourglass
   .db $0B 						; center camera
   .db $0C							; wait for camera to center
   .db $34             ; start of turn events
   .db $1F							; handle shut down
-  .db $35							; show modifiers
-  .db $42							; show temp gauge change
+  .db $16
   .db $08             ; end turn
   ; built in RTS
 

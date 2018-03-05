@@ -90,15 +90,15 @@
 	activeObjectIndexAndPilot			.dsb 1	; active object type / number
 	activeObjectIndex							.dsb 1	; index in objects table
 	activeObjectGridPos						.dsb 1	; position of the object that has the turn
-	activeObjectStats							.dsb 1	; 0 weapon 1 max range (b7-4) min range (b3-2) and type (b1-0)
-																.dsb 1	; 1 weapon 2 max range (b7-4) min range (b3-2) and type (b1-0)
+	activeObjectStats							.dsb 1	; 0 Weapon 1 (b7) reloading
+																.dsb 1	; 1 Weapon 2 (b7) reloading
 																.dsb 1	; 2 movement
-																.dsb 1  ; 3 weapon 1 damage
-																.dsb 1 	; 4 weapon 2 damage
-																.dsb 1 	; 5 accuracy
-																.dsb 1	; 6 hit points
-																.dsb 1	; 7 weapon 1 details
-																.dsb 1	; 8 weapon 2 details
+																.dsb 1  ; 3 NOT USED
+																.dsb 1 	; 4 NOT USED
+																.dsb 1 	; 5 base accuracy
+																.dsb 1	; 6 current hit points
+																.dsb 1	; 7 NOT USED
+																.dsb 1	; 8 NOT USED
 																.dsb 1	; 9 remaining action points
 
 																				; stored memory objects
@@ -126,46 +126,46 @@
 	targetEffectAnimation					.dsb 1
 
 	.ende
-	.enum $0300																																		; sound variables
+	.enum $0300														; sound variables
 
-	soundFlags										.dsb 1																					; (b7) sound enabled (b6) silence event raised
-	soundStreamChannel						.dsb 6																					; (b7) stream active? (b1-0) APU channel that the stream using
-	soundStreamDutyVolume					.dsb 6																					; (b7-6) Duty (b4-0) Volume Offset
-	soundStreamPeriodLo						.dsb 6																					; (b7-0) Note current (lo)
-	soundStreamPeriodHi						.dsb 6																					;	(b2-0) Note current (hi)
-	soundStreamPointerLo					.dsb 6																					; (b7-0) Stream index (lo)
-	soundStreamPointerHi					.dsb 6																					; (b7-0) Stream index (hi)
-	soundStreamTempo							.dsb 6																					; this streams tempo
-	soundStreamTickerTotal				.dsb 6																					; ticker to control tempo
-	soundStreamNoteLengthCounter	.dsb 6																					;
-	soundStreamNoteLength					.dsb 6																					; number of ticks a note is playing
+	soundFlags										.dsb 1	; (b7) sound enabled (b6) silence event raised
+	soundStreamChannel						.dsb 6	; (b7) stream active? (b1-0) APU channel that the stream using
+	soundStreamDutyVolume					.dsb 6	; (b7-6) Duty (b4-0) Volume Offset
+	soundStreamPeriodLo						.dsb 6	; (b7-0) Note current (lo)
+	soundStreamPeriodHi						.dsb 6	;	(b2-0) Note current (hi)
+	soundStreamPointerLo					.dsb 6	; (b7-0) Stream index (lo)
+	soundStreamPointerHi					.dsb 6	; (b7-0) Stream index (hi)
+	soundStreamTempo							.dsb 6	; this streams tempo
+	soundStreamTickerTotal				.dsb 6	; ticker to control tempo
+	soundStreamNoteLengthCounter	.dsb 6	;
+	soundStreamNoteLength					.dsb 6	; number of ticks a note is playing
 	soundStreamEnvelopeCounter		.dsb 6
 	soundStreamEnvelope						.dsb 6
 	soundStreamNoteOffset					.dsb 6
 	soundStreamLoop1Counter				.dsb 6
 	soundStreamLoop2Counter				.dsb 6
-	soundStreamSweepControl				.dsb 6																					;
+	soundStreamSweepControl				.dsb 6	;
 	softApuPorts									.dsb 16
 	currentPortValue							.dsb 4
 
-	actionMenuLine1				.dsb 13							; Buffers used to render the status menu
-	actionMenuLine2				.dsb 13
-	actionMenuLine3				.dsb 13
-	menuIndicator					.dsb 2
-	targetMenuLine1				.dsb 6
-	targetMenuLine2				.dsb 6
-	targetMenuLine3				.dsb 6
-	systemMenuLine1				.dsb 3
-	systemMenuLine2				.dsb 3
-	systemMenuLine3				.dsb 3
+	actionMenuLine1								.dsb 13	; Buffers used to render the status menu
+	actionMenuLine2								.dsb 13
+	actionMenuLine3								.dsb 13
+	menuIndicator									.dsb 2
+	targetMenuLine1								.dsb 6
+	targetMenuLine2								.dsb 6
+	targetMenuLine3								.dsb 6
+	systemMenuLine1								.dsb 3
+	systemMenuLine2								.dsb 3
+	systemMenuLine3								.dsb 3
 
-	characterPortrait			.dsb 16
-	currentEffects				.dsb 30							; effects
+	characterPortrait							.dsb 16
+	currentEffects								.dsb 30			; effects
 																						; 6 sprites, 5 bytes per sprite
 																						; (X, Y, animation #, counter, mirror pallette control)
 
-	currentPalettes				.dsb 8							; indexes of the current palettes
-	currentTransparant		.dsb 1							; 00 tiles: map 1
+	currentPalettes								.dsb 8			; indexes of the current palettes
+	currentTransparant						.dsb 1			; 00 tiles: map 1
 																						; 01 tiles: map 2
 																						; 02 tiles: pilot face
 																						; 03 tiles: status bar & menu
@@ -201,9 +201,9 @@
 												.dsb 1				; +2: (b7) shut down (b6-0) frame count
 												.dsb 1				; +3: grid pos
 												.dsb 1				; +4: (b7) target locked (b6-0) target object index + pilot
-												.dsb 1
-												.dsb 1
-												.dsb 1
+												.dsb 1				; +5: background tile
+												.dsb 1				; +6: weapon 1 : (b7-4) type, (b3-0) ammo or cycle
+												.dsb 1				; +7: weapon 2 : (b7-4) type, (b3-0) ammo or cycle
 												.dsb 120			; 15 more objects (15x8)
 																			; code contains 6 places where index is calced
 
@@ -328,15 +328,15 @@ mainGameLoop:
 	DEX
 
 -loopEffects:
-	LDY currentEffects+0, X																												; pattern
-	BEQ +skip
-	LDA	currentEffects+6, X																												; x pos
-	STA currentObjectXPos
-	LDA currentEffects+12, X																											; y pos
-	STA currentObjectYPos
-	LDA currentEffects+18, X																											; count
-	STA currentObjectFrameCount
-	LDA currentEffects+24, X																											; mirror
+	LDY currentEffects+0, X						; pattern
+	BEQ +skip													;
+	LDA	currentEffects+6, X						; x pos
+	STA currentObjectXPos							;
+	LDA currentEffects+12, X					; y pos
+	STA currentObjectYPos							;
+	LDA currentEffects+18, X					; count
+	STA currentObjectFrameCount				;
+	LDA currentEffects+24, X					; mirror
 	STA par4
 
 	TXA
@@ -368,9 +368,6 @@ mainGameLoop:
 -loopObjects:
 	LDA objectList, X								; get next object
 	AND #%01111000
-	;ASL															; every object has 8 bytes
-	;ASL
-	;ASL
 	TAY
 	STY locVar1											;
 
@@ -391,13 +388,11 @@ mainGameLoop:
 	TXA															;
 	PHA															; save X (object list index)
 	LDA object+2, Y
-	AND #%01111111
+	AND #%00111111
 	STA currentObjectFrameCount
 	LDA object+3, Y									; on screen check
 	JSR gridPosToScreenPos					; get and set screen X & Y
-	BCC +done												; off screen -> done (no need to show sprites)
-	;LDA objectList, X								; get B7 = AI unit
-	;PHP															; store neg flag
+	BCC +done												; off screen -> done (no need to show sprites)													; store neg flag
 	LDA object+0, Y
 	AND #%00001000									; if object move bit (b3) is set
 	BEQ +continue										;
@@ -415,7 +410,6 @@ mainGameLoop:
 	BCS +rightEdge									; that sprites are not wrapped
 	LDA actionList+1								; to other side of screen
 	BPL +continue
-	;PLP
 	JMP +done
 
 +rightEdge:
@@ -423,7 +417,6 @@ mainGameLoop:
 	BCC +continue
 	LDA actionList+1
 	BMI +continue
-	;PLP
 	JMP +done
 
 +continue:												; next, determine mirror, palette & which animation
@@ -440,28 +433,29 @@ mainGameLoop:
 
 +next:
 	STX par4
+	STY debug
 	LDA directionLookup, Y
 	TAY
 
 +next:
-	LDA (currentObjectType), Y 																										; retrieve sequence from the type
-	TAY																																						; IN parameter Y = animation sequence
-	JSR loadAnimationFrame
-	INC currentObjectFrameCount																										;
+	LDA (currentObjectType), Y 				; retrieve sequence from the type
+	TAY																; IN parameter Y = animation sequence
+	JSR loadAnimationFrame						;
+	INC currentObjectFrameCount				;
 
 +done:
-	PLA																																						; restore X
-	TAX																																						; from the stack
-	PLA																																						; restore Y
+	PLA																; restore X
+	TAX																; from the stack
+	PLA																; restore Y
 	TAY
 	LDA object+2, Y
-	AND #$80
-	ORA currentObjectFrameCount																										; object frame count
+	AND #%11000000										; save b7 (shutdown) b6 (turn)
+	ORA currentObjectFrameCount				; object frame count
 	STA object+2, Y
-	INX																																						; next object
-	CPX objectListSize																																; number of objects presently in memory
+	INX																; next object
+	CPX objectListSize								; number of objects presently in memory
 	BEQ +continue
-	JMP -loopObjects																															;
+	JMP -loopObjects									;
 
 +continue:
 
@@ -521,7 +515,7 @@ mainGameLoop:
 -	CMP frameCounter																															; to prevent game from freezing (due to half completed stack operations)
 	BEQ -
 
-	JSR menuIndicatorsBlink
+	;JSR menuIndicatorsBlink
 
 	; ------------------------------
 	; refresh status bar
@@ -589,7 +583,7 @@ gameStateJumpTable:
 	.dw state_resolveCoolDown-1									; 15
 	.dw state_showResults-1											; 16
 	.dw state_initializeCloseCombat-1						; 17
-	.dw state_resolveClose-1										; 18
+	.dw state_resolveCloseCombat-1							; 18
 	.dw state_initializePivotTurn-1							; 19
 	.dw state_waitFrame-1												; 1A
 	.dw state_initializeCharge-1								; 1B
@@ -635,6 +629,7 @@ gameStateJumpTable:
 	.dw state_resolveTempGauge-1								; 43
 	.dw state_showActionMenuMessage-1						; 44	NOT USED
 	.dw state_setMenuFlags-1										; 45
+	.dw state_refreshMenu-1											; 46
 
 :not_used																			; label for depricated states
 
@@ -664,7 +659,7 @@ gameStateJumpTable:
 	.include state_resolveCoolDown.i
 	.include state_initializeRanged.i
 	.include state_resolveMachineGun.i
-	.include state_resolveClose.i
+	.include state_resolveCloseCombat.i
 	.include state_showResults.i
 	.include state_shutDown.i
 	.include state_expandStatusBar.i
@@ -707,6 +702,7 @@ gameStateJumpTable:
 	.include state_resolveTempGauge.i
 	.include state_showActionMenuMessage.i
 	.include state_setMenuFlags.i
+	.include state_refreshMenu.i
 
 	.include sbr_getStatsAddress.i
 	.include sbr_pushState.i
@@ -744,8 +740,9 @@ gameStateJumpTable:
 
 	.include sbr_deleteObject.i
 	.include sbr_writeStatusBarToBuffer.i
-	.include sbr_writeStartMenuToBuffer.i
+	;.include sbr_writeStartMenuToBuffer.i
 	.include sbr_writeToActionMenu.i
+	.include sbr_writeToList8.i
 	.include sbr_write32Tiles.i
 	.include sbr_setLineFunction.i
 	.include sbr_updateCamera.i
@@ -759,10 +756,9 @@ gameStateJumpTable:
 	.include sbr_runExplosion.i
 	.include sbr_addToSortedList.i
 	.include sbr_angleToCursor.i
-	.include sbr_menuIndicatorsBlink.i
 	.include sbr_updatePortrait.i
 	.include sbr_setTargetToolTip.i
-	;.include sbr_setDamageToolTip.i
+	.include sbr_getSelectedWeaponIndex.i
 	.include sbr_setTile.i
 
 	.include sbr_random.i
@@ -782,6 +778,7 @@ gameStateJumpTable:
 	.include data_animations.i
 	.include data_soundHeaders.i
 	.include data_pilots.i
+	.include data_weapons.i
 
 
 
@@ -836,38 +833,38 @@ identity:
 
 .include data_objectTypes.i
 
-; --- events are automatically unflagged after they are executed
-event_confirmAction:				.db %10000000
-event_updateTarget:					.db %00100000
-event_updateStatusBar:			.db %00010000
-event_refreshStatusBar:			.db %00000100
-
-bit3												.db %00001000
-pilotBits										.db %10000111
-
 eRefreshStatusBar = %00000100
 eUpdateStatusBar 	= %00010000
 eUpdateTarget = 		%00100000
-
-
-; --- system flags remain set ---
-sysFlag_scrollRight:				.db %10000000
-sysFlag_scrollDown:					.db %01000000
-sysFlag_showPortrait:				.db %00100000
-sysFlag_splitScreen:				.db %00010000
-sysFlag_NTSC:								.db %00001000
-sysFlag_objectSprites:			.db %00000100
-sysFlag_scrollAdjustment:		.db %00000001
-
 sysObjectSprites = %00000100
 
+bit7:
+menuFlag_blink:
+sysFlag_scrollRight:
+event_confirmAction:				.db %10000000
 
-; --- menu flags control menu tile animation ---
-menuFlag_blink:							.db %10000000
-menuFlag_line1:							.db %00100000
-menuFlag_line2:							.db %00010000
-menuFlag_line3:							.db %00001000
+bit6:
+sysFlag_scrollDown:					.db %01000000
 
+menuFlag_line1:
+sysFlag_showPortrait:
+event_updateTarget:					.db %00100000
+
+menuFlag_line2:
+sysFlag_splitScreen:
+event_updateStatusBar:			.db %00010000
+
+menuFlag_line3:
+sysFlag_NTSC:
+bit3:												.db %00001000
+
+sysFlag_objectSprites:
+event_refreshStatusBar:			.db %00000100
+
+sysFlag_scrollAdjustment:		.db %00000001
+
+pilotBits:									.db %10000111
+bit2to0											.db %00000111
 
 leftNyble:					.db #$F0
 rightNyble:					.db #$0F
@@ -876,7 +873,7 @@ rightNyble:					.db #$0F
 ; that holds the matching animation #
 
 directionLookup:
-	.db 0, 0, 1, 2, 3, 2, 1, 0, 0, 4, 5, 6, 7, 6, 5
+	.db 0, 0, 1, 2, 3, 2, 1, 0, 0, 4, 5, 6, 7, 6, 5, 0
 
 portraitBaseXPos:
   .db 0, 8, 16, 24

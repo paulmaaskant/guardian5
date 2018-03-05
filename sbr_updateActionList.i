@@ -26,11 +26,12 @@ actionTable:
 ; b5 check line of sight?
 ; b4 check charge distance?
 ; b3 calculate hit %?
+; b2 check for reload, ammo and recycle?
 
 actionPropertiesTable:
 	.db %10000000			; 00 MOVE
-	.db %01101000			; 01 RANGED ATK 1
-	.db %01101000			; 02 RANGED ATK 2
+	.db %01101100			; 01 RANGED ATK 1
+	.db %01101100			; 02 RANGED ATK 2
 	.db %00000000			; 03 COOL DOWN
 	.db %01001000			; 04 CLOSE COMBAT
 	.db %10011000			; 05 CHARGE

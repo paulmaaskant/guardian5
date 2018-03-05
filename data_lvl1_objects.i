@@ -26,20 +26,26 @@ levelOne:
 
 	.db 0
 
-	.db	3			; number of objects
+	.db	4			; number of objects
 
 	.db $04			; object 0 pilot 4
 	.db $03			; object 0 grid position
 	.db $13			; object 0 type 1 & facing RD
+	.db $10			; object 0 wpns
 
 	.db $00			; object 3 building
 	.db $23			; object 3 grid position
 	.db $0D			; object 3 type obstacle & tile D
 
-  .db $00			; object 3 building
-	.db $25			; object 3 grid position
+	.db $00			; object 3 building
+	.db $23			; object 3 grid position
 	.db $0D			; object 3 type obstacle & tile D
 
-	.db $A0			; object 2 pilot
-	.db $C4			; object 2 grid position
-	.db $25			; object 2 type & facing LD
+	.db $02			; object 0 pilot 4
+	.db $0E			; object 0 grid position
+	.db $13			; object 0 type 1 & facing RD
+	.db $11			; object 0 wpns
+
+	.db $00			; object 3 building
+	.db $25			; object 3 grid position
+	.db $0D			; object 3 type obstacle & tile D

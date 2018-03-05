@@ -2,8 +2,7 @@
 ; gameState 00: Initialize title screen
 ; ------------------------------------------
 state_initializeScreen:
-	JSR pullState									; discard state
-	JSR pullState									; pull state parameter into A
+	JSR pullParameter							; pull state parameter into A
 	TAY														; and transfer to Y
 
 	LDA state00_screenHi, Y

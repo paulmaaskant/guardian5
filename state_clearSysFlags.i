@@ -1,10 +1,6 @@
 state_clearSysFlags:
-  JSR pullState
-  JSR pullState
-
+  JSR pullParameter
   EOR #$FF
-
   AND sysFlags
   STA sysFlags
-
   RTS

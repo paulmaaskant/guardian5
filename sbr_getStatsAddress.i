@@ -13,9 +13,9 @@ getStatsAddress:
 	TAX
 	LDA objectTypeL, X
 	CLC
-	ADC #$08						; skip animation slots
+	ADC #8						; skip animation slots
 	STA pointer1+0
 	LDA objectTypeH, X
-	ADC #$00
+	ADC #0
 	STA pointer1+1
 	RTS

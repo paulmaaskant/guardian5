@@ -2,15 +2,15 @@
 ;
 ; -----------------------------------------
 checkRange:
-	LDA #%00010000									; default range for close combat (max 1, min 0)
-	LDY selectedAction
-	LDX actionList, Y								; 1 for weapon 1, 2 for weapon 2
-	CPX #aCLOSECOMBAT
-	BEQ +continue										; if true, stick with current value of A
+	JSR getSelectedWeaponTypeIndex
+	BCS +failed
+	LDA weaponType+2, Y									;
+	BCC +next
 
-	LDA activeObjectStats-1, X			; max range (b7-4) min range (b3-2)
++failed:
+  LDA #%00010000									; default range for close combat (max 1, min 0)
 
-+continue:
++next:
 	STA locVar2
 	LSR
 	LSR
@@ -18,6 +18,8 @@ checkRange:
 	LSR										; max range
 	CMP distanceToTarget
 	BCS +checkMinRange
+
++outOfRange:
 	LDA #$88							; deny (b7) + out of range (b6-b0)
 	STA actionMessage
 	RTS

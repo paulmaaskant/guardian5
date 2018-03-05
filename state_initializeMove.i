@@ -15,8 +15,8 @@ state_initializeMove:
   TAX
   JSR setTile
 
-  LDA #$00
-  STA actionCounter
+  LDA #0
+  STA actionCounter           ; frame counter
   STA actionList+0						; node number on path in list1
 
   JSR clearCurrentEffects

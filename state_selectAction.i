@@ -21,15 +21,32 @@ state_selectAction:
 
 	JSR clearActionMenu
 	JSR clearTargetMenu
+																			; in 'toggle' positions
+	LDY #$40
+	STY menuIndicator+1
+	INY																	; set indicator tiles
+	STY menuIndicator+0
 
 	LDY selectedAction									; update the action menu buffer with the selected action
 	LDA actionList, Y
 	ASL
 	TAX
-	LDY actionTable+1, X								; "<action>"
-	LDX #$00														; line 1
+	LDA actionTable+1, X								; "<action>"
+	TAY
+	LDX #$00														; line 1 pos 0
 	JSR writeToActionMenu								;
 
+	JSR getSelectedWeaponTypeIndex
+	BCS +continue
+
++noAmmo:
+	LDA weaponType+0, Y									;
+	AND #%00111111
+	TAY
+	LDX #5															; line 1 pos 5
+	JSR writeToActionMenu								;
+
++continue:
 	LDA actionMessage
 	BPL +next														; if there is an action deny message
 	AND #$7F														; show it on line 3
@@ -43,38 +60,25 @@ state_selectAction:
 	JSR writeToActionMenu								;
 
 +next:
+	LDX selectedAction
+  LDA actionList, X
+  CMP #aCOOLDOWN
+	BEQ +restore
 	LDY #13															; "Cost"
 	LDX #26															; line 3
 	JSR writeToActionMenu
 
-	LDX #2															; AP per turn
+	LDA #$0C
+	LDX list3+0													; AP cost
 
 -loop:
-	LDY #$0D
-	CPX activeObjectStats+9							; remaining AP this turn
-	BEQ +next
-	BCS +store
-
-+next:
-	LDY #$50
-	LDA activeObjectStats+9
-	SEC
-	SBC list3+0
-	SBC identity, X
-	BCC +store
-	LDY #$0C
-
-+store:
-	TYA
 	STA actionMenuLine3+4, X
 	DEX
 	BNE -loop
+	BEQ +continue
 
-	LDX selectedAction
-  LDA actionList, X
-  CMP #aCOOLDOWN
-	BNE +continue
-	LDY #18													; restore AP
++restore:
+	LDY #18
 
 +writeLine:
 	LDX #26
@@ -105,15 +109,15 @@ state_selectAction:
 	TAY
 	LDA object+2, Y
 	BPL +nextObject									; unit not shutdown, next unit
-	LDA #14													; timer animation
-	STA locVar5
-	TYA
-
+	LDA #14													; shut down marker anim #
+	BNE +store
 
 +targetLock:
 	AND #%01111000
 	TAY
 	LDA #3													; lock
+
++store:
 	STA locVar5
 
 	LDA object+3, Y
@@ -162,6 +166,7 @@ state_selectAction:
 	LSR
 	STA locVar1						; grid Y coor
 	LDA buttons						; process directional buttons ---
+
 	LSR 									; read RIGHT bit
 	BCC +next							; skip if RIGHT not pressed
 	CLC
@@ -229,19 +234,13 @@ state_selectAction:
 	BCC +next
 
 	JSR buildStateStack		; open start menu
-	.db 18
+	.db 8
 	.db $32, %00100100		; clear sys flag: portrait & object sprites
 	.db $20, 2						; load hud menu
 	.db $3D								; load hud menu values
 	.db $23								; expand menu
 	.db $30								; load portrait
 	.db $24								;
-	.db $32, %00100000		; clear sys flag: portrait & object sprites
-	.db $20, 1						; load hud
-	.db $31, #eRefreshStatusBar
-	.db $25								; collapse menu
-	.db $29, %00000100		; set sys flag: object sprites
-	.db $30								; load portrait
 	; RTS built in
 
 +next:

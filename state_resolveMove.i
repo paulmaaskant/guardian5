@@ -30,13 +30,14 @@ state_initializeCharge:
 	JSR calculateAttack					; includes a call to applyActionPointCost
 
 	JSR pullAndBuildStateStack
-	.db 8								; 8 items
+	.db 9								; 9 items
 	.db $3A, 1					; switch CHR bank 1 to 1
 	.db $3B 						; move animation loop
 	.db $1C							; turn to face target
 	.db $1D							; close combat animation
 	.db $3A, 0					; switch CHR bank 1 back to 0
 	.db $16							; show results
+	.db $42							; show temp gauge change
 	; built in RTS
 
 ;-------------------------------------
@@ -63,8 +64,8 @@ state_initializeMoveAction:
 	.db $3A, 0						; switch CHR bank 1 back to 0
 	.db $0B								; center camera on cursor
 	.db $0A								; set direction
-	.db $42								; show temp gauge change
 	.db $16								; show results
+	.db $42								; show temp gauge change
 	; built in RTS
 
 ; ----------------------------------------
@@ -72,7 +73,7 @@ state_initializeMoveAction:
 ; ----------------------------------------
 state_resolveMove:
 	LDA actionCounter
-	BEQ +continue
+	BEQ +continue							; frame 0?
 	JMP +calculateOffset			; frame 32-1? -> calculate
 
 +continue:									; frame 0 -> new node
@@ -80,14 +81,14 @@ state_resolveMove:
 	; New node
 	;-------------------------------------
 	DEC list1
-	BPL +continue
+	BPL +continue							; new nodes left?
 
 	;-------------------------------
 	; Move complete
 	;-------------------------------
-	LDA effects
-	AND #%11111000							; switch off obscure mask effects
-	STA effects
+	;LDA effects
+	;AND #%11111000							; switch off obscure mask effects
+	;STA effects
 
 	LDY activeObjectIndex
 	LDX activeObjectGridPos			; block final position, move (b7) and sight (b6)
@@ -113,7 +114,7 @@ state_resolveMove:
 	; ---------------
 +continue:
 
-	LDA #$20										; 32 frames
+	LDA #32											; 32 frames
 	STA actionCounter
 
 	INC actionList

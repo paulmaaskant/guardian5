@@ -20,15 +20,23 @@ stringListL:
 	.db #< str_RESTORE_AP								; 18
 	.db #< str_PIVOT_TURN								; 19
 	.db #< str_DAMG_ICONS								; 20
-	.db #< str_START_GAME								; 21
-	.db #< str_PLAY_SOUND								; 22
-	.db #< str_INSTRUCTIONS							; 23
+	.db #< str_UNKNOWN									; 21
+	.db #< str_UNKNOWN									; 22
+	.db #< str_UNKNOWN									; 23
 	.db #< str_RUN											; 24
 	.db #< str_CAPT_ORTEGA							; 25
 	.db #< str_DEMON										; 26
 	.db #< str_UNKNOWN									; 27
-	.db #< str_TARGET_LOCK											; 28
-	.db #< str_INC_ACCURACY							; 29
+	.db #< str_TARGET_LOCK							; 28
+	.db #< str_REAPER										; 29
+	.db #< str_HAILFIRE									; 30
+	.db #< str_RELOADING								; 31
+	.db #< str_MELEE										; 32
+	.db #< str_MISSILE									; 33
+	.db #< str_LASER										; 34
+	.db #< str_AUTO_GUN									; 35
+	.db #< str_XX_USES_LEFT							; 36
+	.db #< str_OUT_OF_AMMO							; 37
 
 stringListH:
 	.db #> str_RANGED_ATK_1
@@ -52,22 +60,30 @@ stringListH:
 	.db #> str_RESTORE_AP
 	.db #> str_PIVOT_TURN
 	.db #> str_DAMG_ICONS
-	.db #> str_START_GAME
-	.db #> str_PLAY_SOUND
-	.db #> str_INSTRUCTIONS
+	.db #> str_UNKNOWN
+	.db #> str_UNKNOWN
+	.db #> str_UNKNOWN
 	.db #> str_RUN
 	.db #> str_CAPT_ORTEGA
 	.db #> str_DEMON
 	.db #> str_UNKNOWN
 	.db #> str_TARGET_LOCK
-	.db #> str_INC_ACCURACY
+	.db #> str_REAPER
+	.db #> str_HAILFIRE
+	.db #> str_RELOADING
+	.db #> str_MELEE
+	.db #> str_MISSILE
+	.db #> str_LASER
+	.db #> str_AUTO_GUN
+	.db #> str_XX_USES_LEFT
+	.db #> str_OUT_OF_AMMO
 
 str_LOS_BLOCKED:
 	.db 12, L, I, N, E, space, B, L, O, C, K, E, D
 str_RANGED_ATK_1:
-	.db 12, R, A, N, G, E, D, space, A, T, K, space, A
+	.db 4, W, P, N, 1
 str_RANGED_ATK_2:
-	.db 12, R, A, N, G, E, D, space, A, T, K, space, B
+	.db 4, W, P, N, 2
 str_MOVE:
 	.db 4, M, O, V, E
 str_OPENING_FIRE:
@@ -99,13 +115,7 @@ str_CONFIRM:
 str_PIVOT_TURN:
 	.db 10, P, I, V, O, T, space, T, U, R, N
 str_DAMG_ICONS:
-	.db 10, D, A, M, G, space, $80+40, $80+41, $80+42, $80+43, $80+44
-str_START_GAME:
-	.db 10, S, T, A, R, T, space, G, A, M, E
-str_PLAY_SOUND:
-	.db 10, P, L , A, Y, space, S, O, U, N, D
-str_INSTRUCTIONS:
-	.db 12, I, N, S, T, R, U, C, T, I, O, N, S
+	.db 12, D, A, M, G, space, $80+40, $80+41, $80+42, $80+43, $80+44, $80+45, $80+46
 str_RUN:
 	.db 3, R, U, N
 str_COST:
@@ -113,12 +123,28 @@ str_COST:
 str_RESTORE_AP:
 	.db 10, R, E, S, T, O, R, E, space, $80+0, $3B
 str_CAPT_ORTEGA:
-	.db 11, C, A, P, T, space, O, R, T, E, G, A
+	.db 6, O, R, T, E, G, A
 str_DEMON:
 	.db 5, D, E, M, O, N
 str_UNKNOWN:
 	.db 7, U, N, K, N, O, W, N
 str_TARGET_LOCK:
 	.db 11, T, A, R, G, E, T, space, L, O, C, K
-str_INC_ACCURACY:
-	.db 12, I, N, C, space, A, C, C, U, R, A, C, Y
+str_REAPER:
+	.db 6, R, E, A, P, E, R
+str_HAILFIRE:
+	.db 8, H, A, I, L, F, I, R, E
+str_RELOADING:
+	.db 9, R, E, L, O, A, D, I, N, G
+str_MELEE:
+	.db 5, M, E, L, E, E
+str_MISSILE:
+	.db 7, M, I, S, S, I, L, E
+str_LASER:
+	.db 5, L, A, S, E, R
+str_AUTO_GUN:
+	.db 8, A, U, T, O, space, G, U, N
+str_XX_USES_LEFT
+	.db 12, $80+10, $80+11, space, U, S, E, S, space, L, E, F, T
+str_OUT_OF_AMMO
+	.db 11, O, U, T, space, O, F, space, A, M, M, O

@@ -1,16 +1,28 @@
 ; IN pointer1 (fixed stats)
 updateSystemMenu:
-	LDA #$3F
-	STA systemMenuLine3+2
 
-	LDA activeObjectStats+6
+
+	LDA activeObjectStats+6			; HIT POINTS
 	JSR toBCD
 	LDA par2
 	STA systemMenuLine3+0
 	LDA par3
 	STA systemMenuLine3+1
+	LDA #$3F
+	STA systemMenuLine3+2
 
-	LDY activeObjectIndex
+	LDA #$0D										; REMAINING AP
+	LDX #3
+-loop:
+	CPX activeObjectStats+9
+	BNE +continue
+	LDA #$0C
++continue:
+	STA systemMenuLine2-1, X
+	DEX
+	BNE -loop
+
+	LDY activeObjectIndex				; TEMP GAUGE
 	LDA object+1, Y
 	AND #%00000111
 	TAY

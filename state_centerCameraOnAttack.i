@@ -7,7 +7,6 @@ state_centerCameraOnAttack:
   AND #$F0
   STA locVar1
 
-
   LDA activeObjectGridPos
   AND #$F0
   CLC

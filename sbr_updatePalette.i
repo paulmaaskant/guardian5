@@ -1,5 +1,5 @@
 ; --------------------------
-; A brightness (-40 +40
+; A brightness (-64 +64
 ; --------------------------
 updatePalette:
 	STA locVar1								; adjustment value

@@ -7,12 +7,16 @@ state_expandStatusBar:
 	JSR clearSprites
   LDA #$00
   STA effects
+
+  LDA #19
+  STA portraitYPos
+
   LDA cameraYStatus
   SEC
   SBC #$10
 
 +continue:
-  CMP #$C0
+  CMP #$B0                          ; controls how far the menu expands downwards
   BNE +continue
   JMP pullState
 

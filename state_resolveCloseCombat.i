@@ -9,11 +9,12 @@ state_initializeCloseCombat:
 	JSR calculateAttack
 
   JSR pullAndBuildStateStack
-  .db $06							; 6 items
+  .db 7							; 6 items
   .db $3A, 1					; switch CHR bank 1 to 1
   .db $1D 						; close combat animation
   .db $3A, 0					; switch CHR bank 1 back to 0
   .db $16							; show results
+	.db $42							; temp gauge
   ; built in RTS
 
 ; --------------------------------------------------
@@ -90,7 +91,7 @@ state_closeCombatAnimation:
 ; --------------------------------------------------
 ; game state 18: close combat animation
 ; --------------------------------------------------
-state_resolveClose:
+state_resolveCloseCombat:
 	LDA actionCounter
 	AND #%00001111
 	TAX

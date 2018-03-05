@@ -53,12 +53,14 @@ writeStatusBarToBuffer:
 
 	LDA systemMenuLine1+0
 	PHA
+	LDA systemMenuLine2+2
+	PHA
 
-	LDA #$47
+	LDA #$46
 	PHA
 	LDA #$24
 	PHA
-	LDA #48							; 24 * 2 = 50
+	LDA #50							; 25 * 2 = 50
 	PHA
 
 	; --- line 2 ---
@@ -99,13 +101,15 @@ writeStatusBarToBuffer:
 
 	LDA systemMenuLine1+1
 	PHA
+	LDA systemMenuLine2+1
+	PHA
 
 
-	LDA #$67
+	LDA #$66
 	PHA
 	LDA #$24
 	PHA
-	LDA #48								; 24 * 2 = 50
+	LDA #50								; 25 * 2 = 50
 	PHA
 
 	; --- line 3 ---
@@ -144,15 +148,18 @@ LDA menuFlags
 	LDA #$0F			; separator blank space
 	PHA					; twice
 	PHA
+
 	LDA systemMenuLine1+2
+	PHA
+	LDA systemMenuLine2+0
 	PHA
 
 
-	LDA #$87
+	LDA #$86
 	PHA
 	LDA #$24
 	PHA
-	LDA #48							; 24 * 2
+	LDA #50							; 25 * 2
 	PHA
 
 

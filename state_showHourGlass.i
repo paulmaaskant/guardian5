@@ -1,5 +1,4 @@
 state_showHourGlass:
-
   LDY #$44
   STY actionMenuLine1+5
   INY

@@ -1,21 +1,21 @@
-bit2to0
-  .db %00000111
+
 
 state_resolveTempGauge:
   LDA blockInputCounter
   BNE +wait
 
-  JSR pullState
-  BNE +finalFrame
+  JMP pullState
 
 +wait:
   DEC blockInputCounter
   BIT bit2to0               ; once every 8 frames
   BNE +done
+  CMP #1
+  BCC +finalFrames
   AND #%00001000
   BNE +oldGauge
 
-+finalFrame
++finalFrames:
   JSR updateSystemMenu
 
 -refresh:
@@ -26,7 +26,8 @@ state_resolveTempGauge:
   RTS
 
 +oldGauge:
-  LDX #2                    ; copy current gauge to list1
+
+  LDX #8                    ; copy current gauge to list1
 
 -loop:
   LDA list1, X

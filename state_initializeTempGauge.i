@@ -4,7 +4,7 @@ state_initializeTempGauge:
 
   JSR clearActionMenu
 
-  LDX #2                    ; copy current gauge to list1
+  LDX #8                    ; copy current gauge and AP to list1
 
 -loop:
   LDA systemMenuLine1, X
@@ -12,7 +12,7 @@ state_initializeTempGauge:
   DEX
   BPL -loop
 
-  LDA #80
+  LDA #72
   STA blockInputCounter
 
   JSR pullAndBuildStateStack

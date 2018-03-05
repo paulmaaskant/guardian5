@@ -31,8 +31,9 @@ state_initializeTargetLock:
   BPL -loop
 
   JSR pullAndBuildStateStack
-  .db 3			; 2 items
+  .db 4			; 2 items
   .db $15   ; focus animation
   .db $1C   ; face target
   .db $40   ; LOCK marker animation
+  .db $42		; show temp gauge change
   ; built in RTS

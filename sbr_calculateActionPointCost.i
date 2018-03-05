@@ -1,7 +1,6 @@
-                                                            ; 07 RUN
 
 calculateActionPointCost:
-	BIT actionMessage
+  BIT actionMessage
 	BPL +continue
 	RTS
 
@@ -10,6 +9,7 @@ calculateActionPointCost:
   LDA object+1, Y
   AND #$07
   STA locVar1                                                                   ; current # active heatsinks
+
   LDY selectedAction
   LDX actionList, Y
 	LDA actionPointCostTable, X
@@ -24,15 +24,13 @@ calculateActionPointCost:
   RTS
 
 +restore:
-	LDA activeObjectStats+9
+  LDA activeObjectStats+9
 	STA list3+0									; remaining action points
 
 	LDY activeObjectIndex
 	JSR getStatsAddress
 
-	LDY #1         							; max health / heat
-  LDA (pointer1), Y
-	AND #$07
+	LDA #6
   SEC
   SBC locVar1                 ; # of heat points that can be restored
   CMP list3+0

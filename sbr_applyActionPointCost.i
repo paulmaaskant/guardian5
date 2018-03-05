@@ -1,4 +1,9 @@
 applyActionPointCost:
+  LDA activeObjectStats+9
+  SEC
+  SBC list3+0
+  STA activeObjectStats+9
+
   LDY activeObjectIndex
   LDA object+1, Y
   AND #$07
@@ -34,14 +39,15 @@ applyActionPointCost:
   CLC
   ADC list3+0                                                                   ; A = action points available
   STA locVar1
-  LDA #$04																																			; msg heatsinks restore
-  STA list3+7
+;  LDA #$04																																			; msg heatsinks restore
+;  STA list3+7
 
-  LDY activeObjectIndex
-  JSR getStatsAddress
-  LDY #1                       ; Y = 1, type max health / heatsinks
-  LDA (pointer1), Y
-	AND #$07
+  ;LDY activeObjectIndex
+  ;JSR getStatsAddress
+  ;LDY #1                       ; Y = 1, type max health / heatsinks
+  ;LDA (pointer1), Y
+	;AND #$07
+  LDA #6
   CMP locVar1
 	BNE +continue
   LDY activeObjectIndex
@@ -50,7 +56,7 @@ applyActionPointCost:
   AND #$7F                     ; unset shutdown flag
   STA object+2, Y
   LDA #$0A
-  STA list3+8
+  STA list3+8                 ; set result message: restart
 
 +continue:
   LDY activeObjectIndex        ; overwrite

@@ -2,12 +2,6 @@
 ; gameState 07: Wait for player to confirm spin direction
 ; ------------------------------------------
 state_selectDirection:
-	LDA blockInputCounter
-	BEQ +takeInput					  ; if timer is still running, then skip input processing
-	DEC blockInputCounter			; timer still running
-	RTS
-
-+takeInput:
 	BIT buttons						;
 	BVS +controlCamera		; B
 	BMI +confirm					; A
@@ -93,4 +87,7 @@ state_selectDirection:
 +done:
 	LDA #$08
 	STA blockInputCounter
-	RTS
+
+	JSR buildStateStack
+	.db 1
+	.db $1A					; wait

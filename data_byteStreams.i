@@ -13,20 +13,22 @@ statusBar:
 
 	; keep first 6 rows separate
 
-	.db repeatBlank, $61	; 7 rows
+	.db repeatBlank, $41	; 7 rows
 	.db repeatBlank, $00	; 8 blank rows
 	.db repeatBlank, $00  ; 8 blank rows
 
 	; offset is 1 blank
 	.db repeatBlank, 25, $2B, repeatBlank, 3, $2A
-	.db repeatBlank, 20
-	.db $2F, T, O, L, I, P
-	.db repeatBlank, 26
-	.db $2F, A, H, C, E, M
-	.db repeatBlank, 8
-	.db repeatBlank, 25, $2D, repeatBlank, 3, $2C
-	.db repeatBlank, 2 ;
-	.db $2B, repeatBlank, 18, $2A, $2B, repeatBlank, 8, $2A, $0F
+	.db repeatBlank, 23
+	.db L, I, P
+	.db repeatBlank, 29
+	.db L, K, S
+	.db repeatBlank, 29+4
+	.db $2D, repeatBlank, 3, $2C
+	.db repeatBlank, 1+32+1 ;
+	.db $2B, repeatBlank,23, $2A
+	.db $2B, repeatBlank, 3, $2A
+	.db repeatBlank, 1
 
 	; --- palettes ---
 	.db $FE, 64, $AA
@@ -38,33 +40,20 @@ hudDialog:
 	.db repeatBlank, 2
 	.db $2D, repeatBlank, 5, $0A, repeatBlank, 17, $2C, repeatBlank, 06
 
-hudMenu:
-	.db repeatBlank, 22
-	.db $0B, $0B, $3C, $3C, $0F, S, Y, S
-	.db repeatBlank, 24
-	.db $0B, $0B, $0B, $3C, $0F, T,C,A
-	.db repeatBlank, 24
-	.db $0B, $0B, $0B, $3C, $0F, C, C, A
-	.db repeatBlank, 24
-	.db $0B, $3C, $3C, $3C, $0F, F, E, D
-	.db repeatBlank, 24
-	.db $0B, $0B, $3C, $3C, $0F, V, O, M
-	.db repeatBlank, 3
-	.db $2D, repeatBlank, 5, $0A, repeatBlank, 12, $2C, $2D, repeatBlank, 8, $2C
-	.db $0F
-
-;hud:
-	;.db repeatBlank, 33 	; 2 rows + 3 blank tiles
-	;.db $2B, repeatBlank, 5, $2A
-	;.db $2B, repeatBlank, 13, $2A
-	;.db $2B, repeatBlank, 6, $2A
-	;.db repeatBlank, 88
-	;.db $2D, repeatBlank, 6, $2C
-	;.db repeatBlank, 2
-	;.db $2D, repeatBlank, 5, $2C
-	;.db $2D, repeatBlank, 13, $2C
-	;.db repeatBlank, 9
-
+hudMenu:		; last
+	.db repeatBlank, 27
+	.db H, C, M
+	.db repeatBlank, 29
+	.db 1, P, W
+	.db repeatBlank, 29
+	.db 2, P, W
+	.db repeatBlank, 29
+	.db C, P ,S
+	.db repeatBlank, 2+1
+	.db $2D, repeatBlank, 23, $2C
+	.db $2D, repeatBlank, 3, $2C
+	.db repeatBlank, 1 + 7
+	.db $0A, repeatBlank, 24
 
 titleScreen2:
 	.db repeatBlank, 0	; 8 rows

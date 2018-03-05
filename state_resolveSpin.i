@@ -10,7 +10,8 @@ state_initializePivotTurn:
 	JSR clearActionMenu
 
 	JSR pullAndBuildStateStack
-	.db 2			; 2 items
+	.db 3			; 2 items
 	.db $0A
 	.db $16
+	.db $42
 	; built in RTS

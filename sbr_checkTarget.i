@@ -1,13 +1,15 @@
 
-; list3+0			heat increase / decrease
-; list3+1			Hit Probability
-; list3+2			Damage value
+; list3+0			AP cost
+; list3+1			hit Probability
+; list3+2			damage value
 ; list3+3..9	Result messages / streams
+; list3+10    ammo BCD digit tens
+; list3+11		ammo BCD digit ones
+; list3+12		target's hit points BCD digit 10
+; list3+13		target's hit points BCD digit 01
 
-; list3+12		target dial BCD digit 10
-; list3+13		target dial BCD digit 01
 
-; list3+20		target dial
+; list3+20		target's hit points
 ; list3+21		damage sustained by attacker
 ; list3+22		attacker dail
 ; list3+22		close combat animation
@@ -31,6 +33,41 @@ checkTarget:
 	LDA actionPropertiesTable, X
 	STA locVar5
 
+	AND #%00000100							; b2 - weapon 1 or 2
+	BEQ +nextCheck
+
+	LDA activeObjectStats-1, X							; CHECK for once per turn
+	BPL +checkAmmo
+	LDA #$9F																; "RELOADING" +128
+	STA actionMessage
+	RTS
+
++checkAmmo:
+	JSR getSelectedWeaponTypeIndex
+	LDA weaponType+3, Y
+	AND #$0F
+	BEQ +nextCheck
+
+	LDA activeObjectIndex
+	CLC
+	ADC identity, X
+	TAX
+	LDA object+5, X
+	AND #$0F
+	BNE +continue
+	LDA #165																; "AUT OF AMMO" +128
+	STA actionMessage
+	RTS
+
++continue:
+	JSR toBCD
+	LDA par2
+	STA list3+10
+	LDA par3
+	STA list3+11
+
++nextCheck:
+	LDA locVar5
 	AND #%01000000							; b6 - range check?
 	BEQ +nextCheck
 	JSR checkRange							; check min / max distance for ranged attacks
@@ -103,8 +140,6 @@ checkTarget:
 	LDA actionList, X
 	CMP #aAIM
 	BNE +continue
-	;LDA #29																; "INC ACCURACY"
-	;STA actionMessage
 	RTS
 
 +continue:
@@ -172,12 +207,14 @@ checkTarget:
 	LDA #$51
 	STA list3+30
 
-	LDY selectedAction
-	LDX actionList, Y							; 1 for weapon 1, 2 for weapon 2
-	LDA activeObjectStats+3				; default weapon 1 (primary) damage
-	CPX #aRANGED2									; unless the secondary weapon is selected
-	BNE +continue
-	LDA activeObjectStats+4				; weapon 2
+	JSR getSelectedWeaponTypeIndex
+	BCS +notRanged
+	LDA weaponType+1, Y									;
+	AND #$0F
+	BCC +continue
+
++notRanged:
+	LDA #2												; close combat damage
 
 +continue
 	CPX #aCHARGE

@@ -1,13 +1,11 @@
 state_shutDown:
-  LDA #$00
+  LDA #0
+  STA actionMessage
   STA selectedAction
   LDA #aCOOLDOWN
-  STA actionList
+  STA actionList+0
+
   JSR calculateActionPointCost
-  JSR applyActionPointCost
 
-  JMP pullState
-
-;  JSR pullAndBuildStateStack
-;  .db 2                 ; 2 items
-;  .db $45, 00           ; clear menu flags
+  LDA #$14
+  JMP replaceState

@@ -60,10 +60,7 @@ state_endAction:
 
 +continue:
   LDA activeObjectStats+9
-  SEC
-  SBC list3+0
-  BEQ +endTurn                  ; if max APs are spent, end turn
-  STA activeObjectStats+9
+  BEQ +endTurn                  ; if  APs are spent, end turn
 
   JSR updateSystemMenu
 

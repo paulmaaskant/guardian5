@@ -63,6 +63,33 @@ state_initializeMap:
 	AND #%11110111
 	STA object+0, X
 
+	CMP #$0F
+	BCC +continue							; unless object is obstacle
+
+	JSR getNextByte						; get weapons
+	PHA												; store weapon byte
+	AND #$F0
+	STA object+6, X						; wpn 1
+	LSR
+	TAY
+	LDA weaponType+3, Y
+	AND #$0F
+	ORA object+6, X						; set ammo
+	STA object+6, X
+	PLA												; restore weapon byte
+	ASL
+	ASL
+	ASL
+	ASL
+	STA object+7, X						; wpn 2
+	LSR
+	TAY
+	LDA weaponType+3, Y
+	AND #$0F
+	ORA object+7, X
+	STA object+7, X						; set ammo
+
++continue:
 	PLA
 	AND #%00001111						; and block it in the node map
 	ORA #%11000000
@@ -73,9 +100,18 @@ state_initializeMap:
 	JSR getStatsAddress				; breaks X, sets pointer1
 
 	LDX list1+3
-	LDY #1										; initial hit points / heat points
+	LDY #1										; initial hit points
 	LDA (pointer1), Y
+	ASL
+	ASL
+	ASL
+	ADC #6										; hardcoded heat points
 	STA object+1, X						; set health and heat points
+
+
+
+
+
 
 	LDX list1+2
 	INX

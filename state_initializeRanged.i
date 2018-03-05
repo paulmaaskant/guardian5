@@ -19,19 +19,15 @@ state_initializeRanged:
 	JSR clearCurrentEffects			; clear remaining effects
 	JSR clearActionMenu					; clear the menu
 
-	LDA #$0F 										; hide menu indicators
-	STA menuIndicator+0
-	STA menuIndicator+1
-
 	LDX #$00										; position 0
 	LDY #$06										; "opening fire"
 	JSR writeToActionMenu
 
-	LDY selectedAction
-	LDX actionList, Y						; 1 for weapon 1, 2 for weapon 2
-	CPX #aRANGED2
-	BEQ +missile
+	JSR getSelectedWeaponTypeIndex
+	LDA weaponType+7, Y					; figure out which animation
+	BNE +missile								; 0 machinegun, 1 missiles
 
++machineGun:
 	JSR pullAndBuildStateStack
 	.db #9											; 8 items
 	.db $45, %00111000					; blink action menu ON

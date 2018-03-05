@@ -11,9 +11,22 @@ state_confirmAction:
   EOR event_updateStatusBar						;
   STA events
 
+  JSR getSelectedWeaponTypeIndex
+  BCS +continue
+  LDA weaponType+3, Y
+  AND #$0F
+  BEQ +continue
+
+  LDY #36 ; XX uses left
+  LDX #13
+  JSR writeToActionMenu
+
++continue:
   LDY #17 ; confirm >A
   LDX #26
   JSR writeToActionMenu
+
+
 
 +nextStep:
   LDA blockInputCounter
@@ -84,8 +97,6 @@ state_confirmAction:
 +next:
   ASL                      ; B button
   BCC +next
-
-  JSR menuIndicatorsBlink
 
   LDA effects																																		; clear possible LOS block effect
 	AND #$F0																																      ; cursor and active unit marker stay on, rest turned off
