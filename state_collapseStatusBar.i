@@ -12,6 +12,8 @@ state_collapseStatusBar:
 
   LDA #11
   STA portraitYPos
+  LDA #20
+  STA portraitXPos
   LDA #$2E			; y pos
   STA $0200			; y pos
   JMP pullState            ;

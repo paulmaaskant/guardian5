@@ -22,17 +22,14 @@ loadAnimationFrame:
 	LDA animationL, Y
 	STA pointer1+1
 
-	LDY #$00
+	LDY #0
 	LDA (pointer1), Y
-	LSR															; optimze by putting the # freams in right nyble
-	LSR
-	LSR
-	LSR
 	PHA															; last meta frame # in the sequence
 
 	LDA #$00
 	STA par1												; N hi (always 0)
 	LDA currentObjectFrameCount
+	LDA #0
 	STA par2												; N lo (current object frame count)
 	INY
 	LDA (pointer1), Y								; D (interval in # frames)

@@ -1,25 +1,29 @@
 
-; list3+0			AP cost
-; list3+1			hit Probability
-; list3+2			damage value
-; list3+3..9	Result messages / streams
-; list3+10    ammo BCD digit tens
-; list3+11		ammo BCD digit ones
-; list3+12		target's hit points BCD digit 10
-; list3+13		target's hit points BCD digit 01
+; list3+00				AP cost
+; list3+01				hit Probability
+; list3+02				damage value
+; list3+03 .. 09	Result messages / streams
+; list3+10    		ammo BCD digit tens
+; list3+11				ammo BCD digit ones
+; list3+12				target's hit points BCD digit 10
+; list3+13				target's hit points BCD digit 01
 
+; list3+20				target's hit points
+; list3+21				damage sustained by attacker
+; list3+22				attacker dail
+; list3+22				close combat animation
+; list3+23				close combat sound
 
-; list3+20		target's hit points
-; list3+21		damage sustained by attacker
-; list3+22		attacker dail
-; list3+22		close combat animation
-; list3+23		close combat sound
+; list3+30				sprite
+; list3+31    		sprite
+; list3+32				sprite
 
-; list3+30		sprite
-; list3+31
-; list3+32
-
-; list3+40 .. 49 used in informative message
+; list3+40 .. 49 	placeholder values in STRING
+;
+;
+;
+;
+;
 ;
 ; make sure target is valid
 ; - is the target within range (ranged)
@@ -28,17 +32,17 @@
 ; - is the action actually an attack (cooldown)
 ; -----------------------------------------
 checkTarget:
-	LDY selectedAction					; retrieve selected action
+	LDY selectedAction								; retrieve selected action
 	LDX actionList, Y
 	LDA actionPropertiesTable, X
 	STA locVar5
 
-	AND #%00000100							; b2 - weapon 1 or 2
+	AND #%00000100										; b2 - weapon 1 or 2
 	BEQ +nextCheck
 
-	LDA activeObjectStats-1, X							; CHECK for once per turn
+	LDA activeObjectStats-1, X				; CHECK for once per turn
 	BPL +checkAmmo
-	LDA #$9F																; "RELOADING" +128
+	LDA #$9F													; "RELOADING" +128
 	STA actionMessage
 	RTS
 
@@ -138,8 +142,28 @@ checkTarget:
 
 	LDX selectedAction											; retrieve selected action
 	LDA actionList, X
-	CMP #aAIM
+	CMP #aAIM																; is action target lock?
 	BNE +continue
+	LDA distanceToTarget
+	CMP #10
+	BCC +nextCheck
+	LDA #8+128
+	STA actionMessage
+	RTS
+
++nextCheck:
+	LDA targetObjectTypeAndNumber
+	ORA #%10000000
+	STA locVar1
+	LDY activeObjectIndex
+	LDA object+4, Y													; check if target is not already locked
+	BPL +skip																; there is no target lock
+	CMP locVar1
+	BNE +skip
+	LDA #38+128
+	STA actionMessage
+
++skip:
 	RTS
 
 +continue:

@@ -8,4 +8,8 @@ state_showHourGlass:
   INY
   STY actionMenuLine2+6
 
-  JMP pullState
+  JSR updateSystemMenu
+
+  JSR pullAndBuildStateStack
+  .db 2
+  .db $31, #eRefreshStatusBar

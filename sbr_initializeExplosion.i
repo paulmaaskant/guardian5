@@ -1,7 +1,7 @@
 initializeExplosion:
   JSR clearCurrentEffects
   LDA #0
-  STA actionCounter
+  STA runningEffectCounter
 
   LDA #$0D
   STA currentEffects+0                ; animation
@@ -11,8 +11,7 @@ initializeExplosion:
   STA currentEffects+2
   STA currentEffects+3
 
-  LDA effects
-  ORA #%00001000
-  STA effects
+  LDA #1
+  STA runningEffect
 
   RTS

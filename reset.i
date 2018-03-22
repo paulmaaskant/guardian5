@@ -69,13 +69,6 @@ RESET:
 	LDA #< +returnPoint
 	PHA
 
-	;JSR buildStateStack
-	;.db 5									; # items
-	;.db $00, 5						; load screen 5: animation screen
-	;.db $0D, 1						; change brightness 1: fade in
-	;.db $30								; play animations
-	; built in RTS
-
 	JSR buildStateStack
 	.db 16								; # stack items
 	.db $00, 1						; load screen 01: story background
@@ -83,8 +76,8 @@ RESET:
 	.db $01, 0						; load stream 00: story text
 	.db $0D, 0						; change brightness 0: fade out
 	.db $00, 0						; load screen 00: title screen
-	.db $1E								; load title menu
-	.db $46, 8
+	.db $1E								; initialize title menu
+	.db $46, 8						; load title menu option tiles
 	.db $0D, 1						; change brightness 1: fade in
 	.db $03								; title screen (wait for user)
 	; built in RTS

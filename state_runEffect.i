@@ -1,11 +1,11 @@
 state_runEffect:
 
-  LDA list1+2
+  LDA list1+2         ; timer
   AND #$3F
-  STA list1+3
+  STA list1+3         ; temp
 
   LDA #$05
-  STA list1+4
+  STA list1+4         ; iteration count
 
   LDA cursorGridPos
   JSR gridPosToScreenPos
@@ -32,10 +32,6 @@ state_runEffect:
 
   DEC list1+4
   BPL -loop
-
-
-
-
 
   DEC list1+2
   BNE +done

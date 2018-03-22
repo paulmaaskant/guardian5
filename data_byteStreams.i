@@ -5,11 +5,11 @@ statusBar:
 	.db repeatBlank, 36 	; 2 rows + 3 blank tiles
 	.db $2B, repeatBlank, 2, $2A
 	.db $2B, repeatBlank, 13, $2A
-	.db $0F, T, $0F
+	.db $0F, $0F
 	.db $2B, repeatBlank, 3, $2A
 	.db repeatBlank, 91
 	.db $2D, repeatBlank, 3, $2C
-	.db repeatBlank, 8, $0A, $2D, repeatBlank, 13, $2C, repeatBlank, 9
+	.db repeatBlank, 9, $0A, $2D, repeatBlank, 13, $2C, repeatBlank, 9
 
 	; keep first 6 rows separate
 
@@ -35,10 +35,10 @@ statusBar:
 
 hudDialog:
 	.db repeatBlank, 33, $2B
-	.db repeatBlank, 23, $2A, $2B, repeatBlank, 3, $2A, repeatBlank, 91
+	.db repeatBlank, 22, $2A, $2B, repeatBlank, 3, $2A, repeatBlank, 91
 	.db $2D, repeatBlank, 3, $2C
-	.db repeatBlank, 2
-	.db $2D, repeatBlank, 5, $0A, repeatBlank, 17, $2C, repeatBlank, 06
+	.db repeatBlank, 3
+	.db $2D, repeatBlank, 5, $0A, repeatBlank, 16, $2C, repeatBlank, 07
 
 hudMenu:		; last
 	.db repeatBlank, 27
@@ -410,43 +410,3 @@ resultUnitRestart:
 	.db H, E, A, T, space, S, T, A, B, L, E, lineBreak
 	.db U, N, I, T, space, O, N, L, I, N, E, waitForA
 	.db endOfStream
-
-A = $10
-B = $11
-C = $12
-D = $13
-E = $14
-F = $15
-G = $16
-H = $17
-I = $18
-J = $19
-K = $1A
-L = $1B
-M = $1C
-N = $1D
-O = $1E
-P = $1F
-Q = $20
-R = $21
-S = $22
-T = $23
-U = $24
-V = $25
-W = $26
-X = $27
-Y = $28
-Z = $29
-
-lineBreak = $F1
-nextPage = $F2
-waitForA = $F3
-endOfStream = $F4
-setPortrait = $F5
-
-dict = $FC
-parameter = $FD
-
-comma = $0E
-space = $0F
-dash = $0B

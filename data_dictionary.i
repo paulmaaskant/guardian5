@@ -37,6 +37,8 @@ stringListL:
 	.db #< str_AUTO_GUN									; 35
 	.db #< str_XX_USES_LEFT							; 36
 	.db #< str_OUT_OF_AMMO							; 37
+	.db #< str_ALREADY_LOCKD						; 38
+	.db #< str_LEMUR										; 39
 
 stringListH:
 	.db #> str_RANGED_ATK_1
@@ -77,6 +79,8 @@ stringListH:
 	.db #> str_AUTO_GUN
 	.db #> str_XX_USES_LEFT
 	.db #> str_OUT_OF_AMMO
+	.db #> str_ALREADY_LOCKD
+	.db #> str_LEMUR
 
 str_LOS_BLOCKED:
 	.db 12, L, I, N, E, space, B, L, O, C, K, E, D
@@ -144,7 +148,11 @@ str_LASER:
 	.db 5, L, A, S, E, R
 str_AUTO_GUN:
 	.db 8, A, U, T, O, space, G, U, N
-str_XX_USES_LEFT
+str_XX_USES_LEFT:
 	.db 12, $80+10, $80+11, space, U, S, E, S, space, L, E, F, T
-str_OUT_OF_AMMO
+str_OUT_OF_AMMO:
 	.db 11, O, U, T, space, O, F, space, A, M, M, O
+str_ALREADY_LOCKD
+	.db 11, L, O, C, K, space, A, C, T, I, V, E
+str_LEMUR:
+	.db 5, L, E, M, U, R

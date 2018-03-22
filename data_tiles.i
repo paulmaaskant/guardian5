@@ -14,7 +14,8 @@ objectTiles:
 .hex A1 A4 B3 B2
 .hex 42 43 52 53
 .hex 6E 6F 7E 7F
-.hex C7 70 B9 BA ; #12
+.hex C7 70 B9 BA ; #13
+.hex 4E 4F 5E 5F ; 14
 
 metaTileBlock00:
 	.hex 62 89 99 89 99 BC 01 9C 01 AE 01 80 01 64 8C 01

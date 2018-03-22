@@ -63,8 +63,8 @@ state01_positionLo:
   .db $88
   .db $64
   .dsb 5
-  .db $47
-  .db $47
+  .db $48
+  .db $48
   .db $44
   .db $47
 state01_lastCol:

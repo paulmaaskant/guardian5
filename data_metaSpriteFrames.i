@@ -22,6 +22,160 @@
 ; mech animation frames
 ; -------------------------------------
 
+dronA_d4_f0:
+  .db %00100000
+  .db -12
+  .dw dronA_00_f0
+  .db %10100000
+  .db -12
+  .dw dronA_02_f0
+
+dronA_d4_f1:
+  .db %00100000
+  .db -12
+  .dw dronA_00_f1
+  .db %10100000
+  .db -12
+  .dw dronA_02_f0
+
+dronA_d4_f2:
+  .db %00100000
+  .db -12
+  .dw dronA_00_f2
+  .db %10100000
+  .db -12
+  .dw dronA_02_f0
+
+dronA_d4_f3:
+  .db %00100000
+  .db -12
+  .dw dronA_00_f3
+  .db %10100000
+  .db -12
+  .dw dronA_02_f0
+
+dronA_d1_f0:
+  .db %00100000
+  .db -12
+  .dw dronA_00_f0
+  .db %10100000
+  .db -12
+  .dw dronA_03_f0
+
+dronA_d1_f1:
+  .db %00100000
+  .db -12
+  .dw dronA_00_f1
+  .db %10100000
+  .db -12
+  .dw dronA_03_f0
+
+dronA_d1_f2:
+  .db %00100000
+  .db -12
+  .dw dronA_00_f2
+  .db %10100000
+  .db -12
+  .dw dronA_03_f0
+
+dronA_d1_f3:
+  .db %00100000
+  .db -12
+  .dw dronA_00_f3
+  .db %10100000
+  .db -12
+  .dw dronA_03_f0
+
+dronA_d5_f0:
+  .db %00100000
+  .db -12
+  .dw dronA_01_f0
+  .db %00100000
+  .db -18
+  .dw dronA_04_f0
+  .db %10100000
+  .db -18
+  .dw dronA_05_f0
+
+dronA_d5_f1:
+  .db %00100000
+  .db -12
+  .dw dronA_01_f1
+  .db %00100000
+  .db -18
+  .dw dronA_04_f1
+  .db %10100000
+  .db -18
+  .dw dronA_05_f0
+
+dronA_d5_f2:
+  .db %00100000
+  .db -12
+  .dw dronA_01_f2
+  .db %00100000
+  .db -18
+  .dw dronA_04_f2
+  .db %10100000
+  .db -18
+  .dw dronA_05_f0
+
+dronA_d5_f3:
+  .db %00100000
+  .db -12
+  .dw dronA_01_f3
+  .db %00100000
+  .db -18
+  .dw dronA_04_f3
+  .db %10100000
+  .db -18
+  .dw dronA_05_f0
+
+
+dronA_d6_f0:
+  .db %00100001
+  .db -12
+  .dw dronA_01_f0
+  .db %00100001
+  .db -18
+  .dw dronA_04_f0
+  .db %10100000
+  .db -18
+  .dw dronA_06_f0
+
+dronA_d6_f1:
+  .db %00100001
+  .db -12
+  .dw dronA_01_f1
+  .db %00100001
+  .db -18
+  .dw dronA_04_f1
+  .db %10100000
+  .db -18
+  .dw dronA_06_f0
+
+dronA_d6_f2:
+  .db %00100001
+  .db -12
+  .dw dronA_01_f2
+  .db %00100001
+  .db -18
+  .dw dronA_04_f2
+  .db %10100000
+  .db -18
+  .dw dronA_06_f0
+
+dronA_d6_f3:
+  .db %00100001
+  .db -12
+  .dw dronA_01_f3
+  .db %00100001
+  .db -18
+  .dw dronA_04_f3
+  .db %10100000
+  .db -18
+  .dw dronA_06_f0
+
+
 mech02_stationary_d1_f0:
   .db %10100000
 	.db -16
@@ -42,240 +196,27 @@ mech02_stationary_d6_f0:
 	.db -16
 	.dw mech02_d6
 
-mech02_moving_d1_fr00:
-  .db %00100000
-  .db -15
-  .dw mech02_d1
+mech03_stationary_d1_f0:
   .db %10100000
-  .db -7
-  .dw mechA_d1_f0
+	.db -16
+	.dw mech03_d1
 
-mech02_moving_d1_fr01:
-  .db %00100000
-  .db -16
-  .dw mech02_d1
+mech03_stationary_d4_f0:
   .db %10100000
-  .db -8
-  .dw mechA_d1_f1
+	.db -16
+	.dw mech03_d4
 
-mech02_moving_d1_fr02:
-  .db %00100000
-  .db -16
-  .dw mech02_d1
+mech03_stationary_d5_f0:
   .db %10100000
-  .db -8
-  .dw mechA_d1_f2
+  .db -16
+  .dw mech03_d5
 
-mech02_moving_d1_fr03:
-  .db %00100000
-  .db -16
-  .dw mech02_d1
-  .db %10100000
-  .db -8
-  .dw mechA_d1_f3
+mech03_stationary_d6_f0:
+	.db %10100000
+	.db -16
+	.dw mech03_d6
 
-mech02_moving_d1_fr04:
-  .db %00100000
-  .db -15
-  .dw mech02_d1
-  .db %10100000
-  .db -7
-  .dw mechA_d1_f4
 
-mech02_moving_d1_fr05:
-  .db %00100000
-  .db -16
-  .dw mech02_d1
-  .db %10100000
-  .db -8
-  .dw mechA_d1_f5
-
-mech02_moving_d1_fr06:
-  .db %00100000
-  .db -16
-  .dw mech02_d1
-  .db %10100000
-  .db -8
-  .dw mechA_d1_f6
-
-mech02_moving_d1_fr07:
-  .db %00100000
-  .db -16
-  .dw mech02_d1
-  .db %10100000
-  .db -8
-  .dw mechA_d1_f7
-
-mech02_moving_d4_fr00:
-  .db %00100000
-  .db -15
-  .dw mech02_d4
-  .db %10100000
-  .db -7
-  .dw mechA_d4_f0
-mech02_moving_d4_fr01:
-  .db %00100000
-  .db -16
-  .dw mech02_d4
-  .db %10100000
-  .db -8
-  .dw mechA_d4_f1
-mech02_moving_d4_fr02:
-  .db %00100000
-  .db -16
-  .dw mech02_d4
-  .db %10100000
-  .db -8
-  .dw mechA_d4_f2
-mech02_moving_d4_fr03:
-  .db %00100000
-  .db -16
-  .dw mech02_d4
-  .db %10100000
-  .db -8
-  .dw mechA_d4_f3
-mech02_moving_d4_fr04:
-  .db %00100000
-  .db -15
-  .dw mech02_d4
-  .db %10100000
-  .db -7
-  .dw mechA_d4_f4
-mech02_moving_d4_fr05:
-  .db %00100000
-  .db -16
-  .dw mech02_d4
-  .db %10100000
-  .db -8
-  .dw mechA_d4_f5
-mech02_moving_d4_fr06:
-  .db %00100000
-  .db -16
-  .dw mech02_d4
-  .db %10100000
-  .db -8
-  .dw mechA_d4_f6
-mech02_moving_d4_fr07:
-  .db %00100000
-  .db -16
-  .dw mech02_d4
-  .db %10100000
-  .db -8
-  .dw mechA_d4_f7
-
-mech02_moving_d5_fr00:
-  .db %00100000
-  .db -15
-  .dw mech02_d5
-  .db %10100000
-  .db -7
-  .dw mechA_d5_f0
-mech02_moving_d5_fr01:
-  .db %00100000
-  .db -16
-  .dw mech02_d5
-  .db %10100000
-  .db -8
-  .dw mechA_d5_f1
-mech02_moving_d5_fr02:
-  .db %00100000
-  .db -16
-  .dw mech02_d5
-  .db %10100000
-  .db -8
-  .dw mechA_d5_f2
-mech02_moving_d5_fr03:
-  .db %00100000
-  .db -16
-  .dw mech02_d5
-  .db %10100000
-  .db -8
-  .dw mechA_d5_f3
-mech02_moving_d5_fr04:
-  .db %00100000
-  .db -15
-  .dw mech02_d5
-  .db %10100000
-  .db -7
-  .dw mechA_d5_f4
-mech02_moving_d5_fr05:
-  .db %00100000
-  .db -16
-  .dw mech02_d5
-  .db %10100000
-  .db -8
-  .dw mechA_d5_f5
-mech02_moving_d5_fr06:
-  .db %00100000
-  .db -16
-  .dw mech02_d5
-  .db %10100000
-  .db -8
-  .dw mechA_d5_f6
-mech02_moving_d5_fr07:
-  .db %00100000
-  .db -16
-  .dw mech02_d5
-  .db %10100000
-  .db -8
-  .dw mechA_d5_f7
-
-mech02_moving_d6_fr00:
-  .db %00100000
-  .db -15
-  .dw mech02_d6
-  .db %10100000
-  .db -7
-  .dw mechA_d6_f0
-mech02_moving_d6_fr01:
-  .db %00100000
-  .db -16
-  .dw mech02_d6
-  .db %10100000
-  .db -8
-  .dw mechA_d6_f1
-mech02_moving_d6_fr02:
-  .db %00100000
-  .db -16
-  .dw mech02_d6
-  .db %10100000
-  .db -8
-  .dw mechA_d6_f2
-mech02_moving_d6_fr03:
-  .db %00100000
-  .db -16
-  .dw mech02_d6
-  .db %10100000
-  .db -8
-  .dw mechA_d6_f3
-mech02_moving_d6_fr04:
-  .db %00100000
-  .db -15
-  .dw mech02_d6
-  .db %10100000
-  .db -7
-  .dw mechA_d6_f4
-mech02_moving_d6_fr05:
-  .db %00100000
-  .db -16
-  .dw mech02_d6
-  .db %10100000
-  .db -8
-  .dw mechA_d6_f5
-mech02_moving_d6_fr06:
-  .db %00100000
-  .db -16
-  .dw mech02_d6
-  .db %10100000
-  .db -8
-  .dw mechA_d6_f6
-mech02_moving_d6_fr07:
-  .db %00100000
-  .db -16
-  .dw mech02_d6
-  .db %10100000
-  .db -8
-  .dw mechA_d6_f7
 
 
 
@@ -369,11 +310,6 @@ CS22:
 	.db -32
 	.dw CUR4
 
-CS23:
-	.db %10100000
-	.db -8
-	.dw CUR5
-
 CS24:
   .db %10110000
 	.db -32
@@ -383,12 +319,6 @@ CS25:
   .db %10110000
 	.db -24
 	.dw CURA
-
-CS26:
-  .db %10110000
-	.db -32
-	.dw CURB
-
 
 EF00:
 	.db #%10111000
@@ -463,3 +393,139 @@ EF15:
 EF16:
   .db #%10111000, -16
   .dw MIS9
+
+SH00:
+  .db %10000000
+  .dw SHW0
+
+mechA_moving_d1_fr00:
+  .db %10100000
+  .db -8 ; -7
+  .dw mechA_d1_f0
+mechA_moving_d1_fr01:
+  .db %10100000
+  .db -8
+  .dw mechA_d1_f1
+mechA_moving_d1_fr02:
+  .db %10100000
+  .db -8
+  .dw mechA_d1_f2
+mechA_moving_d1_fr03:
+  .db %10100000
+  .db -8
+  .dw mechA_d1_f3
+mechA_moving_d1_fr04:
+  .db %10100000
+  .db -8 ; -7
+  .dw mechA_d1_f4
+mechA_moving_d1_fr05:
+  .db %10100000
+  .db -8
+  .dw mechA_d1_f5
+mechA_moving_d1_fr06:
+  .db %10100000
+  .db -8
+  .dw mechA_d1_f6
+mechA_moving_d1_fr07:
+  .db %10100000
+  .db -8
+  .dw mechA_d1_f7
+
+mechA_moving_d4_fr00:
+  .db %10100000
+  .db -8 ;-7
+  .dw mechA_d4_f0
+mechA_moving_d4_fr01:
+  .db %10100000
+  .db -8
+  .dw mechA_d4_f1
+mechA_moving_d4_fr02:
+  .db %10100000
+  .db -8
+  .dw mechA_d4_f2
+mechA_moving_d4_fr03:
+  .db %10100000
+  .db -8
+  .dw mechA_d4_f3
+mechA_moving_d4_fr04:
+  .db %10100000
+  .db -8 ; -7
+  .dw mechA_d4_f4
+mechA_moving_d4_fr05:
+  .db %10100000
+  .db -8
+  .dw mechA_d4_f5
+mechA_moving_d4_fr06:
+  .db %10100000
+  .db -8
+  .dw mechA_d4_f6
+mechA_moving_d4_fr07:
+  .db %10100000
+  .db -8
+  .dw mechA_d4_f7
+
+mechA_moving_d5_fr00:
+  .db %10100000
+  .db -8 ; -7
+  .dw mechA_d5_f0
+mechA_moving_d5_fr01:
+  .db %10100000
+  .db -8
+  .dw mechA_d5_f1
+mechA_moving_d5_fr02:
+  .db %10100000
+  .db -8
+  .dw mechA_d5_f2
+mechA_moving_d5_fr03:
+  .db %10100000
+  .db -8
+  .dw mechA_d5_f3
+mechA_moving_d5_fr04:
+  .db %10100000
+  .db -8 ; -7
+  .dw mechA_d5_f4
+mechA_moving_d5_fr05:
+  .db %10100000
+  .db -8
+  .dw mechA_d5_f5
+mechA_moving_d5_fr06:
+  .db %10100000
+  .db -8
+  .dw mechA_d5_f6
+mechA_moving_d5_fr07:
+  .db %10100000
+  .db -8
+  .dw mechA_d5_f7
+
+mechA_moving_d6_fr00:
+  .db %10100000
+  .db -8  ; -7
+  .dw mechA_d6_f0
+mechA_moving_d6_fr01:
+  .db %10100000
+  .db -8
+  .dw mechA_d6_f1
+mechA_moving_d6_fr02:
+  .db %10100000
+  .db -8
+  .dw mechA_d6_f2
+mechA_moving_d6_fr03:
+  .db %10100000
+  .db -8
+  .dw mechA_d6_f3
+mechA_moving_d6_fr04:
+  .db %10100000
+  .db -8  ; -1
+  .dw mechA_d6_f4
+mechA_moving_d6_fr05:
+  .db %10100000
+  .db -8
+  .dw mechA_d6_f5
+mechA_moving_d6_fr06:
+  .db %10100000
+  .db -8
+  .dw mechA_d6_f6
+mechA_moving_d6_fr07:
+  .db %10100000
+  .db -8
+  .dw mechA_d6_f7

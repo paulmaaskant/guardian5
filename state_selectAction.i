@@ -87,37 +87,42 @@ state_selectAction:
 +continue:
 	JSR updateTargetMenu
 
-+nextStep
++nextStep:
 	LDA frameCounter
 	AND #%00100000
 	BEQ +continue
+																	; ----------------------------------
+																	; show markers
+																	; show markers above all shutdown units
+																	; and the locked target (if present)
 
-+showTimer:
-	LDX objectListSize					; show timer icon above all shutdown units
+
+
+	LDX objectListSize
 
 -loop:
 	LDA objectList-1, X
 	CMP targetObjectTypeAndNumber
-	BEQ +nextObject									; no marker on target unit, next unit
+	BEQ +nextObject									; no markers on the current target unit, next unit
 
 	LDY activeObjectIndex
 	ORA #%10000000
 	CMP object+4, Y
-	BEQ +targetLock
+	BEQ +targetLockMarker						; is locked target -> show
 
-	AND #%01111000
-	TAY
+	AND #%01111000									; is shutdown?
+	TAY															; index of iterated object
 	LDA object+2, Y
 	BPL +nextObject									; unit not shutdown, next unit
 	LDA #14													; shut down marker anim #
-	BNE +store
+	BNE +showMarker
 
-+targetLock:
++targetLockMarker:
 	AND #%01111000
 	TAY
 	LDA #3													; lock
 
-+store:
++showMarker:
 	STA locVar5
 
 	LDA object+3, Y

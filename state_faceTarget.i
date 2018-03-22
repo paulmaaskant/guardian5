@@ -64,13 +64,20 @@ state_faceTarget:
   AND #%11111000
   ORA identity, X
   STA object+0, Y
+
+  LDY activeObjectIndex
+  JSR getStatsAddress
+  LDY #4
+  LDA (pointer1), Y
+  BNE	+done
+
   LDY activeObjectGridPos
   AND #%00000111
   ORA #%11000000
   STA nodeMap, Y
   JSR setTile
 
-
++done:
 
   JMP pullState
 

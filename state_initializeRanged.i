@@ -29,22 +29,22 @@ state_initializeRanged:
 
 +machineGun:
 	JSR pullAndBuildStateStack
-	.db #9											; 8 items
+	.db #8											; 8 items
 	.db $45, %00111000					; blink action menu ON
 	.db $31, eRefreshStatusBar	; raise event
 	.db $1C											; face target
 	.db $2B											; center camera on attack area
 	.db $38											; start machine gun animation
 	.db $16											; show results
-	.db $42											; show temp gauge change
+	;.db $42											; show temp gauge change
 
 +missile:
 	JSR pullAndBuildStateStack
-	.db #9											; 8 items
+	.db #8											; 8 items
 	.db $45, %00111000					; blink action menu ON
 	.db $31, eRefreshStatusBar	; raise event
 	.db $1C											; turn active unit to face target
 	.db $2B											; center camera on attack area
 	.db $39											; start missile animation
 	.db $16											; show results
-	.db $42											; show temp gauge change
+	;.db $42											; show temp gauge change

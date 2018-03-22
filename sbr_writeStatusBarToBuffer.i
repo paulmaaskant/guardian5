@@ -48,19 +48,18 @@ writeStatusBarToBuffer:
 	; --- line 1 tile 22 ---
 	LDA menuIndicator+0
 	PHA
-	LDA #$0F
+	LDA #space
 	PHA
 
 	LDA systemMenuLine1+0
 	PHA
-	LDA systemMenuLine2+2
-	PHA
 
-	LDA #$46
+
+	LDA #$47
 	PHA
 	LDA #$24
 	PHA
-	LDA #50							; 25 * 2 = 50
+	LDA #48							; 29 * 2 = 58
 	PHA
 
 	; --- line 2 ---
@@ -95,21 +94,19 @@ writeStatusBarToBuffer:
 	BPL -loop2
 +done:
 
-	LDA #$0F			; separator blank space
+	LDA #space			; separator blank space
 	PHA
 	PHA
 
 	LDA systemMenuLine1+1
 	PHA
-	LDA systemMenuLine2+1
-	PHA
 
 
-	LDA #$66
+	LDA #$67
 	PHA
 	LDA #$24
 	PHA
-	LDA #50								; 25 * 2 = 50
+	LDA #48								; 29 * 2 = 58
 	PHA
 
 	; --- line 3 ---
@@ -151,15 +148,13 @@ LDA menuFlags
 
 	LDA systemMenuLine1+2
 	PHA
-	LDA systemMenuLine2+0
-	PHA
 
 
-	LDA #$86
+	LDA #$87
 	PHA
 	LDA #$24
 	PHA
-	LDA #50							; 25 * 2
+	LDA #48							; 29 * 2
 	PHA
 
 
@@ -170,11 +165,24 @@ LDA menuFlags
 	PHA
 	LDA systemMenuLine3+0
 	PHA
-	LDA #$A2
+	LDA #$A3
 	PHA
 	LDA #$24
 	PHA
 	LDA #$06								;
+	PHA
+
+	LDA systemMenuLine2+0
+	PHA
+	LDA systemMenuLine2+1
+	PHA
+	LDA systemMenuLine2+2
+	PHA
+	LDA #$41
+	PHA
+	LDA #$24
+	PHA
+	LDA #$07								;
 	PHA
 
 	TSX											; switch stack pointers

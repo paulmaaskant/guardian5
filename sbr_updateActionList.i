@@ -18,8 +18,7 @@ actionTable:
 	.db $1B, 3				; 05 CHARGE
 	.db $19, 19				; 06 PIVOT TURN
 	.db $10, 24				; 07 RUN
-	.db $3E, 28				; 08 AIM
-
+	.db $44, 28				; 08 AIM
 
 ; b7 show waypoints when confirming action?
 ; b6 check range?
@@ -49,16 +48,6 @@ actionPointCostTable:
 	.db 1                                                                       ; 06 PIVOT TURN
 	.db 2
 	.db 1
-
-	aMOVE = $00
-	aRANGED1 = $01
-	aRANGED2 = $02
-	aCOOLDOWN = $03
-	aCLOSECOMBAT = $04
-	aCHARGE = $05
-	aPIVOT = $06
-	aRUN = $07
-	aAIM = $08
 
 updateActionList:
 	LDA #$00

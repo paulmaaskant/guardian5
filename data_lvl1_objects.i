@@ -24,28 +24,41 @@ levelOne:
 	.hex 92 93 94 95 96 86 87 88
 	.hex 5A 5B 6A 6B 6C 6D 6E 6F 7A 7B 7C 7D 7E 7F 8A 8B 9A 9B AA AB
 
+	.db 7, 128+64 ; impassable + los blocked
+	.hex 30 40 50 60 70 80 90
+
 	.db 0
 
-	.db	4			; number of objects
+	.db	7			; number of objects
 
-	.db $04			; object 0 pilot 4
-	.db $03			; object 0 grid position
-	.db $13			; object 0 type 1 & facing RD
-	.db $10			; object 0 wpns
+	.db $04			; player pilot 4
+	.db $03			; object grid position
+	.db $24			; object type 1 & facing RD
+	.db $10			; object wpns
+
+	.db $00			; object 3 obstacle
+	.db $45			; object 3 grid position
+	.db $01			; object 3 type: obstacle | facing: 1
 
 	.db $00			; object 3 building
 	.db $23			; object 3 grid position
-	.db $0D			; object 3 type obstacle & tile D
-
-	.db $00			; object 3 building
-	.db $23			; object 3 grid position
-	.db $0D			; object 3 type obstacle & tile D
-
-	.db $02			; object 0 pilot 4
-	.db $0E			; object 0 grid position
-	.db $13			; object 0 type 1 & facing RD
-	.db $11			; object 0 wpns
+	.db $01			; object 3 type obstacle & tile D
 
 	.db $00			; object 3 building
 	.db $25			; object 3 grid position
-	.db $0D			; object 3 type obstacle & tile D
+	.db $01			; object 3 type obstacle & tile D
+
+	.db $84			; Enemy pilot 4
+	.db $E4			; object grid position
+	.db $35			; object type 1 & facing RD
+	.db $10			; object wpns
+
+	.db $84			; Enemy pilot 4
+	.db $E6			; object grid position
+	.db $35			; object type 1 & facing RD
+	.db $10			; object wpns
+
+	.db $84			; Enemy pilot 4
+	.db $E8			; object grid position
+	.db $34			; object type 1 & facing RD
+	.db $10			; object wpns

@@ -5,8 +5,8 @@ state_initializeTargetLockMarker:
   JSR gridPosToScreenPos
   JSR clearCurrentEffects
 
-  LDA #$60                ; frame counter
-  STA list1+0
+  LDA #90                ; frame counter
+  STA runningEffectCounter
 
   LDA #3
   STA currentEffects+0    ; # animation
@@ -17,8 +17,11 @@ state_initializeTargetLockMarker:
   LDA currentObjectYPos   ; y cursor position
   STA currentEffects+12
 
-  LDA #1
+  LDA #3
+  STA runningEffect
+
+  LDA effects
+  AND #%11111000
   STA effects
 
-  LDA #$41
-  JMP replaceState
+  JMP pullState

@@ -42,15 +42,14 @@ state_ai_determineAction:
   LDX objectListSize
 
 -loop:
-  DEX
-  LDA objectList, X
+  DEX                                     ; note that this assumes that the game is over when there are no valid targets left
+  LDA objectList, X                       ; because DEX is without a stop condition
   BMI -loop                               ; skip other AI (pilot 1xxx )
-  BIT leftNyble
+  BIT pilotBits
   BEQ -loop                               ; skip obstacles (pilot 0000 )
-  STA targetObjectTypeAndNumber
-  AND #%00001111
-	ASL
-	ASL
+
+  STA targetObjectTypeAndNumber           ; choose first player unit that comes up
+  AND #%01111000                          ; needs to be refined, i.e.,
   TAY
   STY targetObjectIndex
   LDA object+3, Y
@@ -64,26 +63,24 @@ state_ai_determineAction:
   ; ----------------------------------------
   ; 2. score all options
   ; ----------------------------------------
-  LDX #6
+  LDX #7
   STX selectedAction
 
 -loop:
   LDX selectedAction
-
   LDA state29_actionID, X
   STA actionList, X
-
-  CPX #3
+  CPX #3                    ; actions 0,1 & 2 do not require target check
   BCC +continue
-
-  LDA #$00
+  LDA #0                    ; clear msg
   STA actionMessage
-  JSR checkTarget
+  JSR checkTarget           ; can action be executed?
+
   LDX selectedAction
   LDA actionMessage
-  BPL +continue
+  BPL +continue             ; yes -> continue
 
-  LDA #0
+  LDA #0                    ; no -> zero score
   BEQ +store
 
 +continue:
@@ -99,7 +96,7 @@ state_ai_determineAction:
   ; 3. select best option
   ; ----------------------------------------
 
-  LDX #6
+  LDX #7
   LDA #0
   STA actionMessage     ; reset
   STA locVar1           ; best score
@@ -122,46 +119,32 @@ state_ai_determineAction:
   LDA state29_nextState, X
   JMP replaceState
 
-  AI_cooldown = 0
-  AI_move_defensive = 1
-  AI_move_offensive = 2
-  AI_ranged_attack_1 = 3
-  AI_ranged_attack_2 = 4
-  AI_close_combat = 5
-  AI_charge = 6
-
 state29_nextState:
-  .db $14 ; AI_cooldown
-  .db $FF ; AI_move_defensive
-  .db $28 ; AI_move_offensive
-  .db $12 ; AI_ranged_attack_1
-  .db $12 ; AI_ranged_attack_2
-  .db $17 ; AI_close_combat
-  .db $1B ; AI_charge
+  .db $14             ; AI_cooldown
+  .db $FF             ; AI_move_defensive
+  .db $28             ; AI_move_offensive
+  .db $12             ; AI_ranged_attack_1
+  .db $12             ; AI_ranged_attack_2
+  .db $17             ; AI_close_combat
+  .db $1B             ; AI_charge
+  .db $44             ; AI_aim
 
 state29_actionID:
-  .db aCOOLDOWN     ; AI_cooldown
-  .db aMOVE         ; AI_move_defensive
-  .db aMOVE         ; AI_move_offensive
-  .db aRANGED1      ; AI_ranged_attack_1
-  .db aRANGED2      ; AI_ranged_attack_2
-  .db aCLOSECOMBAT  ; AI_close_combat
-  .db aCHARGE       ; AI_charge
+  .db aCOOLDOWN       ; AI_cooldown
+  .db aMOVE           ; AI_move_defensive
+  .db aMOVE           ; AI_move_offensive
+  .db aRANGED1        ; AI_ranged_attack_1
+  .db aRANGED2        ; AI_ranged_attack_2
+  .db aCLOSECOMBAT    ; AI_close_combat
+  .db aCHARGE         ; AI_charge
+  .db aAIM            ; AI_aim
 
 state29_baslineLineScore:
-  .db $01 ; AI_cooldown
-  .db $01 ; AI_move_defensive
-  .db $02 ; AI_move_offensive
-  .db $03 ; AI_ranged_attack_1
-  .db $02 ; AI_ranged_attack_2
-  .db $03 ; AI_close_combat
-  .db $00 ; AI_charge
-
-
-; COLS
-; col a only if target check is passed
-
-
-; col 1 always add score
-; col 2 if less than 4 AP, add score
-; col 3 if less than 2 AP, add score
+  .db $01             ; AI_cooldown
+  .db $00             ; AI_move_defensive
+  .db $02             ; AI_move_offensive
+  .db $04             ; AI_ranged_attack_1
+  .db $03             ; AI_ranged_attack_2
+  .db $03             ; AI_close_combat
+  .db $00             ; AI_charge
+  .db $05             ; AI_aim

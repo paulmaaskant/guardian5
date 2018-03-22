@@ -30,14 +30,14 @@ state_initializeCharge:
 	JSR calculateAttack					; includes a call to applyActionPointCost
 
 	JSR pullAndBuildStateStack
-	.db 9								; 9 items
+	.db 8								; 9 items
 	.db $3A, 1					; switch CHR bank 1 to 1
 	.db $3B 						; move animation loop
 	.db $1C							; turn to face target
 	.db $1D							; close combat animation
 	.db $3A, 0					; switch CHR bank 1 back to 0
 	.db $16							; show results
-	.db $42							; show temp gauge change
+	;.db $42							; show temp gauge change
 	; built in RTS
 
 ;-------------------------------------
@@ -56,7 +56,7 @@ state_initializeMoveAction:
 	JSR writeToActionMenu
 
 	JSR pullAndBuildStateStack
-	.db 13								; 13 items
+	.db 12								; 13 items
 	.db $45, %00111000		; blink action menu (all lines)
 	.db $31, #eRefreshStatusBar
 	.db $3A, 1						; switch CHR bank 1 to 1
@@ -65,7 +65,6 @@ state_initializeMoveAction:
 	.db $0B								; center camera on cursor
 	.db $0A								; set direction
 	.db $16								; show results
-	.db $42								; show temp gauge change
 	; built in RTS
 
 ; ----------------------------------------
@@ -86,10 +85,6 @@ state_resolveMove:
 	;-------------------------------
 	; Move complete
 	;-------------------------------
-	;LDA effects
-	;AND #%11111000							; switch off obscure mask effects
-	;STA effects
-
 	LDY activeObjectIndex
 	LDX activeObjectGridPos			; block final position, move (b7) and sight (b6)
 	LDA nodeMap, X
@@ -99,10 +94,22 @@ state_resolveMove:
 	LDA object+0, Y
 	EOR #%00001000							; object move bit (b3) OFF
 	STA object+0, Y
+
+	JSR getStatsAddress
+	LDY #4
+
+	LDA (pointer1), Y
+	BNE +store
+
+	LDY activeObjectIndex
+	LDA object+0, Y
 	AND #%00000111							; get direction
+
++store:
 	ORA #%11000000							; blocked for movement and los
+	LDX activeObjectGridPos
 	STA nodeMap, X
-	AND #%00000111
+	AND #%00111111
 	TAX
 	LDY activeObjectGridPos
 	JSR setTile
@@ -142,9 +149,9 @@ state_resolveMove:
 	LDA state_resolveMoveUpDownTable, Y
 	BNE +movingUp
 
-	JSR objectListSweepUp			; then object is moving down
+	JSR objectListSweepUp				; then object is moving down
 	JMP +calculateOffset
-+movingUp:							; otherwise, object is moving up
++movingUp:										; otherwise, object is moving up
 	JSR objectListSweepDown			;
 
 	;-------------------------------
@@ -167,6 +174,26 @@ state_resolveMove:
 	STX actionList+1
 	STY actionList+2
 
+	LDY activeObjectIndex					; code to push
+	JSR getStatsAddress						; by one pixel on
+	LDY #4
+	LDA (pointer1), Y
+	BNE +continue
+
+	LDY activeObjectIndex
+	LDA object+2, Y
+	AND #%00111111
+	LSR
+	LSR
+	LSR
+	BEQ +down
+	CMP #4
+	BNE +continue
+
++down:
+	INC actionList+2
+
++continue:
 	LDA actionCounter
 	BIT rightNyble
 	BNE +continue

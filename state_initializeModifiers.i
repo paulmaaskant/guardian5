@@ -12,8 +12,8 @@ state_initializeModifiers:
     LDA #$57
     STA list3+32
 
-    LDA #$60
-    STA list1+0
+    LDA #80
+    STA runningEffectCounter
 
     LDA #7
   	STA currentEffects+0
@@ -24,8 +24,7 @@ state_initializeModifiers:
   	LDA currentObjectYPos
   	STA currentEffects+12
 
-  	LDA #1
-  	STA effects
+  	LDA #2
+  	STA runningEffect
 
-    LDA #$36
-    JMP replaceState
+    JMP pullState

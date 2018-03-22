@@ -14,7 +14,7 @@ state_changeBrightness:
   CLC
   ADC identity, Y
   ADC #4
-  TAY
+  TAY                     ; (parameter x 5) + 4
   LDX #4
   STX list2+0
 
@@ -27,11 +27,10 @@ state_changeBrightness:
 
 JSR buildStateStack
   .db 1
-  ;.db $FF
   .db $02
 
 state_0D_stream:
-  .db -64, -48, -32, -16, 8
-  .db   0, -16, -32, -48, 8
+  .db -64, -48, -32, -16, 6
+  .db   0, -16, -32, -48, 6
   .db  64,  48,  32,  16, 3
   .db   0,  16,  32,  48, 3

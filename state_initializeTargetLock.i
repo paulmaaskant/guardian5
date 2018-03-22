@@ -1,4 +1,8 @@
 state_initializeTargetLock:
+  LDA #$03						; clear from list3+4
+  LDX #$09						; up to and including list3+9
+  JSR clearList3
+
   JSR applyActionPointCost
 
   LDY activeObjectIndex
@@ -30,10 +34,12 @@ state_initializeTargetLock:
   DEX
   BPL -loop
 
-  JSR pullAndBuildStateStack
-  .db 4			; 2 items
-  .db $15   ; focus animation
-  .db $1C   ; face target
-  .db $40   ; LOCK marker animation
-  .db $42		; show temp gauge change
-  ; built in RTS
+  JMP pullState
+
+;  JSR pullAndBuildStateStack
+;  .db 4			; 4 ite
+;  .db $15   ; focus animation
+;  .db $1C   ; face target
+;  .db $40   ; LOCK marker animation
+;  .db $16		; show results
+;  ; built in RTS

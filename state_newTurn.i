@@ -45,7 +45,7 @@ state_newTurn:
   STA activeObjectGridPos
 
   ; --- set portrait location
-  LDA #12
+  LDA #20
   STA portraitXPos
   LDA #11
   STA portraitYPos
@@ -66,7 +66,6 @@ state_newTurn:
   LDY #3                        ; #3 movement
   LDA (pointer1), Y             ;
   STA activeObjectStats+2			  ;
-
 
   ;-----------------------------  get pilot based stats
   LDA activeObjectIndexAndPilot ;
@@ -109,8 +108,9 @@ state_newTurn:
   BMI +aiControlled
 
   JSR buildStateStack
-  .db 7							  ; 7 items
+  .db 8							  ; 7 items
   .db $30             ; set active unit portrait
+  .db $3C             ; show hourglass
   .db $0B 						; center camera
   .db $0C						  ; wait for camera to center
   .db $34             ; start of turn events
@@ -121,14 +121,13 @@ state_newTurn:
 
 +shutDown:
   JSR buildStateStack
-  .db 8							  ; 8 items
+  .db 7							  ; 8 items
   .db $30             ; set active unit portrait
   .db $3C             ; show hourglass
   .db $0B 						; center camera
   .db $0C							; wait for camera to center
   .db $34             ; start of turn events
   .db $1F							; handle shut down
-  .db $16
   .db $08             ; end turn
   ; built in RTS
 

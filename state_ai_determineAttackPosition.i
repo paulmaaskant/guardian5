@@ -13,8 +13,8 @@ state_ai_determineAttackPosition:
   JSR secondPass
   JSR evaluateNodes
   BCC +pathFound
-                              ; if no path is found, simply face the target
-  LDA #$01                    ; set action point cost directly (1)
+                                ; if no path is found, simply face the target
+  LDA #1                       ; set action point cost directly (1)
   STA list3+0
   JSR applyActionPointCost
 
@@ -27,11 +27,11 @@ state_ai_determineAttackPosition:
   LDA par1
   STA cursorGridPos           ; put the cursor on the destination node
 
-  LDA #$03										; clear from list3+4
-	LDX #$09										; up to and including list3+9
+  LDA #3										; clear from list3+4
+	LDX #9										; up to and including list3+9
 	JSR clearList3
 
-  LDA #$01                    ; MOVE costs 1 point
+  LDA #1                     ; MOVE costs 1 point
   STA list3+0
   LDA activeObjectStats+2			; movement stat
   CMP list1									  ; compare to used number of moves (list1)
@@ -40,13 +40,14 @@ state_ai_determineAttackPosition:
 
 +continue:
   JSR applyActionPointCost
-  ; JSR initializeMove
   JSR pullAndBuildStateStack
-	.db $04							        ; 3 states
-  .db $0B 						        ; center camera
-	.db $3B 						        ; resolve move
-	.db $1C							        ; face target
-	.db $16							        ; show results
+	.db 8							            ; 4 items
+	.db $3A, 1						        ; switch CHR bank 1 to 1
+  .db $0B								        ; center camera on cursor
+	.db $3B 							        ; init and resolve move
+	.db $3A, 0						        ; switch CHR bank 1 back to 0
+	.db $1C							          ; face target
+	.db $16							          ; show results
 	; built in RTS
 
 firstPass:
@@ -55,27 +56,27 @@ firstPass:
   ; find all reachable nodes that have clear line of sight to target and are withing weapon range
   ; ------------------
 
-  LDX #$00
-  STX list6									                                                  ;
-  STX actionList+0                                                              ; reset eligble node count
-  LDA activeObjectStats+2
+  LDX #0
+  STX list6									       ;
+  STX actionList+0                 ; reset eligble node count
+  LDA activeObjectStats+2          ;
 
-  LDY activeObjectStats+9
-  CPY #2
+  LDY activeObjectStats+9          ; check remaining AP
+  CPY #2                           ; to see how far unit can move
   BCC +noRunning
   ASL
 
 +noRunning:
-  STA actionList+1                                                              ; act obj run distance
-  INC actionList+1                                                              ; +1 to make compare easier
+  STA actionList+1                 ; act obj run distance
+  INC actionList+1                 ; +1 to make compare easier
 
   LDA activeObjectStats+0
   LSR
   LSR
   LSR
   LSR
-  STA actionList+2                                                              ; max range of primary weapon
-  INC actionList+2                                                              ; +1 to make compare easier
+  STA actionList+2                 ; max range of primary weapon
+  INC actionList+2                 ; +1 to make compare easier
 
 -loop:
   STX par1

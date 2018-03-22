@@ -3,19 +3,18 @@
 state_resolveTempGauge:
   LDA blockInputCounter
   BNE +wait
-
   JMP pullState
 
 +wait:
   DEC blockInputCounter
   BIT bit2to0               ; once every 8 frames
   BNE +done
-  CMP #1
-  BCC +finalFrames
-  AND #%00001000
-  BNE +oldGauge
 
-+finalFrames:
+
+  AND #%00001000
+  BEQ +oldGauge
+
+;+finalFrames:
   JSR updateSystemMenu
 
 -refresh:

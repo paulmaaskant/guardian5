@@ -10,8 +10,9 @@ state_initializeCoolDown:
 	JSR applyActionPointCost
 
 	LDA #0
-	STA list1+0 				; animation frame count
-	STA list1+2					;
+	STA list1+0 							; animation frame count
+	STA list1+2								;
+	STA activeObjectStats+9		; remove all remaining APs 
 
 	LDA activeObjectGridPos
 	JSR gridPosToScreenPos
@@ -40,7 +41,7 @@ state_initializeCoolDown:
 	.db 3			; 3 items
 	.db $15		; resolve cool down
 	.db $35		; show modifier
-	.db $42		; show temp gauge difference
+	.db $16		; show result
 
 	; built in RTS
 

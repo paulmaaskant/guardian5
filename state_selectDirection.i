@@ -57,14 +57,10 @@ state_selectDirection:
 +	JMP +done
 
 +confirm:
-	;LDA events
-	;ORA event_confirmAction
-	;STA events
-
 	LDA #$00
 	STA menuFlags
 	JMP pullState
-	; BEQ +done						; JMP
+
 
 +setDirection:
 	LDA object+0, X
@@ -72,13 +68,19 @@ state_selectDirection:
 	ORA locVar1							; set new direction
 	STA object, X
 
-
 	LDY activeObjectGridPos
 	AND #%00000111
 	ORA #%11000000
 	STA nodeMap, Y
-	AND #%00000111
-	TAX
+
+	LDY activeObjectIndex
+	JSR getStatsAddress
+	LDY #4
+	LDA (pointer1), Y
+	BNE	+done
+
+	LDY activeObjectGridPos
+	LDX locVar1
 	JSR setTile
 
 	LDY #sMechStep

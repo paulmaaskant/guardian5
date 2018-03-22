@@ -82,7 +82,7 @@ gridPosToScreenPos:
 	LDA currentObjectXPos
 	CMP #$08
 	BCC +offScreen
-	CMP #$F8
+	CMP #$F9
 	BCS +offScreen
 	SEC
 	RTS

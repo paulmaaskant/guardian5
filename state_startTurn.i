@@ -7,10 +7,10 @@ state_startTurn:
   LDA activeObjectIndexAndPilot
   JSR updateSystemMenu
 
-  LDA activeObjectIndex
+
+  LDA dialog
   BNE +done
-  LDA roundCount
-  BNE +done
+  INC dialog
 
   JSR pullAndBuildStateStack
 	.db 9

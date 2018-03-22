@@ -1,5 +1,6 @@
 ;-----------------------------------------
 ; updateCamera
+; used to scroll when cursor is near edge of the screen
 ;
 ; IN cursorGridPos
 ; OUT cameraYDest, cameraXDest

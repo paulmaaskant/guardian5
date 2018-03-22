@@ -39,7 +39,10 @@ state_initializeMap:
 
 -nextObject:
 	CPX objectListSize
-	BEQ +done
+	BNE +continue
+	JMP +done
+
++continue:
 	STX list1+2
 
 	JSR getNextByte					; get pilot (b7, b2-b0)
@@ -51,6 +54,7 @@ state_initializeMap:
 	ASL
 	ORA locVar1
 	STA objectList, X
+	STA activeObjectIndexAndPilot
 	AND #%01111000
 	TAX
 	STX list1+3								; index
@@ -59,8 +63,6 @@ state_initializeMap:
 	STA object+3, X						; set grid position
 
 	JSR getNextByte						; get type & initial facing direction
-	PHA
-	AND #%11110111
 	STA object+0, X
 
 	CMP #$0F
@@ -90,9 +92,17 @@ state_initializeMap:
 	STA object+7, X						; set ammo
 
 +continue:
-	PLA
-	AND #%00001111						; and block it in the node map
-	ORA #%11000000
+	LDY list1+3								; index
+	JSR getStatsAddress
+	LDY #4
+	LDX list1+3
+	LDA (pointer1), Y
+	BNE +store
+	LDA object+0, X
+	AND #$0F												; facing direction
+
++store:
+	ORA #%11000000						; obscuring and blocking
 	LDY object+3, X
 	STA nodeMap, Y
 
@@ -107,11 +117,6 @@ state_initializeMap:
 	ASL
 	ADC #6										; hardcoded heat points
 	STA object+1, X						; set health and heat points
-
-
-
-
-
 
 	LDX list1+2
 	INX

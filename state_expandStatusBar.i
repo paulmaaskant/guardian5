@@ -10,6 +10,8 @@ state_expandStatusBar:
 
   LDA #19
   STA portraitYPos
+  LDA #12
+  STA portraitXPos
 
   LDA cameraYStatus
   SEC
