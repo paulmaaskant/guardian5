@@ -103,13 +103,6 @@ updateActionList:
 
 +skipCharge:
 	JSR checkTarget					; tail chain, check conditions for attack
-	BIT actionMessage
-	BMI +done
-
-	LDA #7
-	JSR setTargetToolTip
-
-+done:
 	LDA #aCOOLDOWN						; COOL DOWN
 	JMP addPossibleAction			; tail chain
 

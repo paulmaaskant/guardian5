@@ -3,6 +3,8 @@
 ; X is position
 ; -------------------------------------
 writeToActionMenu:
+	STX locVar1
+
 	LDA stringListL, Y
 	STA pointer1+0
 	LDA stringListH, Y
@@ -13,7 +15,7 @@ writeToActionMenu:
 	TAY
 
 	CLC
-	ADC identity, X
+	ADC locVar1
 	TAX
 -loop:
 	LDA (pointer1), Y

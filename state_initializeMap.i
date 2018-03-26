@@ -33,6 +33,7 @@ state_initializeMap:
 	; -- object info ---
 	JSR getNextByte
 	STA objectListSize
+
 	STA activeObjectIndexAndPilot	; set to the last object so that the next is the first
 
 	LDX #0

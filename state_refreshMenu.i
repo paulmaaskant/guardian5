@@ -138,11 +138,10 @@ clearLayout:
   .db 0
 
 titleMenuOptions:
-  .db 128+4, O, M, E, D, $ED, $25, 8
-  .db 128+4, T, S, N, I, $0D, $26, 8
-  .db 128+4, Y, A, L, P, $2D, $26, 8
+  .db 128+4, O, M, E, D, $0D, $26, 8
+  .db 128+5, D, N, U, O, S, $2D, $26, 10
 
 titleMenuSelect:
-  .db 3, 2, $EC, $25, 7
-  .db 2, 6, $35, $26, 4
+  .db 2, 1, $0C, $26, 5
+  .db 2, 6, $33, $26, 4
   .db 0

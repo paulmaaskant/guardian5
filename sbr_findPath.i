@@ -419,13 +419,14 @@ isChargePossible:
 
 	LDX #$00
 	STX par2
--nextObject
+
+-nextObject:
 	; --- set current object attributes --
 	LDA objectList, X
 	AND #%00000111
 	ASL
 	ASL
-	TAY									; FIX exclude current object (or implement hostile!)
+	TAY												; FIX exclude current object (or implement hostile!)
 	LDA object+3, Y						; object position
 	JSR distance
 	CMP #$01

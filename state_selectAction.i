@@ -318,12 +318,6 @@ state_selectAction:
 	STA effects
 	JSR checkTarget																																; possibly different weapon, so re-check range, damage etc
 
-	BIT actionMessage
-	BMI +actionPointCost
-
-	LDA #7
-	JSR setTargetToolTip
-
 +actionPointCost:
 	JMP calculateActionPointCost																									; tail chain
 

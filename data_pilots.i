@@ -1,11 +1,6 @@
 pilotTable:
-  .db 0       ;
-  .db 2       ;
-  .db 0       ;
-  .db 0       ;
-
               ; pilot 1
-  .db 27      ; "UNKNOWN"
+  .db 40      ; "UNKNOWN"
   .db 2       ; action points
   .db 70      ; base accuracy
   .db 0       ; special abilities

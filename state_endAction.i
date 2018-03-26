@@ -4,7 +4,7 @@ state_endAction:
   ; ---------------------
   LDX objectListSize
   LDA #00
-  JMP +continue
+  STA effects
 
 -loop:
   ORA objectList-1, X
@@ -26,11 +26,10 @@ state_endAction:
 
 +next:
   DEX
-  BPL -loop
+  BNE -loop
 
-+missionFailed:
   JSR pullAndBuildStateStack
-  .db 22								; # items
+  .db 15								; # items
   .db $20, 0						; load hud: conversation box
   .db $01, 12						; load stream 12: mission failed
   .db $0D, 0						; change brightness 0: fade out
@@ -38,16 +37,12 @@ state_endAction:
   .db $0D, 1						; change brightness 1: fade in
   .db $01, 3						; load stream 01: mission 3 brief
   .db $0D, 0						; change brightness 0: fade out
-  .db $00, 0						; load screen 00: title screen
-	.db $1E								; initialize title menu
-	.db $46, 8						; load title menu option tiles
-	.db $0D, 1						; change brightness 1: fade in
-	.db $03								; title screen (wait for user)
+  .db $36						    ; title menu
   ; built in RTS
 
 +missionAccomplished:
   JSR pullAndBuildStateStack
-  .db 22							; # items
+  .db 15							; # items
   .db $20, 0					; load hud: conversation box
   .db $01, 9					; load stream 09: mission accomplished
   .db $0D, 0					; change brightness 0: fade out
@@ -55,11 +50,7 @@ state_endAction:
   .db $0D, 1					; change brightness 1: fade in
   .db $01, 2					; load stream 01: mission 2 brief
   .db $0D, 0					; change brightness 0: fade out
-  .db $00, 0					; load screen 00: title screen
-	.db $1E							; initialize title menu
-	.db $46, 8					; load title menu option tiles
-	.db $0D, 1					; change brightness 1: fade in
-	.db $03							; title screen (wait for user)
+  .db $36             ; title menu
   ; built in RTS
 
 +continue:

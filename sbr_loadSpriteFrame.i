@@ -28,7 +28,7 @@
 ; xxxxxxxx = X offset from center vertical axis
 ; ------------------------------------------------
 loadSpriteFrame:
-	LDY #$00
+	LDY #0
 	STY	locVar2
 	STY locVar3
 
@@ -53,14 +53,6 @@ loadSpriteFrame:
 
 +continue:
 	LSR										; H into carry
-	;BCC +continue
-	;TAX										; store A
-	;LDA par4
-	;AND #$10
-	;BNE +prepNextRow
-	;TXA										; restore A
-
-;+continue:
 	STA locVar4						; locVar4 := no. of sprites in current row
 	INY
 	LDA (pointer1), Y			; x offset

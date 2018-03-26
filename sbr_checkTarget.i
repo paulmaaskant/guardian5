@@ -40,17 +40,10 @@ checkTarget:
 	AND #%00000100										; b2 - weapon 1 or 2
 	BEQ +nextCheck
 
-	LDA activeObjectStats-1, X				; CHECK for once per turn
-	BPL +checkAmmo
-	LDA #$9F													; "RELOADING" +128
-	STA actionMessage
-	RTS
-
-+checkAmmo:
 	JSR getSelectedWeaponTypeIndex
 	LDA weaponType+3, Y
 	AND #$0F
-	BEQ +nextCheck
+	BEQ +checkReload
 
 	LDA activeObjectIndex
 	CLC
@@ -69,6 +62,15 @@ checkTarget:
 	STA list3+10
 	LDA par3
 	STA list3+11
+
++checkReload:
+	LDY selectedAction								; retrieve selected action
+	LDX actionList, Y
+	LDA activeObjectStats-1, X				; CHECK for once per turn
+	BPL +nextCheck
+	LDA #$9F													; "RELOADING" +128
+	STA actionMessage
+	RTS
 
 +nextCheck:
 	LDA locVar5
@@ -134,11 +136,6 @@ checkTarget:
 	LSR
 	LSR
 	STA list3+20														; target hit points
-	JSR toBCD																; convert health points to BCD for display purposes
-	LDA par2																; the tens
-	STA list3+12
-	LDA par3																; the ones
-	STA list3+13
 
 	LDX selectedAction											; retrieve selected action
 	LDA actionList, X
@@ -162,9 +159,11 @@ checkTarget:
 	BNE +skip
 	LDA #38+128
 	STA actionMessage
+	RTS
 
 +skip:
-	RTS
+	LDA #3
+	JMP setTargetToolTip
 
 +continue:
 	TAX
@@ -190,6 +189,8 @@ checkTarget:
 	LDA angleToTargetTable, Y
 	SEC																			;
 	LDX targetObjectIndex
+	LDA object+2, X
+	BMI +shutdown
 	LDA object+0, X
 	AND #$07																; target's facing direction
 	SBC angleToTargetTable, Y								; subtract target's defending direction
@@ -215,6 +216,11 @@ checkTarget:
 	CLC
 	LDA #10
 	ADC list3+1
+	STA list3+1
+	BNE +continue
+
++shutdown:
+	LDA #99
 	STA list3+1
 
 +continue:
@@ -265,7 +271,9 @@ checkTarget:
 	STA actionMessage
 
 +return:
-	RTS
+	LDA #7
+	JMP setTargetToolTip
+
 
 angleToTargetTable:
 	.db 4, 4, 5, 6, 1, 1, 2, 3

@@ -101,13 +101,23 @@ state_updateOverview:
   LDA par3
   STA list8+40
 
-  LDA object+6, Y
+  LDX #50
+
+-loop:
+  LDA object+7, Y
   AND #$0F                        ; weapon 1 ammo
   JSR toBCD
   LDA par2
-  STA list8+71
+  STA list8+71, X
   LDA par3
-  STA list8+73
+  STA list8+73, X
+  CPX #0
+  BEQ +continue  
+  DEY
+  LDX #0
+  BEQ -loop
+
++continue
 
   ; -----------------------------------------------------
   ; weapon stats
@@ -191,19 +201,19 @@ state_updateOverview:
   TAX
   JSR writeToList8
 
-  LDA list8+74
+  LDX #1
+
+-loop:
+  LDY state3D_listOffset, X
+  LDA list8+74, Y
   BNE +continue
   LDA #dash
-  STA list8+71
-  STA list8+73
+  STA list8+71, Y
+  STA list8+73, Y
 
 +continue:
-
-  LDA list8+74+50
-  BNE +continue
-  LDA #dash
-  STA list8+71+50
-  STA list8+73+50
+  DEX
+  BPL -loop
 
 +continue:
 

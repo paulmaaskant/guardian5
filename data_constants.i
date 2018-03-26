@@ -62,3 +62,5 @@ parameter = $FD
 comma = $0E
 space = $0F
 dash = $0B
+
+enemy = #41

@@ -58,11 +58,12 @@ state_faceTarget:
 
   LDY list1+9
   LDX state29_direction, Y
+  STX locVar1
 
   LDY activeObjectIndex
   LDA object+0, Y
   AND #%11111000
-  ORA identity, X
+  ORA locVar1
   STA object+0, Y
 
   LDY activeObjectIndex
@@ -72,7 +73,8 @@ state_faceTarget:
   BNE	+done
 
   LDY activeObjectGridPos
-  AND #%00000111
+  LDX locVar1
+  TXA
   ORA #%11000000
   STA nodeMap, Y
   JSR setTile

@@ -16,9 +16,7 @@ deleteObject:
 
 	; --- then delete it ---
 +continue:
-	AND #$07										; retrieve object's grid pos
-	ASL
-	ASL
+	AND #%01111000							; retrieve object's grid pos
 	TAY
 	LDA object+3, Y
 	TAY

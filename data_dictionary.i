@@ -39,6 +39,8 @@ stringListL:
 	.db #< str_OUT_OF_AMMO							; 37
 	.db #< str_ALREADY_LOCKD						; 38
 	.db #< str_LEMUR										; 39
+	.db #< str_BURKE										; 40
+	.db #< str_ENEMY										; 41
 
 stringListH:
 	.db #> str_RANGED_ATK_1
@@ -81,6 +83,8 @@ stringListH:
 	.db #> str_OUT_OF_AMMO
 	.db #> str_ALREADY_LOCKD
 	.db #> str_LEMUR
+	.db #> str_BURKE
+	.db #> str_ENEMY									
 
 str_LOS_BLOCKED:
 	.db 12, L, I, N, E, space, B, L, O, C, K, E, D
@@ -156,3 +160,7 @@ str_ALREADY_LOCKD
 	.db 11, L, O, C, K, space, A, C, T, I, V, E
 str_LEMUR:
 	.db 5, L, E, M, U, R
+str_BURKE:
+	.db 5, B, U, R, K, E
+str_ENEMY:
+	.db 5, E, N, E, M, Y

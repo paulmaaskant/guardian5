@@ -110,17 +110,6 @@ writeStatusBarToBuffer:
 	PHA
 
 	; --- line 3 ---
-	LDX #$05
--loop:
-	LDA targetMenuLine3, X
-	PHA
-	DEX
-	BPL -loop
-
-	LDA #$2C
-	PHA
-
-
 	LDX #$0C
 	LDA #$0F			; separator blank space
 	PHA					;
@@ -149,12 +138,11 @@ LDA menuFlags
 	LDA systemMenuLine1+2
 	PHA
 
-
 	LDA #$87
 	PHA
 	LDA #$24
 	PHA
-	LDA #48							; 29 * 2
+	LDA #34							; 17 * 2
 	PHA
 
 
@@ -183,6 +171,22 @@ LDA menuFlags
 	LDA #$24
 	PHA
 	LDA #$07								;
+	PHA
+
+
+	LDX #$05
+
+-loop:
+	LDA targetMenuLine3, X
+	PHA
+	DEX
+	BPL -loop
+
+	LDA #$B9
+	PHA
+	LDA #$24
+	PHA
+	LDA #12								;
 	PHA
 
 	TSX											; switch stack pointers

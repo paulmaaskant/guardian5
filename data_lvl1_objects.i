@@ -29,12 +29,17 @@ levelOne:
 
 	.db 0
 
-	.db	7			; number of objects
+	.db	9			; number of objects
 
 	.db $04			; player pilot 4
 	.db $03			; object grid position
 	.db $24			; object type 1 & facing RD
-	.db $10			; object wpns
+	.db $01			; object wpns
+
+	.db $01			; player pilot 2
+	.db $05			; object grid position
+	.db $14			; object type 1 & facing RD
+	.db $01			; object wpns
 
 	.db $00			; object 3 obstacle
 	.db $45			; object 3 grid position
@@ -48,17 +53,26 @@ levelOne:
 	.db $25			; object 3 grid position
 	.db $01			; object 3 type obstacle & tile D
 
+	.db $00			; object 3 building
+	.db $E7			; object 3 grid position
+	.db $01			; object 3 type obstacle & tile D
+
 	.db $84			; Enemy pilot 4
 	.db $E4			; object grid position
 	.db $35			; object type 1 & facing RD
 	.db $10			; object wpns
 
-	.db $84			; Enemy pilot 4
-	.db $E6			; object grid position
-	.db $35			; object type 1 & facing RD
-	.db $10			; object wpns
+	;.db $84			; Enemy pilot 4
+	;.db $E6			; object grid position
+	;.db $35			; object type 1 & facing RD
+	;.db $10			; object wpns
 
 	.db $84			; Enemy pilot 4
 	.db $E8			; object grid position
 	.db $34			; object type 1 & facing RD
+	.db $10			; object wpns
+
+	.db $80			; Enemy pilot 4
+	.db $D7			; object grid position
+	.db $25			; object type 1 & facing RD
 	.db $10			; object wpns

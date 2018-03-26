@@ -104,7 +104,7 @@
 																				; stored memory objects
 																				; object grid position is stored separately as it will be sorted regularly
 	objectListSize								.dsb 1	; number of objects presently in memory
-	objectList										.dsb 8	; (b7) hostile (b6-4) pilot (b3-0) object index
+	objectList										.dsb 16	; (b7) hostile (b6-4) pilot (b3-0) object index
 																				; the rest of the object information is stored (4 bytes each) so that it does not require sorting whenever the object's position changes
 
 	actionList										.dsb 10	; ------------------------------------------------------
@@ -252,6 +252,21 @@ mainGameLoop:
 -	CMP frameCounter
 	BEQ -
 
+	; ------------------------------
+	; refresh status bar
+	; ------------------------------
++nextEvent:
+	LDA stackPointer2								; only flush status bar buffer
+	CMP #$99												; if buffer is empty
+	BNE +nextEvent									; otherwise event flag remains set and tries again next frame
+
+	LDA events
+	BIT event_refreshStatusBar
+	BEQ +nextEvent
+	EOR event_refreshStatusBar			;
+	STA events
+
+	JSR writeStatusBarToBuffer
 
 
 	;---------------------------
@@ -260,13 +275,13 @@ mainGameLoop:
 +nextEvent:
 	LDA #1														; start with sprite 1 (sprite 0 is permanently reserved)
 	STA par3													; parameter to "loadAnimationFrame"
-	LDA #63														; clear up to (including) sprite 15
+	LDA #63														; clear all sprites
 	JSR clearSprites
 
 	LDA effects
 	BNE +continue											; some effects are active -> continue
 	LDY runningEffect
-	BNE +showRunningEffect
+	BNE +showRunningEffect						; there is a running effect active -> show it
 	JMP +nextEvent										; otherwise consider next event
 
 +continue:
@@ -435,9 +450,6 @@ mainGameLoop:
 	TAY
 	PHA
 
-
-
-
 	LDA object+0, Y									; check if this is the moving object
 	AND #%00001000									; if object move bit (b3) is set
 	BEQ +continue										; np -> continue
@@ -538,10 +550,9 @@ mainGameLoop:
 	DEY
 	BPL -loop
 
-
-	;---------------------------
-	; update target / available actions
-	;---------------------------
+;---------------------------
+; update target / available actions
+;---------------------------
 +nextEvent:
 	LDA events
 	BIT event_updateTarget
@@ -562,26 +573,14 @@ mainGameLoop:
 -	CMP frameCounter																															; to prevent game from freezing (due to half completed stack operations)
 	BEQ -
 
-	; ------------------------------
-	; refresh status bar
-	; ------------------------------
-+nextEvent:
-	LDA stackPointer2								; only flush status bar buffer
-	CMP #$99												; if buffer is empty
-	BNE +nextEvent									; otherwise event flag remains set and tries again next frame
 
-	LDA events
-	BIT event_refreshStatusBar
-	BEQ +nextEvent
-	EOR event_refreshStatusBar			;
-	STA events
-
-	JSR writeStatusBarToBuffer
-
-; --- events have been handled, now launch game state subroutine ---
+;---------------------------
+; events have been handled, now launch game state subroutine
+;---------------------------
 +nextEvent:
 	JSR executeState
 	JMP mainGameLoop					; restart loop
+
 ;-----------------------------------------
 ; END of main loop
 ;-----------------------------------------
@@ -603,9 +602,11 @@ executeState:
  +
   RTS            											; launch!
 
+; ------------------------------------------
+; Subroutine to launch running effect
+; ------------------------------------------
 executeEffect:
 	JMP (pointer1)
-
 
 gameStateJumpTable:
 	.dw state_initializeScreen-1								; 00
@@ -662,7 +663,7 @@ gameStateJumpTable:
 	.dw state_initializeLevel-1									; 33
 	.dw state_startTurn-1												; 34
 	.dw state_initializeModifiers-1							; 35
-	.dw not_used:																; 36
+	.dw state_compositeTitleMenu-1							; 36
 	.dw state_endAction-1												; 37
 	.dw state_initializeMachineGun-1						; 38
 	.dw state_initializeMissile-1								; 39
@@ -763,6 +764,7 @@ runningEffectsH:
 	.include state_setMenuFlags.i
 	.include state_refreshMenu.i
 	.include state_initializeTargetLockAction.i
+	.include state_compositeTitleMenu.i
 
 	.include sbr_getStatsAddress.i
 	.include sbr_pushState.i
@@ -863,21 +865,21 @@ runningEffectsH:
 
 
 paletteColor1:
-	.db $0B, $38, $0B, $08, $0F, $1A, $09, $30
+	.db $0B, $3B, $0B, $0B, $0F, $1A, $09, $30
 	.db $08, $18, $0A
 	.dsb 5
 	.db $08, $15, $08
 	.dsb 5
 	.db $1B
 paletteColor2:
-	.db $1B, $18, $1B, $18, $0B, $0A, $29, $2D
+	.db $1B, $1B, $1B, $1B, $0B, $0A, $29, $2D
 	.db $18, $28, $19
 	.dsb 5
 	.db $15, $30, $15
 	.dsb 5
 	.db $0A
 paletteColor3:
-	.db $2B, $28, $2B, $28, $3B, $3B, $39, $37
+	.db $2B, $2B, $2B, $2B, $3B, $3B, $39, $37
 	.db $37, $30, $39
 	.dsb 5
 	.db $35, $35, $35

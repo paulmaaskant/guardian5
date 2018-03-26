@@ -106,7 +106,7 @@ animationH:
 	.db #< ANIM2A
 
 ANIM00:
-	.db 8, 8
+	.db 8, 3
 	.dw CS00
 	.dw CS01
 	.dw CS02
@@ -116,7 +116,7 @@ ANIM00:
 	.dw CS02
 	.dw CS01
 ANIM01:
-	.db 8, 8
+	.db 8, 3
 	.dw CS10
 	.dw CS11
 	.dw CS12
@@ -126,73 +126,73 @@ ANIM01:
 	.dw CS12
 	.dw CS11
 ANIM02:
-	.db 2, 32
+	.db 2, 5
 	.dw CS20
 	.dw CS21
 ANIM03:
-	.db 1, 64
+	.db 1, 6
 	.dw CS22
 ANIM04:
 
 ANIM05:
-	.db 2, 6
+	.db 2, 2
 	.dw EF00
 	.dw EF05
 ANIM06:
-	.db 1, $10
+	.db 1, 4
 	.dw EF04
 ANIM07:
-	.db 1, $40
+	.db 1, 6
 	.dw CS24
 ANIM08:
-	.db 1, $40
+	.db 1, 6
 	.dw EF06
 
 ANIM09:
-	.db 1, 64
+	.db 1, 2
 	.dw SH00
 
 ANIM0A:
-	.db 1, $10
+	.db 1, 4
 	.dw EF0A
 
 ANIM0B:
-	.db 1, $10
+	.db 1, 4
 	.dw CS21
 
 ANIM0C:
-	.db 1, $10
+	.db 1, 4
 	.dw EF0B
 
 ANIM0D:
-	.db 1, $10
+	.db 1, 4
 	.dw EF0C
 
 ANIM0E:
-	.db 1, #$20
+	.db 1, 5
 	.dw CS25
 
 ANIM0F:
 
 
 ANIM10:
-	.db 1, 32
+	.db 1, 5
 	.dw mech03_stationary_d6_f0
 
 ANIM11:
-	.db 1, 32
+	.db 1, 5
 	.dw mech03_stationary_d4_f0
 
 ANIM12:
-	.db 1, 32
+	.db 1, 5
 	.dw mech03_stationary_d1_f0
 
 ANIM13:
-	.db 1, 32
+	.db 1, 5
 	.dw mech03_stationary_d5_f0
 
 ANIM14:
-	.db 8, 4
+	.db 8, 2
 	.dw mechA_moving_d5_fr00
 	.dw mechA_moving_d5_fr01
 	.dw mechA_moving_d5_fr02
@@ -202,7 +202,7 @@ ANIM14:
 	.dw mechA_moving_d5_fr06
 	.dw mechA_moving_d5_fr07
 ANIM15:
-	.db 8, 4
+	.db 8, 2
 	.dw mechA_moving_d6_fr00
 	.dw mechA_moving_d6_fr01
 	.dw mechA_moving_d6_fr02
@@ -212,7 +212,7 @@ ANIM15:
 	.dw mechA_moving_d6_fr06
 	.dw mechA_moving_d6_fr07
 ANIM16:
-	.db 8, 4
+	.db 8, 2
 	.dw mechA_moving_d4_fr00
 	.dw mechA_moving_d4_fr01
 	.dw mechA_moving_d4_fr02
@@ -222,7 +222,7 @@ ANIM16:
 	.dw mechA_moving_d4_fr06
 	.dw mechA_moving_d4_fr07
 ANIM17:
-	.db 8, 4
+	.db 8, 2
 	.dw mechA_moving_d1_fr00
 	.dw mechA_moving_d1_fr01
 	.dw mechA_moving_d1_fr02
@@ -234,19 +234,19 @@ ANIM17:
 
 
 ANIM18:
-	.db 1, 32
+	.db 1, 5
 	.dw mech02_stationary_d6_f0
 
 ANIM19:
-	.db 1, 32
+	.db 1, 5
 	.dw mech02_stationary_d4_f0
 
 ANIM1A:
-	.db 1, 32
+	.db 1, 5
 	.dw mech02_stationary_d1_f0
 
 ANIM1B:
-	.db 1, 32
+	.db 1, 5
 	.dw mech02_stationary_d5_f0
 
 ANIM1C:
@@ -258,59 +258,59 @@ ANIM1E:
 ANIM1F:
 
 ANIM20:
-	.db 2, $04
+	.db 2, 2
 	.dw EF0D
 	.dw EF0E
 
 ANIM21:
-	.db 2, $04
+	.db 2, 2
 	.dw EF0F
 	.dw EF10
 
 ANIM22:
-	.db 2, $04
+	.db 2, 2
 	.dw EF11
 	.dw EF12
 
 ANIM23:
-	.db 2, $04
+	.db 2, 2
 	.dw EF13
 	.dw EF14
 
 ANIM24:
-	.db 2, $04
+	.db 2, 2
 	.dw EF15
 	.dw EF16
 
 ANIM25:
 
 ANIM26:
-	.db 1, $20
+	.db 1, 5
 	.dw OB00
 
 ANIM27:
-	.db 4, 6
+	.db 4, 2
 	.dw dronA_d4_f0
 	.dw dronA_d4_f1
 	.dw dronA_d4_f2
 	.dw dronA_d4_f3
 
 ANIM28:
-	.db 4, 6
+	.db 4, 2
 	.dw dronA_d1_f0
 	.dw dronA_d1_f1
 	.dw dronA_d1_f2
 	.dw dronA_d1_f3
 
 ANIM29:
-	.db 4, 6
+	.db 4, 2
 	.dw dronA_d5_f0
 	.dw dronA_d5_f1
 	.dw dronA_d5_f2
 	.dw dronA_d5_f3
 
 ANIM2A:
-	.db 4, 6
+	.db 4, 2
 	.dw dronA_d6_f0
 	.dw dronA_d6_f1
 	.dw dronA_d6_f2

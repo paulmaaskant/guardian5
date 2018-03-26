@@ -3,7 +3,7 @@ objectTypeL:
 	.db #< objectType0 ; obstacle
 	.db #< objectType1 ; mech: unnamed
 	.db #< objectType2 ; mech: DEMON
-	.db #< objectType3 ; drone: unnamed
+	.db #< objectType3 ; drone: LEMUR
 
 objectTypeH:
 	.db #> objectType0
@@ -35,7 +35,7 @@ objectType1:			; UNNAMED
 	.db $16 				; D4 (moving)
 									; ------
 	.db 27					; 00 mech name : unknown
-	.db 16					; 01 max hit points
+	.db 14					; 01 max hit points
 	.db 2						; 02 melee
 	.db 3						; 03 movement points
 	.db 0						; 04 tile BG

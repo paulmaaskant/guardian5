@@ -10,7 +10,7 @@ state_titleScreen:
 	LSR										; RIGHT
 	BCC +next
 	LDA list8+3
-	CMP #2
+	CMP #1
 	BEQ +continue
 	RTS
 
@@ -25,7 +25,7 @@ state_titleScreen:
 	LSR										; LEFT
 	BCC +next
 	LDA list8+3
-	CMP #2
+	CMP #1
 	BEQ +continue
 	RTS
 
@@ -42,7 +42,7 @@ state_titleScreen:
 	LDY list8+3
 	STA list8, Y
 	INY
-	CPY #3
+	CPY #2
 	BNE +setIndicator
 	DEY
 	BNE +setIndicator
@@ -71,7 +71,7 @@ state_titleScreen:
 	LSR									; start button
 	BCS +confirm
 	LSR									; select button
-	BCS +animation
+	;BCS +animation
 	LSR									; B
 	LSR									; A button
 	BCC +setTimer
@@ -82,9 +82,9 @@ state_titleScreen:
 
 	JSR soundSilence
 
-	LDA list8+3
-	CMP #1
-	BEQ +instructions		; if "instructions" + start
+;	LDA list8+3
+;	CMP #1
+;	BEQ +instructions		; if "instructions" + start
 
 	LDY list8+4
 	JSR soundLoad

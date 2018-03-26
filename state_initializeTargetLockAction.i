@@ -3,8 +3,9 @@ state_initializeTargetLockAction:
 
 
   JSR pullAndBuildStateStack
-  .db 5			; 4 items
+  .db 6			; 4 items
   .db $1C   ; face target
+  .db $2B   ; center on attack area
   .db $3E   ; init targetLock
   .db $15   ; focus animation
   .db $40   ; LOCK marker animation

@@ -7,7 +7,9 @@ statusBar:
 	.db $2B, repeatBlank, 13, $2A
 	.db $0F, $0F
 	.db $2B, repeatBlank, 3, $2A
-	.db repeatBlank, 91
+	.db repeatBlank, 70
+	.db $2D, repeatBlank, 2, $2C
+	.db repeatBlank, 17
 	.db $2D, repeatBlank, 3, $2C
 	.db repeatBlank, 9, $0A, $2D, repeatBlank, 13, $2C, repeatBlank, 9
 
@@ -127,13 +129,10 @@ briefScreen:
 	.db $FE, $20, $AA
 
 storyStream:
-	; >RYDON HQ ENTRY 43639
-	;
 	; A DARK WARLORD HAS RISEN
 	; TO POWER, BRINGING WAR
 	; TO THE COLONIES OF STAR
 	; SYSTEM J340-2
-	.db $2F, R, Y, D, O, N, space, H, Q, space, $21, $14, $1F, $1E, $21, $23, $0F, $04, $03, $06, $03, $09, $F1, $F1
 	.db $10, $0F, $13, $10, $21, $1A, $0F, $26, $10, $21, $1B, $1E, $21, $13, $0F, $17, $10, $22, $0F, $21, $18, $22, $14, $1D, $F1
 	.db $23, $1E, $0F, $1F, $1E, $26, $14, $21, $0E, $0F, $11, $21, $18, $1D, $16, $18, $1D, $16, $0F, $26, $10, $21, $F1
 	.db $23, $1E, $0F, $23, $17, $14, $0F, $12, $1E, $1B, $1E, $1D, $18, $14, $22, $0F, $1E, $15, $0F, $22, $23, $10, $21, $F1
@@ -167,17 +166,6 @@ storyStream:
 	.db $23, $14, $21, $1C, $22, $0F, $1E, $15, $0F, $22, $24, $21, $21, $14, $1D, $13, $14, $21, $0F, $17, $10, $25, $14, $F1
 	.db $15, $10, $18, $1B, $14, $13
 	.db $F3	; wait for A button
-	.db $F2	; clear & reset box
-
-	.db O, U, R, space, C, O, L, O, N, Y, space, D, E, F, E, N, C, E, space, F, O, R, C, E, lineBreak
-	.db I, N, C, L, U, D, E, S, space, F, I, V, E, space, C, L, A, S, S, space, dash, G, dash, lineBreak
-	.db B, I, dash, P, E, D, A, L, space, A, S, S, A, U, L, T, space, T, A, N, K, S, lineBreak
-	.db lineBreak
-	.db I, N, space, T, H, E, space, P, A, S, T, space, D, A, Y, S, comma, space, F, O, U, R, lineBreak
-	.db H, A, V, E, space, B, E, E, N, space, L, O, S, T, space, I, N, space, B, A, T, T, L, E, waitForA
-	.db nextPage
-
-	.db O, N, L, Y, space, O, N, E, space, R, E, M, A, I, N, S, waitForA
 	.db endOfStream
 
 instructionStream:
@@ -258,37 +246,19 @@ instructionStream:
 
 brief1Stream:
 	.db setPortrait, 0
-	.db G, U, A, R, D, I, A, N, space, 5, comma, lineBreak
-	.db T, H, I, S, space, I, S, space, C, O, M, M, A, N, D, space, 1, lineBreak
-	.db lineBreak
 	.db S, T, A, N, D, space, B, Y, space, T, O, space, R, E, C, E, I, V, E, lineBreak
 	.db N, E, W, space, O, R, D, E, R, S, waitForA
 	.db nextPage
-	.db setPortrait, 4
-	.db T, H, I, S, space, I, S, space, G, U, A, R, D, I, A, N, space, 5, comma, lineBreak
-	.db lineBreak
-	.db S, T, A, N, D, I, N, G, space, B, Y, waitForA
+	.db T, H, R, E, E, space, dict, enemy, space, U, N, I, T, S, space, H, A, V, E, lineBreak
+	.db B, R, O, K, E, N, space, T, H, R, O, U, G, H, space, O, U, R, lineBreak
+	.db D, E, F, E, N, S, E, space, L, I, N, E, waitForA
 	.db nextPage
-	.db setPortrait, 0
-	.db C, A, P, T, A, I, N, comma, lineBreak
-	.db lineBreak
-	.db T, W, O, space, E, N, E, M, Y, space, U, N, I, T, S, space, H, A, V, E, lineBreak
-	.db B, O, K, E, N, space, T, H, R, O, U, G, H, space, O, U, R, lineBreak
-	.db D, E, F, E, N, S, E, space, L, I, N, E, lineBreak
-	.db lineBreak
 	.db T, H, E, Y, space, M, U, S, T, space, B, E, space, S, T, O, P, P, E, D, lineBreak
 	.db B, E, F, O, R, E, space, R, E, A, C, H, I, N, G, space, T, H, E, lineBreak
 	.db C, I, T, Y, lineBreak
 	.db lineBreak
 	.db Y, O, U, R, space, O, R, D, E, R, S, space, A, R, E, space, T, O, space, F, I, N, D, lineBreak
-	.db A, N, D, space, E, L, I, M, I, N, A, T, E, space, T, H, E, space, R, O, G, U, E, lineBreak
-	.db E, N, E, M, Y, space, U, N, I, T, S, waitForA
-	.db nextPage
-	.db setPortrait, 4
-	.db O, R, D, E, R, S, space, C, O, N, F, I, R, M, E, D, lineBreak
-	.db lineBreak
-	.db M, O, V, I, N, G, space, O, U, T, space, T, O, space, F, I, N, D, space, A, N, D, lineBreak
-	.db E, L, I, M, I, N, A, T, E, space, E, N, E, M, Y, space, U, N, I, T, lineBreak, N, O, W, waitForA
+	.db A, N, D, space, E, L, I, M, I, N, A, T, E, space, T, H, E, space, dict, enemy, waitForA
 	.db endOfStream
 
 brief2Stream:

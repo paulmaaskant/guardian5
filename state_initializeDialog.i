@@ -66,7 +66,7 @@ state01_positionLo:
   .db $48
   .db $48
   .db $44
-  .db $47
+  .db $48
 state01_lastCol:
   .db $1C
   .db $1C
