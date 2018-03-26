@@ -7,7 +7,7 @@ Instructions
 
 2.0 Missions
 
-  Each mission will have one or more victory conditions. Once you meet all victory conditions, you will have achieved your mission. Typical victory conditions are:
+  Each mission has one or more victory conditions. Once you meet all victory conditions, you will have achieved your mission. Typical victory conditions are:
 
   - Defeat all enemy units
   - Survive X number of rounds
@@ -19,11 +19,11 @@ Instructions
 
   As long as mission continues, the units on the map will take consecutive turns.
 
-2.1 Taking a Turns
+2.1 Taking Turns
 
-  When the game assigns the turn to a unit, that unit becomes the ACTIVE UNIT. At the start of its turn, the ACTIVE UNIT gains a number of ACTION POINTS. The exact number depends on the unit type.
+  When the game assigns the turn to a unit, that unit becomes the ACTIVE UNIT. At the start of its turn, the ACTIVE UNIT gains a number of ACTION POINTS. The exact number varies per unit.
 
-  The ACTIVE UNIT can perform ACTIONS, such as moving to another position on the map, or attacking an enemy unit. Each ACTION has an ACTION POINT cost. Once the ACTIVE UNIT has spent all of its ACTION POINTS, the turn ends and the next unit will take a turn.
+  The ACTIVE UNIT can perform ACTIONS, such as moving to another position on the map, or attacking an enemy unit. Each ACTION costs a number of ACTION POINTs to execute. Once the ACTIVE UNIT has spent all of its ACTION POINTS, its turn ends and the next unit will take a turn.
 
   Once all units have taken a turn, the current ROUND ends and a new ROUND starts. In some missions the number of expired ROUNDs serves a time limit.
 
@@ -33,7 +33,7 @@ Instructions
 
   MOVE - move the unit a number of positions up to its movement value (MOV).
   RUN - move the unit a number of positions up to twice its movement value (MOV).
-  WPN(X) - engage an enemy unit with the weapon in slot (X).
+  WPN1, WPN2 - engage an enemy unit with the weapon in slot 1 or 2.
   CLOSE COMBAT - engage an enemy unit with a melee attack.
   CHARGE - run towards and engage an enemy unit with a melee attack.
   TARGET LOCK - lock on to an enemy unit. This increases the chance of scoring a direct hit when attacking the target locked unit.
@@ -68,7 +68,7 @@ Instructions
 
   The chance of scoring a direct his is determined by the SKL attribute of the attacking unit, reduced by the defensive value of the defending unit. The resulting value represents the % of success.
 
-  Note that each unit has three different defense values (Front, Side and Rear). The angle of attack in combination with the direction that the defending unit is facing determines which of the three defense values is used.
+  Each unit has three different defense values (Front, Side and Rear). The angle of attack in combination with the direction that the defending unit is facing determines which of the three defense values is used.
 
   The angle of attack is determined by drawing a line from the attacking unit hexagon to the defending unit hexagon. This line crosses one of the 6 sides of the defending unit's hexagon.
 
@@ -80,9 +80,11 @@ Instructions
 
   Note that if the defending unit is target locked by the attacking unit, the change of scoring a direct hit is increased by 10%
 
+  Note that a target that is SHUT DOWN has a 99% of being hit, regardless of the attacker's skill and the defending units defense values.
+
 3.0 Unit Types & Stats
 
-  Every unit has a number of attributes that determine how well it does in combat. Note that the values for the active unit can be seen in the HUD MENU
+  Every unit has a number of attributes that determine how well it does in combat. Note that the values for the active unit can be seen in the HUD MENU (press start while select an ACTION)
 
   Unit Attributes
 
