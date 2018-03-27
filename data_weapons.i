@@ -17,3 +17,12 @@ weaponType:
   .db 0           ; 5 heat inflicted
   .db 1           ; 6 heat cost
   .db 1           ; 7 type: missiles
+
+  .db 42			    ; 0 name: spark
+  .db 4           ; 1 damage
+  .db $72					; 2 range (max|min)
+  .db 128+02      ; 3 ammo (0=infinite)
+  .db 1           ; 4 not used
+  .db 0           ; 5 heat inflicted
+  .db 1           ; 6 heat cost
+  .db 1           ; 7 type: missiles

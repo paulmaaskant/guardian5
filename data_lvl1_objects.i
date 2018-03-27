@@ -57,22 +57,17 @@ levelOne:
 	.db $E7			; object 3 grid position
 	.db $01			; object 3 type obstacle & tile D
 
-	.db $84			; Enemy pilot 4
+	.db $84			; enemy pilot 4 (drone)
 	.db $E4			; object grid position
 	.db $35			; object type 1 & facing RD
-	.db $10			; object wpns
+	.db $20			; object wpns
 
-	;.db $84			; Enemy pilot 4
-	;.db $E6			; object grid position
-	;.db $35			; object type 1 & facing RD
-	;.db $10			; object wpns
-
-	.db $84			; Enemy pilot 4
+	.db $84			; enemy pilot 4 (drone)
 	.db $E8			; object grid position
 	.db $34			; object type 1 & facing RD
-	.db $10			; object wpns
+	.db $20			; object wpns
 
-	.db $80			; Enemy pilot 4
+	.db $80			; enemy pilot 0 (cruella)
 	.db $D7			; object grid position
 	.db $25			; object type 1 & facing RD
 	.db $10			; object wpns

@@ -41,6 +41,7 @@ stringListL:
 	.db #< str_LEMUR										; 39
 	.db #< str_BURKE										; 40
 	.db #< str_ENEMY										; 41
+	.db #< str_SPARK										; 42
 
 stringListH:
 	.db #> str_RANGED_ATK_1
@@ -84,7 +85,8 @@ stringListH:
 	.db #> str_ALREADY_LOCKD
 	.db #> str_LEMUR
 	.db #> str_BURKE
-	.db #> str_ENEMY									
+	.db #> str_ENEMY
+	.db #> str_SPARK
 
 str_LOS_BLOCKED:
 	.db 12, L, I, N, E, space, B, L, O, C, K, E, D
@@ -164,3 +166,5 @@ str_BURKE:
 	.db 5, B, U, R, K, E
 str_ENEMY:
 	.db 5, E, N, E, M, Y
+str_SPARK:
+	.db 5, S, P, A, R, K
