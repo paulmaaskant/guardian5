@@ -175,6 +175,45 @@ dronA_d6_f3:
   .db -18
   .dw dronA_06_f0
 
+mech00_stationary_d1_f0:
+  .db %10100000
+	.db -16
+	.dw mech00_d1
+
+mech00_stationary_d4_f0:
+  .db %10100000
+	.db -16
+	.dw mech00_d4
+
+mech00_stationary_d5_f0:
+  .db %10100000
+  .db -16
+  .dw mech00_d5
+
+mech00_stationary_d6_f0:
+	.db %10100000
+	.db -16
+	.dw mech00_d6
+
+mech01_stationary_d1_f0:
+  .db %10100000
+	.db -16
+	.dw mech01_d1
+
+mech01_stationary_d4_f0:
+  .db %10100000
+	.db -16
+	.dw mech01_d4
+
+mech01_stationary_d5_f0:
+  .db %10100000
+  .db -16
+  .dw mech01_d5
+
+mech01_stationary_d6_f0:
+	.db %10100000
+	.db -16
+	.dw mech01_d6
 
 mech02_stationary_d1_f0:
   .db %10100000

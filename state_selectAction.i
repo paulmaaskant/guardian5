@@ -106,7 +106,6 @@ state_selectAction:
 	BEQ +nextObject									; no markers on the current target unit, next unit
 
 	LDY activeObjectIndex
-	ORA #%10000000
 	CMP object+4, Y
 	BEQ +targetLockMarker						; is locked target -> show
 

@@ -4,7 +4,7 @@
 ; IN list3+0, heat
 ; IN list3+1, hit probability
 ; IN list3+2, adjusted damage value
-; IN list3+20, target life points
+; IN list3+20, target hit points
 
 calculateAttack:
 	JSR getSelectedWeaponTypeIndex
@@ -13,10 +13,10 @@ calculateAttack:
 	ASL activeObjectStats-1, X
 	LDA weaponType+3, Y
 	ASL
-	ROR activeObjectStats-1, X			; set once per turn bit
+	ROR activeObjectStats-1, X	; set once per turn bit
 
-	AND #%00011110									; uses ammo?
-	BEQ +continue										; no -> continue
+	AND #%00011110							; uses ammo?
+	BEQ +continue								; no -> continue
 
 	LDA activeObjectIndex
 	CLC
@@ -24,33 +24,40 @@ calculateAttack:
 	TAX
 	DEC object+5, X
 
-
 +continue:
 	LDA #$03										; clear from list3+3
 	LDX #$09										; up to and including list3+9
 	JSR clearList3
 
-	JSR random100							; random number in A between 0 and 99
-	CMP list3+1								; compare to the hit probability
+	LDX activeObjectIndex				; remove target lock if its another unit here
+	LDA object+4, X
+	CMP targetObjectTypeAndNumber
+	BEQ +continue
+	LDA #0
+	STA object+4, X
+
++continue:
+	JSR random100								; random number in A between 0 and 99
+	CMP list3+1									; compare to the hit probability
 	BCC +hit
 	BEQ +hit
-	LDA #$02									; miss
+	LDA #$02										; miss
 	BNE +continue
 
 	; --- hit, apply damage ---
 +hit:
-	LDA list3+20							; target dial value
+	LDA list3+20								; target dial value
 	SEC
-	SBC list3+2								; damage value
+	SBC list3+2									; damage value
 	BEQ +destroyed
 	BCC +destroyed
-	ASL												; if not destroyed
-	ASL												; write back new target dial value
+	ASL													; if not destroyed
+	ASL													; write back new target dial value
 	ASL
-	PHA												; new value on stack
+	PHA													; new value on stack
 	LDY targetObjectIndex
 	LDA object+1, Y
-	AND #$07									; clear old value, keep heat value
+	AND #$07										; clear old value, keep heat value
 	TAX
 	PLA
 	CLC

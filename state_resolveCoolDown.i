@@ -3,8 +3,8 @@
 ; -------------------------------------------------
 state_initializeCoolDown:
 
-	LDA #$03						; clear from list3+3
-	LDX #$09						; up to and including list3+9
+	LDA #$03									; clear from list3+3
+	LDX #$09									; up to and including list3+9
 	JSR clearList3
 
 	JSR applyActionPointCost
@@ -12,7 +12,7 @@ state_initializeCoolDown:
 	LDA #0
 	STA list1+0 							; animation frame count
 	STA list1+2								;
-	STA activeObjectStats+9		; remove all remaining APs 
+	STA activeObjectStats+9		; remove all remaining APs
 
 	LDA activeObjectGridPos
 	JSR gridPosToScreenPos
@@ -55,68 +55,66 @@ state_resolveCoolDown:
 	JSR gridPosToScreenPos
 
 	LDA list1+0
-	CMP #$40
+	CMP #88
 	BNE +continue
 
-	JSR clearCurrentEffects
+	JSR clearCurrentEffects				; done
 	JMP pullState
 
 +continue:
-	CMP #$10
-	BCC +expand
-	CMP	#$30
-	BCC +rotate
-	;CMP #$40
-	BCS +collapse
-	;LDA #1
-	;STA effects
-	;BNE +done
-
-
-+rotate:
-	AND #%00011111
-	ASL
-	ASL
-	STA list1+2
-	JMP +startLoop
-
-+collapse:
-	AND #%00011111
-	EOR #%00011111
-
-+expand:
-	STA list1+3
-
-+startLoop:
-	LDX #3
-
+	LDX #1
+	CMP #8
+	BCC +one
+	CMP #16
+	BCC +two
+	CMP #24
+	BCC +three
+	INX
++three:
+	INX
++two:
+	INX
++one:
+	STX effects
+	DEX
 -loop:
 	STX list1+1
-	LDA state_15_angle_table, X
+
+	LDA list1+0
+	AND #%11111000
+	ASL
+	ASL
 	CLC
-	ADC list1+2
-	LDX list1+3
+	ADC state_15_angle, X
+	PHA
+	LDA list1+0
+	AND #$07
+	CLC
+	ADC state_15_radius, X
+	TAX
+	PLA
 	JSR getCircleCoordinates
 
 	TXA
 	LDX list1+1
-	CLC
-	ADC currentObjectXPos
-	STA currentEffects+6, X
+  CLC
+  ADC currentObjectXPos
+  STA currentEffects+6, X
 
 	TYA
-	CLC
-	ADC currentObjectYPos
-	ADC #-14
-	STA currentEffects+12, X
+  CLC
+  ADC currentObjectYPos
+  ADC #-14
+  STA currentEffects+12, X
 
 	DEX
 	BPL -loop
 
-+done:
 	INC list1+0
 	RTS
 
+state_15_radius:
+	.db 0, 8, 16, 24
 
-state_15_angle_table:
-	.db 0, 64, 128, 194
+state_15_angle:
+	.db 192, 160, 128, 96

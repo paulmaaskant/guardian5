@@ -1,6 +1,6 @@
 
 ; state $41
-state_resolveTargetLockMarker:
+state_resolveXTargetLockMarker:
   DEC list1+0
   BNE +continue
   JMP pullState

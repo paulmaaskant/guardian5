@@ -77,6 +77,11 @@ state_faceTarget:
   TXA
   ORA #%11000000
   STA nodeMap, Y
+
+  TYA
+  JSR gridPosToScreenPos
+  BCC +done
+
   JSR setTile
 
 +done:

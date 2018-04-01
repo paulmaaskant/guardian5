@@ -48,9 +48,10 @@ state_initializeMap:
 
 	JSR getNextByte					; get pilot (b7, b2-b0)
 	STA locVar1
+	PHA
 
 	TXA
-	ASL											; 8 bytes per object
+	ASL											; 8 bytes per pilot
 	ASL
 	ASL
 	ORA locVar1
@@ -66,8 +67,8 @@ state_initializeMap:
 	JSR getNextByte						; get type & initial facing direction
 	STA object+0, X
 
-	CMP #$0F
-	BCC +continue							; unless object is obstacle
+	PLA
+	BEQ +continue							; object is obstacle -> skip weapons
 
 	JSR getNextByte						; get weapons
 	PHA												; store weapon byte

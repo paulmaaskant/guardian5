@@ -13,8 +13,6 @@ state_resolveTempGauge:
 
   AND #%00001000
   BEQ +oldGauge
-
-;+finalFrames:
   JSR updateSystemMenu
 
 -refresh:

@@ -27,8 +27,8 @@ statusBar:
 	.db L, K, S
 	.db repeatBlank, 29+4
 	.db $2D, repeatBlank, 3, $2C
-	.db repeatBlank, 1+32+1 ;
-	.db $2B, repeatBlank,23, $2A
+	.db repeatBlank, 1+32+1+25 ;
+
 	.db $2B, repeatBlank, 3, $2A
 	.db repeatBlank, 1
 
@@ -51,8 +51,7 @@ hudMenu:		; last
 	.db 2, P, W
 	.db repeatBlank, 29
 	.db C, P ,S
-	.db repeatBlank, 2+1
-	.db $2D, repeatBlank, 23, $2C
+	.db repeatBlank, 2+1+25
 	.db $2D, repeatBlank, 3, $2C
 	.db repeatBlank, 1 + 7
 	.db $0A, repeatBlank, 24
@@ -278,7 +277,7 @@ brief2Stream:
 	.db endOfStream
 
 brief3Stream:
-	.db Y, O, U, R, space, M, E, C, H, space, H, A, S, space, B, E, E, N, lineBreak
+	.db Y, O, U, R, space, U, N, I, T, space, H, A, S, space, B, E, E, N, lineBreak
 	.db D, E, S, T, R, O, Y, E, D
 	.db waitForA
 	.db nextPage

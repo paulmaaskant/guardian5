@@ -36,18 +36,18 @@ animationL:
 	.db #> ANIM11			; mech 03 stationary
 	.db #> ANIM12			; mech 03 stationary
 	.db #> ANIM13			; mech 03 stationary
-	.db #> ANIM14			; mech A m d5
-	.db #> ANIM15			; mech A m d6
-	.db #> ANIM16			; mech A m d4
-	.db #> ANIM17			; mech A m d1
+	.db #> ANIM14			; mech A legs moving d5
+	.db #> ANIM15			; mech A legs moving d6
+	.db #> ANIM16			; mech A legs moving d4
+	.db #> ANIM17			; mech A legs moving d1
 	.db #> ANIM18			; mech 02 stationary
 	.db #> ANIM19			; mech 02 stationary
 	.db #> ANIM1A			; mech 02 stationary
 	.db #> ANIM1B			; mech 02 stationary
-	.db #> ANIM1C			; NOT USED
-	.db #> ANIM1D			; NOT USED
-	.db #> ANIM1E			; NOT USED
-	.db #> ANIM1F			; NOT USED
+	.db #> ANIM1C			; mech 00 stationary
+	.db #> ANIM1D			; mech 00 stationary
+	.db #> ANIM1E			; mech 00 stationary
+	.db #> ANIM1F			; mech 00 stationary
 	.db #> ANIM20			; missile
 	.db #> ANIM21			; missile
 	.db #> ANIM22			; missile
@@ -250,12 +250,20 @@ ANIM1B:
 	.dw mech02_stationary_d5_f0
 
 ANIM1C:
+	.db 1, 5
+	.dw mech00_stationary_d6_f0
 
 ANIM1D:
+	.db 1, 5
+	.dw mech00_stationary_d4_f0
 
 ANIM1E:
+	.db 1, 5
+	.dw mech00_stationary_d1_f0
 
 ANIM1F:
+	.db 1, 5
+	.dw mech00_stationary_d5_f0
 
 ANIM20:
 	.db 2, 2

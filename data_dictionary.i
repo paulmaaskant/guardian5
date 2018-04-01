@@ -42,6 +42,8 @@ stringListL:
 	.db #< str_BURKE										; 40
 	.db #< str_ENEMY										; 41
 	.db #< str_SPARK										; 42
+	.db #< str_SAI											; 43
+	.db #< str_SLINGSHOT								; 44
 
 stringListH:
 	.db #> str_RANGED_ATK_1
@@ -87,6 +89,8 @@ stringListH:
 	.db #> str_BURKE
 	.db #> str_ENEMY
 	.db #> str_SPARK
+	.db #> str_SAI
+	.db #> str_SLINGSHOT
 
 str_LOS_BLOCKED:
 	.db 12, L, I, N, E, space, B, L, O, C, K, E, D
@@ -168,3 +172,7 @@ str_ENEMY:
 	.db 5, E, N, E, M, Y
 str_SPARK:
 	.db 5, S, P, A, R, K
+str_SAI:
+	.db 3, S, A, I
+str_SLINGSHOT:
+	.db 9, S, L, I, N, G, S, H, O, T

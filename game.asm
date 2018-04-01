@@ -317,7 +317,7 @@ mainGameLoop:
 	LDA activeObjectGridPos						; active unit location on grid
 	JSR gridPosToScreenPos						; get the screen coordinates
 	BCC +nextEffect										; make sure coordinates are on screen
-	LDY #1													; cursor animation #
+	LDY #1														; cursor animation #
 	JSR loadAnimationFrame						; set sprites!
 
 +nextEffect:												; blocking node marker, sprite 5
@@ -674,7 +674,7 @@ gameStateJumpTable:
 	.dw state_initializeTargetLock-1						; 3E
 	.dw state_resolveTargetLock-1								; 3F ; not implemented, uses state 15
 	.dw state_initializeTargetLockMarker-1			; 40
-	.dw state_resolveTargetLockMarker-1					; 41
+	.dw not_used																; 41
 	.dw state_initializeTempGauge-1							; 42
 	.dw state_resolveTempGauge-1								; 43
 	.dw state_initializeTargetLockAction-1			; 44
@@ -757,7 +757,7 @@ runningEffectsH:
 	.include state_initializeTargetLock.i
 	.include state_resolveTargetLock.i
 	.include state_initializeTargetLockMarker.i
-	.include state_resolveTargetLockMarker.i
+	;.include state_resolveTargetLockMarker.i
 	.include state_initializeTempGauge.i
 	.include state_resolveTempGauge.i
 	.include state_showActionMenuMessage.i
@@ -820,6 +820,7 @@ runningEffectsH:
 	.include sbr_setTargetToolTip.i
 	.include sbr_getSelectedWeaponIndex.i
 	.include sbr_setTile.i
+	.include sbr_setEffectCoordinates.i
 
 	.include sbr_random.i
 	.include sbr_random100.i
@@ -840,6 +841,7 @@ runningEffectsH:
 	.include data_soundHeaders.i
 	.include data_pilots.i
 	.include data_weapons.i
+	.include data_actions.i
 
 
 

@@ -7,7 +7,6 @@ state_initializeTargetLock:
 
   LDY activeObjectIndex
   LDA targetObjectTypeAndNumber
-  ORA #%10000000
   STA object+4, Y
 
   LDA #0
@@ -16,6 +15,7 @@ state_initializeTargetLock:
 
   LDA activeObjectGridPos
   JSR gridPosToScreenPos
+  BCC +done
   JSR clearCurrentEffects
 
   LDX #4
@@ -36,10 +36,5 @@ state_initializeTargetLock:
 
   JMP pullState
 
-;  JSR pullAndBuildStateStack
-;  .db 4			; 4 ite
-;  .db $15   ; focus animation
-;  .db $1C   ; face target
-;  .db $40   ; LOCK marker animation
-;  .db $16		; show results
-;  ; built in RTS
++done:
+  JMP pullParameter   ; skips the next state

@@ -5,8 +5,7 @@
 ; list3+03 .. 09	Result messages / streams
 ; list3+10    		ammo BCD digit tens
 ; list3+11				ammo BCD digit ones
-; list3+12				target's hit points BCD digit 10
-; list3+13				target's hit points BCD digit 01
+; list3+12				heat cost
 
 ; list3+20				target's hit points
 ; list3+21				damage sustained by attacker
@@ -144,18 +143,14 @@ checkTarget:
 	LDA distanceToTarget
 	CMP #10
 	BCC +nextCheck
-	LDA #8+128
+	LDA #8+128															; out of range
 	STA actionMessage
 	RTS
 
 +nextCheck:
-	LDA targetObjectTypeAndNumber
-	ORA #%10000000
-	STA locVar1
 	LDY activeObjectIndex
 	LDA object+4, Y													; check if target is not already locked
-	BPL +skip																; there is no target lock
-	CMP locVar1
+	CMP targetObjectTypeAndNumber
 	BNE +skip
 	LDA #38+128
 	STA actionMessage
@@ -206,12 +201,14 @@ checkTarget:
 
 	LDY activeObjectIndex
 	LDA object+4, Y													; target lock?
-	BPL +continue														; no -> continue
+	CMP targetObjectTypeAndNumber
+	BNE +continue
 
-	LDA targetObjectTypeAndNumber						; yes, is this the target?
-	ORA #%10000000
-	CMP object+4, Y
-	BNE +continue														; no -> continue
+	;BPL +continue														; no -> continue
+	;LDA targetObjectTypeAndNumber						; yes, is this the target?
+	;ORA #%10000000
+	;CMP object+4, Y
+	;BNE +continue														; no -> continue
 
 	CLC
 	LDA #10

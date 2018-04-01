@@ -29,45 +29,41 @@ levelOne:
 
 	.db 0
 
-	.db	9			; number of objects
+	.db	8			; number of objects
 
 	.db $04			; player pilot 4
 	.db $03			; object grid position
-	.db $24			; object type 1 & facing RD
-	.db $01			; object wpns
+	.db $04			; object type & facing RD
+	.db $11			; object wpns
 
 	.db $01			; player pilot 2
 	.db $05			; object grid position
-	.db $14			; object type 1 & facing RD
+	.db $24			; object type 1 & facing RD
 	.db $01			; object wpns
 
-	.db $00			; object 3 obstacle
-	.db $45			; object 3 grid position
-	.db $01			; object 3 type: obstacle | facing: 1
+	.db $00			; object object building
+	.db $25			; object grid position
+	.db $41			; object type & facing RD
 
-	.db $00			; object 3 building
-	.db $23			; object 3 grid position
-	.db $01			; object 3 type obstacle & tile D
+	.db $00			; object building
+	.db $45			; object grid position
+	.db $41			; object type & facing RD
 
-	.db $00			; object 3 building
-	.db $25			; object 3 grid position
-	.db $01			; object 3 type obstacle & tile D
-
-	.db $00			; object 3 building
-	.db $E7			; object 3 grid position
-	.db $01			; object 3 type obstacle & tile D
+	.db $00			; object building
+	.db $C7			; object grid position
+	.db $41			; object type & facing RD
 
 	.db $84			; enemy pilot 4 (drone)
 	.db $E4			; object grid position
-	.db $35			; object type 1 & facing RD
+	.db $55			; object type 1 & facing RD
 	.db $20			; object wpns
 
 	.db $84			; enemy pilot 4 (drone)
-	.db $E8			; object grid position
-	.db $34			; object type 1 & facing RD
+	.db $4C			; object grid position
+	.db $54			; object type 1 & facing RD
 	.db $20			; object wpns
 
 	.db $80			; enemy pilot 0 (cruella)
 	.db $D7			; object grid position
-	.db $25			; object type 1 & facing RD
+	.db $35			; object type 1 & facing RD
 	.db $10			; object wpns

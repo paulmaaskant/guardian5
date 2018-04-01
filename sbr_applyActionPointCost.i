@@ -4,50 +4,51 @@ applyActionPointCost:
   SBC list3+0
   STA activeObjectStats+9
 
+  LDA #$81               ; show gauge message																																			; msg heatsinks restore
+  STA list3+7
+
+  JSR getSelectedWeaponTypeIndex  ; sets X to selected action
+
   LDY activeObjectIndex
   LDA object+1, Y
   AND #$07
-  STA locVar1           ; current available action points
+  STA locVar1            ; current unused heat points
 
-  LDA #$81               ; show gauge																																			; msg heatsinks restore
-  STA list3+7
+  CPX #aCOOLDOWN
+  BEQ +restoreHeatPoints
 
-  LDX selectedAction
-  LDA actionList, X
-  CMP #aCOOLDOWN
-  BEQ +restoreActionPoints
-
-  LDA list3+0
-  BEQ +continue             ; no change
-
+  LDA list3+12                    ; calculated heat cost
   CMP locVar1
   BCC +less
-  LDA #8                    ; shut down msg                                                  ; msg shutdown
+  LDA #8                          ; shut down msg                                                  ; msg shutdown
   STA list3+8
 
   LDA object+2, Y                                                               ; set shutdown flag
   ORA #$80
   STA object+2, Y
-  LDA locVar1
+  LDA #0
+  STA locVar1
+  BEQ +continue                  ; JMP
 
 +less:
-  EOR #$FF              ; calculate remaining action points
-  SEC                   ; after current action point cost is subtracted
-  ADC locVar1           ; - selected action cost + current available points
-  STA locVar1           ; = remaining action points
-  JMP +continue
+  EOR #$FF                         ; calculate remaining action points
+  SEC                              ; after current action point cost is subtracted
+  ADC locVar1                      ; - selected action heat cost + current available unused  heat points
+  STA locVar1                      ; = remaining unused heat points
+  BNE +continue                    ; JMP
 
-+restoreActionPoints:
++restoreHeatPoints:
   LDA locVar1
   CLC
-  ADC list3+0                                                                   ; A = action points available
-  STA locVar1
-
-
+  ADC list3+12
+  CMP #6
+  BCC +notMaxed
   LDA #6
-  CMP locVar1
-	BNE +continue
-  LDY activeObjectIndex
+
++notMaxed:                                                             ; A = action points available
+  STA locVar1
+  BCC +continue
+
   LDA object+2, Y
   BPL +continue                ; if shut down
   AND #$7F                     ; unset shutdown flag
@@ -56,10 +57,8 @@ applyActionPointCost:
   STA list3+8                  ; set result message: restart
 
 +continue:
-  LDY activeObjectIndex        ; overwrite
   LDA object+1, Y
   AND #%11111000
   ORA locVar1
   STA object+1, Y
-
   RTS

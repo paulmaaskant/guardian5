@@ -3,8 +3,8 @@
 ; set all values to 0
 ; ------------------------
 clearCurrentEffects:
-  LDX #$1D
-  LDA #$00
+  LDX #29
+  LDA #0
 
 -loop:
   STA currentEffects, X
