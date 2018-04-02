@@ -25,7 +25,11 @@ statusBar:
 	.db L, I, P
 	.db repeatBlank, 29
 	.db L, K, S
-	.db repeatBlank, 29+4
+	.db space
+	.db $40
+	.db repeatBlank, 3
+	.db $41
+	.db repeatBlank, 23+4
 	.db $2D, repeatBlank, 3, $2C
 	.db repeatBlank, 1+32+1+25 ;
 

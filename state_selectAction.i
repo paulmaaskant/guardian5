@@ -69,13 +69,26 @@ state_selectAction:
 	JSR writeToActionMenu
 
 	LDA #$0C
-	LDX list3+0													; AP cost
+	LDX #0
+	LDY #0
 
 -loop:
-	STA actionMenuLine3+4, X
-	DEX
+	STA actionMenuLine3+5, X
+	INX
+	INY
+	CPY list3+0
+	BCC -loop
+	LDY #0
+	LDA #$3B
+
+-loop:
+	CPY list3+12
+	BCS +continue
+	STA actionMenuLine3+5, X
+	INX
+	INY
 	BNE -loop
-	BEQ +continue
+
 
 +restore:
 	LDY #18
@@ -238,12 +251,13 @@ state_selectAction:
 	BCC +next
 
 	JSR buildStateStack		; open start menu
-	.db 8
+	.db 10
 	.db $32, %00100100		; clear sys flag: portrait & object sprites
-	.db $20, 2						; load hud menu
+	.db $20, 2						; load hud menu background
+	.db $47, 0						; set target object as hud objec
 	.db $3D								; load hud menu values
 	.db $23								; expand menu
-	.db $30								; load portrait
+	.db $41								; reload portrait
 	.db $24								;
 	; RTS built in
 

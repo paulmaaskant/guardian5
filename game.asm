@@ -672,14 +672,16 @@ gameStateJumpTable:
 	.dw state_showHourGlass-1										; 3C
 	.dw state_updateOverview-1									; 3D
 	.dw state_initializeTargetLock-1						; 3E
-	.dw state_resolveTargetLock-1								; 3F ; not implemented, uses state 15
+	.dw state_resolveTargetLock-1								; 3F
 	.dw state_initializeTargetLockMarker-1			; 40
-	.dw not_used																; 41
+	.dw state_setSelectedObjectPortrait-1				; 41
 	.dw state_initializeTempGauge-1							; 42
 	.dw state_resolveTempGauge-1								; 43
 	.dw state_initializeTargetLockAction-1			; 44
 	.dw state_setMenuFlags-1										; 45
 	.dw state_refreshMenu-1											; 46
+	.dw state_setHudMenuObject-1								; 47
+	.dw state_loadHudMenuTab-1									; 48
 
 not_used:																			; label for depricated states
 
@@ -765,6 +767,9 @@ runningEffectsH:
 	.include state_refreshMenu.i
 	.include state_initializeTargetLockAction.i
 	.include state_compositeTitleMenu.i
+	.include state_setSelectedObjectPortrait.i
+	.include state_setHudMenuObject.i
+	.include state_loadHudMenuTab.i
 
 	.include sbr_getStatsAddress.i
 	.include sbr_pushState.i

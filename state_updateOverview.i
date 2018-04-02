@@ -11,31 +11,14 @@
 ; 100-129 weapon 2 values
 
 state_updateOverview:
-  LDA #$0F
-  LDX #0
-
--loop:
-  STA list8, X
-  INX
-  BNE -loop
-
-  STX list8+255       ; selected tab index
   LDA #$0C            ; action point icon in pilot area
   STA list8+14
-  LDA #$2F            ; tab selector
-  STA list8+55
-  LDA #$2E            ; tab selector
-  STA list8+59
-  ;LDA #$40
-  ;STA list8+54
-  ;LDA #$41
-  ;STA list8+50
 
   ;------------------------------------------------------
   ; pilot stats
   ;------------------------------------------------------
 
-  LDA activeObjectIndexAndPilot ; get pilot based stats
+  LDA list8+254 ; get pilot based stats
   ASL
   AND #%00001110
   BCC +continue
@@ -62,7 +45,7 @@ state_updateOverview:
   ; object type stats
   ;------------------------------------------------------
 
-  LDY activeObjectIndex
+  LDY list8+253
   JSR getStatsAddress           ; Y goes in; sets pointer1
   LDX #4
 
@@ -89,7 +72,7 @@ state_updateOverview:
   ; object stats
   ;------------------------------------------------------
 
-  LDY activeObjectIndex          ; CURRENT STATS
+  LDY list8+253          ; CURRENT STATS
 
   LDA object+1, Y
   LSR
@@ -112,7 +95,7 @@ state_updateOverview:
   LDA par3
   STA list8+73, X
   CPX #0
-  BEQ +continue  
+  BEQ +continue
   DEY
   LDX #0
   BEQ -loop
@@ -131,7 +114,7 @@ state_updateOverview:
 
 -attributeLoop:
   CLC
-  LDA activeObjectIndex
+  LDA list8+253
   ADC locVar2
   TAY
   LDA object+6, Y
@@ -218,13 +201,11 @@ state_updateOverview:
 +continue:
 
   ;--------------------------------------------------------------------
-
++endState:
   JSR pullAndBuildStateStack
-  .db 8
+  .db 3
   .db $46, 0      ; header
-  .db $46, 3      ; menu
-  .db $46, 4      ; labels
-  .db $46, 1      ; values
+  .db $48         ; show current tab
 
 state3D_attribute_index:
   .db 2, 3, 5, 6, 7

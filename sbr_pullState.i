@@ -10,6 +10,6 @@ pullState:
   PHA
   LDA #0
   STA stateStack, X
-  PLA
   DEC stateStack
+  PLA
   RTS

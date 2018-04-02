@@ -22,10 +22,33 @@ state_hudMenu:
   LSR                   ; right
   BCC +next
 
+  LDA #12
+  STA blockInputCounter
+
+  JSR buildStateStack		; show next unit
+	.db 7
+	.db $47, 1						; set next
+  .db $32, %00100100		; clear sys flag: portrait & object sprites
+	.db $3D								; load hud menu values
+	.db $41								; reload portrait
+  .db $1A
+	; RTS built in
 
 +next:
   LSR                   ; left
   BCC +next
+
+  LDA #12
+  STA blockInputCounter
+
+  JSR buildStateStack		; show next unit
+  .db 7
+  .db $47, 2						; set previous
+  .db $32, %00100100		; clear sys flag: portrait & object sprites
+  .db $3D								; load hud menu values
+  .db $41								; reload portrait
+  .db $1A
+  ; RTS built in
 
 
 +next:
@@ -33,9 +56,9 @@ state_hudMenu:
   BCC +next
 
   LDX list8+255
-  LDA #$0F
-  STA list8+55, X
-  STA list8+59, X
+  ;LDA #$0F
+  ;STA list8+55, X
+  ;STA list8+59, X
   INX
   CPX #4
   BCC +store
@@ -47,9 +70,9 @@ state_hudMenu:
   BCC +next
 
   LDX list8+255
-  LDA #$0F
-  STA list8+55, X
-  STA list8+59, X
+  ;LDA #$0F
+  ;STA list8+55, X
+  ;STA list8+59, X
   DEX
   BPL +store
   LDX #3
@@ -60,44 +83,13 @@ state_hudMenu:
 
 +store:
   STX list8+255
-  LDA #$2F
-  STA list8+55, X
-  LDA #$2E
-  STA list8+59, X
+  ;LDA #$2F
+  ;STA list8+55, X
+  ;LDA #$2E
+  ;STA list8+59, X
+
   LDA #8
   STA blockInputCounter
 
-  CPX #3
-  BNE +next
-  JSR buildStateStack
-  .db 4
-  .db $46, 3       ; select
-  .db $46, 7      ; clear all
-
-+next
-  CPX #2
-  BNE +next
-  JSR buildStateStack
-  .db 8
-  .db $46, 3      ; select
-  .db $46, 7      ; clear all
-  .db $46, 5      ; wpn labels
-  .db $46, 6      ; wpn 2 values
-
-+next:
-  CPX #1
-  BNE +next
-  JSR buildStateStack
-  .db 8
-  .db $46, 3      ; select
-  .db $46, 7      ; clear
-  .db $46, 5      ; wpn labels
-  .db $46, 2      ; wpn 1 values
-
-+next:
-  JSR buildStateStack
-  .db 8
-  .db $46, 3      ; select
-  .db $46, 7      ; clear
-  .db $46, 4      ; mch labels
-  .db $46, 1      ; values
+  LDA #$48
+  JMP pushState

@@ -82,7 +82,7 @@ state_refreshMenu:
   header:
     .db 10,  9, $2B, $27, 20        ; pilot name
     .db  5, 14, $4B, $27, 10        ; skill
-    .db  5, 54, $41, $27, 10
+    ;.db  5, 54, $41, $27, 10
     .db 0
 
   layout0:
