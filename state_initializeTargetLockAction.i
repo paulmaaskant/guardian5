@@ -9,6 +9,6 @@ state_initializeTargetLockAction:
   .db $0C   ; wait for camera to center
   .db $3E   ; init targetLock
   .db $3F   ; focus animation
-  .db $40   ; running effect: LOCK marker animation
+  .db $40   ; init running effect 3: LOCK marker animation
   .db $16		; show results
   ; built in RTS

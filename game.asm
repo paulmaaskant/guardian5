@@ -682,18 +682,25 @@ gameStateJumpTable:
 	.dw state_refreshMenu-1											; 46
 	.dw state_setHudMenuObject-1								; 47
 	.dw state_loadHudMenuTab-1									; 48
+	.dw state_initializeLaser-1									; 49
+	.dw state_resolveLaser-1										; 4A
+	.dw state_setRunningEffect-1								; 4B
 
 not_used:																			; label for depricated states
 
 runningEffectsL:
 	.db #< eff_blast
 	.db #< eff_modifier
-	.db #< eff_locked
+	.db #< eff_locked														; 3
+	.db #< eff_gunFireFlashes										; 4
+	.db #< eff_groundShake											; 5
 
 runningEffectsH:
 	.db #> eff_blast
 	.db #> eff_modifier
 	.db #> eff_locked
+	.db #> eff_gunFireFlashes
+	.db #> eff_groundShake
 
 ; -------------------------
 ; includes
@@ -770,6 +777,9 @@ runningEffectsH:
 	.include state_setSelectedObjectPortrait.i
 	.include state_setHudMenuObject.i
 	.include state_loadHudMenuTab.i
+	.include state_initializeLaser.i
+	.include state_resolveLaser.i
+	.include state_setRunningEffect.i
 
 	.include sbr_getStatsAddress.i
 	.include sbr_pushState.i
@@ -840,6 +850,8 @@ runningEffectsH:
 	.include eff_blast.i
 	.include eff_modifier.i
 	.include eff_locked.i
+	.include eff_gunFireFlashes.i
+	.include eff_groundShake.i
 
 	.include reset.i
 	.include nmi.i

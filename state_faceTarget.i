@@ -69,13 +69,13 @@ state_faceTarget:
   LDY activeObjectIndex
   JSR getStatsAddress
   LDY #4
-  LDA (pointer1), Y
-  BNE	+done
+  LDA (pointer1), Y       ; tile offset
+  CLC
+  ADC locVar1             ; + direction
+  TAX
+  ORA #%11000000
 
   LDY activeObjectGridPos
-  LDX locVar1
-  TXA
-  ORA #%11000000
   STA nodeMap, Y
 
   TYA

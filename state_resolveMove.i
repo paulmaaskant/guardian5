@@ -96,21 +96,17 @@ state_resolveMove:
 	STA object+0, Y
 
 	JSR getStatsAddress
-	LDY #4
-
-	LDA (pointer1), Y
-	BNE +store
 
 	LDY activeObjectIndex
 	LDA object+0, Y
 	AND #%00000111							; get direction
-
-+store:
-	ORA #%11000000							; blocked for movement and los
-	LDX activeObjectGridPos
-	STA nodeMap, X
-	AND #%00111111
+	CLC
+	LDY #4
+	ADC (pointer1), Y						; add tile map offset
 	TAX
+	ORA #%11000000							; blocked for movement and los
+	LDY activeObjectGridPos
+	STA nodeMap, Y
 	LDY activeObjectGridPos
 	JSR setTile
 
@@ -197,6 +193,7 @@ state_resolveMove:
 	LDA actionCounter
 	BIT rightNyble
 	BNE +continue
+	
 	LDY #sMechStep
 	JSR soundLoad
 

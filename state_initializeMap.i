@@ -99,9 +99,13 @@ state_initializeMap:
 	LDY #4
 	LDX list1+3
 	LDA (pointer1), Y
-	BNE +store
+	BMI +store
+
+	STA locVar1
 	LDA object+0, X
 	AND #$0F												; facing direction
+	CLC
+	ADC locVar1
 
 +store:
 	ORA #%11000000						; obscuring and blocking

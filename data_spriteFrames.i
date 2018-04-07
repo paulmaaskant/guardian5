@@ -159,7 +159,7 @@ SHW0:	; shadow
 	.db %00100111, $04, -4, $7F, $7F
 
 EFF0:	; explosion frame 1
-	.db %00100110, $0E, -4, $6F, $6F
+	.db %00100100, $0E, -4, $6F, $6F
 	.db %00100111, $04, -4, $6F, $6F
 
 EFF1:
@@ -170,13 +170,14 @@ EFF3: ; machine bullets
 	.db %00010001, 0, $71
 
 EFF4: ; explosion frame 2
-	.db %00100110, $0E, -4, $6E, $6E
+	.db %00100100, $0E, -4, $6E, $6E
 	.db %00100111, $04, -4, $6E, $6E
 
 EFF5: ; defence shield
 	.db %00010001, 0, $4E
 
-EFF6:
+EFF6: ; ball
+	.db %00010001, 0, $79
 
 EFF7:
 
@@ -192,6 +193,23 @@ EFFA: ; explosion shockwave upper
 EFFB: ; explosion shockwave upper
 	.db %00100100, $08, -4,  $0, $77
 	.db %00100111, $0A, -4,  $66, $67
+
+LAS0: ; 0 degrees
+	.db %00010001, 0,  $78
+
+LAS1: ; 45 degrees
+	.db %00010001, 0,  $68
+
+LAS2: ; 90 degrees
+	.db %00010001, 0,  $69
+
+LAS3: ; 22.5 degrees
+	.db %00010001, 0,  $7A
+
+LAS4: ; 67.5 degrees
+	.db %00010001, 0,  $6A
+
+
 
 MIS0:	; missile up 1
 	.db %00010000, 0,  $62

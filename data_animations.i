@@ -59,6 +59,11 @@ animationL:
 	.db #> ANIM28			; drone A d1
 	.db #> ANIM29			; drone A d5
 	.db #> ANIM2A			; drone A d6
+	.db #> ANIM2B			; laser 0
+	.db #> ANIM2C			; laser 32
+	.db #> ANIM2D			; laser 64
+	.db #> ANIM2E			; laser 16
+	.db #> ANIM2F			; laser 48
 
 animationH:
 	.db #< ANIM00
@@ -104,6 +109,11 @@ animationH:
 	.db #< ANIM28
 	.db #< ANIM29
 	.db #< ANIM2A
+	.db #< ANIM2B			; laser vertical
+	.db #< ANIM2C			; laser hor/ver
+	.db #< ANIM2D
+	.db #< ANIM2E
+	.db #< ANIM2F
 
 ANIM00:
 	.db 8, 3
@@ -133,11 +143,17 @@ ANIM03:
 	.db 1, 6
 	.dw CS22
 ANIM04:
+	.db 2, 2
+	.dw EF07
+	.dw EF08
 
 ANIM05:
-	.db 2, 2
+	.db 4, 2
+	.dw EF07
+	.dw EF08
 	.dw EF00
 	.dw EF05
+
 ANIM06:
 	.db 1, 4
 	.dw EF04
@@ -145,8 +161,9 @@ ANIM07:
 	.db 1, 6
 	.dw CS24
 ANIM08:
-	.db 1, 6
+	.db 2, 4
 	.dw EF06
+	.dw CS21
 
 ANIM09:
 	.db 1, 2
@@ -323,3 +340,23 @@ ANIM2A:
 	.dw dronA_d6_f1
 	.dw dronA_d6_f2
 	.dw dronA_d6_f3
+
+ANIM2B:
+	.db 1, 5
+	.dw EF17
+
+ANIM2C:
+	.db 1, 5
+	.dw EF18
+
+ANIM2D:
+	.db 1, 5
+	.dw EF19
+
+ANIM2E:
+	.db 1, 5
+	.dw EF1A
+
+ANIM2F:
+	.db 1, 5
+	.dw EF1B

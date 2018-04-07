@@ -46,7 +46,7 @@ state_resolveMissile:
   JMP +setAnimation
 
 +continue:
-  ; if 24-63 -> move towars target
+  ; if 24-63 -> move towards target
   LDX list1+2
 
   LDA currentEffects+6, X
@@ -55,12 +55,13 @@ state_resolveMissile:
   STA currentObjectYPos
   JSR angleToCursor						; takes currentObject coordinates as IN
                               ; A = angle
-  CPY #$5                     ; if radius is less than 5,
+  CPY #8                      ; if radius is less than 5,
   BCS +continue
   LDA list1+4                 ; then missile impact
   BNE +skip                   ; is this the first impact?
   INC list1+4
-  INC cameraYDest+1           ; first impact, ground shake
+  LDA #5                      ; first impact, start ground shake
+  STA runningEffect
   INC effects                 ; start explosion sprite
 
   LDA cursorGridPos
@@ -68,18 +69,17 @@ state_resolveMissile:
 	LDA currentObjectXPos
 	STA currentEffects+8
 	LDA currentObjectYPos
-	SEC
-	SBC #12
 	STA currentEffects+14
 	LDA list1+5
-	STA currentEffects+2       ; explision animation
+	STA currentEffects+2       ; explision or shield animation
 
 +skip:
   LDY list1+6
   JSR soundLoad              ; explosion sound
   LDX list1+2
+
   LDA #11 ; no sprites       ; hide missile
-  BNE +setAnimation
+  BNE +setAnimationEffect
 
 +continue:                    ; if there is no impact
   STA list1+3                 ; angle
@@ -119,7 +119,7 @@ state_resolveMissile:
   TAY
   LDA state_2E_animation, Y
 
-+setAnimation:
++setAnimationEffect:
   STA currentEffects+0, X
 
 +continue:
@@ -140,7 +140,6 @@ state_resolveMissile:
 ; animation completed , prepare for transition
 ; ------------------------------------------------
 +done:
-  DEC cameraYDest+1
   LDA #$00						; switch off all blinking
   STA menuFlags
   JMP pullState

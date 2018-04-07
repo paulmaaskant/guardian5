@@ -34,12 +34,12 @@ levelOne:
 	.db $04			; player pilot 4
 	.db $03			; object grid position
 	.db $04			; object type & facing RD
-	.db $11			; object wpns
+	.db $30			; object wpns
 
 	.db $01			; player pilot 2
 	.db $05			; object grid position
 	.db $24			; object type 1 & facing RD
-	.db $01			; object wpns
+	.db $31			; object wpns
 
 	.db $00			; object object building
 	.db $25			; object grid position

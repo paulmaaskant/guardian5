@@ -1,8 +1,8 @@
 ; -----------------------------------
-; state $38 init machine gun
+; state $49 init laser
 ; -----------------------------------
 
-state_initializeMachineGun:
+state_initializeLaser:
   LDA activeObjectGridPos			; attacking unit position
   JSR gridPosToScreenPos			; attacking unit screen coordinates
   JSR angleToCursor						; takes currentObject coordinates as IN
@@ -10,9 +10,6 @@ state_initializeMachineGun:
   STA list1+8									; angle
   LDA #0											; init
   STA list1+0									; frame counter
-
-  STA list1+1									; effect counter
-  DEC list1+8									; offset angle by 1 bin radian (because of wave effect)
 
   STA par1										; divide input parameter
   LDA list1+7									; radius
@@ -22,26 +19,43 @@ state_initializeMachineGun:
   LDA par4										; radius / 3
   STA list1+3									;
 
-  LDX #5											; explosion animation
+  LDA #16
+  STA list1+1									; initial radius offset
+
+  LDA list1+8                 ; determine animation
+  CLC                         ; based on the angle
+  ADC #8
+  LSR
+  LSR
+  LSR
+  LSR
+  TAX
+  LDA state_49_spriteMap, X
+  STA list1+5                 ; set list1+5 to the right animation
+  LDA state_49_flipMap, X
+  STA list1+6                 ; set list1+6 to the right flip bits
+
+  LDA #4										  ; switch on controlled effects
+  STA effects									;
+  LDX #4											; explosion animation
+;  LDY #17											; explosion sound
   LDA list3+3
   CMP #2										  ; if attack is a miss
   BNE +continue
   LDX #8											; shield animation
+;  LDY #27											; shield sound
 
 +continue:
   STX list2+0
-
-  LDA #$04										; switch on controlled effects
-  STA effects									;
-
-+continue:
-  LDY #sGunFire
-  JSR soundLoad
-
-  ;LDA #$13                    ; resolve machine gun
-  ;JMP replaceState
+;  STY list1+6
 
   JSR pullAndBuildStateStack
   .db 3             ; #items
   .db $4B, 4        ; set running effect 4: gun fire
-  .db $13
+  .db $4A
+
+state_49_spriteMap:
+  .hex 2B 2E 2C 2F 2D 2F 2C 2E 2B 2E 2C 2F 2D 2F 2C
+
+state_49_flipMap:
+  .hex 00 00 00 00 00 40 40 40 00 00 00 00 40 40 40

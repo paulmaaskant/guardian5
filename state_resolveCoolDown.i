@@ -23,15 +23,13 @@ state_initializeCoolDown:
 	DEX
 
 -loop:
-	LDA #10
+	LDA #4
 	STA currentEffects+0, X
 
 	LDA currentObjectXPos
 	STA currentEffects+6, X
 
 	LDA currentObjectYPos
-	CLC
-	ADC #-14
 	STA currentEffects+12, X
 
 	DEX
@@ -104,7 +102,6 @@ state_resolveCoolDown:
 	TYA
   CLC
   ADC currentObjectYPos
-  ADC #-14
   STA currentEffects+12, X
 
 	DEX

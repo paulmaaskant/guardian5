@@ -29,7 +29,7 @@ objectType0:			; SLINGSHOT
 	.db 7						; 01 max hit points
 	.db 1						; 02 melee
 	.db 2						; 03 movement points
-	.db 0						; 04 tile BG
+	.db 0						; 04 tile BG offset
 	.db 15					; 05 defense (front)
 	.db 15					; 06 defense (side)
 	.db 0						; 07 defense (rear)
@@ -48,7 +48,7 @@ objectType1:			; UNKNOWN
 	.db 7						; 01 max hit points
 	.db 2						; 02 melee
 	.db 3						; 03 movement points
-	.db 0						; 04 tile BG
+	.db 0						; 04 tile BG offset
 	.db 15					; 05 defense (front)
 	.db 0						; 06 defense (side)
 	.db 0						; 07 defense (rear)
@@ -67,7 +67,7 @@ objectType2:			; SAI
 	.db 7						; 01 max hit points
 	.db 2						; 02 melee
 	.db 3						; 03 movement points
-	.db 0						; 04 tile BG
+	.db 0						; 04 tile BG offset
 	.db 15					; 05 defense (front)
 	.db 0						; 06 defense (side)
 	.db 0						; 07 defense (rear)
@@ -86,7 +86,7 @@ objectType3:			; DEMON
 	.db 9						; 01 max hit points
 	.db 1						; 02 melee
 	.db 3						; 03 movement points
-	.db 0						; 04 tile BG
+	.db 0						; 04 tile BG offset
 	.db 10					; 05 defense (front)
 	.db 5						; 06 defense (side)
 	.db 0						; 07 defense (rear)
@@ -99,7 +99,7 @@ objectType4:				; OBSTACLE
 	.db 3						; 01 max hit points
 	.db 0						; 02 melee
 	.db 0						; 03 movement points
-	.db 13					; 04 tile BG
+	.db 13+128			; 04 tile BG (+128 no direction map)
 	.db 0						; 05 defense (front)
 	.db 0						; 06 defense (side)
 	.db 0						; 07 defense (rear)
@@ -118,7 +118,7 @@ objectType5:			; drone: LEMUR
 	.db 4						; 01 max hit points
 	.db 0						; 02 melee
 	.db 4						; 03 movement points
-	.db 14					; 04 tile BG SHADOW
+	.db 13					; 04 tile BG offset
 	.db 0						; 05 defense (front)
 	.db 0						; 06 defense (side)
 	.db 0						; 07 defense (rear)

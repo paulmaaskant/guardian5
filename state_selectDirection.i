@@ -68,19 +68,19 @@ state_selectDirection:
 	ORA locVar1							; set new direction
 	STA object, X
 
-	LDY activeObjectGridPos
-	AND #%00000111
-	ORA #%11000000
-	STA nodeMap, Y
-
 	LDY activeObjectIndex
 	JSR getStatsAddress
 	LDY #4
 	LDA (pointer1), Y
-	BNE	+done
+	CLC
+	ADC locVar1
+	TAX
+	ORA #%11000000
 
 	LDY activeObjectGridPos
-	LDX locVar1
+	STA nodeMap, Y
+
+	LDY activeObjectGridPos
 	JSR setTile
 
 	LDY #sMechStep

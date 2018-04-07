@@ -231,4 +231,4 @@ state3D_dataType:
 state3D_listOffset:
   .db 0, 50
 state3D_weaponCategoryString:
-  .db 35, 33, 32, 34
+  .db 35, 33, 34, 32

@@ -15,35 +15,24 @@
 
 ; -----------------------------------------------
 state_resolveMachineGun:
-	LDA list1+0													; lightning effect
-	AND #$03
-	BNE +continue
-
-	LDA list1+0													; toggle every 8 frames
-	AND #$04														; between value $00 and value $10
-	ASL
-	ASL
-	JSR updatePalette
-
-+continue:
 	; ------------------------------------------------
 	; sprite updates
 	; ------------------------------------------------
 	LDA activeObjectGridPos
 	JSR gridPosToScreenPos
 
-	LDA currentObjectYPos
-	CLC
-	ADC #-10
-	STA currentObjectYPos
+	;LDA currentObjectYPos
+	;CLC
+	;ADC #-10
+	;STA currentObjectYPos
 
-	LDA #3
+	LDA #3												; loop count
 	STA list1+2
 
-	LDA #6
+	LDA #6												; bullet animation
 	STA list1+5
 
-	LDA list1+1
+	LDA list1+1										; effect count
 	STA list1+4
 	TAX														; radius
 
@@ -52,7 +41,7 @@ state_resolveMachineGun:
 	JSR getCircleCoordinates
 	TXA
 	CLC
-	LDX list1+2
+	LDX list1+2										; restore X
 	ADC currentObjectXPos
 	STA currentEffects+6, X
 	TYA
@@ -60,35 +49,32 @@ state_resolveMachineGun:
 	ADC currentObjectYPos
 	STA currentEffects+12, X
 
-	LDA list1+5												; animation #
+	LDA list1+5										; animation #
 	STA currentEffects+0, X
 
 	LDA list1+4
-	CLC
-	ADC list1+3
+	CLC														; current radius += 1/3 of total radius
+	ADC list1+3										;
 
-	CMP list1+7
-	BCC +continue
+	CMP list1+7										; this makes it more than total radius
+	BCC +continue									; subtract total radius
 	SEC
 	SBC list1+7
 
 +continue:
-	STA list1+4
-	TAX
+	STA list1+4										; set the new radius
+	TAX														; copy to X
 
-	DEC list1+2
+	DEC list1+2										; if last loop cycle
 	BNE +continue
-
-	LDX list1+7
-	LDA #5
+																; then
+	LDX list1+7										; X = full radius (target position)
+	LDA list2+0										; explosion animation
 	STA list1+5
 
 +continue:
 	LDA list1+2
 	BPL -loop
-
-
-
 
 	LDA list1+0
 	CMP #128								; runs for 128 frames

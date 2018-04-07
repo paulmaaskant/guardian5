@@ -26,3 +26,12 @@ weaponType:
   .db 0           ; 5 heat inflicted
   .db 2           ; 6 heat cost
   .db 1           ; 7 type: missiles
+
+  .db 45			    ; 0 name: surge
+  .db 2           ; 1 damage
+  .db $62					; 2 range (max|min)
+  .db 128+00      ; 3 ammo (0=infinite)
+  .db 1           ; 4 not used
+  .db 2           ; 5 heat inflicted
+  .db 2           ; 6 heat cost
+  .db 2           ; 7 type: laser
