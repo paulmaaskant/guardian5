@@ -32,7 +32,7 @@ updatePortrait:
   RTS
 
 portraitMap:
-  .hex 00 01 02 03
-  .hex 10 11 12 13
-  .hex 20 21 22 23
-  .hex 30 31 32 33
+  .hex 01 02 03
+  .hex 11 12 13
+  .hex 21 22 23
+  .hex 30 30 30 30 30 30 30

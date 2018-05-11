@@ -22,32 +22,12 @@
 ;
 ; UPDATES object				grid position on active object
 ;
-;--------------------
-
-state_initializeCharge:
-	DEC list1										; remove the final node from the path (= defending unit position)
-
-	JSR calculateAttack					; includes a call to applyActionPointCost
-
-	JSR pullAndBuildStateStack
-	.db 8								; 9 items
-	.db $3A, 1					; switch CHR bank 1 to 1
-	.db $3B 						; move animation loop
-	.db $1C							; turn to face target
-	.db $1D							; close combat animation
-	.db $3A, 0					; switch CHR bank 1 back to 0
-	.db $16							; show results
-	;.db $42							; show temp gauge change
-	; built in RTS
+;-------------------
 
 ;-------------------------------------
 ; initialize action resolution: MOVE
 ;-------------------------------------
 state_initializeMoveAction:
-	LDA #$03										; clear from list3+4
-	LDX #$09										; up to and including list3+9
-	JSR clearList3
-
 	JSR applyActionPointCost
 	JSR clearActionMenu					; clear the menu
 
@@ -56,14 +36,15 @@ state_initializeMoveAction:
 	JSR writeToActionMenu
 
 	JSR pullAndBuildStateStack
-	.db 12								; 13 items
+	.db 13								; 13 items
 	.db $45, %00111000		; blink action menu (all lines)
 	.db $31, #eRefreshStatusBar
-	.db $3A, 1						; switch CHR bank 1 to 1
+	.db $3A, $FF					; switch CHR bank 1 to bank with active unit move animation
 	.db $3B 							; init and resolve move
 	.db $3A, 0						; switch CHR bank 1 back to 0
 	.db $0B								; center camera on cursor
 	.db $0A								; set direction
+	.db $4E								; evade point animation
 	.db $16								; show results
 	; built in RTS
 
@@ -88,28 +69,27 @@ state_resolveMove:
 	LDY activeObjectIndex
 	LDX activeObjectGridPos			; block final position, move (b7) and sight (b6)
 	LDA nodeMap, X
-	AND #%00111111
-	STA object+5, Y							; store the current tile
+	;AND #%00111111
+	STA object+5, Y							; store the current node
 
 	LDA object+0, Y
 	EOR #%00001000							; object move bit (b3) OFF
 	STA object+0, Y
 
-	JSR getStatsAddress
-
+	JSR getStatsAddress					; sets pointer1
 	LDY activeObjectIndex
 	LDA object+0, Y
 	AND #%00000111							; get direction
 	CLC
 	LDY #4
 	ADC (pointer1), Y						; add tile map offset
-	TAX
+
 	ORA #%11000000							; blocked for movement and los
-	LDY activeObjectGridPos
-	STA nodeMap, Y
+	;TAX
+	;LDY activeObjectGridPos
+	;STA nodeMap, Y
 	LDY activeObjectGridPos
 	JSR setTile
-
 	JMP pullState
 
 	; ---------------
@@ -193,7 +173,7 @@ state_resolveMove:
 	LDA actionCounter
 	BIT rightNyble
 	BNE +continue
-	
+
 	LDY #sMechStep
 	JSR soundLoad
 

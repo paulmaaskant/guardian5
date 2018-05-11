@@ -48,57 +48,15 @@ state_selectAction:
 
 +continue:
 	LDA actionMessage
-	BPL +next														; if there is an action deny message
+	BEQ +continue
 	AND #$7F														; show it on line 3
 	TAY
-	BNE +writeLine											; JMP
-
-+next:
-	BEQ +next														; there is an action message
-	TAY																	;
-	LDX #13															; line 2
+	LDX #26															; line 2
 	JSR writeToActionMenu								;
-
-+next:
-	LDX selectedAction
-  LDA actionList, X
-  CMP #aCOOLDOWN
-	BEQ +restore
-	LDY #13															; "Cost"
-	LDX #26															; line 3
-	JSR writeToActionMenu
-
-	LDA #$0C
-	LDX #0
-	LDY #0
-
--loop:
-	STA actionMenuLine3+5, X
-	INX
-	INY
-	CPY list3+0
-	BCC -loop
-	LDY #0
-	LDA #$3B
-
--loop:
-	CPY list3+12
-	BCS +continue
-	STA actionMenuLine3+5, X
-	INX
-	INY
-	BNE -loop
-
-
-+restore:
-	LDY #18
-
-+writeLine:
-	LDX #26
-	JSR writeToActionMenu						;
 
 +continue:
 	JSR updateTargetMenu
+	JSR updateSystemMenu
 
 +nextStep:
 	LDA frameCounter
@@ -117,22 +75,19 @@ state_selectAction:
 	LDA objectList-1, X
 	CMP targetObjectTypeAndNumber
 	BEQ +nextObject									; no markers on the current target unit, next unit
-
-	LDY activeObjectIndex
-	CMP object+4, Y
-	BEQ +targetLockMarker						; is locked target -> show
-
 	AND #%01111000									; is shutdown?
 	TAY															; index of iterated object
+	LDA object+4, Y
+	AND #%01000000
+	BNE +targetLockMarker
+
 	LDA object+2, Y
 	BPL +nextObject									; unit not shutdown, next unit
 	LDA #14													; shut down marker anim #
 	BNE +showMarker
 
 +targetLockMarker:
-	AND #%01111000
-	TAY
-	LDA #3													; lock
+	LDA #3													; 'MARK'
 
 +showMarker:
 	STA locVar5

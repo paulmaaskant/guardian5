@@ -70,17 +70,13 @@ state_selectDirection:
 
 	LDY activeObjectIndex
 	JSR getStatsAddress
-	LDY #4
-	LDA (pointer1), Y
+	LDY #4									; index for base tile
+	LDA (pointer1), Y				; base tile
 	CLC
-	ADC locVar1
-	TAX
-	ORA #%11000000
-
-	LDY activeObjectGridPos
-	STA nodeMap, Y
-
-	LDY activeObjectGridPos
+	ADC locVar1							; + direction
+	ORA #%11000000					; + block move, block los
+													; A parameter for setTile
+	LDY activeObjectGridPos	; Y parameter for setTile
 	JSR setTile
 
 	LDY #sMechStep

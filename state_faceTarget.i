@@ -66,26 +66,18 @@ state_faceTarget:
   ORA locVar1
   STA object+0, Y
 
-  LDY activeObjectIndex
+  LDY activeObjectIndex   ; parameter for getStatsAddress
   JSR getStatsAddress
   LDY #4
-  LDA (pointer1), Y       ; tile offset
+  LDA (pointer1), Y       ; base tile
   CLC
-  ADC locVar1             ; + direction
-  TAX
-  ORA #%11000000
-
-  LDY activeObjectGridPos
-  STA nodeMap, Y
-
-  TYA
-  JSR gridPosToScreenPos
-  BCC +done
-
+  ADC locVar1             ; + facing direction
+  ORA #%11000000          ; + block move and block LOS
+                          ; A parameter for setTile
+  LDY activeObjectGridPos ; Y parameter for setTile
   JSR setTile
 
 +done:
-
   JMP pullState
 
 state29_direction:

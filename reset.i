@@ -89,7 +89,7 @@ RESET:
 	STA $0203			; x pos
 	LDA #$2E			; y pos
 	STA $0200			; y pos
-	LDA #$4F			; pattern
+	LDA #$7F			; pattern
 	STA $0201			; pattern
 	LDA #$20			; show behind background tiles
 	STA $0202			; show behind background tiles

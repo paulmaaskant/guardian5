@@ -17,11 +17,10 @@ state_initializeMissile:
   STA effects
   LDX #5											; explosion animation
   LDY #17											; explosion sound
-  LDA list3+3
-  CMP #2										  ; if attack is a miss
-  BNE +continue
-  LDX #8											; shield animation
-  LDY #27											; shield sound
+  LDA list3+4
+  BMI +continue
+  LDX #8											; miss animation
+  LDY #27											; miss sound
 
 +continue:
   STX list1+5

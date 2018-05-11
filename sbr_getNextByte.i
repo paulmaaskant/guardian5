@@ -34,12 +34,6 @@ getNextByte:
 	BEQ +setDictionaryString
 	RTS
 
-repeatBlank = $FF
-repeatChar = $FE
-setNumberValue = $FD
-setDictionaryString = $FC
-;setPortrait = $FB
-
 +repeatBlank:
 	LDA (bytePointer), Y		; number of repeats
 	STA byteStreamVar+0

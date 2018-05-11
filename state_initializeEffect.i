@@ -1,13 +1,11 @@
 state_initializeEffect:
 
-  LDA effects
-  AND #$F0
-  ORA #$06
+  LDA #6
   STA effects
-
   JSR clearCurrentEffects
   LDX #5
-  LDA #10
+  LDA #4
+
 -loop:
   STA currentEffects+0, X
   DEX

@@ -11,6 +11,14 @@ state_confirmAction:
   EOR event_updateStatusBar						;
   STA events
 
+  LDA #space
+  LDX #25
+
+-loop:
+  STA actionMenuLine2, X
+  DEX
+  BPL -loop
+
   JSR getSelectedWeaponTypeIndex
   BCS +continue
   LDA weaponType+3, Y
@@ -26,15 +34,42 @@ state_confirmAction:
   LDX #26
   JSR writeToActionMenu
 
++nextStep:
+  LDA frameCounter
+  AND #$03
+  BNE +nextStep
 
+  LDA frameCounter
+  AND #%00000100
+  BEQ +next
+  LDA list3+12               ; heat increment
+
++next:
+  JSR setSystemHeatGauge
+
+  LDA targetObjectTypeAndNumber
+  BEQ +skip
+
+  LDA frameCounter
+  AND #%00000100
+  BEQ +next
+  LDA list3+13               ; heat increment
+
++next:
+  JSR setTargetHeatGauge
+
++skip:
+  LDA events
+  ORA #eRefreshStatusBar
+  STA events
 
 +nextStep:
   LDA blockInputCounter
-  BEQ +continue																																	; if timer is still running,
-  DEC blockInputCounter																													; then dec the counter and skip input processing
+  BEQ +continue					     ; if timer is still running,
+  DEC blockInputCounter      ; then dec the counter and skip input processing
   RTS
 
-+continue:
++continue:              ; check if buttons are pressed
 	LDA buttons																																		;
 	BNE +continue					; if buttons are pressed then proceed
 
@@ -73,11 +108,10 @@ state_confirmAction:
   STA currentEffects+24
 
 +done:
-  RTS										; then skip input processing
+  RTS										   ; then skip input processing
 
-+continue:
-	LDA buttons
-  ASL                      ; A button
++continue:                 ; A contains buttons
+  ASL                      ; 'A' button
   BCC +next
   LDX selectedAction
 	LDA actionList, X
@@ -86,28 +120,27 @@ state_confirmAction:
 	LDA actionTable, Y
 	JSR replaceState
 	LDY #sConfirm
-	JSR soundLoad					   ; tail chain
-
-  LDA effects																																		; clear possible LOS block effect
-  AND #$F0																																      ; cursor and active unit marker stay on, rest turned off
+	JSR soundLoad
+  LDA effects					   	 ; clear possible LOS block / waypoints effect
+  AND #$F0							   ; cursor and active unit marker stay on, rest turned off
   STA effects
-
-  JMP +setTimer
+  LDA list3+12
+  JSR setSystemHeatGauge   ; set gauge including the heat increment
+  LDA events
+  ORA #eRefreshStatusBar   ; refresh so that the gauge is updated on the screen
+  STA events
+  JMP +setTimer            ; to prevent locking a direction after move
 
 +next:
-  ASL                      ; B button
+  ASL                      ; 'B' button -> cancel and go back to select action state
   BCC +next
-
   LDA effects																																		; clear possible LOS block effect
 	AND #$F0																																      ; cursor and active unit marker stay on, rest turned off
 	STA effects
-
   LDY #sRelease
-	JSR soundLoad					; tail chain
-
-  LDA #8						       ; --- set input timer ---
+	JSR soundLoad					   ;
+  LDA #8						       ; set input timer
 	STA blockInputCounter
-
   JSR pullAndBuildStateStack
   .db #3
   .db $31, #eUpdateStatusBar

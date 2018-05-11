@@ -23,38 +23,45 @@
 ;
 
 state_showResults:
-	LDX #0
-
--loop:
-	LDA list3+3, X				; get next op code
-	BNE +continue					; not zero >
-	INX										; otherwise try next
-	CPX #6
-	BNE -loop							; all dialogs done
+	LDX list6
+	BNE +continue
 	JMP pullState
 
 +continue:
-	TAY
-	LDA #$00							; opcode processed
-	STA list3+3, X
-	TYA
-	BPL +startDialog			; any opcode with b7=1 triggers a flash
+	DEC list6
+	LDA list6, X
+	BPL +startDialog			;
 
 	CMP #$81
 	BEQ +startGauge
 
-	JSR buildStateStack		; explosion & flash
+	CMP #$82
+	BEQ +inflictHeat
+
+	CMP #$83
+	BEQ +sustainHeatDamage
+
+	JSR buildStateStack		; opcode $80: explosion & flash
 	.db 5									; # stack items
 	.db $2C								; show effect: explosion
 	.db $0D, 2						; change brightness 2: flash out
 	.db $0D, 3						; change brightness 3: flash out
 	; built in RTS
 
-+startGauge:
-	LDA #$42
++sustainHeatDamage:
+	LDA #$4F
 	JMP pushState
 
-+startDialog:																														;
++inflictHeat:						; opcode $82: inflicted heat modifier
+	LDA #$4C
+	JMP pushState
+
++startGauge:
+	LDA #$42							; opcode $81: show gauge update
+	JMP pushState
+
++startDialog:
+	TAY																												;
 	LDA streamHi-1, Y
 	STA bytePointer+0
 	LDA streamLo-1, Y
@@ -73,23 +80,23 @@ state_showResults:
 streamHi:
 	.db #< resultTargetHit									; 1
 	.db #< resultTargetMiss									; 2
-	.db #< not_used													; 3
-	.db #< resultActionPointsRestored				; 4
+	.db #< resultTargetOffline							; 3
+	.db #< not_used													; 4
 	.db #< resultUnitDestroyed							; 5
 	.db #< resultChargeDamageSustained			; 6
 	.db #< not_used													; 7
-	.db #< resultShutdown										; 8
+	.db #< resultHeatDamageSustained				; 8
 	.db #< not_used													; 9
 	.db #< resultUnitRestart								; A
 streamLo:
 	.db #> resultTargetHit
 	.db #> resultTargetMiss
+	.db #> resultTargetOffline
 	.db #> not_used
-	.db #> resultActionPointsRestored
 	.db #> resultUnitDestroyed
 	.db #> resultChargeDamageSustained
 	.db #> not_used
-	.db #> resultShutdown
+	.db #> resultHeatDamageSustained
 	.db #> not_used
 	.db #> resultUnitRestart
 

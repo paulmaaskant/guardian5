@@ -8,12 +8,12 @@ sysObjectSprites = %00000100
 aMOVE = $00
 aRANGED1 = $01
 aRANGED2 = $02
-aCOOLDOWN = $03
+aBRACE = $03
 aCLOSECOMBAT = $04
 aCHARGE = $05
 aPIVOT = $06
 aRUN = $07
-aAIM = $08
+aMARKTARGET = $08
 
 AI_cooldown = 0
 AI_move_defensive = 1
@@ -56,11 +56,27 @@ waitForA = $F3
 endOfStream = $F4
 setPortrait = $F5
 
-dict = $FC
-parameter = $FD
+
 
 comma = $0E
 space = $0F
 dash = $0B
 
 enemy = #41
+
+; get next byte OP codes
+repeatBlank = $FF
+repeatChar = $FE
+setNumberValue = $FD
+setDictionaryString = $FC
+dict = $FC
+parameter = $FD
+
+
+; missionEvents
+
+mEventOpenDialog = 0
+mConditionRound = 1
+mConditionOnlyFriendlies = 2
+mConditionOnlyHostiles = 3
+mEventEndMission = 4

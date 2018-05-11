@@ -13,10 +13,13 @@ state_ai_determineAttackPosition:
   JSR secondPass
   JSR evaluateNodes
   BCC +pathFound
-                                ; if no path is found, simply face the target
-  LDA #1                       ; set action point cost directly (1)
+                              ; if no path is found, simply face the target
+  LDA #1                      ; set action point cost directly (1)
   STA list3+0
   JSR applyActionPointCost
+
+  LDA #0                      ; initilize results
+  STA list6
 
   JSR pullAndBuildStateStack
   .db $02							        ; 2 states
@@ -27,11 +30,10 @@ state_ai_determineAttackPosition:
   LDA par1
   STA cursorGridPos           ; put the cursor on the destination node
 
-  LDA #3										; clear from list3+4
-	LDX #9										; up to and including list3+9
-	JSR clearList3
+  LDA #0                      ; initilize results
+  STA list6
 
-  LDA #1                     ; MOVE costs 1 point
+  LDA #1                      ; MOVE costs 1 point
   STA list3+0
   LDA activeObjectStats+2			; movement stat
   CMP list1									  ; compare to used number of moves (list1)
@@ -40,13 +42,15 @@ state_ai_determineAttackPosition:
 
 +continue:
   JSR applyActionPointCost
+  JSR setEvadePoints
   JSR pullAndBuildStateStack
-	.db 8							            ; 4 items
+	.db 9						            ; 4 items
 	.db $3A, 1						        ; switch CHR bank 1 to 1
   .db $0B								        ; center camera on cursor
 	.db $3B 							        ; init and resolve move
 	.db $3A, 0						        ; switch CHR bank 1 back to 0
 	.db $1C							          ; face target
+  .db $4E                       ; evade points marker
 	.db $16							          ; show results
 	; built in RTS
 
@@ -59,7 +63,7 @@ firstPass:
   LDX #0
   STX list6									       ;
   STX actionList+0                 ; reset eligble node count
-  LDA activeObjectStats+2          ;
+  LDA activeObjectStats+2          ; move
 
   LDY activeObjectStats+9          ; check remaining AP
   CPY #2                           ; to see how far unit can move
@@ -186,8 +190,10 @@ evaluateNodes:
   STX par1                                                                      ; set destination node
   LDA activeObjectGridPos
   JSR distance
-  STA distanceToTarget                                                          ; update dtt
-  LDA activeObjectStats+2
+  STA distanceToTarget             ; update d-t-t
+  LDA activeObjectStats+2          ; move type | move points
+  STA par3
+  AND #$0F                         ; 0000 | move points
 
   LDY activeObjectStats+9
   CPY #2

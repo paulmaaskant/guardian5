@@ -38,16 +38,17 @@ state_initializeLaser:
   LDA #4										  ; switch on controlled effects
   STA effects									;
   LDX #4											; explosion animation
-;  LDY #17											; explosion sound
-  LDA list3+3
-  CMP #2										  ; if attack is a miss
-  BNE +continue
+; LDY #17										  ; explosion sound
+
+  LDA list3+4
+  BMI +continue
+
   LDX #8											; shield animation
-;  LDY #27											; shield sound
+; LDY #27										  ; shield sound
 
 +continue:
   STX list2+0
-;  STY list1+6
+; STY list1+6
 
   JSR pullAndBuildStateStack
   .db 3             ; #items

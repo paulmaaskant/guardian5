@@ -1,26 +1,17 @@
 ; state $34
-; checks for start of turn events
-; needs to be refactored
-;
-;
+; checks for mission events
+
 state_startTurn:
   LDA activeObjectIndexAndPilot
   JSR updateSystemMenu
 
-
-  LDA dialog
-  BNE +done
-  INC dialog
+  LDY activeObjectIndex
+  LDA object+4, Y
+  AND #%01111000                     ; remove BRACE effect, remove all EVADE points
+  STA object+4, Y
 
   JSR pullAndBuildStateStack
-	.db 9
-	.db $20, 0					              ; load menu BG 0: dialog
-	.db $01, 10					              ; load stream 10: start level 1
-	.db $30							              ; restore active unit portrait
-	.db $20, 1					              ; load menu BG 1: hud
-	.db $31, #eUpdateTarget           ; raise event
-
-+done:
-  JSR pullAndBuildStateStack
-  .db 2
-  .db $31, #eUpdateTarget            ; raise event
+  .db 3
+  .db $4D                            ; check mission events
+  .db $31, eUpdateTarget             ; raise event update target
+                                     ; RTS built in

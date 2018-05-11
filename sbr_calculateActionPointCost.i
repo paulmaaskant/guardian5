@@ -1,7 +1,6 @@
-;
+; ----------------------------------------
 ; calculates ap cost and heat cost
-;
-
+; ----------------------------------------
 calculateActionPointCost:
   BIT actionMessage
 	BPL +continue
@@ -17,15 +16,12 @@ calculateActionPointCost:
   LDA heatCostTable, X            ; heat cost
 
 +next:
-  CPX #aCOOLDOWN
-  BEQ +restore
   STA list3+12                    ; store heat cost
   LDA actionPointCostTable, X     ; load action point cost
-  STA list3+0
-  RTS
+  CPX #aBRACE
+  BNE +store
+  LDA activeObjectStats+9         ; BRACE ap cost = remaining points
 
-+restore:
-  LDA activeObjectStats+9
-	STA list3+0									    ; AP cost = all remaining action points
-  STA list3+12
++store:
+  STA list3+0
   RTS

@@ -23,10 +23,9 @@ state_initializeMachineGun:
   STA list1+3									;
 
   LDX #5											; explosion animation
-  LDA list3+3
-  CMP #2										  ; if attack is a miss
-  BNE +continue
-  LDX #8											; shield animation
+  LDA list3+4
+  BMI +continue
+  LDX #8											; miss animation
 
 +continue:
   STX list2+0

@@ -7,7 +7,6 @@ state_ai_determineAction:
   ;
   ; 1 select the most attractive player controlled target
   ;
-  ;
   ; 2 determine available options
   ; - ranged attack 1 on target
   ; - ranged attack 2 on target
@@ -130,14 +129,14 @@ state29_nextState:
   .db $44             ; AI_aim
 
 state29_actionID:
-  .db aCOOLDOWN       ; AI_cooldown
+  .db aBRACE          ; AI_cooldown
   .db aMOVE           ; AI_move_defensive
   .db aMOVE           ; AI_move_offensive
   .db aRANGED1        ; AI_ranged_attack_1
   .db aRANGED2        ; AI_ranged_attack_2
   .db aCLOSECOMBAT    ; AI_close_combat
   .db aCHARGE         ; AI_charge
-  .db aAIM            ; AI_aim
+  .db aMARKTARGET     ; AI_aim
 
 state29_baslineLineScore:
   .db $01             ; AI_cooldown

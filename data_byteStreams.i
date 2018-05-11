@@ -5,13 +5,13 @@ statusBar:
 	.db repeatBlank, 36 	; 2 rows + 3 blank tiles
 	.db $2B, repeatBlank, 2, $2A
 	.db $2B, repeatBlank, 13, $2A
-	.db $0F, $0F
-	.db $2B, repeatBlank, 3, $2A
-	.db repeatBlank, 70
+	.db repeatBlank, 4
+	.db $2B, repeatBlank, 2, $2A
+	.db repeatBlank, 69
 	.db $2D, repeatBlank, 2, $2C
-	.db repeatBlank, 17
-	.db $2D, repeatBlank, 3, $2C
-	.db repeatBlank, 9, $0A, $2D, repeatBlank, 13, $2C, repeatBlank, 9
+	.db repeatBlank, 19
+	.db $2D, repeatBlank, 2, $2C
+	.db repeatBlank, 8, $0A, $2D, repeatBlank, 13, $2C, repeatBlank, 9
 
 	; keep first 6 rows separate
 
@@ -27,8 +27,8 @@ statusBar:
 	.db L, K, S
 	.db space
 	.db $40
-	.db repeatBlank, 3
 	.db $41
+	.db repeatBlank, 3
 	.db repeatBlank, 23+4
 	.db $2D, repeatBlank, 3, $2C
 	.db repeatBlank, 1+32+1+25 ;
@@ -41,10 +41,10 @@ statusBar:
 
 hudDialog:
 	.db repeatBlank, 33, $2B
-	.db repeatBlank, 22, $2A, $2B, repeatBlank, 3, $2A, repeatBlank, 91
-	.db $2D, repeatBlank, 3, $2C
-	.db repeatBlank, 3
-	.db $2D, repeatBlank, 5, $0A, repeatBlank, 16, $2C, repeatBlank, 07
+	.db repeatBlank, 24, $2A, $2B, repeatBlank, 2, $2A, repeatBlank, 92
+	.db $2D, repeatBlank, 2, $2C
+	.db repeatBlank, 2
+	.db $2D, repeatBlank, 5, $0A, repeatBlank, 18, $2C, repeatBlank, 5
 
 hudMenu:		; last
 	.db repeatBlank, 27
@@ -116,10 +116,10 @@ animationScreen:
 	.db repeatChar, $40, $AA	; 2 rows, palette 0
 
 briefScreen:
-	.db repeatBlank, $97																																	; 7 rows and 23 tiles
-	.db $2B, repeatBlank, $04, $2A 																												; 0 rows and 6 tiles
-	.db repeatBlank, $7A																																	; 3 rows and 26 tiles
-	.db $2D, repeatBlank, $04, $2C 																												; 0 rows and 6 tiles
+	.db repeatBlank, $B9																																	; 7 rows and 23 tiles
+	.db $2B, repeatBlank, $02, $2A 																												; 0 rows and 6 tiles
+	.db repeatBlank, $5C																																	; 3 rows and 26 tiles
+	.db $2D, repeatBlank, $02, $2C 																												; 0 rows and 6 tiles
 	.db repeatBlank, $06, $2B, repeatBlank, $18, $2A
 	.db repeatBlank, $E6			;
 	.db repeatBlank, $00			; 8 rows
@@ -172,80 +172,6 @@ storyStream:
 	.db endOfStream
 
 instructionStream:
-	.db P, R, E, S, S, space, S, T, A, R, T, space, T, O , space, R, E, T, U, R, N, lineBreak
-	.db T, O, space, T, H, E, space, M, A, I, N, space, M, E, N, U, lineBreak
-	.db lineBreak
-	.db P, R, E, S, S, space, A, space,  T, O , space, C, O, N, T, I , N, U, E, waitForA
-	.db nextPage
-
-	.db I, N, space, T, H, I, S, space, T, U, R, N, dash, B, A, S, E, D, lineBreak
-	.db S, T, R, A, T, E, G, Y, space, G, A, M, E, space, Y, O, U, lineBreak
-	.db C, O, N, T, R, O, L, space, A, space, S, Q, U, A, D, space, O, F, lineBreak
-	.db W, A, L, K, I, N, G, space, T, A, N, K, S, waitForA
-	.db nextPage
-
-	.db Y, O, U, space, P, R, O, G, R, E, S, S, space, T, H, R, O, U, G, H, lineBreak
-	.db T, H, E, space, G, A, M, E, space, B, Y, space, C, O, M , P, L, E, T, I, N, G, lineBreak
-	.db A, space, S, E, R, I, E, S, space, O, F, space, M, I, S, S, I, O, N, S, waitForA
-	.db nextPage
-
-	.db D, U, R, I, N, G, space, A, space, M, I, S, S, I, O, N, comma, lineBreak
-	.db U, N, I, T, S, space, T, A, K, E, space, T, U, R, N, S, lineBreak
-	.db P, E, R, F, O, R, M, I, N, G, space, A, C, T, I, O, N, S, lineBreak
-	.db U, N, T, I, L, space, T, H, E, space, M, I, S, S, I, O, N, lineBreak
-	.db C, O, M, P, L, E, T, E, S, space, O, R, space, F, A, I, L, S, waitForA
-	.db nextPage
-
-	.db W, H, E, N, space, A, space, U, N, I, T, space, H, A, S, space, T, H, E, space, T, U, R, N, lineBreak
-	.db I, T, space, M, U, S, T, space, S, E, L, E, C, T, space, A, N, space, A, C, T, I, O, N, lineBreak
-	.db lineBreak
-	.db T, H, E, space, A, V, A, I, L, A, B, L, E, space, A, C, T, I, O, N, S, lineBreak
-	.db D, E, P, E, N, D, space, O, N, space, T, H, E, space, P, O, S, I, T, I, O, N, lineBreak
-	.db O, F, space, T, H, E, space, C, U, R, S, O, R, waitForA
-	.db nextPage
-
-	.db C, O, N, T, R, O, L, S, space, F, O, R, lineBreak
-	.db S, E, L, E, C, T, I, N, G, space, A, N, space, A, C, T, I, O, N, lineBreak
-	.db lineBreak
-	.db D, space, dash, space, M, O, V, E, space, C, U, R, S, O, R, lineBreak
-	.db B, space, dash, space, T, O, G, G, L, E, space, A, C, T, I, O, N, lineBreak
-	.db A, space, dash, space, X, 1, space, L, O, C, K, space, A, C, T, I, O, N, lineBreak
-	.db space, space, space, space, X, 2, space, C, O, N, F, I, R, M, space, A, C, T, I, O, N, waitForA
-	.db nextPage
-
-	.db S, O, M, E, space, A, C, T, I, O, N, S, space, R, E, Q, U, I, R, E, lineBreak
-	.db Y, O, U, space, T, O, space, C, H, O, O, S, E, space, T, H, E, lineBreak
-	.db D, I, R, E, C, T, I, O, N, space, T, H, A, T, space, T, H, E, lineBreak
-	.db T, A, N, K, space, I, S, space, F, A, C, I, N, G, waitForA
-	.db nextPage
-
-	.db C, O, N, T, R, O, L, S, space, F, O, R, lineBreak
-	.db C, H, O, O, S, I, N, G, space, A, space, D, I, R, E, C, T, I, O, N, lineBreak
-	.db lineBreak
-	.db D, space, dash, space, C, H, A, N, G, E, space, D, I, R, E, C, T, I, O, N, lineBreak
-	.db A, space, dash, space, C, O, N, F, I, R, M, space, D, I, R, E, C, T, I, O, N, lineBreak
-	.db B, space, dash, space, H, O, L, D, space, T, O, space, S, C, R, O, L, L, waitForA
-	.db nextPage
-
-	.db E, X, C, E, P, T, space, F, O, R, space, dash, C, O, O, L, D, O, W, N, dash, comma, lineBreak
-	.db E, V, E, R, Y, space, A, C, T, I, O, N, space, C, O, S, T, S, space, A, lineBreak
-	.db N, U, M, B, E, R, space, O, F, space, A, C, T, I, O, N, space, P, O, I, N, T, S, lineBreak
-	.db lineBreak
-	.db T, H, E, space, dash, C, O, O, L, D, O, W, N, dash, space, A, C, T, I, O, N, lineBreak
-	.db R, E, S, T, O, R, E, S, space, A, C, T, I, O, N, space, P, O, I, N, T, S, waitForA
-	.db nextPage
-
-	.db W, H, E, N, space, A, space, T, A, N, K, space, R, U, N, S, space, O, U, T, space, O, F, lineBreak
-	.db A, C, T, I, O, N, space, P, O, I, N, T, S, comma, space, I, T, space, S, H, U, T, S, lineBreak
-	.db D, O, W, N, space, A, U, T, O, M, A, T, I, C, A, L, L, Y, comma, lineBreak
-	.db lineBreak
-	.db L, E, A, V, I, N, G, space, I, T, space, V, U, L, N, E, R, A, B, L, E, lineBreak
-	.db T, O, space, A, T, T, A, C, K, S, waitForA
-	.db nextPage
-
-	.db H, A, V, E, space, F, U, N, space, P, L ,A, Y, I, N, G
-	.db waitForA
-	.db endOfStream
 
 brief1Stream:
 	.db setPortrait, 0
@@ -291,7 +217,18 @@ brief3Stream:
 	.db T, H, A, N, K, S, space, F, O, R, space, P, L, A, Y, I, N, G, waitForA
 	.db endOfStream
 
-hudConversation02:
+
+hud_activityDetected:
+	.db H, O, S, T, I, L, E, space, A, C, T, I, V, I, T, Y, lineBreak, D, E, T, E, C, T, E, D, waitForA
+	.db nextPage
+	.db I, space, A, M, space, E, N, G, A, G, I, N, G, space, N, O, W, waitForA
+	.db endOfStream
+
+hud_staySharp:
+	.db S, T, A, Y, space, S, H, A, R, P, waitForA
+	.db endOfStream
+
+hud_allHostilesDestroyed:
 	.db A, L, L, space, H, O, S, T, I, L, E, S, space, H, A, V, E, space, B, E, E, N, lineBreak
 	.db D, E, S, T, R, O, Y, E, D, waitForA
 	.db nextPage
@@ -301,19 +238,13 @@ hudConversation02:
 	.db R, E, P, O, R, T, space, B, A, C, K, space, T, O, space, B, A, S, E, waitForA
 	.db endOfStream
 
-failedStream:
+hud_missionFailed:
 	.db M, I, S, S, I, O, N, lineBreak
 	.db F, A, I, L, E, D, waitForA
 	.db endOfStream
 
 pausedStream:
 	.db G, A, M, E, space, P, A, U, S, E, D, waitForA
-	.db endOfStream
-
-hudConversation01:
-	.db H, O, S, T, I, L, E, space, A, C, T, I, V, I, T, Y, lineBreak, D, E, T, E, C, T, E, D, waitForA
-	.db nextPage
-	.db I, space, A, M, space, E, N, G, A, G, I, N, G, space, N, O, W, waitForA
 	.db endOfStream
 
 resultTargetHit:
@@ -331,8 +262,8 @@ resultTargetMiss:
 	.db $FC, $0F																																	; [DAMAGE]
 	.db $F1																																				; next line
 	.db $18, $1D, $15, $1B, $18, $12, $23, $14, $13																; INFLICTED
-	.db $F3																																				; A button
-	.db $F4																																				; end
+	.db waitForA
+	.db endOfStream
 
 resultActionPointsRestored:
 	.db $F2																																				; clear dialog
@@ -340,42 +271,38 @@ resultActionPointsRestored:
 	.db	$FC, $10																																	; [ACTION PTS]
 	.db $F1																																				; next line
 	.db $21, $14, $22, $23, $1E, $21, $14, $13																		; RESTORED
-	.db $F3																																				; A button
-	.db $F4																																				; done
-
-resultUnitDestroyed:
-	.db $F2																																				; clear dialog
-	.db $24, $1D, $18, $23																												; UNIT
-	.db $F1																																				; next line
-	.db $13, $14, $22, $23, $21, $1E, $28, $14, $13																; DESTROYED
-	.db $F3																																				; A button
-	.db $F4
-
-resultChargeDamageSustained:
-	.db $F2																																				; clear dialog
-	.db $FD, 21																																		; X (list3+21)
-	.db $0F, $FC, 15																															; [DAMAGE]
-	.db $F1																																				; next line
-	.db $22, $24, $22, $23, $10, $18, $1D, $14, $13																; SUSTAINED
-	.db $F3																																				; A button
-	.db $F4
-
-resultHeatSinksSaturated:
-	.db nextPage
-	.db parameter, 0, space, dict, 16, lineBreak																	; 16 =  action pts
-	.db S, P, E, N, T, waitForA
+	.db waitForA
 	.db endOfStream
 
-resultShutdown:
+resultUnitDestroyed:
 	.db nextPage
-	.db H, E, A, T, space, C, R, I, T, I, C, A, L, lineBreak
-	.db U, N, I, T, space, S, H, U, T, T, I, N, G, lineBreak																																			;
-	.db D, O, W, N, waitForA
+	.db dict, 14, lineBreak																												; [ 14 = TARGET]
+	.db D, E, S, T, R, O, Y, E, D, waitForA
+	.db endOfStream
+
+resultChargeDamageSustained:
+	.db nextPage
+	.db parameter, 21, space, dict, 15, lineBreak																	; [15 = DAMAGE]
+	.db S, U, S, T, A, I, N, E, D, waitForA
+	.db endOfStream
+
+resultHeatDamageSustained:
+	.db nextPage
+	.db T, E, M, P, E, R, A, T, U, R, E, lineBreak
+	.db C, R, I, T, I, C, A, L, waitForA
+	.db nextPage
+	.db S, U, S, T, A, I, N, E, D, lineBreak
+	.db parameter, 16, space, H, E, A, T, space, dict, 15, waitForA
 	.db endOfStream
 
 resultUnitOffline:
 	.db nextPage
 	.db U, N, I, T, space, O, F, F, L, I, N, E, waitForA
+	.db endOfStream
+
+resultTargetOffline:
+	.db nextPage
+	.db dict, 14, lineBreak, O, F, F, L, I, N, E, waitForA								; [ 14 = TARGET]
 	.db endOfStream
 
 resultUnitRestart:

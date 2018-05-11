@@ -8,13 +8,20 @@ writeStatusBarToBuffer:
 	TXS
 
 	; --- line 1 tile 0 to 5 ---
-	LDX #$05
+	LDX #$02
 
 -loop:
 	LDA targetMenuLine1, X
 	PHA
 	DEX
 	BPL -loop
+
+	LDA #space
+	PHA
+	LDA targetMenuImage+1
+	PHA
+	LDA targetMenuImage+0
+	PHA
 
 	; --- line 1 tile 6 and 7 ---
 	LDA #$0F			; separator blank space
@@ -51,27 +58,41 @@ writeStatusBarToBuffer:
 	LDA #space
 	PHA
 
-	LDA systemMenuLine1+0
+	LDX #2
+
+-loop:
+	LDA systemMenuLine3, X
 	PHA
+	DEX
+	BPL -loop
 
-
-	LDA #$47
+	LDA #$45
 	PHA
 	LDA #$24
 	PHA
-	LDA #48							; 29 * 2 = 58
+	LDA #52							; 26 * 2
 	PHA
 
 	; --- line 2 ---
-	LDX #$05
+	LDX #$02
 
 -loop:
 	LDA targetMenuLine2, X
 	PHA
 	DEX
 	BPL -loop
-	LDX #$0C
 
+	LDA #space
+	PHA
+	LDA targetMenuImage+3
+	PHA
+	LDA targetMenuImage+2
+	PHA
+
+
+
+
+	LDX #$0C
 	LDA #$0F			; separator blank space
 	PHA					; twice
 	PHA
@@ -98,18 +119,32 @@ writeStatusBarToBuffer:
 	PHA
 	PHA
 
-	LDA systemMenuLine1+1
+
+	LDX #2
+
+-loop:
+	LDA systemMenuLine1, X
 	PHA
+	DEX
+	BPL -loop
 
-
-	LDA #$67
+	LDA #$65
 	PHA
 	LDA #$24
 	PHA
-	LDA #48								; 29 * 2 = 58
+	LDA #52								; 26 * 2
 	PHA
 
 	; --- line 3 ---
+
+	LDA targetMenuImage+5
+	PHA
+	LDA targetMenuImage+4
+	PHA
+	LDA #$2C
+	PHA
+
+
 	LDX #$0C
 	LDA #$0F			; separator blank space
 	PHA					;
@@ -131,53 +166,58 @@ LDA menuFlags
 	BPL -loop2
 +done:
 
-	LDA #$0F			; separator blank space
+	LDA #space			; separator blank space
 	PHA					; twice
 	PHA
 
-	LDA systemMenuLine1+2
-	PHA
+	LDX #2
 
-	LDA #$87
+-loop:
+	LDA systemMenuLine2, X
+	PHA
+	DEX
+	BPL -loop
+
+	LDA #$85
 	PHA
 	LDA #$24
 	PHA
-	LDA #34							; 17 * 2
+	LDA #44							; 22 * 2
 	PHA
 
 
 
-	LDA systemMenuLine3+2
-	PHA
-	LDA systemMenuLine3+1
-	PHA
-	LDA systemMenuLine3+0
-	PHA
-	LDA #$A3
-	PHA
-	LDA #$24
-	PHA
-	LDA #$06								;
-	PHA
+	;LDA systemMenuLine3+2
+	;PHA
+	;LDA systemMenuLine3+1
+	;PHA
+	;LDA systemMenuLine3+0
+	;PHA
+	;LDA #$A3
+	;PHA
+	;LDA #$24
+	;PHA
+	;LDA #$06								;
+	;PHA
 
-	LDA systemMenuLine2+0
-	PHA
-	LDA systemMenuLine2+1
-	PHA
-	LDA systemMenuLine2+2
-	PHA
-	LDA #$41
-	PHA
-	LDA #$24
-	PHA
-	LDA #$07								;
-	PHA
+	;LDA systemMenuLine2+0
+	;PHA
+	;LDA systemMenuLine2+1
+	;PHA
+	;LDA systemMenuLine2+2
+	;PHA
+	;LDA #$41
+	;PHA
+	;LDA #$24
+	;PHA
+	;LDA #$07								;
+	;PHA
 
 
 	LDX #$05
 
 -loop:
-	LDA targetMenuLine3, X
+	LDA targetMenuLine3, X									; target name
 	PHA
 	DEX
 	BPL -loop

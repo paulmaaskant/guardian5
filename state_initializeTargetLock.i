@@ -1,12 +1,9 @@
 state_initializeTargetLock:
-  LDA #$03						; clear from list3+4
-  LDX #$09						; up to and including list3+9
-  JSR clearList3
-
   JSR applyActionPointCost
 
-  LDY activeObjectIndex
-  LDA targetObjectTypeAndNumber
+  LDY targetObjectIndex
+  LDA object+4, Y
+  ORA #%01000000
   STA object+4, Y
 
   LDA #0
@@ -33,7 +30,6 @@ state_initializeTargetLock:
   STA currentEffects+12, X
   DEX
   BPL -loop
-
   JMP pullState
 
 +done:

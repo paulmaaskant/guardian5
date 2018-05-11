@@ -52,6 +52,7 @@ state_updateOverview:
 -loop:
   LDY state3D_attribute_index, X
   LDA (pointer1), Y
+  AND state3D_attribute_mask, X
   JSR toBCD
   LDA par2
   LDY state3D_attribute_list_pos_tens, X
@@ -72,7 +73,7 @@ state_updateOverview:
   ; object stats
   ;------------------------------------------------------
 
-  LDY list8+253          ; CURRENT STATS
+  LDY list8+253                  ; CURRENT STATS
 
   LDA object+1, Y
   LSR
@@ -88,7 +89,7 @@ state_updateOverview:
 
 -loop:
   LDA object+7, Y
-  AND #$0F                        ; weapon 1 ammo
+  AND #$0F                        ; weapon 1 ammo remaining
   JSR toBCD
   LDA par2
   STA list8+71, X
@@ -188,7 +189,7 @@ state_updateOverview:
 
 -loop:
   LDY state3D_listOffset, X
-  LDA list8+74, Y
+  LDA list8+73, Y
   BNE +continue
   LDA #dash
   STA list8+71, Y
@@ -208,13 +209,17 @@ state_updateOverview:
   .db $48         ; show current tab
 
 state3D_attribute_index:
-  .db 2, 3, 5, 6, 7
+  .db   2,  3,  5,  6,  7
+state3D_attribute_mask:
+  .db 255,127,255,255,255
 state3D_attribute_list_pos_tens:
-  .db 32, 31, 33, 34, 35
+  .db  32, 31, 33, 34, 35
 state3D_attribute_list_pos_ones:
-  .db 42, 41, 43, 44, 45
+  .db  42, 41, 43, 44, 45
+
 state3D_animationType:
-  .db 29, 33, 32, 34
+  .db  29, 33, 32, 34
+
 
 state3D_weaponAttributeIndex:
   .db   1,  2,  2,  5,  6,  0,  7,  3
@@ -223,9 +228,9 @@ state3D_mask
 state3D_numberOfShifts:
   .db   0,  0,  4,  0,  0,  0,  0,  0
 state3D_weaponAttributeListPosTens:
-  .db  70, 76, 78, 82, 82, 83, 92, 74
+  .db  70, 76, 78, 82, 82, 83, 92, 71
 state3D_weaponAttributeListPosOnes:
-  .db  72, 77, 79, 80, 81, 83, 92, 74
+  .db  72, 77, 79, 80, 81, 83, 92, 73
 state3D_dataType:
   .db   0,  0,  0,  0,  0,128,128,128
 state3D_listOffset:

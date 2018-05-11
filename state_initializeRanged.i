@@ -6,8 +6,8 @@ state_initializeRanged:
 	JSR clearCurrentEffects			; clear remaining effects
 	JSR clearActionMenu					; clear the menu
 
-	LDX #$00										; position 0
-	LDY #$06										; "opening fire"
+	LDX #15										; position 0
+	LDY #6										; "attacking"
 	JSR writeToActionMenu
 
 	JSR getSelectedWeaponTypeIndex

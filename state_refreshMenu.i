@@ -81,8 +81,7 @@ state_refreshMenu:
 
   header:
     .db 10,  9, $2B, $27, 20        ; pilot name
-    .db  5, 14, $4B, $27, 10        ; skill
-    ;.db  5, 54, $41, $27, 10
+    .db  5, 14, $4B, $27, 10        ; accuracy
     .db 0
 
   layout0:
@@ -108,12 +107,12 @@ state_refreshMenu:
     .db 1, 127, $55, $24, 2          ; min range
     .db 2, 129, $34, $24, 4          ; max range
     .db 2, 131, $3D, $24, 5          ; heat x2
-    .db 19, 151, $A7, $27, 38         ; weapon name
+    .db 19, 151, $A7, $27, 38        ; weapon name
     .db 0
 
 labels0:
     ;.db 128+3, H, C, M, $07, $24, 6
-    .db 128+16,$8F,space,space,$0A,R,F,D,space,space,$3F,space,space,$0A,P,T,H, $27, $24, 32
+    .db 128+16,$8F,space,space,$0A,R,F,D,space,space,space,space,space,$0A,P,T,H, $27, $24, 32
     .db 128+16,$8F,space,space,$0A,I,S,D,space,space,$3E,space,space,$0A,V,O,M, $47, $24, 32
     .db 128+16,$8F,space,space,$0A,R,R,D,space,space,$3D,space,space,$0A,L,E,M, $67, $24, 32
     .db 0

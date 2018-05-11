@@ -19,27 +19,27 @@ levelOne:
 	.db 7, 11
 	.hex 1C 2B 1D 2C 3B 2D 3C
 
-	.db 41, 128 ; impassable
+	.db 41, 128+32 ; (b7) impassable (b5) BG is fixed
 	.hex 32 33 34 35 36 46 56 57 58 48 38 28 08
 	.hex 92 93 94 95 96 86 87 88
 	.hex 5A 5B 6A 6B 6C 6D 6E 6F 7A 7B 7C 7D 7E 7F 8A 8B 9A 9B AA AB
 
-	.db 7, 128+64 ; impassable + los blocked
+	.db 7, 128+64 ; (b7) impassable + (b6) los blocked
 	.hex 30 40 50 60 70 80 90
 
 	.db 0
 
-	.db	8			; number of objects
+	.db	6			; number of objects
 
-	.db $04			; player pilot 4
-	.db $03			; object grid position
-	.db $04			; object type & facing RD
-	.db $30			; object wpns
+	;.db $04			; player pilot 4
+	;.db $03			; object grid position
+	;.db $04			; object type & facing RD
+	;.db $31			; object wpns
 
-	.db $01			; player pilot 2
+	.db $04			; player pilot 2
 	.db $05			; object grid position
 	.db $24			; object type 1 & facing RD
-	.db $31			; object wpns
+	.db $30			; object wpns
 
 	.db $00			; object object building
 	.db $25			; object grid position
@@ -53,7 +53,12 @@ levelOne:
 	.db $C7			; object grid position
 	.db $41			; object type & facing RD
 
-	.db $84			; enemy pilot 4 (drone)
+	.db $80			; enemy pilot 0 (cruella)
+	.db $18			; object grid position
+	.db $35			; object type 1 & facing RD
+	.db $10			; object wpns
+
+	.db $01			; enemy pilot 4 (drone)
 	.db $E4			; object grid position
 	.db $55			; object type 1 & facing RD
 	.db $20			; object wpns
@@ -63,7 +68,38 @@ levelOne:
 	.db $54			; object type 1 & facing RD
 	.db $20			; object wpns
 
-	.db $80			; enemy pilot 0 (cruella)
-	.db $D7			; object grid position
-	.db $35			; object type 1 & facing RD
-	.db $10			; object wpns
+
+
+
+missionOneEventStream:
+; --------------
+; byte 1			; mission event header
+;							; - no more events (b7)
+;							; - start turn event / end turn event
+;					  	; - number of bytes to the next mission event
+
+; byte 2			; mission event type
+							; - dialog, inbound wave, wave arrival, mission accomplished, mission failed
+; byte 3			; mission event type parameter
+
+; byte 4+2n		; condition type
+							; - mission round # equal or greater (check)
+							; - grid node occupied by friendly
+							; - specific pilot death
+							; - all friendlies dead
+							; - all enemies dead
+							; - no more waves
+
+; byte 5+2n		; condition parameter
+							; - missionRound #
+							; - grid node
+							; - pilot ID
+
+.db 2, mEventOpenDialog, 10 												 	; event 1
+.db 4, mConditionRound, 2,  mEventOpenDialog, 13		 	; event 2
+.db 3, mConditionOnlyHostiles, mEventOpenDialog, 12 	; event 5
+.db 3, mConditionOnlyHostiles, mEventEndMission, 2 		; event 6
+.db 3, mConditionOnlyFriendlies, mEventOpenDialog, 9 	; event 3
+.db 3, mConditionOnlyFriendlies, mEventEndMission, 2 	; event 4
+
+.db 0																								 	; end of stream

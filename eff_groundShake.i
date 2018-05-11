@@ -1,14 +1,15 @@
 eff_groundShake:
   LDA frameCounter
-  LSR
+;  LSR
+
+  AND #%00000011
+  CMP #2
+  BNE +continue
 
   LDA cameraY+1
-  BCC +continue
-  SBC #4
+  EOR #%00000010
   STA cameraY+1
-  RTS
+  STA cameraYDest+1
 
-+continue
-  ADC #4
-  STA cameraY+1
++continue:
   RTS

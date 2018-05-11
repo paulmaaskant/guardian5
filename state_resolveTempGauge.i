@@ -7,11 +7,11 @@ state_resolveTempGauge:
 
 +wait:
   DEC blockInputCounter
-  BIT bit2to0               ; once every 8 frames
+  BIT bit1to0               ; once every 8 frames
   BNE +done
 
 
-  AND #%00001000
+  AND #%00000100
   BEQ +oldGauge
   JSR updateSystemMenu
 

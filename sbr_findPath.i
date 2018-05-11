@@ -10,11 +10,13 @@
 ; LOCAL			X, Y
 ; LOCAL 		list3 "open nodes" stack
 ; LOCAL 		list4 "open node scores" (b7-b4) actual cost: start->node, (b3-b0) estimate cost: start->node->destination
-; LOCAL			nodeMap (b3-0 only) = b3 closed flag, b2-0 direction
+; LOCAL			nodeMap (b3-0 only)
+; LOCAL 		list 8 (node map copy) b7 blocked, b3 closed flag, b2-0 direction
 ; LOCAL     list1 = directions from current node's neighbours back to current node
 ; LOCAL     list2 = current node's neighbours
 ; OUT				list1 = path nodes
 ; OUT   		list2 = directions to connect nodes
+
 ; OUT				actionMessage = reason failed
 ;------------------------------------
 
@@ -56,8 +58,6 @@ oppositeDirection:
 	LDA oppositeDirection-1, Y		; determine opposite direction
 	STA list2, X									; and store in list 2 (used for animation)
 	TYA
-
-;+continue:
 	DEX
 	BEQ +done										; Y holds node
 	TAY
@@ -93,14 +93,23 @@ findPath:
 	LDA par2										; if moves available
 	CMP distanceToTarget				; is less than Manhattan distance
 	BCC -outOfRange							; we are done
-	LDX #$00										;
+	LDX #0											;
 
 -loop:
-	LDA nodeMap, x
-	AND #%10000000
-	STA list8, x
+	LDA nodeMap, x							; init temp node map (list8)
+	BIT par3										; b7 - 1 hovering unit, 0 ground unit
+	BPL +groundUnit
+	AND #%01000000							; copy bit (b6) blocks line of sight
+	ASL 												; and make it (b7) blocks movement
+	BCC +continue								; JMP
+
++groundUnit:
+	AND #%10000000							; copy (b7) blocks movement
+															;
++continue:
+	STA list8, x								;
 	INX													;
-	BNE -loop										; node map initialized
+	BNE -loop										; temp node map initialized
 	LDA #1											; 1 open node
 	STA list3										; open node stack size
 	TAY													;
@@ -133,12 +142,12 @@ findPath:
 	CLC
 	ADC #$01
 	BIT rightNyble
-	BEQ +xUpperBound			; over edge of the map
+	BEQ +xUpperBound						; over edge of the map
 	INY
-	STA list2, Y		    	; add current + X
+	STA list2, Y		    				; add current + X
 
-	LDX #$06					;
-	STX list1, Y				; direction: neighbour->current
+	LDX #$06										;
+	STX list1, Y								; direction: neighbour->current
 
 	BIT leftNyble
 	BEQ +yLowerBound

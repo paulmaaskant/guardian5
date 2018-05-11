@@ -1,7 +1,13 @@
-state_initializeLevel:
+state_initializeMission:
   LDA #0
-  STA roundCount
-  STA level
+  STA missionRound
+  STA mission
+
+  LDA #< missionOneEventStream
+  STA missionEventStreamPointer+0
+  LDA #> missionOneEventStream
+  STA missionEventStreamPointer+1
+
 
   JSR pullAndBuildStateStack
   .db 14

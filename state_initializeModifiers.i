@@ -1,3 +1,8 @@
+; state 35
+;
+; 0 reduce heat points
+; 1 show damage
+
 state_initializeModifiers:
 
     LDA activeObjectGridPos

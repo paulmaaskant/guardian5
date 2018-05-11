@@ -33,7 +33,7 @@ state_newTurn:
   BNE -loop
 
   STX locVar1							; reset index to 0
-  INC roundCount
+  INC missionRound
   BNE -loop								; JMP
 
 +setNext:
@@ -45,7 +45,7 @@ state_newTurn:
   STA activeObjectGridPos
 
   ; --- set portrait location
-  LDA #20
+  LDA #12
   STA portraitXPos
   LDA #11
   STA portraitYPos
@@ -60,12 +60,17 @@ state_newTurn:
   LDA #0
   STA activeObjectStats+0       ; reset weapon 1 byte
   STA activeObjectStats+1       ; reset weapon 2 byte
+  STA activeObjectStats+3       ; reset current # moves
 
   ;-----------------------------  get object type stats
   JSR getStatsAddress           ; Y goes in; sets pointer1
   LDY #3                        ; #3 movement
   LDA (pointer1), Y             ;
   STA activeObjectStats+2			  ;
+
+  DEY                           ; #2 melee damage
+  LDA (pointer1), Y             ;
+  STA activeObjectStats+7			  ; melee damage
 
   ;-----------------------------  get pilot based stats
   LDA activeObjectIndexAndPilot ;
@@ -82,6 +87,9 @@ state_newTurn:
 
   LDA pilotTable-2, Y           ;
   STA activeObjectStats+5       ; base accuracy
+
+  LDA pilotTable-1, Y           ;
+  STA activeObjectStats+4       ; base piloting skill
 
   LDA #$C0										  ; switch on cursor and active marker
   STA effects
@@ -100,10 +108,6 @@ state_newTurn:
   JSR clearActionMenu
   JSR clearTargetMenu
 
-  LDY activeObjectIndex
-  LDA object+2, Y
-  BMI +shutDown
-
   LDA activeObjectIndexAndPilot
   BMI +aiControlled
 
@@ -116,18 +120,6 @@ state_newTurn:
   .db $34             ; start of turn events
   .db $06							; wait for user action
   .db $37             ; end action
-  .db $08             ; end turn
-  ; built in RTS
-
-+shutDown:
-  JSR buildStateStack
-  .db 7							  ; 8 items
-  .db $30             ; set active unit portrait
-  .db $3C             ; show hourglass
-  .db $0B 						; center camera
-  .db $0C							; wait for camera to center
-  .db $34             ; start of turn events
-  .db $1F							; handle shut down
   .db $08             ; end turn
   ; built in RTS
 

@@ -67,6 +67,9 @@ state_initializeMap:
 	JSR getNextByte						; get type & initial facing direction
 	STA object+0, X
 
+	LDA #0
+	STA object+2,X						; set animation counter and shutdown bit
+
 	PLA
 	BEQ +continue							; object is obstacle -> skip weapons
 
@@ -121,7 +124,7 @@ state_initializeMap:
 	ASL
 	ASL
 	ASL
-	ADC #6										; hardcoded heat points
+	; ADC #6										; hardcoded heat points
 	STA object+1, X						; set health and heat points
 
 	LDX list1+2

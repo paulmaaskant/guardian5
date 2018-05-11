@@ -50,6 +50,7 @@ state_runDialog:
 +waitForConfirm:
 	LDA blockInputCounter
 	BNE -done
+	JSR random
 	LDA buttons
 	BPL -done				; A button pressed
 

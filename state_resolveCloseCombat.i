@@ -1,39 +1,21 @@
 ; --------------------------------------------------
-; game state 17: initialize close combat
-; --------------------------------------------------
-state_initializeCloseCombat:
-	LDA #4										; clear from list3+4
-	LDX #9										; up to and including list3+9
-	JSR clearList3
-
-	JSR calculateAttack
-
-  JSR pullAndBuildStateStack
-  .db 7							; 6 items
-  .db $3A, 1					; switch CHR bank 1 to 1
-  .db $1D 						; close combat animation
-  .db $3A, 0					; switch CHR bank 1 back to 0
-  .db $16							; show results
-	.db $42							; temp gauge
-  ; built in RTS
-
-; --------------------------------------------------
 ; game state 1D: initialize close combat
 ; --------------------------------------------------
 state_closeCombatAnimation:
-	LDA #$00
+	LDA #0
 	STA actionCounter
 	STA currentEffects+18
 	TAX
 
-	LDA #5													      ;Animation 5 = hit (explosion)
+	LDA #5													      ; Animation 5 = hit (explosion)
 	STA list3+22
 	LDA #17
 	STA list3+23
-	LDA list3+3													  ; value: (01) for hit, (02) for miss
-	CMP #$01
-	BEQ +continue
-	LDA #8															  ; Animation 8 = miss (shield)
+
+	LDA list3+4
+  BMI +continue
+
+	LDA #8															  ; Animation 8 = miss
 	STA list3+22
 	LDA #$1B
 	STA list3+23
@@ -63,24 +45,23 @@ state_closeCombatAnimation:
 
   LDY activeObjectGridPos			        ; unblock position in nodeMap
   LDA #0											        ; FIX: show original meta tile
-  STA nodeMap, Y
-  TAX
+  ;STA nodeMap, Y
+  ;TAX
   JSR setTile
 
-	LDA activeObjectGridPos
+	LDA cursorGridPos
 	JSR gridPosToScreenPos
 
 	LDA currentObjectXPos
-	CLC
-	ADC list1+0
 	STA currentEffects+6
+
 	LDA currentObjectYPos
-	ADC list1+1
-	SBC #$08
 	STA currentEffects+12
-	LDA #$00
+
+	LDA #0
 	STA currentEffects+18
 	STA currentEffects+24
+	STA effects
 
 	LDA list3+22
 	STA currentEffects+0
@@ -93,30 +74,25 @@ state_closeCombatAnimation:
 ; --------------------------------------------------
 state_resolveCloseCombat:
 	LDA actionCounter
-	AND #%00001111
-	TAX
+	AND #%00011111
+	CMP #%00010000
+	BCC +continue
+	BEQ +invert
 
-	LDY #$00
-	LDA actionCounter
-	AND #%00010000
-	BEQ +continue
-	SEC
-	SBC identity, X
-	BIT rightNyble
-	BNE +noSound
 	PHA
-
 	LDY list3+23								; sound
 	JSR soundLoad
-
+	LDA #1
+	STA effects
 	PLA
 
-+noSound:
-	TAX
-	LDY #$01
++invert:
+	EOR #%00011111
 
 +continue:
-	STY effects
+	TAX
+
++continue:
 	LDA list1+0
 	JSR interpolate
 	STA actionList+1
@@ -134,13 +110,13 @@ state_resolveCloseCombat:
   LDA object+0, Y
   EOR #%00001000							; object move bit (b3) OFF
   STA object+0, Y
-  AND #%00000111							; get direction
-  LDY activeObjectGridPos			; block final position, move (b7) and sight (b6)
-  ORA #%11000000							; blocked for movement and los
-  STA nodeMap, Y
-  AND #%00000111
-  TAX
+															; base tile is assumed to be tile 0
+  AND #%00000111							; add direction bits
+  ORA #%11000000							; add blocked for movement and los
+
+  LDY activeObjectGridPos			; Y is parameter for setTile
   JSR setTile
+
 	LDA #0
 	STA effects
 
@@ -177,12 +153,12 @@ interpolate:
 		.db #$10									;dw left
 		.db #$01									;up left
 
-		.db #$00									; X 0
-		.db #$12									; X +18
-		.db #$12									; X +18
-		.db #$00									; X 0
-		.db #$EE									; X -18
-		.db #$EE									; X -18
+		.db 0										; X 0
+		.db 18									; X +18
+		.db 18									; X +18
+		.db 0										; X 0
+		.db -18									; X -18
+		.db -18									; X -18
 
 		.db #$F4									; Y -12
 		.db #$FA									; Y -6

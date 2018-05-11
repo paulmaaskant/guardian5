@@ -6,16 +6,24 @@
 ; list3+10    		ammo BCD digit tens
 ; list3+11				ammo BCD digit ones
 ; list3+12				heat cost
+; list3+13 				heat inflict
+; list3+14 				evade points
+; list3+15				action properties
+; list3+16 				active unit heat damage
 
 ; list3+20				target's hit points
 ; list3+21				damage sustained by attacker
 ; list3+22				attacker dail
 ; list3+22				close combat animation
 ; list3+23				close combat sound
+; list3+24			  target's current heat points
 
 ; list3+30				sprite
 ; list3+31    		sprite
 ; list3+32				sprite
+; list3+33				sprite
+; list3+34    		sprite
+; list3+35				sprite
 
 ; list3+40 .. 49 	placeholder values in STRING
 ;
@@ -34,7 +42,7 @@ checkTarget:
 	LDY selectedAction								; retrieve selected action
 	LDX actionList, Y
 	LDA actionPropertiesTable, X
-	STA locVar5
+	STA list3+15
 
 	AND #%00000100										; b2 - weapon 1 or 2
 	BEQ +nextCheck
@@ -72,7 +80,7 @@ checkTarget:
 	RTS
 
 +nextCheck:
-	LDA locVar5
+	LDA list3+15
 	AND #%01000000							; b6 - range check?
 	BEQ +nextCheck
 	JSR checkRange							; check min / max distance for ranged attacks
@@ -81,7 +89,7 @@ checkTarget:
 	RTS													; deny -> done
 
 +nextCheck:
-	LDA locVar5									; action properties
+	LDA list3+15									; action properties
 	AND #%00100000							; b5 - los check?
 	BEQ +nextCheck
 
@@ -101,7 +109,7 @@ checkTarget:
 	RTS
 
 +nextCheck:
-	LDA locVar5									; action properties
+	LDA list3+15									; action properties
 	AND #%00010000							; b4 - charge distance check?
 	BEQ +nextCheck
 
@@ -112,7 +120,9 @@ checkTarget:
 
 	LDA cursorGridPos
 	STA par1										; IN par1 = destination node
-	LDA activeObjectStats+2			; movement stat
+	LDA activeObjectStats+2			; movement type | movement stat
+	STA par3										; movement type | xxxx
+	AND #$0F										; 0000 | move points
 	ASL													; move x 2
 	STA par2										; IN par2 = # moves allowed
 	INC par2										; one extra move point to account for target node itself
@@ -128,7 +138,7 @@ checkTarget:
 	BPL +nextCheck
 	RTS
 
-+nextCheck
++nextCheck:
 	LDY targetObjectIndex										; retrieve target's hit points and show in menu
 	LDA object+1, Y
  	LSR
@@ -136,9 +146,13 @@ checkTarget:
 	LSR
 	STA list3+20														; target hit points
 
+	LDA object+1, Y
+	AND #%00000111
+	STA list3+24
+
 	LDX selectedAction											; retrieve selected action
 	LDA actionList, X
-	CMP #aAIM																; is action target lock?
+	CMP #aMARKTARGET												; is action to mark target?
 	BNE +continue
 	LDA distanceToTarget
 	CMP #10
@@ -148,78 +162,85 @@ checkTarget:
 	RTS
 
 +nextCheck:
-	LDY activeObjectIndex
+	LDY targetObjectIndex
 	LDA object+4, Y													; check if target is not already locked
-	CMP targetObjectTypeAndNumber
-	BNE +skip
+	AND #%01000000
+	BEQ +skip
 	LDA #38+128
 	STA actionMessage
 	RTS
 
 +skip:
 	LDA #3
-	JMP setTargetToolTip
+	JMP setTargetToolTip										; RTS
 
 +continue:
 	TAX
 	LDA actionPropertiesTable, X
-	AND #%00001000													; b3 - calculate hit % and damage?
+	AND #%00001000														; b3 - calculate hit % and damage?
 	BNE +continue
-	RTS																			; done, no more checks
+	RTS																				; done, no more checks
 
 +continue:
-	JSR getStatsAddress											; set pointer1 to target type data
-
-	LDA activeObjectGridPos
-	JSR gridPosToScreenPos
-	JSR angleToCursor												; determine the angle of attack
-	CLC																			; to derive the appropriate defense value
-	ADC #32																	; rotate by 45 degrees (32 radial)
-	LSR
-	LSR
-	LSR
-	LSR
-	LSR
-	TAY 																		; Y is the defending direction for the target
-	LDA angleToTargetTable, Y
-	SEC																			;
-	LDX targetObjectIndex
-	LDA object+2, X
-	BMI +shutdown
-	LDA object+0, X
-	AND #$07																; target's facing direction
-	SBC angleToTargetTable, Y								; subtract target's defending direction
-	JSR absolute														; A absolute value
+	;JSR getStatsAddress											; set pointer1 to target type data
+	;LDA activeObjectGridPos
+	;JSR gridPosToScreenPos
+	;JSR angleToCursor												; determine the angle of attack
+	;CLC																			; to derive the appropriate defense value
+	;ADC #32																	; rotate by 45 degrees (32 radial)
+	;LSR
+	;LSR
+	;LSR
+	;LSR
+	;LSR
+	;TAY 																		; Y is the defending direction for the target
+	;LDA angleToTargetTable, Y
+	;SEC																			;
+	;LDX targetObjectIndex
+	;LDA object+2, X
+	;BMI +shutdown
+	;LDA object+0, X
+	;AND #$07																; target's facing direction
+	;SBC angleToTargetTable, Y								; subtract target's defending direction
+	;JSR absolute														; A absolute value
+	;TAX
+	;LDY defenseValueIndexTable, X						; set Y to correct type index for front, flank or rear def value
+	;LDA (pointer1), Y												; retrieve target's defense value
+	;EOR #$FF
+	;SEC
+	;ADC activeObjectStats+5									; - DEF + ACC
+																						; -- ranged attack
+	LDY targetObjectIndex
+	LDA object+4, Y														; evade points?
+	AND #$07
 	TAX
-	LDY defenseValueIndexTable, X						; set Y to correct type index for front, flank or rear def value
-
-	LDA (pointer1), Y												; retrieve target's defense value
-	EOR #$FF
+	LDA activeObjectStats+5
 	SEC
-	ADC activeObjectStats+5									; - DEF + ACC
-	STA list3+1															; store hit probability
+	SBC evadePointEffect, X
+	STA list3+1
+	LDA evadeSpriteMap1, X
+	STA list3+33
+	LDA evadeSpriteMap2, X
+	STA list3+34
+	LDA #$4D
+	STA list3+35
 
-	LDY activeObjectIndex
+	LDA list3+15
+	AND #%00000010
+	BNE +pilotingAttack
 	LDA object+4, Y													; target lock?
-	CMP targetObjectTypeAndNumber
-	BNE +continue
-
-	;BPL +continue														; no -> continue
-	;LDA targetObjectTypeAndNumber						; yes, is this the target?
-	;ORA #%10000000
-	;CMP object+4, Y
-	;BNE +continue														; no -> continue
-
+	AND #%01000000
+	BEQ +continue
 	CLC
 	LDA #10
 	ADC list3+1
 	STA list3+1
 	BNE +continue
 
-+shutdown:
-	LDA #99
++pilotingAttack:
+	LDA activeObjectStats+4
 	STA list3+1
-
+																					; HIT % determined
 +continue:
 	LDA list3+1
 	JSR toBCD																; convert to BCD for display purposes
@@ -234,46 +255,57 @@ checkTarget:
 	LDA #$51
 	STA list3+30
 
-	JSR getSelectedWeaponTypeIndex
+	JSR getSelectedWeaponTypeIndex					; determine damage
 	BCS +notRanged
-	LDA weaponType+1, Y									;
+	LDA weaponType+1, Y											; weapon damage
 	AND #$0F
+	PHA
+	LDX weaponType+5, Y											; weapon heat inflict
+
+	LDY targetObjectIndex
+	LDA object+4, Y													; is target braced for impact?
+	ASL
+	PLA
+	BCC +continue
+	LSR																			; half damage round up
+	ADC #0
 	BCC +continue
 
 +notRanged:
-	LDA #2												; close combat damage
+	LDA activeObjectStats+7									; close combat damage
+	LDX #0																	; no heat inflicted
 
-+continue
-	CPX #aCHARGE
-	BNE +continue
-	CLC
-	ADC #$01											; add one damage if charging
-
-+continue:											; set inform message indicating expected damage
++continue:																; set inform message indicating expected damage
+	STX list3+13
 	STA list3+2
-	LDA #$0F
-	LDX #10
 
--loop:
-	CPX list3+2										; damage
-	BNE +store
-	LDA #$3D
-
-+store:
-	STA list3+39, X
-	DEX
-	BNE -loop
-
-	LDA #$14											; DAMG XXXXXXXX
+	LDA #$14																; DAMG XHHH-
 	STA actionMessage
 
+;	LDX #6
+;	LDA #space
+
+;-loop:
+;	STA list3+40, X
+;	DEX
+;	BPL -loop
+
 +return:
-	LDA #7
+	LDA #15
 	JMP setTargetToolTip
 
 
-angleToTargetTable:
-	.db 4, 4, 5, 6, 1, 1, 2, 3
+;angleToTargetTable:
+;	.db 4, 4, 5, 6, 1, 1, 2, 3
 
-defenseValueIndexTable:
-	.db 5, 6, 6, 7, 6, 6
+;defenseValueIndexTable:
+;	.db 5, 6, 6, 7, 6, 6
+
+evadeSpriteMap1:
+	.hex 4C 4B 4A 4A 4A
+
+evadeSpriteMap2:
+	.hex 4C 4C 4C 4B 4A
+
+evadePointEffect:
+	.db 0, 10, 20, 30, 40, 40, 40

@@ -12,8 +12,8 @@ objectTypeH:
 	.db #> objectType1
 	.db #> objectType2
 	.db #> objectType3
-	.db #> objectType2
-	.db #> objectType3
+	.db #> objectType4
+	.db #> objectType5
 
 objectType0:			; SLINGSHOT
 	.db $1E 				; D1
@@ -44,9 +44,9 @@ objectType1:			; UNKNOWN
 	.db $14 				; D3 / D5 (moving)
 	.db $16 				; D4 (moving)
 									; ------
-	.db 27					; 00 mech name : SAI
+	.db 27					; 00 mech name unknown
 	.db 7						; 01 max hit points
-	.db 2						; 02 melee
+	.db 3						; 02 melee
 	.db 3						; 03 movement points
 	.db 0						; 04 tile BG offset
 	.db 15					; 05 defense (front)
@@ -65,8 +65,8 @@ objectType2:			; SAI
 									; ------
 	.db 43					; 00 mech name : SAI
 	.db 7						; 01 max hit points
-	.db 2						; 02 melee
-	.db 3						; 03 movement points
+	.db 3						; 02 melee
+	.db 4						; 03 movement points
 	.db 0						; 04 tile BG offset
 	.db 15					; 05 defense (front)
 	.db 0						; 06 defense (side)
@@ -117,7 +117,7 @@ objectType5:			; drone: LEMUR
 	.db 39					; 00 drone name: LEMUR
 	.db 4						; 01 max hit points
 	.db 0						; 02 melee
-	.db 4						; 03 movement points
+	.db 4+128			  ; 03 movement points + type
 	.db 13					; 04 tile BG offset
 	.db 0						; 05 defense (front)
 	.db 0						; 06 defense (side)

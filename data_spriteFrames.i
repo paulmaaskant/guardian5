@@ -119,16 +119,21 @@ dronA_01_f1: 	.db %00010001, 			 3, $D5
 dronA_01_f2: 	.db %00010001, 			 3, $C5
 dronA_01_f3: 	.db %00010001, 		   3, $D4
 
-dronA_02_f0		.db %00010011, 			 0, $E4
-dronA_03_f0		.db %00010011, 			 0, $F4
+dronA_02_f0		.db %00100111, $01,	-4, $E4, $E4
+dronA_03_f0		.db %00100111, $01,	-4, $E5, $E5
 
-dronA_04_f0		.db %00010001, 			-5, $C6
-dronA_04_f1		.db %00010001, 			-5, $C7
-dronA_04_f2		.db %00010001, 			-5, $D6
-dronA_04_f3		.db %00010001, 			-5, $D7
+dronA_04_f0		.db %00010001, 			-4, $C6
+dronA_04_f1		.db %00010001, 			-4, $C7
+dronA_04_f2		.db %00010001, 			-4, $D6
+dronA_04_f3		.db %00010001, 			-4, $D7
 
-dronA_05_f0		.db %00010011, 			-5, $E6
-dronA_06_f0		.db %00100011, 			-6, $E5, $F5
+dronA_05_f0		.db %00100011, 			-4, $E6, $E5
+dronA_06_f0		.db %00100011, 			-4, $F4, $F5
+
+dronA_56_f0: 	.db %00100001, 		  -4, $C6, $C5
+dronA_56_f1: 	.db %00100001, 		  -4, $D7, $D4
+dronA_56_f2: 	.db %00100001, 	    -4, $C7, $C4
+dronA_56_f3: 	.db %00100001,      -4, $D6, $D5
 
 
 
@@ -145,18 +150,20 @@ CUR1: ; cursor side
 CUR2: ; active marker
 	.db %00010001, 0, $7E
 CUR3: ; LOS block marker
-	.db %00100110, $0E, -4, $70, $70
-	.db %00100111, $04, -4, $70, $70
+	.db %00110001, -8, $5B, $5C, $5D
 CUR4:	; LOCK marker
 	.db %00110001, -8, $58, $59, $5A
-CUR9:	; info tool tip
-	.db %00110001, -8, $31, 30, $31, 31, $31, 32
-CURA:	; hit percentage
+CUR9:	; label / tooltip
+	.db %00110011, -8, $31, 30, $31, 31, $31, 32
+CURA:	; offline marker
 	.db %00100001, -4, $52, $53
+CURB: ; hit percentage tooltip
+	.db %00110000, -8, $31, 30, $31, 31, $31, 32
+	.db %00110011, -8, $31, 33, $31, 34, $31, 35
 
 SHW0:	; shadow
-	.db %00100100, $0E, -4, $7F, $7F
-	.db %00100111, $04, -4, $7F, $7F
+	.db %00100100, $0E, -4, $50, $50
+	.db %00100111, $04, -4, $50, $50
 
 EFF0:	; explosion frame 1
 	.db %00100100, $0E, -4, $6F, $6F
@@ -174,7 +181,7 @@ EFF4: ; explosion frame 2
 	.db %00100111, $04, -4, $6E, $6E
 
 EFF5: ; defence shield
-	.db %00010001, 0, $4E
+	.db %00100001, -4, $4E, $4F
 
 EFF6: ; ball
 	.db %00010001, 0, $79

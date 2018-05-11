@@ -27,24 +27,20 @@ state_runEffect:
   TYA
   CLC
   ADC currentObjectYPos
-  ADC #-8
   STA currentEffects+12, X
 
   DEC list1+4
   BPL -loop
 
-  DEC list1+2
+  DEC list1+2                   ; value = 63
   BNE +done
 
   LDA #0
   STA effects
 
   JSR initializeExplosion
-
-  LDX #12
   LDY cursorGridPos
-  TXA
-  STA nodeMap, Y
+  LDA #12                         ; debris tile
   JSR setTile
 
   LDA targetObjectTypeAndNumber

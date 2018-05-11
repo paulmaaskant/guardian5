@@ -12,7 +12,7 @@ state_collapseStatusBar:
 
   LDA #11
   STA portraitYPos
-  LDA #20
+  LDA #12
   STA portraitXPos
   LDA #$2E			; y pos
   STA $0200			; y pos

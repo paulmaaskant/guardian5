@@ -5,14 +5,14 @@ stringListL:
 	.db #< str_CHARGE										; 03
 	.db #< str_COOL_DOWN								; 04
 	.db #< str_LOS_BLOCKED							; 05
-	.db #< str_OPENING_FIRE							; 06
+	.db #< str_ATTACKING							; 06
 	.db #< str_CLOSE_COMBAT							; 07
 	.db #< str_OUT_OF_RANGE							; 08
 	.db #< str_IMPASSABLE								; 09
 	.db #< str_MOVING										; 10
 	.db #< str_CHOOSE_FACING_DIRECTION	; 11
 	.db #< str_TOO_CLOSE 								; 12
-	.db #< str_COST											; 13
+	.db #< str_GAIN_X_EVADE							; 13
 	.db #< str_TARGET										; 14
 	.db #< str_DAMAGE										; 15
 	.db #< str_ACTION_PTS								; 16
@@ -53,14 +53,14 @@ stringListH:
 	.db #> str_CHARGE
 	.db #> str_COOL_DOWN
 	.db #> str_LOS_BLOCKED
-	.db #> str_OPENING_FIRE
+	.db #> str_ATTACKING
 	.db #> str_CLOSE_COMBAT
 	.db #> str_OUT_OF_RANGE
 	.db #> str_IMPASSABLE
 	.db #> str_MOVING
 	.db #> str_CHOOSE_FACING_DIRECTION
 	.db #> str_TOO_CLOSE
-	.db #> str_COST
+	.db #> str_GAIN_X_EVADE
 	.db #> str_TARGET
 	.db #> str_DAMAGE
 	.db #> str_ACTION_PTS
@@ -102,10 +102,10 @@ str_RANGED_ATK_2:
 	.db 4, W, P, N, 2
 str_MOVE:
 	.db 4, M, O, V, E
-str_OPENING_FIRE:
-	.db $0C, $1E, $1F, $14, $1D, $18, $1D, $16, $0F, $15, $18, $21, $14
+str_ATTACKING:
+	.db 9, A, T, T, A, C, K, I, N, G
 str_COOL_DOWN:
-	.db 8, E, N, D, space, T, U, R, N
+	.db 5, B, R, A, C, E
 str_CHARGE:
 	.db 6, C, H, A, R, G, E
 str_CLOSE_COMBAT:
@@ -131,11 +131,11 @@ str_CONFIRM:
 str_PIVOT_TURN:
 	.db 10, P, I, V, O, T, space, T, U, R, N
 str_DAMG_ICONS:
-	.db 12, D, A, M, G, space, $80+40, $80+41, $80+42, $80+43, $80+44, $80+45, $80+46
+	.db 6, D, A, M, G, space, $80+2 ;, $80+40, $80+41, $80+42, $80+43, $80+44, $80+45, $80+46
 str_RUN:
 	.db 3, R, U, N
-str_COST:
-	.db 4, C, O, S, T
+str_GAIN_X_EVADE:
+	.db 12, G, A, I, N, space, $80+14, space, E, V, A, D, E
 str_RESTORE_AP:
 	.db 10, R, E, S, T, O, R, E, space, $80+0, $3B
 str_CAPT_ORTEGA:
@@ -145,7 +145,7 @@ str_DEMON:
 str_UNKNOWN:
 	.db 7, U, N, K, N, O, W, N
 str_TARGET_LOCK:
-	.db 11, T, A, R, G, E, T, space, L, O, C, K
+	.db 11, M, A, R, K, space, T, A, R, G, E, T
 str_REAPER:
 	.db 6, R, E, A, P, E, R
 str_HAILFIRE:

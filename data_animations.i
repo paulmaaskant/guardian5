@@ -20,18 +20,18 @@ animationL:
 	.db #> ANIM01			; 01 active unit marker
 	.db #> ANIM02			; 02 blocked node marker (LOS)
 	.db #> ANIM03			; 03 target lock marker
-	.db #> ANIM04			; 04 NOT USED (formerly) obscure mask (large)
+	.db #> ANIM04			; 04 small explosion
 	.db #> ANIM05			; 05 explosion
 	.db #> ANIM06			; 06 gun bullets
 	.db #> ANIM07			; 07 hit percentage
-	.db #> ANIM08			; 08 shield marker
+	.db #> ANIM08			; 08 miss
 	.db #> ANIM09			; 09 shadow
 	.db #> ANIM0A			; 0A waypoint
 	.db #> ANIM0B			; 0B no sprites
 	.db #> ANIM0C			; 0C shockwave
 	.db #> ANIM0D			; 0D shockwave (upside down)
 	.db #> ANIM0E			; 0E shutdown marker
-	.db #> ANIM0F			; 0F NOT USED (formerly) dmg counter
+	.db #> ANIM0F			; 0F hit percentage
 	.db #> ANIM10			; mech 03 stationary
 	.db #> ANIM11			; mech 03 stationary
 	.db #> ANIM12			; mech 03 stationary
@@ -161,12 +161,12 @@ ANIM07:
 	.db 1, 6
 	.dw CS24
 ANIM08:
-	.db 2, 4
+	.db 2, 3
 	.dw EF06
 	.dw CS21
 
 ANIM09:
-	.db 1, 2
+	.db 1, 4
 	.dw SH00
 
 ANIM0A:
@@ -190,6 +190,8 @@ ANIM0E:
 	.dw CS25
 
 ANIM0F:
+	.db 1, 6
+	.dw CS26
 
 
 ANIM10:

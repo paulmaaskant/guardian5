@@ -23,156 +23,132 @@
 ; -------------------------------------
 
 dronA_d4_f0:
-  .db %00100000
-  .db -12
+  .db %00101000
+  .db -16
   .dw dronA_00_f0
-  .db %10100000
-  .db -12
+  .db %10101000
+  .db -16
   .dw dronA_02_f0
 
 dronA_d4_f1:
-  .db %00100000
-  .db -12
+  .db %00101000
+  .db -16
   .dw dronA_00_f1
-  .db %10100000
-  .db -12
+  .db %10101000
+  .db -16
   .dw dronA_02_f0
 
 dronA_d4_f2:
-  .db %00100000
-  .db -12
+  .db %00101000
+  .db -16
   .dw dronA_00_f2
-  .db %10100000
-  .db -12
+  .db %10101000
+  .db -16
   .dw dronA_02_f0
 
 dronA_d4_f3:
-  .db %00100000
-  .db -12
+  .db %00101000
+  .db -16
   .dw dronA_00_f3
-  .db %10100000
-  .db -12
+  .db %10101000
+  .db -16
   .dw dronA_02_f0
 
 dronA_d1_f0:
-  .db %00100000
-  .db -12
+  .db %00101000
+  .db -16
   .dw dronA_00_f0
-  .db %10100000
-  .db -12
+  .db %10101000
+  .db -16
   .dw dronA_03_f0
 
 dronA_d1_f1:
-  .db %00100000
-  .db -12
+  .db %00101000
+  .db -16
   .dw dronA_00_f1
-  .db %10100000
-  .db -12
+  .db %10101000
+  .db -16
   .dw dronA_03_f0
 
 dronA_d1_f2:
-  .db %00100000
-  .db -12
+  .db %00101000
+  .db -16
   .dw dronA_00_f2
-  .db %10100000
-  .db -12
+  .db %10101000
+  .db -16
   .dw dronA_03_f0
 
 dronA_d1_f3:
-  .db %00100000
-  .db -12
+  .db %00101000
+  .db -16
   .dw dronA_00_f3
-  .db %10100000
-  .db -12
+  .db %10101000
+  .db -16
   .dw dronA_03_f0
 
 dronA_d5_f0:
-  .db %00100000
-  .db -12
-  .dw dronA_01_f0
-  .db %00100000
-  .db -18
-  .dw dronA_04_f0
-  .db %10100000
-  .db -18
+  .db %00101000
+  .db -16
+  .dw dronA_56_f0
+  .db %10101000
+  .db -16
   .dw dronA_05_f0
 
 dronA_d5_f1:
-  .db %00100000
-  .db -12
-  .dw dronA_01_f1
-  .db %00100000
-  .db -18
-  .dw dronA_04_f1
-  .db %10100000
-  .db -18
+  .db %00101000
+  .db -16
+  .dw dronA_56_f1
+  .db %10101000
+  .db -16
   .dw dronA_05_f0
 
 dronA_d5_f2:
-  .db %00100000
-  .db -12
-  .dw dronA_01_f2
-  .db %00100000
-  .db -18
-  .dw dronA_04_f2
-  .db %10100000
-  .db -18
+  .db %00101000
+  .db -16
+  .dw dronA_56_f2
+  .db %10101000
+  .db -16
   .dw dronA_05_f0
 
 dronA_d5_f3:
-  .db %00100000
-  .db -12
-  .dw dronA_01_f3
-  .db %00100000
-  .db -18
-  .dw dronA_04_f3
-  .db %10100000
-  .db -18
+  .db %00101000
+  .db -16
+  .dw dronA_56_f3
+  .db %10101000
+  .db -16
   .dw dronA_05_f0
 
 
 dronA_d6_f0:
-  .db %00100001
-  .db -12
-  .dw dronA_01_f0
-  .db %00100001
-  .db -18
-  .dw dronA_04_f0
-  .db %10100000
-  .db -18
+  .db %00101001
+  .db -16
+  .dw dronA_56_f0
+  .db %10101000
+  .db -16
   .dw dronA_06_f0
 
 dronA_d6_f1:
-  .db %00100001
-  .db -12
-  .dw dronA_01_f1
-  .db %00100001
-  .db -18
-  .dw dronA_04_f1
-  .db %10100000
-  .db -18
+  .db %00101001
+  .db -16
+  .dw dronA_56_f1
+  .db %10101000
+  .db -16
   .dw dronA_06_f0
 
 dronA_d6_f2:
-  .db %00100001
-  .db -12
-  .dw dronA_01_f2
-  .db %00100001
-  .db -18
-  .dw dronA_04_f2
-  .db %10100000
-  .db -18
+  .db %00101001
+  .db -16
+  .dw dronA_56_f2
+  .db %10101000
+  .db -16
   .dw dronA_06_f0
 
 dronA_d6_f3:
-  .db %00100001
-  .db -12
-  .dw dronA_01_f3
-  .db %00100001
-  .db -18
-  .dw dronA_04_f3
-  .db %10100000
-  .db -18
+  .db %00101001
+  .db -16
+  .dw dronA_56_f3
+  .db %10101000
+  .db -16
   .dw dronA_06_f0
 
 mech00_stationary_d1_f0:
@@ -260,7 +236,7 @@ mech03_stationary_d6_f0:
 
 
 OB00:
-  .db %10101000
+  .db %10100000
   .db -24
   .dw OBS0
 
@@ -336,8 +312,7 @@ CS14:	.db #%10110000
 		.dw CUR2
 
 CS20:
-	.db #%10110000
-	.db #$F8
+	.db #%10010000
 	.dw CUR3
 
 CS21:
@@ -351,13 +326,18 @@ CS22:
 
 CS24:
   .db %10110000
-	.db -32
+	.db -40
 	.dw CUR9
 
 CS25:
   .db %10110000
 	.db -24
 	.dw CURA
+
+CS26:
+  .db %10110000
+  .db -40
+  .dw CURB
 
 EF00: ; explosion
 	.db #%10111000, -16

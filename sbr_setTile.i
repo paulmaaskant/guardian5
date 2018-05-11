@@ -1,17 +1,34 @@
 ; Y in, grid position
-; X in, tile
+; A in, settings + tile
 
 setTile:
-  STX locVar5
+  STA locVar5
 
-  LDA nodeMap, Y         ; first update nodeMap
-  AND #%11000000
-  ORA locVar5
+  LDA nodeMap, Y      ; dont overwrite the tile if the tile is fixed
+  AND #%00100000      ; (b5) fixed tile
+  BEQ +continue       ; not fixed -> overwrite tile
+  LDA nodeMap, Y
+  ORA #%01000000      ; block LOS
   STA nodeMap, Y
+  RTS
 
-  TYA
++continue:
+  LDA locVar5
+  STA nodeMap, Y            ; update node map
+                            ; next, check if immediate tile overwrite is neccessary
+
+  TYA                       ; grid pos to A
+  JSR gridPosToScreenPos
+  BCS +onScreen             ; grid pos is currently on screen, so update tile immediately
+                            ; tile is offscreen or on the border
+  LDA currentObjectYScreen  ; need additional check for top border
+	BEQ +onScreen             ; because tile still needs to be overwritten if its behind the status bar
+  RTS                       ; because there is no guarantee that regular scrolling wont update tiles behind the bar
+
++onScreen:
+  TYA                       ; grid pos to A
   AND #$0F
-  STA locVar1				  ; grid-X
+  STA locVar1				        ; grid-X
   TYA
   LSR
   LSR
@@ -19,7 +36,7 @@ setTile:
   LSR
   STA locVar2				  ; grid-Y
 
-  TSX						         ; switch stack pointers
+  TSX						      ; switch stack pointers
   STX	stackPointer1
   LDX stackPointer2
   TXS

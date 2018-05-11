@@ -167,7 +167,7 @@ writeNextRowToBuffer:
 	STA nmiVar7
 	TYA 								; set A to 0
 	BCC +continue				; check carry flag
-	LDA #14 						; 14+1carry
+	LDA #14 						; 14 +1 carry
 
 +continue:
 	ADC (nmiVar5), Y		; determine grid pos using look up table (for speed)

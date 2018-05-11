@@ -11,6 +11,7 @@ state_initializeScreen:
 	STA bytePointer+1
 
 	LDA #$0
+	STA effects
 	STA $E008
 
 	LDA state00_tileBank1, Y
@@ -49,9 +50,9 @@ state_initializeScreen:
 	LDA #$20																																			; full screen 32 rows
 	STA list1+0
 
-	LDA #32
+	LDA #28
 	STA portraitXPos
-	LDA #40
+	LDA #43
 	STA portraitYPos
 
 	JSR buildStateStack

@@ -92,13 +92,13 @@
 	activeObjectGridPos						.dsb 1	; position of the object that has the turn
 	activeObjectStats							.dsb 1	; 0 Weapon 1 (b7) reloading
 																.dsb 1	; 1 Weapon 2 (b7) reloading
-																.dsb 1	; 2 movement
-																.dsb 1  ; 3 NOT USED
-																.dsb 1 	; 4 NOT USED
+																.dsb 1	; 2 movement type | movement
+																.dsb 1  ; 3 current # moves
+																.dsb 1 	; 4 base piloting skill
 																.dsb 1 	; 5 base accuracy
 																.dsb 1	; 6 current hit points
-																.dsb 1	; 7 NOT USED
-																.dsb 1	; 8 NOT USED
+																.dsb 1	; 7 close combat damage
+																.dsb 1	; 8 not used
 																.dsb 1	; 9 remaining action points
 
 																				; stored memory objects
@@ -121,12 +121,16 @@
 	portraitXPos									.dsb 1
 	portraitYPos									.dsb 1
 	softCHRBank1									.dsb 1
-	level													.dsb 1
-	roundCount										.dsb 1
+
 	targetEffectAnimation					.dsb 1
 	runningEffect 								.dsb 1
 	runningEffectCounter					.dsb 1
-	dialog												.dsb 1
+
+	mission												.dsb 1
+	missionRound									.dsb 1
+	missionEvents									.dsb 4
+	missionEventStreamPointer			.dsb 2
+	missionDialogStream						.dsb 1
 
 	.ende
 	.enum $0300														; sound variables
@@ -155,9 +159,12 @@
 	actionMenuLine2								.dsb 13
 	actionMenuLine3								.dsb 13
 	menuIndicator									.dsb 2
-	targetMenuLine1								.dsb 6
-	targetMenuLine2								.dsb 6
-	targetMenuLine3								.dsb 6
+	targetMenuLine1								.dsb 3	; HP
+	targetMenuLine2								.dsb 3	; HEAT
+	targetMenuImage								.dsb 6	; image
+	targetMenuLine3								.dsb 6	; NAME
+
+
 	systemMenuLine1								.dsb 3
 	systemMenuLine2								.dsb 3
 	systemMenuLine3								.dsb 3
@@ -201,9 +208,9 @@
 	.enum $0700
 	object								.dsb 1				; +0: (b7-4) type, (b3) move/still, (b2-0) direction
 												.dsb 1				; +1: (b7-3) hit points, (b2-0) heat points
-												.dsb 1				; +2: (b7) shut down (b6-0) frame count
+												.dsb 1				; +2: (b7) not used (b6-0) frame count
 												.dsb 1				; +3: (b7-0) grid pos
-												.dsb 1				; +4: (b7) target locked (b6-0) target locked unit index + pilot
+												.dsb 1				; +4: (b7) brace (b6) marked (b5) unstable (b4-3) not used (b2-0) evade points
 												.dsb 1				; +5: (b5-0) background tile
 												.dsb 1				; +6: weapon 1 : (b7-4) type, (b3-0) ammo or cycle
 												.dsb 1				; +7: weapon 2 : (b7-4) type, (b3-0) ammo or cycle
@@ -427,7 +434,7 @@ mainGameLoop:
 
 	LDY #4+8
 	LDA (currentObjectType), Y
-	CMP #14													; floating object
+	CMP #13													; floating object
 	BNE +skip
 
 	LDA frameCounter								; take this bit out of the loop
@@ -508,7 +515,7 @@ mainGameLoop:
 	PLA																; restore X
 	TAX
 	LDA object+2, Y
-	AND #%11000000										; save b7 (shutdown) b6 (turn)
+	AND #%11000000										; save b7 (??) b6 (turn)
 	ORA currentObjectFrameCount				; object frame count
 	STA object+2, Y
 	INX																; next object
@@ -525,7 +532,7 @@ mainGameLoop:
 	JMP +nextEvent
 
 +continue:
-	LDY #11
+	LDY #8
 
 -loop:
 	TYA
@@ -629,8 +636,8 @@ gameStateJumpTable:
 	.dw state_resolveMove-1											; 11
 	.dw state_initializeRanged-1								; 12
 	.dw state_resolveMachineGun-1								; 13
-	.dw state_initializeCoolDown-1							; 14
-	.dw state_resolveCoolDown-1									; 15
+	.dw state_initializeBrace-1									; 14
+	.dw state_resolveBrace-1										; 15
 	.dw state_showResults-1											; 16
 	.dw state_initializeCloseCombat-1						; 17
 	.dw state_resolveCloseCombat-1							; 18
@@ -640,7 +647,7 @@ gameStateJumpTable:
 	.dw state_faceTarget-1											; 1C
 	.dw state_closeCombatAnimation-1						; 1D
 	.dw state_initializeTitleMenu-1							; 1E
-	.dw state_shutDown-1												; 1F
+	.dw not_used																; 1F
 	.dw state_initializeGameMenu-1							; 20
 	.dw state_playAnimation-1										; 21
 	.dw state_loadGameMenu-1										; 22
@@ -660,7 +667,7 @@ gameStateJumpTable:
 	.dw state_setActiveObjectPortrait-1					; 30
 	.dw state_raiseEvents-1											; 31
 	.dw state_clearSysFlags-1										; 32
-	.dw state_initializeLevel-1									; 33
+	.dw state_initializeMission-1								; 33
 	.dw state_startTurn-1												; 34
 	.dw state_initializeModifiers-1							; 35
 	.dw state_compositeTitleMenu-1							; 36
@@ -685,6 +692,10 @@ gameStateJumpTable:
 	.dw state_initializeLaser-1									; 49
 	.dw state_resolveLaser-1										; 4A
 	.dw state_setRunningEffect-1								; 4B
+	.dw state_initializeInflictModifier-1				; 4C
+	.dw state_checkMisionEvents-1								; 4D
+	.dw state_initializeEvadePointMarker-1			; 4E
+	.dw state_initializeExplosion-1							; 4F
 
 not_used:																			; label for depricated states
 
@@ -694,6 +705,8 @@ runningEffectsL:
 	.db #< eff_locked														; 3
 	.db #< eff_gunFireFlashes										; 4
 	.db #< eff_groundShake											; 5
+	.db #< eff_explosion												; 6
+	;.db #< eff_evadePoints											; 7
 
 runningEffectsH:
 	.db #> eff_blast
@@ -701,6 +714,8 @@ runningEffectsH:
 	.db #> eff_locked
 	.db #> eff_gunFireFlashes
 	.db #> eff_groundShake
+	.db #> eff_explosion												; 6
+	;.db #> eff_evadePoints											; 7
 
 ; -------------------------
 ; includes
@@ -712,7 +727,7 @@ runningEffectsH:
 	.include state_initializeTitleMenu.i
 	.include state_initializeScreen.i
 	.include state_initializeGameMenu.i
-	.include state_initializeLevel.i
+	.include state_initializeMission.i
 	.include state_fadeInOut.i
 	.include state_loadLevelMapTiles.i
 	.include state_centerCameraOnCursor.i
@@ -725,12 +740,14 @@ runningEffectsH:
 	.include state_titleScreen.i
 	.include state_resolveMove.i
 	.include state_resolveSpin.i
-	.include state_resolveCoolDown.i
+	.include state_initializeBrace.i
+	.include state_resolveBrace.i
 	.include state_initializeRanged.i
 	.include state_resolveMachineGun.i
+	.include state_initializeCloseCombat.i
 	.include state_resolveCloseCombat.i
 	.include state_showResults.i
-	.include state_shutDown.i
+	;.include state_shutDown.i
 	.include state_expandStatusBar.i
 	.include state_hudMenu.i
 	.include state_collapseStatusBar.i
@@ -780,6 +797,11 @@ runningEffectsH:
 	.include state_initializeLaser.i
 	.include state_resolveLaser.i
 	.include state_setRunningEffect.i
+	.include state_initializeInflictModifier.i
+	.include state_checkMissionEvents.i
+	.include state_initializeEvadePointMarker.i
+	.include state_initializeExplosion.i
+	.include state_initializeCharge.i
 
 	.include sbr_getStatsAddress.i
 	.include sbr_pushState.i
@@ -808,12 +830,13 @@ runningEffectsH:
 
 	.include sbr_clearCurrentEffects.i
 	.include sbr_clearSprites.i
-	.include sbr_clearList3.i
 	.include sbr_clearActionMenu.i
 	.include sbr_clearTargetMenu.i
 	.include sbr_clearSystemMenu.i
 	.include sbr_updateSystemMenu.i
 	.include sbr_updateTargetMenu.i
+	.include sbr_setSystemHeatGauge.i
+	.include sbr_setTargetHeatGauge.i
 
 	.include sbr_deleteObject.i
 	.include sbr_writeStatusBarToBuffer.i
@@ -836,6 +859,7 @@ runningEffectsH:
 	.include sbr_getSelectedWeaponIndex.i
 	.include sbr_setTile.i
 	.include sbr_setEffectCoordinates.i
+	.include sbr_setEvadePoints.i
 
 	.include sbr_random.i
 	.include sbr_random100.i
@@ -852,6 +876,8 @@ runningEffectsH:
 	.include eff_locked.i
 	.include eff_gunFireFlashes.i
 	.include eff_groundShake.i
+	.include eff_explosion.i
+	;.include eff_evadePoints.i
 
 	.include reset.i
 	.include nmi.i
@@ -884,21 +910,21 @@ runningEffectsH:
 
 
 paletteColor1:
-	.db $0B, $3B, $0B, $0B, $0F, $1A, $09, $30
+	.db $0B, $3B, $0B, $0B, $0F, $0F, $09, $30
 	.db $08, $18, $0A
 	.dsb 5
 	.db $08, $15, $08
 	.dsb 5
 	.db $1B
 paletteColor2:
-	.db $1B, $1B, $1B, $1B, $0B, $0A, $29, $2D
+	.db $1B, $1B, $1B, $1B, $0B, $05, $29, $2D
 	.db $18, $28, $19
 	.dsb 5
 	.db $15, $30, $15
 	.dsb 5
 	.db $0A
 paletteColor3:
-	.db $2B, $2B, $2B, $2B, $3B, $3B, $39, $37
+	.db $2B, $2B, $2B, $2B, $3B, $35, $39, $37
 	.db $37, $30, $39
 	.dsb 5
 	.db $35, $35, $35
@@ -944,6 +970,7 @@ sysFlag_scrollAdjustment:		.db %00000001
 
 pilotBits:									.db %10000111
 bit2to0											.db %00000111
+bit1to0											.db %00000011
 
 leftNyble:					.db #$F0
 rightNyble:					.db #$0F
@@ -955,14 +982,14 @@ directionLookup:
 	.db 0, 0, 1, 2, 3, 2, 1, 0, 0, 4, 5, 6, 7, 6, 5, 0
 
 portraitBaseXPos:
-  .db 0, 8, 16, 24
-	.db 0, 8, 16, 24
-	.db 0, 8, 16, 24
+  .db 0, 8, 16
+	.db 0, 8, 16
+	.db 0, 8, 16
 
 portraitBaseYPos:
-  .db 0, 0, 0, 0
-  .db 8, 8, 8, 8
-  .db 16, 16, 16, 16
+  .db 0, 0, 0
+  .db 8, 8, 8
+  .db 16, 16, 16
 
 
 

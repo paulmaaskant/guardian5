@@ -1,7 +1,11 @@
 state_initializeDialog:
   JSR pullParameter        ; get parameter
   TAY
+  CPY #255
+  BNE +continue
+  LDY missionDialogStream
 
++continue:
   LDA state01_streamHi, Y
   STA bytePointer+0
   LDA state01_streamLo, Y
@@ -33,20 +37,22 @@ state01_streamLo:
   .db #> brief2Stream
   .db #> brief3Stream
   .dsb 5
-  .db #> hudConversation02
-  .db #> hudConversation01
+  .db #> hud_allHostilesDestroyed
+  .db #> hud_activityDetected
   .db #> instructionStream
-  .db #> failedStream
+  .db #> hud_missionFailed
+  .db #> hud_staySharp
 state01_streamHi:
   .db #< storyStream
   .db #< brief1Stream
   .db #< brief2Stream
   .db #< brief3Stream
   .dsb 5
-  .db #< hudConversation02
-  .db #< hudConversation01
+  .db #< hud_allHostilesDestroyed
+  .db #< hud_activityDetected
   .db #< instructionStream
-  .db #< failedStream
+  .db #< hud_missionFailed
+  .db #< hud_staySharp
 state01_positionHi:
   .db $25
   .db $25
@@ -57,16 +63,18 @@ state01_positionHi:
   .db $24
   .db $25
   .db $24
+  .db $24
 state01_positionLo:
   .db $44
   .db $64
   .db $88
   .db $64
   .dsb 5
-  .db $48
-  .db $48
+  .db $46
+  .db $46
   .db $44
-  .db $48
+  .db $46
+  .db $46
 state01_lastCol:
   .db $1C
   .db $1C
@@ -76,6 +84,7 @@ state01_lastCol:
   .db $1E
   .db $1E
   .db $1C
+  .db $1E
   .db $1E
 
 state01_lineCount:
@@ -87,4 +96,5 @@ state01_lineCount:
   .db 3
   .db 3
   .db 8
+  .db 3
   .db 3
