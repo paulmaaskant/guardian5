@@ -18,8 +18,8 @@ applyActionPointCost:
   SBC list3+0
   STA activeObjectStats+9         ; calculate remaining AP
 
-  LDA #0
-  STA list3+16                    ; no heat damage
+  LDA #0                          ; init value
+  STA list3+16                    ;
 
   LDX #$81                        ; show gauge message
   LDA #6												  ; prio

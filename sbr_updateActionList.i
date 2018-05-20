@@ -7,29 +7,35 @@
 ; OUT   actionList
 ;---------------------------------------
 updateActionList:
-	LDA #$00
-	STA actionMessage																															; clear message
-	LDX #$09																																			; clear list of possible actions
--	STA actionList, X					; clear action list
-	DEX
-	BPL -
-	LDA #$01
-	STA selectedAction																														; list cleared
+	LDA #0
+	STA actionMessage					; clear message
+	STA infoMessage						; clear message
+	STA menuFlags
+	LDX #9										; clear list of possible actions
 
-	LDA cursorGridPos																															; cursor on self?
-	CMP activeObjectGridPos																												; cursor on self?
-	BNE +continue																																	; no -> continue																																							; yes ->
+-loop:
+	STA actionList, X					; clear action list
+	DEX
+	BPL -loop
+	LDA #1
+	STA selectedAction				; init selected action
+
+	LDA cursorGridPos					; cursor on self?
+	CMP activeObjectGridPos		; cursor on self?
+	BNE +continue							; no -> continue																																							; yes ->
 
 	; ----------------------------------
 	; Cursor on SELF
 	; ----------------------------------
 
-	LDA #aBRACE						; BRACE
+	LDA activeObjectStats+2
+	BMI +hoveringUnit
+	LDA #aBRACE								; BRACE
 	JSR addPossibleAction			; tail chain
+
++hoveringUnit:
 	LDA #aPIVOT								; PIVOT TURN
 	JMP addPossibleAction
-
-
 
 +continue:
 	LDA targetObjectTypeAndNumber																									; Cursor on other UNIT?
@@ -60,14 +66,17 @@ updateActionList:
 	CMP #2
 	BCC +skipCharge
 	BIT activeObjectStats+2			; hovering units can't charge
-	BMI +skipCharge
+	BMI +skipChargeAndBrace
 	LDA #aCHARGE
 	JSR addPossibleAction
 
 +skipCharge:
-	JSR checkTarget						;
-	LDA #aBRACE								; BRACE
-	JMP addPossibleAction			; tail chain
+	;LDA #aBRACE								; BRACE
+	;JSR addPossibleAction			; removed because unclear what target menu shows
+
++skipChargeAndBrace:
+	JMP checkTarget						;
+
 
 	; ----------------------------------
 	; Cursor on EMPTY SPACE

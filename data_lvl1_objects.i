@@ -31,14 +31,14 @@ levelOne:
 
 	.db	6			; number of objects
 
-	;.db $04			; player pilot 4
-	;.db $03			; object grid position
-	;.db $04			; object type & facing RD
-	;.db $31			; object wpns
+	.db $04			; player pilot 4
+	.db $03			; object grid position
+	.db $04			; object type & facing RD
+	.db $31			; object wpns
 
-	.db $04			; player pilot 2
+	.db $02			; player pilot 2
 	.db $05			; object grid position
-	.db $24			; object type 1 & facing RD
+	.db $14			; object type 1 & facing RD
 	.db $30			; object wpns
 
 	.db $00			; object object building
@@ -95,11 +95,12 @@ missionOneEventStream:
 							; - grid node
 							; - pilot ID
 
-.db 2, mEventOpenDialog, 10 												 	; event 1
-.db 4, mConditionRound, 2,  mEventOpenDialog, 13		 	; event 2
-.db 3, mConditionOnlyHostiles, mEventOpenDialog, 12 	; event 5
-.db 3, mConditionOnlyHostiles, mEventEndMission, 2 		; event 6
-.db 3, mConditionOnlyFriendlies, mEventOpenDialog, 9 	; event 3
-.db 3, mConditionOnlyFriendlies, mEventEndMission, 2 	; event 4
+.db 2, mEventOpenDialog, 10 												 			; event 1
+.db 4, mConditionRound, 2,  mEventOpenDialog, 13		 			; event 2
 
-.db 0																								 	; end of stream
+.db 3, mConditionOnlyHostiles, mEventOpenDialog, 12 			; event 3
+.db 4, mConditionOnlyHostiles, mEventEndMission, 3, 7 		; event 4
+
+.db 3, mConditionOnlyFriendlies, mEventOpenDialog, 9 			; event 5
+.db 4, mConditionOnlyFriendlies, mEventEndMission, 2, 6		; event 6
+.db 0																								 			; end of stream

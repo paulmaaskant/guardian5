@@ -18,9 +18,17 @@ calculateActionPointCost:
 +next:
   STA list3+12                    ; store heat cost
   LDA actionPointCostTable, X     ; load action point cost
+
   CPX #aBRACE
   BNE +store
+
   LDA activeObjectStats+9         ; BRACE ap cost = remaining points
+  EOR #$FF
+  SEC
+  ADC #0                          ; negate
+  STA list3+12
+  STA list3+13
+  JSR absolute                    ; make positive again
 
 +store:
   STA list3+0

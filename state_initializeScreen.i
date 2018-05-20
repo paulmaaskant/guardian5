@@ -4,7 +4,11 @@
 state_initializeScreen:
 	JSR pullParameter							; pull state parameter into A
 	TAY														; and transfer to Y
+	CPY #255
+	BNE +continue
+	LDY missionEpilogScreen
 
++continue:
 	LDA state00_screenHi, Y
 	STA bytePointer+0
 	LDA state00_screenLo, Y

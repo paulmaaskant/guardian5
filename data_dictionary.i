@@ -5,7 +5,7 @@ stringListL:
 	.db #< str_CHARGE										; 03
 	.db #< str_COOL_DOWN								; 04
 	.db #< str_LOS_BLOCKED							; 05
-	.db #< str_ATTACKING							; 06
+	.db #< str_ATTACKING								; 06
 	.db #< str_CLOSE_COMBAT							; 07
 	.db #< str_OUT_OF_RANGE							; 08
 	.db #< str_IMPASSABLE								; 09
@@ -15,13 +15,13 @@ stringListL:
 	.db #< str_GAIN_X_EVADE							; 13
 	.db #< str_TARGET										; 14
 	.db #< str_DAMAGE										; 15
-	.db #< str_ACTION_PTS								; 16
+	.db #< str_REAR_ATTACK							; 16
 	.db #< str_CONFIRM									; 17
-	.db #< str_RESTORE_AP								; 18
+	.db #< str_TARGET_BRACED						; 18
 	.db #< str_PIVOT_TURN								; 19
 	.db #< str_DAMG_ICONS								; 20
-	.db #< str_UNKNOWN									; 21
-	.db #< str_UNKNOWN									; 22
+	.db #< str_GEIST										; 21
+	.db #< str_MARU											; 22
 	.db #< str_UNKNOWN									; 23
 	.db #< str_RUN											; 24
 	.db #< str_CAPT_ORTEGA							; 25
@@ -63,13 +63,13 @@ stringListH:
 	.db #> str_GAIN_X_EVADE
 	.db #> str_TARGET
 	.db #> str_DAMAGE
-	.db #> str_ACTION_PTS
+	.db #> str_REAR_ATTACK
 	.db #> str_CONFIRM
-	.db #> str_RESTORE_AP
+	.db #> str_TARGET_BRACED
 	.db #> str_PIVOT_TURN
 	.db #> str_DAMG_ICONS
-	.db #> str_UNKNOWN
-	.db #> str_UNKNOWN
+	.db #> str_GEIST
+	.db #> str_MARU
 	.db #> str_UNKNOWN
 	.db #> str_RUN
 	.db #> str_CAPT_ORTEGA
@@ -105,7 +105,7 @@ str_MOVE:
 str_ATTACKING:
 	.db 9, A, T, T, A, C, K, I, N, G
 str_COOL_DOWN:
-	.db 5, B, R, A, C, E
+	.db 19, B, R, A, C, E, space, F, O, R, space, space, space, space, I, M, P, A, C, T
 str_CHARGE:
 	.db 6, C, H, A, R, G, E
 str_CLOSE_COMBAT:
@@ -124,20 +124,24 @@ str_TARGET:
 	.db 6, T, A, R, G, E, T
 str_DAMAGE:
 	.db 6, D, A, M, A, G, E
-str_ACTION_PTS:
-	.db 10, A, C, T, I, O, N, space, P, T, S
+str_REAR_ATTACK:
+	.db 11, R, E, A, R, space, A, T, T, A, C, K
 str_CONFIRM:
 	.db 10, C, O, N, F, I, R, M, space, $71, A
 str_PIVOT_TURN:
 	.db 10, P, I, V, O, T, space, T, U, R, N
 str_DAMG_ICONS:
 	.db 6, D, A, M, G, space, $80+2 ;, $80+40, $80+41, $80+42, $80+43, $80+44, $80+45, $80+46
+str_GEIST:
+	.db 5, G, E, I, S, T
+str_MARU:
+	.db 4, M, A, R, U
 str_RUN:
-	.db 3, R, U, N
+	.db 11, D, O, U, B, L, E, space, M, O, V, E
 str_GAIN_X_EVADE:
 	.db 12, G, A, I, N, space, $80+14, space, E, V, A, D, E
-str_RESTORE_AP:
-	.db 10, R, E, S, T, O, R, E, space, $80+0, $3B
+str_TARGET_BRACED:
+	.db 13, T, A, R, G, E, T, space, B, R, A, C, E, D
 str_CAPT_ORTEGA:
 	.db 6, O, R, T, E, G, A
 str_DEMON:

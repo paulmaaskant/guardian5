@@ -10,6 +10,7 @@ state_ai_determineAttackPosition:
   JSR firstPass
   JSR evaluateNodes           ; look for path
   BCC +pathFound
+
   JSR secondPass
   JSR evaluateNodes
   BCC +pathFound
@@ -30,21 +31,25 @@ state_ai_determineAttackPosition:
   LDA par1
   STA cursorGridPos           ; put the cursor on the destination node
 
-  LDA #0                      ; initilize results
+  LDA #0                      ; init results
   STA list6
 
   LDA #1                      ; MOVE costs 1 point
   STA list3+0
-  LDA activeObjectStats+2			; movement stat
-  CMP list1									  ; compare to used number of moves (list1)
+
+  LDY activeObjectStats+2     ; limit # nodes to move points
+  CPY list1
   BCS +continue
-  INC list3+0                 ; RUN costs 1 extra point
+  STY list1                   ;
 
 +continue:
+  LDA list1, Y
+  STA cursorGridPos
+
   JSR applyActionPointCost
   JSR setEvadePoints
   JSR pullAndBuildStateStack
-	.db 9						            ; 4 items
+	.db 9						              ; 4 items
 	.db $3A, 1						        ; switch CHR bank 1 to 1
   .db $0B								        ; center camera on cursor
 	.db $3B 							        ; init and resolve move
@@ -64,17 +69,24 @@ firstPass:
   STX list6									       ;
   STX actionList+0                 ; reset eligble node count
   LDA activeObjectStats+2          ; move
-
-  LDY activeObjectStats+9          ; check remaining AP
-  CPY #2                           ; to see how far unit can move
-  BCC +noRunning
   ASL
-
-+noRunning:
   STA actionList+1                 ; act obj run distance
   INC actionList+1                 ; +1 to make compare easier
 
-  LDA activeObjectStats+0
+  ;LDA activeObjectStats+0
+  ;LSR
+  ;LSR
+  ;LSR
+  ;LSR
+  ;STA actionList+2                 ; max range of primary weapon
+  ;INC actionList+2                 ; +1 to make compare easier
+
+  LDY activeObjectIndex
+  LDA object+5, Y
+  AND #$F0										; mask the weapon type
+  LSR
+  TAY
+  LDA weaponType+2, Y
   LSR
   LSR
   LSR

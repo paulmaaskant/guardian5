@@ -7,6 +7,10 @@ setTargetHeatGauge:
   PLA                         ; increment
   CLC
   ADC identity, Y             ; plus current heat
+  BPL +next
+  LDA #0                      ; bottom at 0
+
++next:
   CMP #6
   BCC +next
   LDA #6                      ; cap at 6

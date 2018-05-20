@@ -12,12 +12,15 @@ state_confirmAction:
   STA events
 
   LDA #space
-  LDX #25
+  LDX #12                             ; clear lines 2 and 3
 
 -loop:
-  STA actionMenuLine2, X
+  STA actionMenuLine3, X
   DEX
   BPL -loop
+
+  LDA #0
+  STA menuFlags
 
   JSR getSelectedWeaponTypeIndex
   BCS +continue

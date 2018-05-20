@@ -51,8 +51,17 @@ state_selectAction:
 	BEQ +continue
 	AND #$7F														; show it on line 3
 	TAY
-	LDX #26															; line 2
+	LDX #26															; line 3
 	JSR writeToActionMenu								;
+
++continue:
+	LDA infoMessage
+	BEQ +continue
+	TAY
+	LDX #13															; line 2
+	JSR writeToActionMenu								;
+	LDA #%0010000
+	STA menuFlags
 
 +continue:
 	JSR updateTargetMenu
@@ -281,6 +290,9 @@ state_selectAction:
 
 	LDA #$00																																			; clear action message
 	STA actionMessage
+	STA infoMessage
+	STA menuFlags
+
 	LDA effects																																		; clear possible LOS block effect
 	AND #%11000000																																; cursor and active unit marker stay on, rest turned off
 	STA effects

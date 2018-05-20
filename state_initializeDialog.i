@@ -33,9 +33,9 @@ state_initializeDialog:
 
 state01_streamLo:
   .db #> storyStream
-  .db #> brief1Stream
-  .db #> brief2Stream
-  .db #> brief3Stream
+  .db #> mission01prolog
+  .db #> mission01epilogSuccess
+  .db #> mission01epilogFailed
   .dsb 5
   .db #> hud_allHostilesDestroyed
   .db #> hud_activityDetected
@@ -44,9 +44,9 @@ state01_streamLo:
   .db #> hud_staySharp
 state01_streamHi:
   .db #< storyStream
-  .db #< brief1Stream
-  .db #< brief2Stream
-  .db #< brief3Stream
+  .db #< mission01prolog
+  .db #< mission01epilogSuccess
+  .db #< mission01epilogFailed
   .dsb 5
   .db #< hud_allHostilesDestroyed
   .db #< hud_activityDetected

@@ -15,6 +15,9 @@ aPIVOT = $06
 aRUN = $07
 aMARKTARGET = $08
 
+aiBRACE = 0
+aiCLOSECOMBAT = 5
+
 AI_cooldown = 0
 AI_move_defensive = 1
 AI_move_offensive = 2

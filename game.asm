@@ -70,7 +70,7 @@
 	stackPointer2									.dsb 1	;
 
 	buttons 											.dsb 1	; used to store controller #1 status
-	gameProgress									.dsb 1  ; used to keep track of game progress
+	infoMessage										.dsb 1  ; used to keep track of game progress
 	seed													.dsw 1	; used to generate random numbers
 	cursorGridPos									.dsb 1  ; grid coordinates of cursor XXXX YYYY
 
@@ -131,6 +131,8 @@
 	missionEvents									.dsb 4
 	missionEventStreamPointer			.dsb 2
 	missionDialogStream						.dsb 1
+	missionEpilogScreen						.dsb 1
+
 
 	.ende
 	.enum $0300														; sound variables
@@ -163,7 +165,6 @@
 	targetMenuLine2								.dsb 3	; HEAT
 	targetMenuImage								.dsb 6	; image
 	targetMenuLine3								.dsb 6	; NAME
-
 
 	systemMenuLine1								.dsb 3
 	systemMenuLine2								.dsb 3
@@ -854,6 +855,7 @@ runningEffectsH:
 	.include sbr_initializeExplosion.i
 	.include sbr_addToSortedList.i
 	.include sbr_angleToCursor.i
+	.include sbr_directionToCursor.i
 	.include sbr_updatePortrait.i
 	.include sbr_setTargetToolTip.i
 	.include sbr_getSelectedWeaponIndex.i
@@ -917,7 +919,7 @@ paletteColor1:
 	.dsb 5
 	.db $1B
 paletteColor2:
-	.db $1B, $1B, $1B, $1B, $0B, $05, $29, $2D
+	.db $1B, $1B, $1B, $1B, $0B, $0B, $29, $2D
 	.db $18, $28, $19
 	.dsb 5
 	.db $15, $30, $15

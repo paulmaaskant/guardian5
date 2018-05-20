@@ -64,6 +64,10 @@ animationL:
 	.db #> ANIM2D			; laser 64
 	.db #> ANIM2E			; laser 16
 	.db #> ANIM2F			; laser 48
+	.db #> ANIM30			; mech 01 stationary
+	.db #> ANIM31			; mech 01 stationary
+	.db #> ANIM32			; mech 01 stationary
+	.db #> ANIM33			; mech 01 stationary
 
 animationH:
 	.db #< ANIM00
@@ -114,6 +118,10 @@ animationH:
 	.db #< ANIM2D
 	.db #< ANIM2E
 	.db #< ANIM2F
+	.db #< ANIM30			; mech 01 stationary
+	.db #< ANIM31			; mech 01 stationary
+	.db #< ANIM32			; mech 01 stationary
+	.db #< ANIM33			; mech 01 stationary
 
 ANIM00:
 	.db 8, 3
@@ -362,3 +370,19 @@ ANIM2E:
 ANIM2F:
 	.db 1, 5
 	.dw EF1B
+
+ANIM30:
+	.db 1, 5
+	.dw mech01_stationary_d6_f0
+
+ANIM31:
+	.db 1, 5
+	.dw mech01_stationary_d4_f0
+
+ANIM32:
+	.db 1, 5
+	.dw mech01_stationary_d1_f0
+
+ANIM33:
+	.db 1, 5
+	.dw mech01_stationary_d5_f0

@@ -9,9 +9,14 @@ state_initializeModifiers:
     JSR gridPosToScreenPos
     JSR clearCurrentEffects
 
-    LDA #$56
-    STA list3+30
-    LDA list3+0
+    LDX #$54
+    LDA list3+12
+    BPL +positive
+    LDX #$56
+    STX list3+30
+
++positive:
+    JSR absolute
     ORA #$40              ; add name table position
     STA list3+31
     LDA #$57

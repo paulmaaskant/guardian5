@@ -113,15 +113,15 @@ state_refreshMenu:
 labels0:
     ;.db 128+3, H, C, M, $07, $24, 6
     .db 128+16,$8F,space,space,$0A,R,F,D,space,space,space,space,space,$0A,P,T,H, $27, $24, 32
-    .db 128+16,$8F,space,space,$0A,I,S,D,space,space,$3E,space,space,$0A,V,O,M, $47, $24, 32
-    .db 128+16,$8F,space,space,$0A,R,R,D,space,space,$3D,space,space,$0A,L,E,M, $67, $24, 32
+    .db 128+16,$8F,space,space,$0A,I,S,D,space,space,space,space,space,$0A,V,O,M, $47, $24, 32
+    .db 128+16,$8F,space,space,$0A,R,R,D,space,space,space,space,space,$0A,L,E,M, $67, $24, 32
     .db 0
 
 labels1:
     ;.db 128+3, N, P, W, $07, $24, 6
-    .db 128+24,$3B,space,$0A,I,T,H,space,space,$3E,space, space,$0A,X,A,M,space,space,$3D,space,space,$0A,G,M,D, $27, $24, 48
-    .db 128+24,$3B,space,$0A,C,T,H,space,space,$3E,space,$0A,$0A,N,I,M,space,space,X,space,space,$0A,M,M,A, $47, $24, 48
-    .db 128+7,T,space,$0A,$0A,D,L,R, $67, $24, 14
+    .db 128+24,space,space,$0A,I,T,H,space,space,space,space, space,$0A,X,A,M,space,space,space,space,space,$0A,G,M,D, $27, $24, 48
+    .db 128+24,space,space,$0A,C,T,H,space,space,space,space,$0A,$0A,N,I,M,space,space,space,space,space,$0A,M,M,A, $47, $24, 48
+    .db 128+7,space,space,$0A,$0A,D,L,R, $67, $24, 14
     .db 0
 
 selector0:

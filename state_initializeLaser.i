@@ -56,7 +56,7 @@ state_initializeLaser:
   .db $4A
 
 state_49_spriteMap:
-  .hex 2B 2E 2C 2F 2D 2F 2C 2E 2B 2E 2C 2F 2D 2F 2C
+  .hex 2B 2E 2C 2F 2D 2F 2C 2E 2B 2E 2C 2F 2D 2F 2C 2E
 
 state_49_flipMap:
-  .hex 00 00 00 00 00 40 40 40 00 00 00 00 40 40 40
+  .hex 00 00 00 00 00 40 40 40 00 00 00 00 00 40 40 40

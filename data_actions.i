@@ -42,12 +42,12 @@ actionPointCostTable:
 	.db 1             ; 08 MARK TARGET
 
 heatCostTable:
-	.db -1             ; 00 MOVE				                                                                ; 00 MOVE
+	.db -1            ; 00 MOVE				                                                                ; 00 MOVE
 	.db 0             ; 01 RANGED ATK 1  			                                                                ; 01 RANGED ATK 1
 	.db 0             ; 02 RANGED ATK 2    		                                                                ; 02 RANGED ATK 2
-	.db -1             ; 03 BRACE      	                                                                ; 03 COOL DOWN
+	.db -1            ; 03 BRACE      	                                                                ; 03 COOL DOWN
 	.db 0             ; 04 CLOSE COMBAT                                                                       ; 04 CLOSE COMBAT
 	.db 0             ; 05 CHARGE                                                                       ; 05 CHARGE
-	.db -1             ; 06 PIVOT TURN                                                                       ; 06 PIVOT TURN
-	.db -2             ; 07 RUN
-	.db -1             ; 08 MARK TARGET
+	.db -1            ; 06 PIVOT TURN                                                                       ; 06 PIVOT TURN
+	.db -2            ; 07 RUN
+	.db -1            ; 08 MARK TARGET

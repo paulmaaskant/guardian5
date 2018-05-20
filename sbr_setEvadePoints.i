@@ -1,6 +1,6 @@
 setEvadePoints:
   LDA #0
-  STA list3+14
+  STA list3+14                ; clear evade point
 
   LDA actionMessage
   BMI +done

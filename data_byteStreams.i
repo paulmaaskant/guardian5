@@ -173,7 +173,7 @@ storyStream:
 
 instructionStream:
 
-brief1Stream:
+mission01prolog:
 	.db setPortrait, 0
 	.db S, T, A, N, D, space, B, Y, space, T, O, space, R, E, C, E, I, V, E, lineBreak
 	.db N, E, W, space, O, R, D, E, R, S, waitForA
@@ -190,7 +190,7 @@ brief1Stream:
 	.db A, N, D, space, E, L, I, M, I, N, A, T, E, space, T, H, E, space, dict, enemy, waitForA
 	.db endOfStream
 
-brief2Stream:
+mission01epilogSuccess:
 	.db M, I, S, S, I, O, N, space, A, C, C, O, M, P, L, I, S, H, E, D
 	.db waitForA
 	.db nextPage
@@ -206,7 +206,7 @@ brief2Stream:
 	.db T, H, A, N, K, S, space, F, O, R, space, P, L, A, Y, I, N, G, waitForA
 	.db endOfStream
 
-brief3Stream:
+mission01epilogFailed:
 	.db Y, O, U, R, space, U, N, I, T, space, H, A, S, space, B, E, E, N, lineBreak
 	.db D, E, S, T, R, O, Y, E, D
 	.db waitForA

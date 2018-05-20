@@ -32,32 +32,53 @@ state_ai_determineAction:
   ;       - repeat untill a move is possble
 
 
+
+
   ; ----------------------------------------
   ; 1. select most attractive target TODO
-  ;     consider all player units
-  ;     lowest score wins:
-  ;     (100-ranged attack hit probability) + target hp + distance
+  ;
+  ; closest target
   ; ----------------------------------------
-  LDX objectListSize
+  LDA #0
+  STA list6
+
+  LDA objectListSize
+  STA list1
+
+  LDA activeObjectGridPos
+  STA par1
 
 -loop:
-  DEX                                     ; note that this assumes that the game is over when there are no valid targets left
-  LDA objectList, X                       ; because DEX is without a stop condition
-  BMI -loop                               ; skip other AI (pilot 1xxx )
+  DEC list1
+  BMI +endLoop
+
+  LDY list1
+  LDA objectList, Y
+  BMI -loop               ; other AI unit -> next object
   BIT pilotBits
-  BEQ -loop                               ; skip obstacles (pilot 0000 )
-
-  STA targetObjectTypeAndNumber           ; choose first player unit that comes up
-  AND #%01111000                          ; needs to be refined, i.e.,
+  BEQ -loop               ; inanimate - > next object
+  TAX
+  AND #%01111000
   TAY
-  STY targetObjectIndex
-  LDA object+3, Y
-	STA cursorGridPos
-
-  LDY activeObjectGridPos
-  STY par1
+  LDA object+3, Y         ; object grid pos
   JSR distance
+  JSR addToSortedList
+  JMP -loop
+
++endLoop:
+  LDY list6
+  LDA list6, Y
+  STA targetObjectTypeAndNumber
+  AND #%01111000
+  STA targetObjectIndex
+  TAX
+  LDA object+3, X
+  STA cursorGridPos
+  LDA list7, Y
   STA distanceToTarget
+
+  LDA #0
+  STA list6
 
   ; ----------------------------------------
   ; 2. score all options
@@ -88,13 +109,37 @@ state_ai_determineAction:
 +store:
   STA list5, X
 
+  CPX #aiCLOSECOMBAT         ; Adjustment #1
+  BNE +next                 ; hovering units cannot charge
+  LDA activeObjectStats+2
+  BPL +next
+  LDA #0
+  STA list5, X
+
++next:
+  CPX #aiBRACE               ; Adjustment #2
+  BNE +next                 ; time to cool down
+  LDY activeObjectIndex
+  LDA object+1, Y
+  AND #%00000111
+  CMP #6
+  BCC +next
+  LDA #10
+  STA list5, X
+
++next:
+  CPX #aBRACE
+  BNE +next
+  LDA list5, X
+  STA debug
+
++next:
   DEC selectedAction
   BPL -loop
 
   ; ----------------------------------------
   ; 3. select best option
   ; ----------------------------------------
-
   LDX #7
   LDA #0
   STA actionMessage     ; reset
@@ -139,11 +184,11 @@ state29_actionID:
   .db aMARKTARGET     ; AI_aim
 
 state29_baslineLineScore:
-  .db $01             ; AI_cooldown
-  .db $00             ; AI_move_defensive
-  .db $02             ; AI_move_offensive
-  .db $04             ; AI_ranged_attack_1
-  .db $03             ; AI_ranged_attack_2
-  .db $03             ; AI_close_combat
-  .db $00             ; AI_charge
-  .db $05             ; AI_aim
+  .db 1             ; AI_cooldown
+  .db 0             ; AI_move_defensive
+  .db 2             ; AI_move_offensive
+  .db 4             ; AI_ranged_attack_1
+  .db 3             ; AI_ranged_attack_2
+  .db 3             ; AI_close_combat
+  .db 0             ; AI_charge
+  .db 5             ; AI_aim

@@ -212,22 +212,22 @@ mech02_stationary_d6_f0:
 	.dw mech02_d6
 
 mech03_stationary_d1_f0:
-  .db %10100000
+  .db %10101000
 	.db -16
 	.dw mech03_d1
 
 mech03_stationary_d4_f0:
-  .db %10100000
+  .db %10101000
 	.db -16
 	.dw mech03_d4
 
 mech03_stationary_d5_f0:
-  .db %10100000
+  .db %10101000
   .db -16
   .dw mech03_d5
 
 mech03_stationary_d6_f0:
-	.db %10100000
+	.db %10101000
 	.db -16
 	.dw mech03_d6
 

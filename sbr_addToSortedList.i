@@ -1,6 +1,9 @@
 ;
 ; In X = item ID
 ; In A = item score
+;
+; high score goes down the list
+;
 addToSortedList:
 
   LDY #0

@@ -20,45 +20,8 @@
 ; to retrieve the direction from a look up table
 
 state_faceTarget:
-  LDY targetObjectIndex
-  LDA object+3, Y
-  TAY
-
-
-  LDA activeObjectGridPos                                                       ; point 1
-  JSR setLineFunction                                                           ; used to set to transpose
-                                                                                ; point 1 and point 2 to tile grid coors
-                                                                                ; and store them in list1+0, 1, 2, 3
-  LDA #$00
-  STA list1+9
-
-  CLC
-  LDA list1+1         ; ox
-  ADC list1+2         ; py
-  SEC
-  SBC list1+0         ; oy
-  SBC list1+3         ; px
-  ASL
-  ROL list1+9         ; push sign bit into list1+9
-
-  CLC
-  LDA list1+1         ; ox
-  ADC list1+0         ; oy
-  SEC
-  SBC list1+2         ; py
-  SBC list1+3         ; px
-  ASL
-  ROL list1+9         ; push sign bit into list1+9
-
-  SEC
-  LDA list1+2         ; py
-  SBC list1+0         ; oy
-  ASL
-  ROL list1+9         ; push sign bit into list1+9
-
-  LDY list1+9
-  LDX state29_direction, Y
-  STX locVar1
+  JSR directionToCursor
+  STA locVar1
 
   LDY activeObjectIndex
   LDA object+0, Y
@@ -80,5 +43,5 @@ state_faceTarget:
 +done:
   JMP pullState
 
-state29_direction:
-  db 5, 6, 4, 3, 5, 1, 3, 2
+attackDirectionTable:
+	.db 1, 1, 2, 3, 4, 4, 5, 6

@@ -1,7 +1,7 @@
 ; --- unit type attribute tables ---
 objectTypeL:
 	.db #< objectType0 ; mech: SLINGSHOT
-	.db #< objectType1 ; mech: unnamed
+	.db #< objectType1 ; mech: GEIST
 	.db #< objectType2 ; mech: SAI
 	.db #< objectType3 ; mech: DEMON
 	.db #< objectType4 ; obstacle: BUILDING
@@ -15,62 +15,41 @@ objectTypeH:
 	.db #> objectType4
 	.db #> objectType5
 
-objectType0:			; SLINGSHOT
-	.db $1E 				; D1
-	.db $1C 				; D2 / D6
-	.db $1F 				; D3 / D5
-	.db $1D 				; D4
-	.db $17 				; D1 (moving)
-	.db $15 				; D2 / D6 (moving)
-	.db $14 				; D3 / D5 (moving)
-	.db $16 				; D4 (moving)
-									; ------
-	.db 44					; 00 mech name : SLINGSHOT
-	.db 7						; 01 max hit points
-	.db 1						; 02 melee
-	.db 2						; 03 movement points
-	.db 0						; 04 tile BG offset
-	.db 15					; 05 defense (front)
-	.db 15					; 06 defense (side)
-	.db 0						; 07 defense (rear)
+objectType0:				; SLINGSHOT
+	.hex 1E 1C 1F 1D	; TORSO animation
+	.hex 17 15 14 16 	; LEG animation
+	.db 44						; 00 mech name : SLINGSHOT
+	.db 7							; 01 max hit points
+	.db 1							; 02 melee
+	.db 2							; 03 movement points
+	.db 0							; 04 tile BG offset
+	.db 15						; 05 defense (front)
+	.db 15						; 06 defense (side)
+	.db 0							; 07 defense (rear)
 
-objectType1:			; UNKNOWN
-	.db $1A 				; D1
-	.db $18 				; D2 / D6
-	.db $1B 				; D3 / D5
-	.db $19 				; D4
-	.db $17 				; D1 (moving)
-	.db $15 				; D2 / D6 (moving)
-	.db $14 				; D3 / D5 (moving)
-	.db $16 				; D4 (moving)
-									; ------
-	.db 27					; 00 mech name unknown
-	.db 7						; 01 max hit points
-	.db 3						; 02 melee
-	.db 3						; 03 movement points
-	.db 0						; 04 tile BG offset
-	.db 15					; 05 defense (front)
-	.db 0						; 06 defense (side)
-	.db 0						; 07 defense (rear)
+objectType1:			 	; GEIST
+	.hex 32 30 33 31 	; TORSO animation
+	.hex 17 15 14 16 	; LEG animation
+	.db 21					 	; 00 name: GEIST
+	.db 7						 	; 01 max hit points
+	.db 1						 	; 02 melee
+	.db 5						 	; 03 movement points
+	.db 0						 	; 04 tile BG offset
+	.db 0					   	; 05 defense (front)
+	.db 0						 	; 06 defense (side)
+	.db 0						 	; 07 defense (rear)
 
-objectType2:			; SAI
-	.db $1A 				; D1
-	.db $18 				; D2 / D6
-	.db $1B 				; D3 / D5
-	.db $19 				; D4
-	.db $17 				; D1 (moving)
-	.db $15 				; D2 / D6 (moving)
-	.db $14 				; D3 / D5 (moving)
-	.db $16 				; D4 (moving)
-									; ------
-	.db 43					; 00 mech name : SAI
-	.db 7						; 01 max hit points
-	.db 3						; 02 melee
-	.db 4						; 03 movement points
-	.db 0						; 04 tile BG offset
-	.db 15					; 05 defense (front)
-	.db 0						; 06 defense (side)
-	.db 0						; 07 defense (rear)
+objectType2:				; SAI
+	.hex 1A 18 1B 19 	; TORSO animation
+	.hex 17 15 14 16 	; LEG animation
+	.db 43						; 00 mech name : SAI
+	.db 7							; 01 max hit points
+	.db 3							; 02 melee
+	.db 4							; 03 movement points
+	.db 0							; 04 tile BG offset
+	.db 15						; 05 defense (front)
+	.db 0							; 06 defense (side)
+	.db 0							; 07 defense (rear)
 
 objectType3:			; DEMON
 	.db $12 				; D1

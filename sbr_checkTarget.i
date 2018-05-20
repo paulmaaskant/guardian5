@@ -10,6 +10,7 @@
 ; list3+14 				evade points
 ; list3+15				action properties
 ; list3+16 				active unit heat damage
+; list3+7					(b7) 0 rear attack, 1 frontal attack
 
 ; list3+20				target's hit points
 ; list3+21				damage sustained by attacker
@@ -39,6 +40,14 @@
 ; - is the action actually an attack (cooldown)
 ; -----------------------------------------
 checkTarget:
+;	LDX #63
+;	LDA #0
+
+;-loop:															; clear list 3
+;	STA list3, X
+;	DEX
+;	BPL -loop
+
 	LDY selectedAction								; retrieve selected action
 	LDX actionList, Y
 	LDA actionPropertiesTable, X
@@ -182,37 +191,25 @@ checkTarget:
 	RTS																				; done, no more checks
 
 +continue:
-	;JSR getStatsAddress											; set pointer1 to target type data
-	;LDA activeObjectGridPos
-	;JSR gridPosToScreenPos
-	;JSR angleToCursor												; determine the angle of attack
-	;CLC																			; to derive the appropriate defense value
-	;ADC #32																	; rotate by 45 degrees (32 radial)
-	;LSR
-	;LSR
-	;LSR
-	;LSR
-	;LSR
-	;TAY 																		; Y is the defending direction for the target
-	;LDA angleToTargetTable, Y
-	;SEC																			;
-	;LDX targetObjectIndex
-	;LDA object+2, X
-	;BMI +shutdown
-	;LDA object+0, X
-	;AND #$07																; target's facing direction
-	;SBC angleToTargetTable, Y								; subtract target's defending direction
-	;JSR absolute														; A absolute value
-	;TAX
-	;LDY defenseValueIndexTable, X						; set Y to correct type index for front, flank or rear def value
-	;LDA (pointer1), Y												; retrieve target's defense value
-	;EOR #$FF
-	;SEC
-	;ADC activeObjectStats+5									; - DEF + ACC
-																						; -- ranged attack
+	JSR directionToCursor
+	TAX																				; store in X
 	LDY targetObjectIndex
+	LDA object+0, Y
+	AND #%00000111														; defending unit direction
+	SEC
+	SBC identity, X
+	JSR absolute
+	CMP #2
+	ROR list3+17															; set (b7) 0 rear attack 1 frontal attack
+	BMI +continue
+	LDA #16
+	STA infoMessage
+
+
++continue:
+	LDY targetObjectIndex											; check and adjust to hit % for evade
 	LDA object+4, Y														; evade points?
-	AND #$07
+	AND #$07																	; mask evade points
 	TAX
 	LDA activeObjectStats+5
 	SEC
@@ -225,10 +222,10 @@ checkTarget:
 	LDA #$4D
 	STA list3+35
 
-	LDA list3+15
-	AND #%00000010
-	BNE +pilotingAttack
-	LDA object+4, Y													; target lock?
+	LDA list3+15														; attack properties
+	AND #%00000010													; accuracy attack or piloting attack?
+	BNE +pilotingAttack											; -> piloting
+	LDA object+4, Y													; -> accuracy, check target lock
 	AND #%01000000
 	BEQ +continue
 	CLC
@@ -264,42 +261,32 @@ checkTarget:
 
 	LDY targetObjectIndex
 	LDA object+4, Y													; is target braced for impact?
-	ASL
+	ASL																			; set carry flag
 	PLA
-	BCC +continue
+	BCC +continue														; carry 0 -> target not BRACED
+	LDY list3+17
+	BPL +continue														; rear arc attack -> target BRACE ignored
 	LSR																			; half damage round up
 	ADC #0
+	LDY #18					;BUG x is reserved!
+	STY infoMessage ;BUG
 	BCC +continue
 
 +notRanged:
-	LDA activeObjectStats+7									; close combat damage
+	LDA activeObjectStats+7									; close combat damage ignores BRACE
 	LDX #0																	; no heat inflicted
 
 +continue:																; set inform message indicating expected damage
 	STX list3+13
-	STA list3+2
+	STA list3+2															; DMG
 
-	LDA #$14																; DAMG XHHH-
+	LDA #$14																; DAMG X
 	STA actionMessage
-
-;	LDX #6
-;	LDA #space
-
-;-loop:
-;	STA list3+40, X
-;	DEX
-;	BPL -loop
 
 +return:
 	LDA #15
 	JMP setTargetToolTip
 
-
-;angleToTargetTable:
-;	.db 4, 4, 5, 6, 1, 1, 2, 3
-
-;defenseValueIndexTable:
-;	.db 5, 6, 6, 7, 6, 6
 
 evadeSpriteMap1:
 	.hex 4C 4B 4A 4A 4A

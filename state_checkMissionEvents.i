@@ -119,10 +119,14 @@ missionEventEndMission:
   INY
   LDA (bytePointer), Y
   STA missionDialogStream
+  INY
+  LDA (bytePointer), Y
+  STA missionEpilogScreen
+
   JSR pullAndBuildStateStack
   .db 11								; # items
   .db $0D, 0						; change brightness 0: fade out
-  .db $00, 7						; load screen 07: failed screen
+  .db $00, 255					; load screen 255: missionEpilogScreen
   .db $0D, 1						; change brightness 1: fade in
   .db $01, 255					; load stream 255: missionDialogStream
   .db $0D, 0						; change brightness 0: fade out

@@ -6,6 +6,7 @@
 ; IN OUT A
 ;-----------------------------------------
 absolute:
+	AND #$FF					; set neg flag based on A
 	BPL +continue
 	EOR #%11111111
 	CLC
