@@ -215,8 +215,9 @@ state_selectAction:
 	BCC +next
 
 	JSR buildStateStack		; open start menu
-	.db 10
+	.db 12
 	.db $32, %00100100		; clear sys flag: portrait & object sprites
+	.db $45, %00000000		; blink action menu (switch off)
 	.db $20, 2						; load hud menu background
 	.db $47, 0						; set target object as hud objec
 	.db $3D								; load hud menu values

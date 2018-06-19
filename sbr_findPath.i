@@ -54,10 +54,10 @@ oppositeDirection:
 	TAY
 	LDA list8, Y
 	AND #$07											; direction to get to preceding node
-	TAY
-	LDA oppositeDirection-1, Y		; determine opposite direction
-	STA list2, X									; and store in list 2 (used for animation)
-	TYA
+	;TAY
+	;LDA oppositeDirection-1, Y		; determine opposite direction
+	;STA list2, X									; and store in list 2 (used for animation)
+	;TYA
 	DEX
 	BEQ +done										; Y holds node
 	TAY
@@ -67,7 +67,7 @@ oppositeDirection:
 	JMP -loop
 
 +done:
-	LDA #9
+	LDA #10
 	CMP list1
 	BCS +continue
 	STA list1

@@ -42,9 +42,10 @@ Instructions
 
   Note that not all actions ACTIONS are always available. The availability of an ACTION depends on the position of the CURSOR, the number of remaining ACTION POINTS and the UNIT TYPE of the ACTIVE UNIT. Consider some examples:
 
-  - The RUN and MOVE ACTIONS are only available if the cursor is on an empty map position
+  - The MOVE ACTIONS are only available if the cursor is on an empty map position
   - The CLOSE COMBAT action is only available if the target unit is in an adjacent map position
-  - The RUN action costs 2 ACTION POINTS and is not available when only 1 ACTION POINT remains
+  - The CLOSE COMBAT action is not available for hovering units
+  - The CHARGE action costs 2 ACTION POINTS and is not available when only 1 ACTION POINT remains
 
   Some actions can only be performed if certain conditions are met. If the conditions are not met, the action is blocked. A message appears in the HUD that explains why the action is blocked.
 
@@ -52,35 +53,39 @@ Instructions
   - Moving empty position is only possible if it is withing moving range
   - Attacking with a ranged WPN1 is only possible if it is not currently reloading
 
-2.5 Heat & Shutdown
+2.5 Heat
 
-  In addition to the ACTION POINT cost, each ACTION also incurs a HEAT POINT cost. At the start of a mission, all units start out with 0 HEAT POINTs, but as a unit takes turns and performs ACTIONs, it also accumulates HEAT POINTS.
+  If you use an ACTION to use a weapon or a melee attack, you will also incur a number of HEAT POINT cost.
 
-  Once a unit reaches a total of 6 HEAT POINTS, it will be forced to SHUT DOWN. While a unit is SHUT DOWN, it is especially vulnerable to enemy attacks.
+  Once a unit reaches a total of 6 HEAT POINTS, it will sustain 2 HEAT DAMAGE after each ACTION.
 
-  When a unit that is SHUT DOWN becomes the ACTIVE UNIT, it will automatically end it's turn to remove HEAT POINTS. When a unit is back to 0 HEAT POINTS, it will automatically restart and it is no longer SHUT DOWN.
+  A unit loses one HEAT POINT whenever it performs an action that is not an attack
 
-  Note that a unit can prevent being SHUT DOWN by periodically selecting the END TURN ACTION. This ACTION will remove one HEAT POINT for each unspent ACTION POINT.
+2.6 Evade
 
-2.6 Attacking Unit
+  If a unit moves more than 4 spaces, it gains EVADE points, making it more difficult to hit by enemy units.
 
-  When attacking another unit, the chance of success is determined by the skill of the attacking unit and the defense value of the defending unit.
+  A unit retains EVADE points until it's next turn; at the start of a unit's turn, it loses all EVADE points.
 
-  The chance of scoring a direct his is determined by the SKL attribute of the attacking unit, reduced by the defensive value of the defending unit. The resulting value represents the % of success.
+2.7 Brace for impact
 
-  Each unit has three different defense values (Front, Side and Rear). The angle of attack in combination with the direction that the defending unit is facing determines which of the three defense values is used.
+  Some units are able to to brace for impact, as an ACTION.
+  Bracing for impact immediately ends a units turn and lasts until that unit's next turn.
+  Units that are braced for impact reduce all incoming damage through front arc attacks by half.
+
+2.8 Attacking a unit
+
+  When attacking another unit, the chance of success is determined as follows
+
+  - If the attack is a ranged attack, the base to-hit % is the ACCURACY of the attacking unit
+  - If the attack is a close combat attack, the base to-hit % is the SKILL of the attacking unit
+  - The to-hit chance is reduced by 10% for every EVADE POINT that the defending unit has
+  - The to-hit change is increased by 10% if the defending unit is MARKED
+  - If the attack angle is in the REAR arc of the defending unit, the to-hit chance is increased by 20%
 
   The angle of attack is determined by drawing a line from the attacking unit hexagon to the defending unit hexagon. This line crosses one of the 6 sides of the defending unit's hexagon.
 
-  - If this is the side that the defending unit is facing, the front defense value (DFR) is used.
-  - If this is the side that is opposite to the side that the defending nuit is facing, the rear defense value (DRR) is used
-  - If it is one of the other 4 sides, the side defense value (DSI) is used
-
-  Note that, typically, attacking a unit in from behind has a greater chance of scoring a direct hit, given that the rear defense value is typically the lowest of the defense value.
-
-  Note that if the defending unit is target locked by the attacking unit, the change of scoring a direct hit is increased by 10%
-
-  Note that a target that is SHUT DOWN has a 99% of being hit, regardless of the attacker's skill and the defending units defense values.
+  After an attack resolves, the defending unit loses one EVADE point, even if the attack missed.
 
 3.0 Unit Types & Stats
 
@@ -88,14 +93,12 @@ Instructions
 
   Unit Attributes
 
-  APT - Number of action points per turn
-  SKL - Skill, used to determine chance of success when attacking
-  HTP - Number of hit points
-  MOV - Number of movement points
-  MEL - Melee damage in close combat
-  DFR - Front Defense value
-  DSI - Side Defense value
-  DRR - Rear Defense value
+  SKILL - Skill, used to determine chance of success with close combat attacks
+  ACCUR - Accuracy, used to determine chance of succes with ranged attacks
+
+  ARMOR - Number of hit points
+  SPEED - Number of movement points
+  MELEE - Melee damage in close combat
 
   Weapon Attributes (each unit is equipped with 1 or 2 weapons)
 

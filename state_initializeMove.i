@@ -15,13 +15,11 @@ state_initializeMove:
   LDA list1
   STA activeObjectStats+3     ; keep track of # moves
 
-+continue:
   LDA object+5, Y             ; reload obscured background tile
                               ; A parameter for setTile
   LDY activeObjectGridPos			; Y parameter for setTile
   JSR setTile
 
-+continue:
   LDA #0
   STA actionCounter           ; frame counter
   STA actionList+0						; node number on path in list1

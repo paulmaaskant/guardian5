@@ -61,8 +61,11 @@ state_resolveLaser:
   TAX														; copy to X
 
   DEC list1+2										; if last loop cycle
-  BNE +continue
-                                ; then
+  BNE +continue                 ; then
+
+  LDA #0
+  STA currentEffects+24, X      ; no mirroring
+
   LDX list1+7										; X = full radius (target position)
   LDA list2+0										; shield or hit animation
   STA list1+9

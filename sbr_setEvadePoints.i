@@ -11,6 +11,11 @@ setEvadePoints:
   SBC #4											; 1 point for each move above 4
   BMI +done
   BEQ +done
+  CMP #6
+  BCC +continue
+  LDA #5
+
++continue:
   STA list3+14
   LDA #13
   STA actionMessage

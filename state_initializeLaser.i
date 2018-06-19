@@ -37,18 +37,18 @@ state_initializeLaser:
 
   LDA #4										  ; switch on controlled effects
   STA effects									;
-  LDX #4											; explosion animation
+  LDX #4											; hit animation
 ; LDY #17										  ; explosion sound
 
   LDA list3+4
   BMI +continue
 
-  LDX #8											; shield animation
+  LDX #8											; miss animation
 ; LDY #27										  ; shield sound
 
 +continue:
   STX list2+0
-; STY list1+6
+; STY list2+1
 
   JSR pullAndBuildStateStack
   .db 3             ; #items

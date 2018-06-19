@@ -89,7 +89,7 @@ state_confirmAction:
   LDA effects
   ORA #$01
   STA effects
-  LDX list2
+  LDX list1+19
   CPX list1
   BCC +noReset
   LDX #0
@@ -97,7 +97,7 @@ state_confirmAction:
 +noReset:
   INX
   LDA list1, X
-  STX list2
+  STX list1+19
   JSR gridPosToScreenPos
   BCC +done											; off screen!
   LDA currentObjectXPos

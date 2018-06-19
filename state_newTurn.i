@@ -17,7 +17,7 @@ state_newTurn:
 
   LDA objectList, X
   BIT pilotBits           ; make sure pilot <> 0
-  BNE +setNext            ;
+  BNE +setNext            ; match! -> set next active object
 
 +noMatch:
   INX
@@ -33,8 +33,21 @@ state_newTurn:
   BNE -loop
 
   STX locVar1							; reset index to 0
-  INC missionRound
-  BNE -loop								; JMP
+  INC missionRound        ; INCREASE ROUND
+
+                          ; unMARK all units at the start of a new round
+  LDY #120
+
+-unmarkLoop:
+  LDA object+4, Y
+  AND #%10111111          ; unmark
+  STA object+4, Y
+  TYA
+  SEC
+  SBC #8
+  TAY
+  BPL -unmarkLoop
+  BMI -loop								; JMP
 
 +setNext:
   STA	activeObjectIndexAndPilot

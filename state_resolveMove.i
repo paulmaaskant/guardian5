@@ -11,10 +11,10 @@
 ; Frame 1: restart loop or move complete
 ;
 ; IN list1, nodes in path
-; IN list2, directions corresponding to the nodes in path
+; IN list8, directions corresponding to the nodes in path
 ;
 ; LOCAL selectedAction
-; LOCAL actionList+0, 		index for list1 and list2
+; LOCAL actionList+0, 		index for list1
 ; LOCAL actionList+1, 		X offset in pixels
 ; LOCAL actionList+2, 		Y offset in pixels
 
@@ -85,9 +85,6 @@ state_resolveMove:
 	ADC (pointer1), Y						; add tile map offset
 
 	ORA #%11000000							; blocked for movement and los
-	;TAX
-	;LDY activeObjectGridPos
-	;STA nodeMap, Y
 	LDY activeObjectGridPos
 	JSR setTile
 	JMP pullState
@@ -101,13 +98,22 @@ state_resolveMove:
 	STA actionCounter
 
 	INC actionList
-	LDX actionList							; X = index for 'list 1' and 'list2'
-	LDY activeObjectIndex				; Y = index	for 'objectTypeAndNumber'
 
+	LDX actionList							; X = index for 'list 1'
+	LDY list1, X
+	LDA list8, Y								; list8 still holds directions from findPath sbr
+	AND #%00000111
+	TAY
+	LDA oppositeDirection-1, Y
+	STA list1+19								; set the current direction
+
+	LDY activeObjectIndex				; Y = index	for 'objectTypeAndNumber'
 	LDA object, Y								; set new direction bits (b2-0) on active object
 	AND #%11111000
-	ORA list2, X
+	ORA list1+19
 	STA object, Y
+
+
 
 	LDA list1, X								; update active object's grid position
 	STA activeObjectGridPos			;
@@ -120,8 +126,9 @@ state_resolveMove:
 	;-------------------------------
 	JSR calculateObjectSequence		; determines horizontal row of each object (between 0 and 31)
 
-	LDX actionList							; X = index for 'list 1' and 'list2'
-	LDY list2, X
+	;LDX actionList							; X = index for 'list 1'
+	;LDY list2, X
+	LDY list1+19
 	LDA state_resolveMoveUpDownTable, Y
 	BNE +movingUp
 
@@ -135,14 +142,14 @@ state_resolveMove:
 	;-------------------------------
 +calculateOffset:
 
-	LDX actionList							; X = index for 'list 1' and 'list2'
-	LDY list2, X
+																; LDX actionList							; X = index for 'list 1'
+	LDY list1+19									; list2, X
 	LDX state_resolveMoveRadiusTable-1, Y
 	LDA actionCounter
 	JSR multiply
 
-	LDX actionList							; X = index for 'list 1' and 'list2'
-	LDY list2, X
+																;	LDX actionList							; X = index for 'list 1' and 'list2'
+	LDY list1+19                  ; list2, X
 	LDA state_resolveMoveAngleTable-1, Y
 	LDX par1
 

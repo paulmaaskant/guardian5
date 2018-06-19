@@ -29,17 +29,22 @@ levelOne:
 
 	.db 0
 
-	.db	6			; number of objects
+	.db	9			; number of objects
 
 	.db $04			; player pilot 4
 	.db $03			; object grid position
 	.db $04			; object type & facing RD
-	.db $31			; object wpns
+	.db $11			; object wpns
 
 	.db $02			; player pilot 2
-	.db $05			; object grid position
+	.db $04			; object grid position
 	.db $14			; object type 1 & facing RD
 	.db $30			; object wpns
+
+	.db $01			; player pilot 2
+	.db $05			; object grid position
+	.db $24			; object type 1 & facing RD
+	.db $00			; object wpns
 
 	.db $00			; object object building
 	.db $25			; object grid position
@@ -53,18 +58,18 @@ levelOne:
 	.db $C7			; object grid position
 	.db $41			; object type & facing RD
 
-	.db $80			; enemy pilot 0 (cruella)
-	.db $18			; object grid position
+	.db $80			; enemy pilot 0 (unkown)
+	.db $E5			; object grid position
 	.db $35			; object type 1 & facing RD
 	.db $10			; object wpns
 
-	.db $01			; enemy pilot 4 (drone)
-	.db $E4			; object grid position
-	.db $55			; object type 1 & facing RD
-	.db $20			; object wpns
+	.db $81			; enemy pilot 1 (unkown)
+	.db $E6			; object grid position
+	.db $35			; object type 1 & facing RD
+	.db $10			; object wpns
 
 	.db $84			; enemy pilot 4 (drone)
-	.db $4C			; object grid position
+	.db $F4			; object grid position
 	.db $54			; object type 1 & facing RD
 	.db $20			; object wpns
 

@@ -20,18 +20,22 @@ statusBar:
 	.db repeatBlank, $00  ; 8 blank rows
 
 	; offset is 1 blank
-	.db repeatBlank, 25, $2B, repeatBlank, 3, $2A
-	.db repeatBlank, 23
-	.db L, I, P
-	.db repeatBlank, 29
-	.db L, K, S
+	.db repeatBlank, 18, $0A, T, O, L, I, P, space, $2B, repeatBlank, 3, $2A
+	.db repeatBlank, 26
+	;.db $0A, T, O, L, I, P
+	.db repeatBlank, 26
+	.db $0A, R, U, C, C, A
 	.db space
 	.db $40
 	.db $41
-	.db repeatBlank, 3
-	.db repeatBlank, 23+4
+	.db repeatBlank, 3+20
+	.db $0A,L, L, I, K, S
+	.db space
+
 	.db $2D, repeatBlank, 3, $2C
-	.db repeatBlank, 1+32+1+25 ;
+	.db repeatBlank, 1+32+1+18+7 ;
+
+	;.db $0A, A, H, C, E, M, space
 
 	.db $2B, repeatBlank, 3, $2A
 	.db repeatBlank, 1

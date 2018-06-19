@@ -27,15 +27,22 @@ state_updateOverview:
 +continue:
   ASL
   TAX
-  LDA pilotTable-2, X           ; pilot skill
+  LDA pilotTable-2, X           ; accuracy
   JSR toBCD
   LDA par2
   STA list8+10
   LDA par3
   STA list8+11
 
-  LDA pilotTable-3, X           ; pilot action points
+  LDA pilotTable-1, X           ; piloting
+  JSR toBCD
+  LDA par2
+  STA list8+12
+  LDA par3
   STA list8+13
+
+  ;LDA pilotTable-3, X           ; pilot action points
+  ;STA list8+13
 
   LDY pilotTable-4, X           ; pilot name
   LDX #0
@@ -47,7 +54,7 @@ state_updateOverview:
 
   LDY list8+253
   JSR getStatsAddress           ; Y goes in; sets pointer1
-  LDX #4
+  LDX #1
 
 -loop:
   LDY state3D_attribute_index, X
@@ -209,13 +216,13 @@ state_updateOverview:
   .db $48         ; show current tab
 
 state3D_attribute_index:
-  .db   2,  3,  5,  6,  7
+  .db   2,  3
 state3D_attribute_mask:
-  .db 255,127,255,255,255
+  .db 255,127
 state3D_attribute_list_pos_tens:
-  .db  32, 31, 33, 34, 35
+  .db  32, 31
 state3D_attribute_list_pos_ones:
-  .db  42, 41, 43, 44, 45
+  .db  42, 41
 
 state3D_animationType:
   .db  29, 33, 32, 34

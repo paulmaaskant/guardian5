@@ -46,14 +46,14 @@ pilotTable:
               ; enemy 0
   .db 27      ; "UNKNOWN"
   .db 2       ;
-  .db 65      ;
-  .db 50       ;
+  .db 70      ;
+  .db 70       ;
 
               ; enemy 1
   .db 27      ; "UNKNOWN"
   .db 2       ;
-  .db 65      ;
-  .db 50       ;
+  .db 60      ;
+  .db 60       ;
 
               ; enemy 2
   .db 27      ; "UNKNOWN"

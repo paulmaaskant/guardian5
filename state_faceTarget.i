@@ -20,8 +20,18 @@
 ; to retrieve the direction from a look up table
 
 state_faceTarget:
+  LDA cursorGridPos
+  STA list1+19
+
+  LDY targetObjectIndex
+  LDA object+3, Y
+  STA cursorGridPos             ; temp abuse/overwrite cursorGridPos with targetGridPos
+                                ; so that we can leverage sbr direction to cursor
   JSR directionToCursor
   STA locVar1
+
+  LDA list1+19
+  STA cursorGridPos
 
   LDY activeObjectIndex
   LDA object+0, Y
@@ -31,6 +41,7 @@ state_faceTarget:
 
   LDY activeObjectIndex   ; parameter for getStatsAddress
   JSR getStatsAddress
+
   LDY #4
   LDA (pointer1), Y       ; base tile
   CLC

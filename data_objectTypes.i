@@ -23,9 +23,9 @@ objectType0:				; SLINGSHOT
 	.db 1							; 02 melee
 	.db 2							; 03 movement points
 	.db 0							; 04 tile BG offset
-	.db 15						; 05 defense (front)
-	.db 15						; 06 defense (side)
-	.db 0							; 07 defense (rear)
+	.db 0							; 05 not used
+	.db 0 						; 06 not used
+	.db 0							; 07 not used
 
 objectType1:			 	; GEIST
 	.hex 32 30 33 31 	; TORSO animation
@@ -35,53 +35,46 @@ objectType1:			 	; GEIST
 	.db 1						 	; 02 melee
 	.db 5						 	; 03 movement points
 	.db 0						 	; 04 tile BG offset
-	.db 0					   	; 05 defense (front)
-	.db 0						 	; 06 defense (side)
-	.db 0						 	; 07 defense (rear)
+	.db 0							; 05 not used
+	.db 0 						; 06 not used
+	.db 0							; 07 not used
 
 objectType2:				; SAI
 	.hex 1A 18 1B 19 	; TORSO animation
 	.hex 17 15 14 16 	; LEG animation
 	.db 43						; 00 mech name : SAI
-	.db 7							; 01 max hit points
+	.db 9							; 01 max hit points
 	.db 3							; 02 melee
-	.db 4							; 03 movement points
+	.db 3							; 03 movement points
 	.db 0							; 04 tile BG offset
-	.db 15						; 05 defense (front)
-	.db 0							; 06 defense (side)
-	.db 0							; 07 defense (rear)
+	.db 0							; 05 not used
+	.db 0 						; 06 not used
+	.db 0							; 07 not used
 
-objectType3:			; DEMON
-	.db $12 				; D1
-	.db $10 				; D2 / D6
-	.db $13 				; D3 / D5
-	.db $11 				; D4
-	.db $17 				; D1 (moving)
-	.db $15 				; D2 / D6 (moving)
-	.db $14 				; D3 / D5 (moving)
-	.db $16 				; D4 (moving)
-									; -------
-	.db 26					; 00 mech name
-	.db 9						; 01 max hit points
-	.db 1						; 02 melee
-	.db 3						; 03 movement points
-	.db 0						; 04 tile BG offset
-	.db 10					; 05 defense (front)
-	.db 5						; 06 defense (side)
-	.db 0						; 07 defense (rear)
+objectType3:				; DEMON
+	.hex 12 10 13 11 	;
+	.hex 17 15 14 16 	; LEG animation
+	.db 26						; 00 mech name
+	.db 9							; 01 max hit points
+	.db 1							; 02 melee
+	.db 3							; 03 movement points
+	.db 0							; 04 tile BG offset
+	.db 0							; 05 not used
+	.db 0 						; 06 not used
+	.db 0							; 07 not used
 
 objectType4:				; OBSTACLE
 	.hex 26 26 26 26	; obstacle sprite
 	.hex 26 26 26 26	; obstacle sprite
 
-	.db 0						; 00 object name
-	.db 3						; 01 max hit points
-	.db 0						; 02 melee
-	.db 0						; 03 movement points
-	.db 13+128			; 04 tile BG (+128 no direction map)
-	.db 0						; 05 defense (front)
-	.db 0						; 06 defense (side)
-	.db 0						; 07 defense (rear)
+	.db 0						  ; 00 object name
+	.db 3						  ; 01 max hit points
+	.db 0						  ; 02 melee
+	.db 0						  ; 03 movement points
+	.db 13+128			  ; 04 tile BG (+128 no direction map)
+	.db 0							; 05 not used
+	.db 0 						; 06 not used
+	.db 0							; 07 not used
 
 objectType5:			; drone: LEMUR
 	.db $28 				;

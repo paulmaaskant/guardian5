@@ -4,11 +4,11 @@
 ; 2 hud with previous object
 
 state_setHudMenuObject:
-  LDA #$0F
+  LDA #15
   LDX #0
 
 -loop:
-  STA list8, X
+  STA list8, X            ; clear list8
   INX
   CPX #252
   BCC -loop
@@ -30,7 +30,7 @@ state_setHudMenuObject:
   BIT pilotBits
   BEQ -retry
   BNE +set
-  
+
 +nextObject:
 -retry:
   INX

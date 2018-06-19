@@ -170,6 +170,9 @@
 	systemMenuLine2								.dsb 3
 	systemMenuLine3								.dsb 3
 
+	tileIndex											.dsb 1
+	tileGridPos										.dsb 1
+
 	characterPortrait							.dsb 16
 	currentEffects								.dsb 30			; effects
 																						; 6 sprites, 5 bytes per sprite
@@ -261,9 +264,8 @@ mainGameLoop:
 	BEQ -
 
 	; ------------------------------
-	; refresh status bar
+	; event: refresh status bar
 	; ------------------------------
-+nextEvent:
 	LDA stackPointer2								; only flush status bar buffer
 	CMP #$99												; if buffer is empty
 	BNE +nextEvent									; otherwise event flag remains set and tries again next frame
@@ -276,6 +278,17 @@ mainGameLoop:
 
 	JSR writeStatusBarToBuffer
 
+	;---------------------------
+	; event: update effect sprites
+	;---------------------------
++nextEvent:
+	LDA events
+	BIT event_refreshTile
+	BEQ +nextEvent
+	EOR event_refreshTile			;
+	STA events
+
+	.include sec_writeTileToBuffer.i
 
 	;---------------------------
 	; event: update effect sprites
@@ -947,8 +960,7 @@ identity:
 
 bit7:
 menuFlag_blink:
-sysFlag_scrollRight:
-event_confirmAction:				.db %10000000
+sysFlag_scrollRight:				.db %10000000
 
 bit6:
 sysFlag_scrollDown:					.db %01000000
@@ -968,7 +980,8 @@ bit3:												.db %00001000
 sysFlag_objectSprites:
 event_refreshStatusBar:			.db %00000100
 
-sysFlag_scrollAdjustment:		.db %00000001
+sysFlag_scrollAdjustment:
+event_refreshTile:				  .db %00000001
 
 pilotBits:									.db %10000111
 bit2to0											.db %00000111
@@ -992,6 +1005,11 @@ portraitBaseYPos:
   .db 0, 0, 0
   .db 8, 8, 8
   .db 16, 16, 16
+
+setTileXOffset:
+  .db 3, 4, 3, 4
+setTileYOffset:
+  .db 18, 18, 19, 19
 
 
 

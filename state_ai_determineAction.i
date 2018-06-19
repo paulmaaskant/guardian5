@@ -109,29 +109,31 @@ state_ai_determineAction:
 +store:
   STA list5, X
 
-  CPX #aiCLOSECOMBAT         ; Adjustment #1
-  BNE +next                 ; hovering units cannot charge
+  CPX #aiCLOSECOMBAT          ; Adjustment #1
+  BNE +next                   ; hovering units cannot charge
   LDA activeObjectStats+2
   BPL +next
   LDA #0
   STA list5, X
 
 +next:
-  CPX #aiBRACE               ; Adjustment #2
-  BNE +next                 ; time to cool down
+  CPX #aiBRACE                 ; Adjustment #2
+  BNE +next                    ; time to cool down
   LDY activeObjectIndex
   LDA object+1, Y
   AND #%00000111
   CMP #6
   BCC +next
-  LDA #10
+  LDA #10                      ; set BRACE score to 10 if unit is overheating
   STA list5, X
 
 +next:
-  CPX #aBRACE
-  BNE +next
-  LDA list5, X
-  STA debug
+  CPX #aiBRACE                 ; Adjustment #3
+  BNE +next                    ; time to cool down
+  LDA activeObjectStats+2
+  BPL +next
+  LDA #0
+  STA list5, X                 ; hovering units cannot BRACE
 
 +next:
   DEC selectedAction

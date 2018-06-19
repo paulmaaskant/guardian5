@@ -219,7 +219,7 @@ checkTarget:
 	STA list3+33
 	LDA evadeSpriteMap2, X
 	STA list3+34
-	LDA #$4D
+	LDA evadeSpriteMap3, X
 	STA list3+35
 
 	LDA list3+15														; attack properties
@@ -237,9 +237,22 @@ checkTarget:
 +pilotingAttack:
 	LDA activeObjectStats+4
 	STA list3+1
-																					; HIT % determined
+
 +continue:
+	LDA list3+17														; HIT % increased by 20
+	BMI +continue														; for a REAR attack
 	LDA list3+1
+	CLC
+	ADC #20
+	STA list3+1
+
++continue:																; HIT % determined
+	LDA list3+1
+	CMP #96
+	BCC +continue
+	LDA #95
+
++continue:
 	JSR toBCD																; convert to BCD for display purposes
 	LDA par2
 	CLC
@@ -289,10 +302,13 @@ checkTarget:
 
 
 evadeSpriteMap1:
-	.hex 4C 4B 4A 4A 4A
+	.hex 4C 4B 4A 4A 4A 4A
 
 evadeSpriteMap2:
-	.hex 4C 4C 4C 4B 4A
+	.hex 4C 4C 4C 4B 4A 4A
+
+evadeSpriteMap3:
+	.hex 4D 4D 4D 4D 4D 53
 
 evadePointEffect:
 	.db 0, 10, 20, 30, 40, 40, 40

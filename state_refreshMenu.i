@@ -80,16 +80,17 @@ state_refreshMenu:
     .db #> titleMenuSelect
 
   header:
-    .db 10,  9, $2B, $27, 20        ; pilot name
-    .db  5, 14, $4B, $27, 10        ; accuracy
+    .db 10,  9, $0D, $27, 20        ; pilot name
+    .db  2, 11, $4D, $27, 4         ; accuracy
+    .db  2, 13, $6D, $27, 4         ; accuracy
     .db 0
 
   layout0:
-    .db 10, 29, $A7, $27, 20        ; mech name
-    .db 3, 32, $2B, $24, 7          ; health / mov / mel 10s
-    .db 3, 42, $2C, $24, 7          ; health / mov / mel 01s
-    .db 3, 35, $34, $24, 7          ; def front / side / rear 10s
-    .db 3, 45, $35, $24, 7          ; def front / side / rear 01s
+    .db 10, 29, $AD, $27, 20        ; mech name
+    .db 3, 32, $2D, $24, 7          ; health / mov / mel 10s
+    .db 3, 42, $2E, $24, 7          ; health / mov / mel 01s
+    ;.db 3, 35, $34, $24, 7          ; def front / side / rear 10s
+    ;.db 3, 45, $35, $24, 7          ; def front / side / rear 01s
     .db 0
 
   layout1:                           ; weapon 1
@@ -111,10 +112,10 @@ state_refreshMenu:
     .db 0
 
 labels0:
-    ;.db 128+3, H, C, M, $07, $24, 6
-    .db 128+16,$8F,space,space,$0A,R,F,D,space,space,space,space,space,$0A,P,T,H, $27, $24, 32
-    .db 128+16,$8F,space,space,$0A,I,S,D,space,space,space,space,space,$0A,V,O,M, $47, $24, 32
-    .db 128+16,$8F,space,space,$0A,R,R,D,space,space,space,space,space,$0A,L,E,M, $67, $24, 32
+    .db 128+6, $0A,A,H,C,E,M, $A7, $27, 12
+    .db 128+6, $0A,R,O,M,R,A, $27, $24, 12
+    .db 128+6, $0A,D,E,E,P,S, $47, $24, 12
+    .db 128+6, $0A,E,E,L,E,M, $67, $24, 12
     .db 0
 
 labels1:
@@ -130,7 +131,7 @@ selector0:
   .db 0
 
 clearLayout:
-  .db 128+23, repeatChar, 23, $0F, $A7, $27, 46         ;
+  .db 128+24, repeatChar, 24, $0F, $A7, $27, 48         ;
   .db 128+24, repeatChar, 24, $0F, $27, $24, 48         ;
   .db 128+24, repeatChar, 24, $0F, $47, $24, 48         ;
   .db 128+24, repeatChar, 24, $0F, $67, $24, 48         ;
