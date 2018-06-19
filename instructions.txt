@@ -32,13 +32,13 @@ Instructions
   The ACTIVE UNIT can take one the following ACTIONS:
 
   MOVE - move the unit a number of positions up to its movement value (MOV).
-  RUN - move the unit a number of positions up to twice its movement value (MOV).
+  DOUBLE MOVE - move the unit a number of positions up to twice its movement value (MOV).
   WPN1, WPN2 - engage an enemy unit with the weapon in slot 1 or 2.
   CLOSE COMBAT - engage an enemy unit with a melee attack.
   CHARGE - run towards and engage an enemy unit with a melee attack.
-  TARGET LOCK - lock on to an enemy unit. This increases the chance of scoring a direct hit when attacking the target locked unit.
+  MARK - marks an enemy unit. This increases the chance of hitting the enemy unit for the rest of the round
   PIVOT TURN - Change the facing direction of the ACTIVE UNIT.
-  END TURN - Ends the turn and reduces the number of HEAT POINTS equal to the number of unspent ACTION POINTS.
+  BRACE - take a defensive stance to reduce incoming damage and end the turn
 
   Note that not all actions ACTIONS are always available. The availability of an ACTION depends on the position of the CURSOR, the number of remaining ACTION POINTS and the UNIT TYPE of the ACTIVE UNIT. Consider some examples:
 
@@ -49,27 +49,25 @@ Instructions
 
   Some actions can only be performed if certain conditions are met. If the conditions are not met, the action is blocked. A message appears in the HUD that explains why the action is blocked.
 
-  - Attacking with a ranged WPN(X) is only possible if the ACTIVE UNIT has line of sight to its target
+  - Attacking with a ranged WPN1 or WPN2 is only possible if the ACTIVE UNIT has line of sight to its target
   - Moving empty position is only possible if it is withing moving range
   - Attacking with a ranged WPN1 is only possible if it is not currently reloading
 
 2.5 Heat
 
-  If you use an ACTION to use a weapon or a melee attack, you will also incur a number of HEAT POINT cost.
-
+  If a unit uses an ACTION to attack, that unit will also incur a number of HEAT POINTs.
   Once a unit reaches a total of 6 HEAT POINTS, it will sustain 2 HEAT DAMAGE after each ACTION.
-
-  A unit loses one HEAT POINT whenever it performs an action that is not an attack
+  A unit loses one HEAT POINT whenever it performs an action that is not an attack, e.g., MOVE or BRACE
 
 2.6 Evade
 
   If a unit moves more than 4 spaces, it gains EVADE points, making it more difficult to hit by enemy units.
-
   A unit retains EVADE points until it's next turn; at the start of a unit's turn, it loses all EVADE points.
+  After being the target of an attack, a unit loses one EVADE point.
 
 2.7 Brace for impact
 
-  Some units are able to to brace for impact, as an ACTION.
+  Some units are able to to BRACE for impact, as an ACTION.
   Bracing for impact immediately ends a units turn and lasts until that unit's next turn.
   Units that are braced for impact reduce all incoming damage through front arc attacks by half.
 
@@ -84,7 +82,6 @@ Instructions
   - If the attack angle is in the REAR arc of the defending unit, the to-hit chance is increased by 20%
 
   The angle of attack is determined by drawing a line from the attacking unit hexagon to the defending unit hexagon. This line crosses one of the 6 sides of the defending unit's hexagon.
-
   After an attack resolves, the defending unit loses one EVADE point, even if the attack missed.
 
 3.0 Unit Types & Stats
