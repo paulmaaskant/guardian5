@@ -71,7 +71,7 @@ state_titleScreen:
 	LSR									; start button
 	BCS +confirm
 	LSR									; select button
-	;BCS +animation
+	BCS +unitSelect
 	LSR									; B
 	LSR									; A button
 	BCC +setTimer
@@ -81,10 +81,6 @@ state_titleScreen:
 	BEQ +startGame			; if "start game" game + start
 
 	JSR soundSilence
-
-;	LDA list8+3
-;	CMP #1
-;	BEQ +instructions		; if "instructions" + start
 
 	LDY list8+4
 	JSR soundLoad
@@ -114,33 +110,11 @@ state_titleScreen:
 	.db $33								; initialize level
 	; built in RTS
 
-
-
-+instructions:
++unitSelect:
 	JSR pullAndBuildStateStack
-	.db 16								; # items
+	.db 8								; # items
 	.db $0D, 0						; change brightness 0: fade out
-	.db $00, 4						; load screen 4: instruction screen
+	.db $00, 8						; load screen: unit select
 	.db $0D, 1						; change brightness 1: fade in
-	.db $01, 11						; load stream 11: instructions
-	.db $0D, 0						; change brightness 0: fade out
-	.db $00, 0						; load screen 00: title screen
-	.db $1E								; load title menu
-	.db $0D, 1						; change brightness 1: fade in
-	.db $03								; title screen (wait for user)
-	; built in RTS
-
-+animation:
-	JSR pullAndBuildStateStack
-	.db 17								; # items
-	.db $0D, 0						; change brightness 0: fade out
-	.db $00, 5						; load screen 5: animation screen
-	.db $3A, 1					; switch CHR bank 1 to 1
-	.db $0D, 1						; change brightness 1: fade in
-	.db $21								; play animations
-	.db $0D, 0						; change brightness 0: fade out
-	.db $00, 0						; load screen 00: title screen
-	.db $1E								; load title menu
-	.db $0D, 1						; change brightness 1: fade in
-	.db $03								; title screen (wait for user)
+	.db $50								; init unit select menu
 	; built in RTS

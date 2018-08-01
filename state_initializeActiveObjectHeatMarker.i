@@ -1,10 +1,8 @@
-; state 35
 ;
-; 0 reduce heat points
-; 1 show damage
-
-state_initializeModifiers:
-
+; ----------------------------------------------------------
+; state 35: +/- heat point marker on active unit
+; ----------------------------------------------------------
+state_initializeActiveObjectHeatMarker:
     LDA activeObjectGridPos
     JSR gridPosToScreenPos
     JSR clearCurrentEffects

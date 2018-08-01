@@ -292,8 +292,8 @@ CS04:	.db #%00110000
 		.db #$04
 		.dw CUR1
 		.db #%11110001
-		.db #$0A
-		.db #$04
+		.db #10
+		.db #4
 		.dw CUR1
 CS10:	.db #%10110000
 		.db #$E8
@@ -323,6 +323,10 @@ CS22:
 	.db #%10110000
 	.db -32
 	.dw CUR4
+
+CS23:
+	.db #%10011000
+	.dw CUR5
 
 CS24:
   .db %10110000
@@ -575,3 +579,17 @@ mechA_moving_d6_fr07:
   .db %10100000
   .db -8
   .dw mechA_d6_f7
+
+mechA_jumping_fr00:
+  .db %00100000
+  .db -8
+  .dw mechA_j5_f0
+  .db %10000000
+  .dw EFF7
+
+mechA_jumping_fr01:
+  .db %00100000
+  .db -8
+  .dw mechA_j5_f0
+  .db %10000000
+  .dw EFF8

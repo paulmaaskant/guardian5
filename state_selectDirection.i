@@ -70,7 +70,7 @@ state_selectDirection:
 
 	LDY activeObjectIndex
 	JSR getStatsAddress
-	LDY #4									; index for base tile
+	LDY #7									; index for base tile
 	LDA (pointer1), Y				; base tile
 	CLC
 	ADC locVar1							; + direction

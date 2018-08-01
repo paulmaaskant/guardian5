@@ -2,51 +2,40 @@
 ; gameState 06: Wait for player to select action
 ; ------------------------------------------
 state_selectAction:
-	JSR random									; introduce entropy
+	JSR random													; introduce entropy
 
-	JSR clearCurrentEffects			; repeats?
+	JSR clearCurrentEffects							;
 	LDA effects
 	AND #%11111000
 	STA effects
 
-	LDA events																																		;
+	LDA events													; update status bar event																					;
 	BIT event_updateStatusBar																											;
 	BNE +continue
 	JMP +nextStep
 
-+continue:														;
++continue:														; if status bar is updated, buffer it as well
 	ORA event_refreshStatusBar					; raise event to trigger buffer to screen
 	EOR event_updateStatusBar						;
 	STA events
 
 	JSR clearActionMenu
 	JSR clearTargetMenu
-																			; in 'toggle' positions
+
 	LDY #$40
 	STY menuIndicator+1
-	INY																	; set indicator tiles
-	STY menuIndicator+0
+	INY																	; set indicator blinking tiles
+	STY menuIndicator+0									; indicating 'toggle' mode
 
 	LDY selectedAction									; update the action menu buffer with the selected action
 	LDA actionList, Y
 	ASL
 	TAX
-	LDA actionTable+1, X								; "<action>"
+	LDA actionTable+1, X								; action string
 	TAY
-	LDX #$00														; line 1 pos 0
+	LDX #$00														; write to position 0
 	JSR writeToActionMenu								;
 
-	JSR getSelectedWeaponTypeIndex
-	BCS +continue
-
-+noAmmo:
-	LDA weaponType+0, Y									;
-	AND #%00111111
-	TAY
-	LDX #5															; line 1 pos 5
-	JSR writeToActionMenu								;
-
-+continue:
 	LDA actionMessage
 	BEQ +continue
 	AND #$7F														; show it on line 3
@@ -283,23 +272,27 @@ state_selectAction:
 	LDA #$01
 	STA selectedAction
 
-+toggleDone:																																		; redo checks for newly selected action on other unit																														;
-	LDA targetObjectTypeAndNumber																									; cursor is on unit?
-	BEQ +actionPointCost																													; no -> point cost
-	CMP activeObjectIndexAndPilot																									; yes -> on self?
-	BEQ +actionPointCost																													; no -> point cost
-
++toggleDone:
 	LDA #$00																																			; clear action message
 	STA actionMessage
 	STA infoMessage
 	STA menuFlags
 
-	LDA effects																																		; clear possible LOS block effect
-	AND #%11000000																																; cursor and active unit marker stay on, rest turned off
+	LDA effects													; clear possible LOS block effect
+	AND #%11000000											; cursor and active unit marker stay on, rest turned off
 	STA effects
-	JSR checkTarget																																; possibly different weapon, so re-check range, damage etc
+																			; redo checks for newly selected action on other unit																														;
+	LDA targetObjectTypeAndNumber				; cursor is on unit?
+	BEQ +move														; empty hex -> validate move actions
+	CMP activeObjectIndexAndPilot				; cursor on self?
+	BEQ +actionPointCost								; yes -> point cost
+	JSR checkTarget
 
-+actionPointCost:
++actionPointCost:										  ;
+	JMP calculateActionPointCost
+
++move:
+	JSR checkMovement
 	JMP calculateActionPointCost																									; tail chain
 
 +lock:

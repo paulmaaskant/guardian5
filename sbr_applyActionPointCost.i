@@ -25,21 +25,24 @@ applyActionPointCost:
   LDA #6												  ; prio
   JSR addToSortedList
 
-  JSR getSelectedWeaponTypeIndex  ; sets X to selected action
+  LDY selectedAction
+  LDX actionList, Y						    ; set x to selected action
 
   LDY activeObjectIndex           ; move this to calculate sbr?
   LDA object+1, Y
   AND #$07
   STA list3+3                     ; current heat points
+  STA debug
 
   LDA list3+12                    ; calculated heat point cost
+  STA debug+1
   CLC
   ADC list3+3                     ; + current heat points
   BPL +continue
   LDA #0                          ; no less than 0
 
 +continue
-  CMP #6
+  CMP #4
   BCC +less                       ; less than 6
 
   LDX #$83                        ; show result: heat damage animation
@@ -53,7 +56,7 @@ applyActionPointCost:
   LDA #2
   STA list3+16
 
-  LDA #6                          ; cap heat points at 6
+  LDA #4                          ; cap heat points at 4
   STA list3+3
   BNE +continue                   ; JMP
 

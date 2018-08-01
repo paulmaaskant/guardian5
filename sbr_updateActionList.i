@@ -17,8 +17,6 @@ updateActionList:
 	STA actionList, X					; clear action list
 	DEX
 	BPL -loop
-	LDA #1
-	STA selectedAction				; init selected action
 
 	LDA cursorGridPos					; cursor on self?
 	CMP activeObjectGridPos		; cursor on self?
@@ -27,6 +25,8 @@ updateActionList:
 	; ----------------------------------
 	; Cursor on SELF
 	; ----------------------------------
+	LDA #1
+	STA selectedAction
 
 	LDA activeObjectStats+2
 	BMI +hoveringUnit
@@ -44,6 +44,9 @@ updateActionList:
 	; ----------------------------------
 	; Cursor on OTHER UNIT
 	; ----------------------------------
+	LDA #1
+	STA selectedAction
+
 	LDA distanceToTarget
 	CMP #$01
 	PHP
@@ -52,11 +55,11 @@ updateActionList:
 	BMI +skipCloseCombat
 	LDA #aCLOSECOMBAT
 	JSR addPossibleAction
+	PLP
+	JMP checkTarget						;
 
 +skipCloseCombat:
-	LDA #aRANGED1
-	JSR addPossibleAction
-	LDA #aRANGED2
+	LDA #aATTACK
 	JSR addPossibleAction
 	LDA #aMARKTARGET
 	JSR addPossibleAction
@@ -82,56 +85,22 @@ updateActionList:
 	; Cursor on EMPTY SPACE
 	; ----------------------------------
 +continue:
-	; --- find path ---
-	LDA cursorGridPos
-	STA par1										; par1 = destination node
-
-	LDA activeObjectStats+2			; move type | movepoints
-	STA par3
-	AND #$0F										; 0000 | movement points
-
-	LDX activeObjectStats+9
-	CPX #2
-	BCC +continue
-	ASL													; double movement (RUN)
+	LDA #2
+	CMP selectedAction
+	BCS +continue
+	STA selectedAction
 
 +continue:
-	STA par2										; par2 = # moves allowed
-	LDX par1
-	LDA nodeMap, X
-	BPL +notBlocked							; not blocked
-	BIT activeObjectStats+2
-	BPL +blocked								; if ground unit -> blocked
-	LSR													; for hovering unit
-	BPL +notBlocked							; if L-O-S is possible, then not blocked
-
-+blocked:
-	LDA #$89										; deny (b7) + impassable (b6-b0)
-	STA actionMessage
-	BNE +walk
-
-+notBlocked:
-	LDA activeObjectGridPos																												; A = start node
-	JSR findPath																																	; A* search path, may take more than 1 frame
-	LDA actionMessage																															; if move is allowed
-	BMI +done																																			; move > 1 heat
-	LDA activeObjectStats+2																												; movement stat
-	AND #$0F
-	CMP list1																																			; compare to used number of moves (list1)
-	BCS +walk
-	LDA #aRUN
-	JSR addPossibleAction
-	JMP +checkEvade
-
-+walk:
 	LDA #aMOVE
 	JSR addPossibleAction
+	BIT activeObjectStats+2			; check if unit can JUMP (b6)
+	BVC +continue
 
-+checkEvade:
-	JMP setEvadePoints
+	LDA #aJUMP
+	JSR addPossibleAction
 
-+done:
-	RTS
++continue
+	JMP checkMovement
 
 ;---------------------------------------
 ; IN A, action #

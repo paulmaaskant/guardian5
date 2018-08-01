@@ -4,12 +4,12 @@
 ; -------------------------------------
 writeToList8:
 	LDA stringListL, Y
-	STA pointer1+0
+	STA pointer2+0
 	LDA stringListH, Y
-	STA pointer1+1
+	STA pointer2+1
 
 	LDY #0
-	LDA (pointer1), Y			; length
+	LDA (pointer2), Y			; length
 	TAY
 	PHA
 
@@ -19,7 +19,7 @@ writeToList8:
 	TAX
 
 -loop:
-	LDA (pointer1), Y
+	LDA (pointer2), Y
   STA list8-1, X
 	DEX
 	DEY

@@ -8,8 +8,8 @@ updateSystemMenu:
 	STA systemMenuLine3+0
 	LDA par3
 	STA systemMenuLine3+1
-	;LDA #$3F
-	LDA #space
+
+	LDA #space									; warning marker?
 	STA systemMenuLine3+2
 
 	LDA #$0F										; REMAINING AP
@@ -23,5 +23,14 @@ updateSystemMenu:
 	DEX
 	BNE -loop
 
+	LDY activeObjectIndex
+	LDA object+1, Y
+	AND #$07
+	CMP #3
+	BCC +skip
+	LDA #$50
+	STA systemMenuLine1+2
+
++skip
 	LDA #0											;
 	JMP setSystemHeatGauge

@@ -1,5 +1,4 @@
-state_initializeInflictModifier:
-
+state_initializeTargetObjectHeatMarker:
     LDA cursorGridPos
     JSR gridPosToScreenPos
     JSR clearCurrentEffects

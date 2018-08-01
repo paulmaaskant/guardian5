@@ -33,8 +33,8 @@ updateTargetMenu:
 	LDA #0
 	JSR setTargetHeatGauge
 
-	LDA cursorGridPos 							; is target the active unit?
-	CMP activeObjectGridPos
+	LDA targetObjectTypeAndNumber 	; is target the active unit?
+	CMP activeObjectIndexAndPilot
 	BEQ +done							     			; skip hp
 
 	LDY targetObjectIndex						; retrieve target's hit points and show in menu
@@ -60,7 +60,7 @@ updateTargetMenu:
 
 	LDY targetObjectIndex
 	JSR getStatsAddress
-	LDY #4
+	LDY #7
 	LDA (pointer1), Y
 	BNE +skip
 

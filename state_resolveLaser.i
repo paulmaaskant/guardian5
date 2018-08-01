@@ -12,6 +12,8 @@
 
 
 state_resolveLaser:
+
+
   LDA activeObjectGridPos
   JSR gridPosToScreenPos
 
@@ -28,6 +30,7 @@ state_resolveLaser:
 -loop:
   LDA list1+8										; angle
   JSR getCircleCoordinates
+
   TXA
   CLC
   LDX list1+2										; restore loop count to X
@@ -58,19 +61,19 @@ state_resolveLaser:
 
 +continue:
   STA list1+4										; set the new radius
-  TAX														; copy to X
 
   DEC list1+2										; if last loop cycle
-  BNE +continue                 ; then
+  BNE +continue                 ; then  set values for next iteration
 
-  LDA #0
-  STA currentEffects+24, X      ; no mirroring
-
-  LDX list1+7										; X = full radius (target position)
-  LDA list2+0										; shield or hit animation
+  ;LDA #0                        ; doesnt work: sets value for current iteration while should be next
+  ;STA currentEffects+24, X      ; no mirroring
+  LDA list2+0										; miss or hit animation
   STA list1+9
+  LDA list1+7										; X = full radius (target position)
 
 +continue:
+  TAX
+
   LDA list1+2
   BPL -loop
 
@@ -85,7 +88,7 @@ state_resolveLaser:
 	BCC +continue
 	LDA #16
 
-+continue
++continue:
 	STA list1+1
 	RTS
 

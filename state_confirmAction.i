@@ -1,8 +1,8 @@
 ; game state 2F
 
 state_confirmAction:
-  LDA events																																		;
-  BIT event_updateStatusBar																											;
+  LDA events												  ;
+  BIT event_updateStatusBar						;
   BNE +continue
   JMP +nextStep
 
@@ -22,15 +22,15 @@ state_confirmAction:
   LDA #0
   STA menuFlags
 
-  JSR getSelectedWeaponTypeIndex
-  BCS +continue
-  LDA weaponType+3, Y
-  AND #$0F
-  BEQ +continue
+;  JSR getSelectedWeaponTypeIndex
+;  BCS +continue
+;  LDA weaponType+3, Y
+;  AND #$0F
+;  BEQ +continue
 
-  LDY #36 ; XX uses left
-  LDX #13
-  JSR writeToActionMenu
+;  LDY #36 ; XX uses left
+;  LDX #13
+;  JSR writeToActionMenu
 
 +continue:
   LDY #17 ; confirm >A

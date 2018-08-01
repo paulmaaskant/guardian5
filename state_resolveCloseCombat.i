@@ -3,9 +3,9 @@
 ; --------------------------------------------------
 state_closeCombatAnimation:
 	LDA #0
-	STA actionCounter
+	STA blockInputCounter
 	STA currentEffects+18
-	TAX
+	;TAX
 
 	LDA #5													      ; Animation 5 = hit (explosion)
 	STA list3+22
@@ -21,32 +21,49 @@ state_closeCombatAnimation:
 	STA list3+23
 
 +continue:
-	LDA activeObjectGridPos              ; determine in which direction unit
-	SEC                                  ; is attacking
-	SBC cursorGridPos
+	LDA activeObjectGridPos     ; set initial screen coordinates of active unit
+	JSR gridPosToScreenPos
+	LDA currentObjectXPos
+	STA list3+62
+	LDA currentObjectYPos
+	STA list3+63
 
--loop:
-	CMP closeCombatDirection, X
-	BEQ +setDelta
-	INX
-	BNE -loop
+	JSR angleToCursor
+	STA list1+0                 ; angle
+	STY list1+1                 ; radius
 
-+setDelta:
-	LDA closeCombatDirection+12, X       ; direction is X
-	STA list1+1													 ; Y offset
 
-	LDA closeCombatDirection+6, X
-	STA list1+0													 ; X offset
+;	LDA activeObjectGridPos              ; determine in which direction unit
+;	SEC                                  ; is attacking
+;	SBC cursorGridPos
+
+;-loop:
+;	CMP closeCombatDirection, X
+;	BEQ +setDelta
+;	INX
+;	BNE -loop
+
+;+setDelta:
+;	LDA closeCombatDirection+12, X       ; direction is X
+;	STA list1+1													 ; Y offset
+
+;	LDA closeCombatDirection+6, X
+;	STA list1+0													 ; X offset
 
 	LDY activeObjectIndex
 	LDA object, Y
 	EOR #%00001000											; set object's move bit (b3) ON
 	STA object, Y
 
+	AND #$07
+	TAY
+	LDA oppositeDirection-1, Y
+	TAY
+	LDA directionLookupMoving, Y
+	STA list3+61								; set for object sprite cycle in main loop
+
   LDY activeObjectGridPos			        ; unblock position in nodeMap
   LDA #0											        ; FIX: show original meta tile
-  ;STA nodeMap, Y
-  ;TAX
   JSR setTile
 
 	LDA cursorGridPos
@@ -73,7 +90,10 @@ state_closeCombatAnimation:
 ; game state 18: close combat animation
 ; --------------------------------------------------
 state_resolveCloseCombat:
-	LDA actionCounter
+	LDA activeObjectGridPos     ; set currentXpos and yPos
+	JSR gridPosToScreenPos
+
+	LDA blockInputCounter
 	AND #%00011111
 	CMP #%00010000
 	BCC +continue
@@ -89,18 +109,37 @@ state_resolveCloseCombat:
 +invert:
 	EOR #%00011111
 
-+continue:
-	TAX
++continue:					;(count * radius) * 8 / 32 * 8
+	ASL
+	ASL
+	ASL							  ; count * 8
+	LDX list1+1				; radius
+	JSR multiply
 
-+continue:
+	LDX par1					; (count * radius) * 8 / 32 * 8
 	LDA list1+0
-	JSR interpolate
-	STA actionList+1
-	LDA list1+1
-	JSR interpolate
-	STA actionList+2					; Y
-	INC actionCounter
-	LDA actionCounter
+	JSR getCircleCoordinates
+
+	CLC														;
+	TYA														;
+	ADC currentObjectYPos					;
+	STA list3+63
+
+	CLC
+	TXA
+	ADC currentObjectXPos
+	STA list3+62
+
+	;LDA list1+0
+	;JSR interpolate
+	;STA actionList+1
+
+	;LDA list1+1
+	;JSR interpolate
+	;STA actionList+2					; Y
+
+	INC blockInputCounter
+	LDA blockInputCounter
 	CMP #$60
 	BEQ +animationComplete
 	RTS
@@ -121,48 +160,3 @@ state_resolveCloseCombat:
 	STA effects
 
 	JMP pullState                        ; next state
-
-interpolate:
-	CLC
-	BPL +pos
-	EOR #$FF
-	ADC #$01
-	SEC
-
-+pos:
-	PHP													; push sign (in carry)
-	JSR multiply
-	LDA #$10
-	JSR divide
-	LDA par4
-
-	PLP													; pull sign (in carry)
-	BCC +pos
-	EOR #$FF
-	CLC
-	ADC #$01
-
-+pos:
-	RTS
-
-	closeCombatDirection:
-		.db #$F1									;up
-		.db #$F0									;up right
-		.db #$FF									;dw right
-		.db #$0F									;dw
-		.db #$10									;dw left
-		.db #$01									;up left
-
-		.db 0										; X 0
-		.db 18									; X +18
-		.db 18									; X +18
-		.db 0										; X 0
-		.db -18									; X -18
-		.db -18									; X -18
-
-		.db #$F4									; Y -12
-		.db #$FA									; Y -6
-		.db #$06									; Y +6
-		.db #$0C									; Y +12
-		.db #$06									; Y +6
-		.db #$FA									; Y -6

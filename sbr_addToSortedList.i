@@ -33,6 +33,13 @@ addToSortedList:
   STX locVar1                   ; item (1) to insert
   STA locVar2                   ; item (1) to insert
 
+;  BNE +noDuplicate              ; check if this is a duplicate entry
+;  LDA list6+1, Y
+;  CMP locVar1                   ; deduplicate
+;  BNE +noDuplicate
+;  RTS                           ; duplicate entry - done
+
+;+noDuplicate:
   LDA list6+1, Y
   STA locVar3                   ; item (2) to push down
   LDA list7+1, Y

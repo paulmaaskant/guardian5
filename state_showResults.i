@@ -81,24 +81,27 @@ streamHi:
 	.db #< resultTargetHit									; 1
 	.db #< resultTargetMiss									; 2
 	.db #< resultTargetOffline							; 3
-	.db #< not_used													; 4
+	.db #< resultEngineCriticalDamage							; 4
 	.db #< resultUnitDestroyed							; 5
 	.db #< resultChargeDamageSustained			; 6
-	.db #< not_used													; 7
+	.db #< resultTargetingCriticalDamage					; 7
 	.db #< resultHeatDamageSustained				; 8
-	.db #< not_used													; 9
+	.db #< resultMobilityCriticalDamage						; 9
 	.db #< resultUnitRestart								; A
+	.db #< resultWeaponsCriticalDamage						; B
+
 streamLo:
 	.db #> resultTargetHit
 	.db #> resultTargetMiss
 	.db #> resultTargetOffline
-	.db #> not_used
+	.db #> resultEngineCriticalDamage
 	.db #> resultUnitDestroyed
 	.db #> resultChargeDamageSustained
-	.db #> not_used
+	.db #> resultTargetingCriticalDamage
 	.db #> resultHeatDamageSustained
-	.db #> not_used
+	.db #> resultMobilityCriticalDamage
 	.db #> resultUnitRestart
+	.db #> resultWeaponsCriticalDamage
 
 state_16_stream:
 	.db $24, $4A, $24, $4A, 10, 23, 0, 0, 3, 0

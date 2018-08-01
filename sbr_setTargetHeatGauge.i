@@ -21,6 +21,4 @@ setTargetHeatGauge:
   STA targetMenuLine2+0
   LDA heatGauge1, Y
   STA targetMenuLine2+1
-  LDA heatGauge2, Y
-  STA targetMenuLine2+2
   RTS

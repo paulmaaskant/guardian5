@@ -1,10 +1,11 @@
-
+; -----------------------------------
 ; state 42
-state_initializeTempGauge:
+; -----------------------------------
 
+state_initializeTempGauge:
   JSR clearActionMenu
 
-  LDX #8                    ; copy current gauge and AP and HP to list1
+  LDX #8                    ; copy current HEAT gauge and AP list1
 
 -loop:
   LDA systemMenuLine1, X
@@ -12,10 +13,18 @@ state_initializeTempGauge:
   DEX
   BPL -loop
 
-  LDA #space
-  STA systemMenuLine3+0
-  STA systemMenuLine3+1
-  STA systemMenuLine3+2
+  ;LDA #space
+  ;STA systemMenuLine3+0
+  ;STA systemMenuLine3+1
+  ;STA systemMenuLine3+2
+
+  LDX #5                    ; copy target current gauge HP to list1
+
+-loop:
+  LDA targetMenuLine1, X
+  STA list1+10, X
+  DEX
+  BPL -loop
 
   LDA #72
   STA blockInputCounter

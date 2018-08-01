@@ -2,9 +2,7 @@ getSelectedWeaponTypeIndex:
   LDY selectedAction
   LDX actionList, Y						; 1 for weapon 1, 2 for weapon 2
 
-  CPX #aRANGED1
-	BEQ +continue
-	CPX #aRANGED2
+  CPX #aATTACK
 	BNE +failed
 
 +continue:

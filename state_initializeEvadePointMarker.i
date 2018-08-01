@@ -4,11 +4,15 @@ state_initializeEvadePointMarker:
   JSR gridPosToScreenPos
   JSR clearCurrentEffects
 
-  LDA #$54
-  STA list3+30          ; "+"
-
+  LDX #$54              ; "+"
   LDA list3+14
   BEQ +noMarker
+  BPL +continue
+  JSR absolute
+  LDX #$56              ; "-"
+
++continue:
+  STX list3+30
   CLC
   ADC #$40
   STA list3+31          ; "X"
@@ -30,5 +34,11 @@ state_initializeEvadePointMarker:
 
   LDA #2
   STA runningEffect
+
+  LDA #50
+  STA blockInputCounter
+  LDA #$1A
+  JMP replaceState
+
 +noMarker:
   JMP pullState

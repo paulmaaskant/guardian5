@@ -7,8 +7,11 @@ state_initializeMap:
 	LDA #> levelOne
 	STA bytePointer+1
 
-	LDA #$18			; pallete 1 for map 1
+	LDA #$9			; pallete 1 for map 1
 	STA currentPalettes
+
+	LDA #3
+	STA $C001                 ; set lvl 1 enemy sprites (3) in bank 3
 
 	; --- map collision & object tile data ---
 
@@ -34,18 +37,30 @@ state_initializeMap:
 	JSR getNextByte
 	STA objectListSize
 
-	STA activeObjectIndexAndPilot	; set to the last object so that the next is the first
+;	STA activeObjectIndexAndPilot	; set to the last object so that the next is the first
 
 	LDX #0
 
 -nextObject:
+	STX list1+2
+	CPX #3
+	BCC +playerUnit
 	CPX objectListSize
 	BNE +continue
 	JMP +done
 
-+continue:
-	STX list1+2
++playerUnit:
+	TXA
+	ASL
+	ASL
+	ASL
+	TAX
+	STA list1+3
+	JSR getNextByte
+	STA object+3, X
+	JMP +updateMap
 
++continue:
 	JSR getNextByte					; get pilot (b7, b2-b0)
 	STA locVar1
 	PHA
@@ -71,42 +86,30 @@ state_initializeMap:
 	STA object+2,X						; set animation counter and shutdown bit
 
 	PLA
-	BEQ +continue							; object is obstacle -> skip weapons
+	BEQ +updateMap							; object is obstacle -> skip weapons
 
 	JSR getNextByte						; get weapons
 	PHA												; store weapon byte
 	AND #$F0
 	STA object+6, X						; wpn 1
-	LSR
-	TAY
-	LDA weaponType+3, Y
-	AND #$0F
-	ORA object+6, X						; set ammo
-	STA object+6, X
 	PLA												; restore weapon byte
 	ASL
 	ASL
 	ASL
 	ASL
 	STA object+7, X						; wpn 2
-	LSR
-	TAY
-	LDA weaponType+3, Y
-	AND #$0F
-	ORA object+7, X
-	STA object+7, X						; set ammo
 
-+continue:
++updateMap:
 	LDY list1+3								; index
 	JSR getStatsAddress
-	LDY #4
+	LDY #7										; BG tile offset
 	LDX list1+3
 	LDA (pointer1), Y
 	BMI +store
 
 	STA locVar1
 	LDA object+0, X
-	AND #$0F												; facing direction
+	AND #$0F									; facing direction
 	CLC
 	ADC locVar1
 
@@ -119,12 +122,14 @@ state_initializeMap:
 	JSR getStatsAddress				; breaks X, sets pointer1
 
 	LDX list1+3
-	LDY #1										; initial hit points
-	LDA (pointer1), Y
+	LDY #1
+	LDA (pointer1), Y					; #1 armor points
+	CLC
+	LDY #2
+	ADC (pointer1), Y					; #2 structure points
 	ASL
 	ASL
 	ASL
-	; ADC #6										; hardcoded heat points
 	STA object+1, X						; set health and heat points
 
 	LDX list1+2

@@ -195,6 +195,12 @@ NMI:
 
 	LDA softCHRBank1
 	STA $B001
+	LSR
+	LSR
+	LSR
+	LSR
+	STA $B009
+
 
 	; -------------------------------------------
 	; prepare for scrolling
@@ -269,7 +275,7 @@ NMI:
 
 +increment:
 	INC menuCounter
-	
+
 +done:
 
 	;-------------------------------------------

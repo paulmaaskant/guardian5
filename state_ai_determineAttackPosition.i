@@ -53,24 +53,32 @@ state_ai_determineAttackPosition:
   BCS +continue
   STA list1                   ;
 
+  LDA activeObjectStats+9     ; if this is the unit's second move action in the same turn
+  CMP #2
+  BCS +continue               ; then limit the movement to 2 points
+  LDA #2
+  CMP list1
+  BCS +continue
+  STA list1                   ;
+
+
 +continue:
   LDY list1
   LDA list1, Y
   STA cursorGridPos
 
-  LDA #-1
-  STA list3+12                  ; movement reduces heat by 1
+  LDA #0
+  STA list3+12                  ; movement has no impact on heat
 
   JSR applyActionPointCost
   JSR setEvadePoints
   JSR pullAndBuildStateStack
-	.db 9						              ; 4 items
+	.db 8						              ; 4 items
 	.db $3A, $FF						      ; switch CHR bank 1 to 1
   .db $0B								        ; center camera on cursor
 	.db $3B 							        ; init and resolve move
 	.db $3A, 0						        ; switch CHR bank 1 back to 0
 	.db $1C							          ; face target
-  .db $4E                       ; evade points marker
 	.db $16							          ; show results
 	; built in RTS
 
@@ -81,25 +89,27 @@ firstPass:
   ; ------------------
 
   LDX #0
-  STX list6									       ;
-  STX actionList+0                 ; reset eligble node count
-  LDA activeObjectStats+2          ; move
-  ASL
-  STA actionList+1                 ; act obj run distance
+  STX list6									       ; reset sorted list
+  STX actionList+0
+
+  LDA activeObjectStats+2          ; retrieve move stats
+  AND #$0F                         ; mask to get move points
+  ASL                              ; double move points
+  STA actionList+1                 ;
   INC actionList+1                 ; +1 to make compare easier
 
-  LDY activeObjectIndex
-  LDA object+5, Y
-  AND #$F0										     ; mask the weapon type
-  LSR
-  TAY
-  LDA weaponType+2, Y
-  LSR
-  LSR
-  LSR
-  LSR
-  STA actionList+2                 ; max range of primary weapon
-  INC actionList+2                 ; +1 to make compare easier
+  ;LDY activeObjectIndex
+  ;LDA object+5, Y
+  ;AND #$F0										     ; mask the weapon type
+  ;LSR
+  ;TAY
+  ;LDA weaponType+2, Y
+  ;LSR
+  ;LSR
+  ;LSR
+  ;LSR
+  ;STA actionList+2                 ; max range of primary weapon
+  ;INC actionList+2                 ; +1 to make compare easier
 
 -loop:
   STX par1
@@ -109,56 +119,49 @@ firstPass:
   LDA activeObjectGridPos                                                       ;
   JSR distance
   CMP actionList+1
-  BCS +nextNode                    ; node too far from active unit
+  BCS +nextNode                    ; node too far away to reach
 
   LDA cursorGridPos
   JSR distance
-  CMP actionList+2
+  CMP #10
   BCS +nextNode                    ; node too far from target unit
-
-  CMP #2
-  BCC +nextNode                    ; node too close to target unit
 
   TXA
   PHA
-  JSR checkLineOfSight
+  JSR checkLineOfSight             ; A is parameter
   PLA
   TAX
   BCS +nextNode                    ; node has no visibility on target unit
 
-  STX par1
-  JSR random
-  LDX par1                         ; restore X
+  STX par1                         ; save current X (node)
+
+  LDA cursorGridPos
+  JSR distance
+  TAY
+  LDA rangeCategoryMap, Y
+  LDY activeObjectIndex
+
+  JSR getOverallDamageValue        ; A is damage (score)
+  EOR #$0F
+  LDX par1                         ; C is current node (index)
   JSR addToSortedList
   LDX par1                         ; restore X
 
 +nextNode:
   INX
   BNE -loop
-
-  ; IMPROVEMENT
-  ; score eligble nodes,
-  ; e.g. higher score if node is not visble by target
-  ; pick node with highest score
-
   RTS
 
-
-
 secondPass:
-  LDX #$00
-  STX list6							                                                  ;
-  STX actionList+0                                                              ; reset eligble node count
+  LDX #0
+  STX list6							             ; reset sorted list
+  STX actionList+0
+
   LDA activeObjectStats+2
+  AND #$0F
+  STA actionList+1
 
-  LDY activeObjectStats+9
-  CPY #2
-  BCC +noRunning
-  ASL
-
-+noRunning:
-  STA actionList+1                                                              ; act obj run distance
-  LDX #$00
+  LDX #0
 
 -loop:
   STX par1
@@ -168,7 +171,7 @@ secondPass:
   LDA activeObjectGridPos                                                       ;
   JSR distance
   CMP actionList+1
-  BNE +nextNode       ; node too far from active unit
+  BNE +nextNode       ; not on max radius
 
   LDA cursorGridPos
   JSR distance
@@ -180,7 +183,6 @@ secondPass:
   INX
   BNE -loop
   RTS
-
 
 
 evaluateNodes:
@@ -200,6 +202,7 @@ evaluateNodes:
   LDA activeObjectGridPos
   JSR distance
   STA distanceToTarget             ; update d-t-t
+
   LDA activeObjectStats+2          ; move type | move points
   STA par3
 

@@ -24,13 +24,11 @@ setSystemHeatGauge:
   STA systemMenuLine1+0
   LDA heatGauge1, Y
   STA systemMenuLine1+1
-  LDA heatGauge2, Y
-  STA systemMenuLine1+2
   RTS
 
 heatGauge0:
 	.hex 3C 3B 3A 3A 3A 3A 3A
 heatGauge1:
 	.hex 3C 3C 3C 3B 3A 3A 3A
-heatGauge2:
-	.hex 3C 3C 3C 3C 3C 3B 3A
+;heatGauge2:
+	;.hex 3C 3C 3C 3C 3C 3B 3A

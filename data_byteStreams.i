@@ -20,17 +20,12 @@ statusBar:
 	.db repeatBlank, $00  ; 8 blank rows
 
 	; offset is 1 blank
-	.db repeatBlank, 18, $0A, T, O, L, I, P, space, $2B, repeatBlank, 3, $2A
+	.db repeatBlank, 25, $2B, repeatBlank, 3, $2A
 	.db repeatBlank, 26
-	;.db $0A, T, O, L, I, P
-	.db repeatBlank, 26
-	.db $0A, R, U, C, C, A
-	.db space
+	.db repeatBlank, 32+1
 	.db $40
 	.db $41
-	.db repeatBlank, 3+20
-	.db $0A,L, L, I, K, S
-	.db space
+	.db repeatBlank, 3+27
 
 	.db $2D, repeatBlank, 3, $2C
 	.db repeatBlank, 1+32+1+18+7 ;
@@ -63,6 +58,67 @@ hudMenu:		; last
 	.db $2D, repeatBlank, 3, $2C
 	.db repeatBlank, 1 + 7
 	.db $0A, repeatBlank, 24
+
+unitSelect:
+	.db repeatBlank, 6*32+11			; 6 rows
+	.db R,E,T,S,O,R,space,T,N,E,M,Y,O,L,P,E,D
+	.db repeatBlank, 32+4				; 1 row
+	.db repeatBlank, 3
+	.db $2B
+	.db repeatBlank, 6
+	.db $2A
+	.db space
+
+	.db dict, 46
+	.db repeatBlank, 8+8
+	.db dict, 47
+	.db repeatBlank, 4+8+8
+	.db dict, 48
+	.db repeatBlank, 4+8+8
+	.db dict, 49
+
+	.db repeatBlank, 8+8
+
+	.db dict, 46
+	.db repeatBlank, 8+8
+	.db dict, 47
+	.db repeatBlank, 4+8+8
+	.db dict, 48
+	.db repeatBlank, 4+8+8
+	.db dict, 49
+
+	.db repeatBlank, 8+8
+
+	.db dict, 46
+	.db repeatBlank, 8+8
+	.db dict, 47
+	.db repeatBlank, 4+8+8
+	.db dict, 48
+	.db repeatBlank, 3+8
+
+	.db $2D
+	.db repeatBlank, 6
+	.db $2C
+	.db space
+
+	.db dict, 49
+	.db repeatBlank, 4
+
+	.db repeatBlank, 4*32		; 4 rows
+
+	.db repeatBlank, 6*32		; 6 rows
+	; --- palettes ---
+	.db $00, $00, $66						;
+	.db repeatChar, 7, $00
+	.db $66
+	.db repeatChar, 21, $00	;
+
+	.db repeatChar, 8, $00		;
+	.db repeatChar, 8, $A0		;
+	.db repeatChar, 6, $05		;
+	.db repeatChar, 4, $00		;
+	.db $66
+	.db repeatChar, 5, $00		;
 
 titleScreen2:
 	.db repeatBlank, 0	; 8 rows
@@ -223,9 +279,9 @@ mission01epilogFailed:
 
 
 hud_activityDetected:
-	.db H, O, S, T, I, L, E, space, A, C, T, I, V, I, T, Y, lineBreak, D, E, T, E, C, T, E, D, waitForA
+	.db H, O, S, T, I, L, E, space, U,N,I,T,S, lineBreak, D, E, T, E, C, T, E, D, waitForA
 	.db nextPage
-	.db I, space, A, M, space, E, N, G, A, G, I, N, G, space, N, O, W, waitForA
+	.db G,E,T,space,R,E,A,D,Y, space, T,O, space, E, N, G, A, G, E, waitForA
 	.db endOfStream
 
 hud_staySharp:
@@ -237,7 +293,7 @@ hud_allHostilesDestroyed:
 	.db D, E, S, T, R, O, Y, E, D, waitForA
 	.db nextPage
 	.db setPortrait, $20
-	.db W, E, L, L, space, D, O, N, E, comma, space, C, A, P, T, A, I, N, waitForA
+	.db W, E, L, L, space, D, O, N, E, comma, space, C,O,M,M,A,N,D,E,R, waitForA
 	.db nextPage
 	.db R, E, P, O, R, T, space, B, A, C, K, space, T, O, space, B, A, S, E, waitForA
 	.db endOfStream
@@ -260,21 +316,11 @@ resultTargetHit:
 
 resultTargetMiss:
 	.db $F2																																				; clear dialog
-	.db $FC, $0E, $0F, $1C, $18, $22, $22																					; [TARGET] MISS
+	.db dict, $0E, space, M, I, S, S																							; [TARGET] MISS
 	.db $F1																																				; next line
-	.db $1D, $1E, $0F 																														; NO
-	.db $FC, $0F																																	; [DAMAGE]
+	.db N, O, space, dict, 15																										  ; NO {DAMAGE}
 	.db $F1																																				; next line
-	.db $18, $1D, $15, $1B, $18, $12, $23, $14, $13																; INFLICTED
-	.db waitForA
-	.db endOfStream
-
-resultActionPointsRestored:
-	.db $F2																																				; clear dialog
-	.db $FD, $00, $0F																															; X (list3+0)
-	.db	$FC, $10																																	; [ACTION PTS]
-	.db $F1																																				; next line
-	.db $21, $14, $22, $23, $1E, $21, $14, $13																		; RESTORED
+	.db I,N,F,L,I,C,T,E,D																													; INFLICTED
 	.db waitForA
 	.db endOfStream
 
@@ -313,4 +359,32 @@ resultUnitRestart:
 	.db nextPage
 	.db H, E, A, T, space, S, T, A, B, L, E, lineBreak
 	.db U, N, I, T, space, O, N, L, I, N, E, waitForA
+	.db endOfStream
+
+resultEngineCriticalDamage:
+	.db nextPage
+	.db C,O,O,L,I,N,G,lineBreak
+	.db S,Y,S,T,E,M,lineBreak
+	.db M,A,L,F,U,N,C,T,I,O,N,waitForA
+	.db endOfStream
+
+resultTargetingCriticalDamage:
+	.db nextPage
+	.db T,A,R,G,E,T,I,N,G,lineBreak
+	.db S,Y,S,T,E,M,lineBreak
+	.db M,A,L,F,U,N,C,T,I,O,N,waitForA
+	.db endOfStream
+
+resultWeaponsCriticalDamage:
+	.db nextPage
+	.db W,E,A,P,O,N,S,lineBreak
+	.db S,Y,S,T,E,M,lineBreak
+	.db M,A,L,F,U,N,C,T,I,O,N,waitForA
+	.db endOfStream
+
+resultMobilityCriticalDamage:
+	.db nextPage
+	.db M,O,B,I,L,I,T,Y,lineBreak
+	.db R,E,D,U,C,E,D
+	.db waitForA
 	.db endOfStream

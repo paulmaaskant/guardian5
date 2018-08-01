@@ -1,37 +1,37 @@
 weaponType:
+  .db 42			    ; 0 name: GIANT BLADE
+  .db %01000000   ; 1 damage profile (+1 close combat)
+  .db %00000000		; 2 target inflicted heat profile
+  .db 0           ; 3 heat cost
+  .db 0           ; 4 not used
+  .db 0           ; 5 not used
+  .db 0           ; 6 not used
+  .db 0           ; 7 not used
 
-  .db 29				  ; 0 name: reaper
-  .db 1           ; 1 damage
-  .db $82					; 2 range (max|min)
-  .db 128+0       ; 3 once per turn bit and ammo (0=infinite)
-  .db 1           ; 4 turns to reload
-  .db 0           ; 5 heat inflicted
-  .db 1           ; 6 heat cost
-  .db 0           ; 7 type: machine gun
 
-  .db 30			    ; 0 name: hailfire
-  .db 3           ; 1 damage
-  .db $83					; 2 range (max|min)
-  .db 128+03      ; 3 ammo (0=infinite)
-  .db 1           ; 4 not used
-  .db 0           ; 5 heat inflicted
-  .db 2           ; 6 heat cost
-  .db 1           ; 7 type: missiles
+  .db 29				  ; 0 name: MACHINE GUN
+  .db %00010000   ; 1 damage profile (+1 short range)
+  .db %00000000		; 2 target inflicted heat profile
+  .db 0           ; 3 heat cost
+  .db 0           ; 4 not used
+  .db 0           ; 5 not used
+  .db 0           ; 6 not used
+  .db 0           ; 7 not used
 
-  .db 42			    ; 0 name: spark
-  .db 2           ; 1 damage
-  .db $72					; 2 range (max|min)
-  .db 128+02      ; 3 ammo (0=infinite)
-  .db 1           ; 4 not used
-  .db 0           ; 5 heat inflicted
-  .db 2           ; 6 heat cost
-  .db 1           ; 7 type: missiles
+  .db 45			    ; 0 name: MEDIUM LASER
+  .db %00000100   ; 1 damage profile (+1 mid range)
+  .db %00000000		; 2 target inflicted heat profile
+  .db 0           ; 3 heat cost
+  .db 0           ; 4 not used
+  .db 0           ; 5 not used
+  .db 0           ; 6 not used
+  .db 0           ; 7 not used
 
-  .db 45			    ; 0 name: surge
-  .db 2           ; 1 damage
-  .db $62					; 2 range (max|min)
-  .db 128+00      ; 3 ammo (0=infinite)
-  .db 1           ; 4 not used
-  .db 2           ; 5 heat inflicted
-  .db 3           ; 6 heat cost
-  .db 2           ; 7 type: laser
+  .db 30			    ; 0 name: LR MISSILE
+  .db %00000001   ; 1 damage profile (+1 long range)
+  .db %00000000		; 2 target inflicted heat profile
+  .db 0           ; 3 heat cost
+  .db 0           ; 4 not used
+  .db 0           ; 5 not used
+  .db 0           ; 6 not used
+  .db 0           ; 7 not used

@@ -75,6 +75,7 @@ state00_screenLo:
 	.db #> animationScreen						; 05 play animation background
 	.db #> missionAccomplishedScreen	; 06 mission accomplished bg
 	.db #> blankScreen								; 07 mission failed bg
+	.db #> unitSelect									; 08 unit select BG
 
 state00_screenHi:
 	.db #< titleScreen2
@@ -85,6 +86,7 @@ state00_screenHi:
 	.db #< animationScreen
 	.db #< missionAccomplishedScreen
 	.db #< blankScreen
+	.db #< unitSelect									; 08 unit select BG
 
 state00_sound:
 	.db $00
@@ -95,21 +97,25 @@ state00_sound:
 	.db $05									;
 	.db $05
 	.db $02
+	.db $05
 
 state00_tileBank1:
-	.db $07
-	.db $05
-	.db $05
-	.db $05
-	.db $05
-	.db $05
-	.db $05
-	.db $05
+	.db 7
+	.db 5
+	.db 5
+	.db 5
+	.db 5
+	.db 5
+	.db 5
+	.db 5
+	.db 6
 
 state00_tileBank2:
+
 state00_tileBank3:
 
 state00_tilePall0:
+	.db 0
 	.db 0
 	.db 0
 	.db 0
@@ -127,6 +133,7 @@ state00_tilePall1:
 	.db 1
 	.db 1
 	.db 1
+	.db 8
 state00_tilePall2:
 	.db 1
 	.db 2
@@ -136,7 +143,9 @@ state00_tilePall2:
 	.db 2
 	.db 2
 	.db 2
+	.db 2
 state00_tilePall3:
+	.db 3
 	.db 3
 	.db 3
 	.db 3

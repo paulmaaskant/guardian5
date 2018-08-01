@@ -2,12 +2,6 @@ state_endAction:
   LDA activeObjectStats+9       ; active unit AP
   BEQ +endTurn                  ; if  all APs are spent, end turn
 
-  ;JSR updateSystemMenu          ; 
-
-  ;LDY activeObjectIndex        ; if unit is shut down, end turn
-  ;LDA object+2, Y
-  ;BMI +endTurn
-
   LDA activeObjectIndexAndPilot
   BMI +AInextAction
 
@@ -20,7 +14,8 @@ state_endAction:
 
 +endTurn:
   JSR pullAndBuildStateStack
-  .db 1
+  .db 2
+  .db $4E								  ; evade point marker animation
   .db $4D                 ; check mission events
                           ; RTS
 

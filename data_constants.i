@@ -6,8 +6,8 @@ eUpdateTarget = 		%00100000
 sysObjectSprites = %00000100
 
 aMOVE = $00
-aRANGED1 = $01
-aRANGED2 = $02
+aJUMP = $01
+aATTACK = $02
 aBRACE = $03
 aCLOSECOMBAT = $04
 aCHARGE = $05
@@ -16,15 +16,9 @@ aRUN = $07
 aMARKTARGET = $08
 
 aiBRACE = 0
-aiCLOSECOMBAT = 5
+aiCLOSECOMBAT = 4
 
-AI_cooldown = 0
-AI_move_defensive = 1
-AI_move_offensive = 2
-AI_ranged_attack_1 = 3
-AI_ranged_attack_2 = 4
-AI_close_combat = 5
-AI_charge = 6
+
 
 A = $10
 B = $11

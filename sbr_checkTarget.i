@@ -2,7 +2,8 @@
 ; list3+00				AP cost
 ; list3+01				hit Probability
 ; list3+02				damage value
-; list3+03 .. 09	Result messages / streams
+; list3+03-09			reserved
+
 ; list3+10    		ammo BCD digit tens
 ; list3+11				ammo BCD digit ones
 ; list3+12				heat cost
@@ -10,7 +11,9 @@
 ; list3+14 				evade points
 ; list3+15				action properties
 ; list3+16 				active unit heat damage
-; list3+7					(b7) 0 rear attack, 1 frontal attack
+; list3+17			  (b7) 0 rear attack, 1 frontal attack
+; list3+18        range category letter C, S, M, L
+; list3+19        range category 0, 1, 2, 3
 
 ; list3+20				target's hit points
 ; list3+21				damage sustained by attacker
@@ -18,6 +21,7 @@
 ; list3+22				close combat animation
 ; list3+23				close combat sound
 ; list3+24			  target's current heat points
+; list3+25				selected action
 
 ; list3+30				sprite
 ; list3+31    		sprite
@@ -40,65 +44,59 @@
 ; - is the action actually an attack (cooldown)
 ; -----------------------------------------
 checkTarget:
-;	LDX #63
-;	LDA #0
-
-;-loop:															; clear list 3
-;	STA list3, X
-;	DEX
-;	BPL -loop
-
-	LDY selectedAction								; retrieve selected action
+	LDY selectedAction					; retrieve selected action
 	LDX actionList, Y
+	STX list3+25
 	LDA actionPropertiesTable, X
-	STA list3+15
+	STA list3+15								; action properties
+	LDA #dash
+	STA list3+18								; default the range category letter to '-'
 
-	AND #%00000100										; b2 - weapon 1 or 2
-	BEQ +nextCheck
+	; ---------------------------------------------------------------------------
+	; no friendly fire
+	; ---------------------------------------------------------------------------
++nextCheck:
+	LDA activeObjectIndexAndPilot			; if active and target object have same value for bit7
+	EOR targetObjectTypeAndNumber			; then this sets b7 to 0
+	ASL
+	BCS +nextCheck
+	LDA #55+128												; friendly unit
+	STA actionMessage
+	RTS
 
-	JSR getSelectedWeaponTypeIndex
-	LDA weaponType+3, Y
-	AND #$0F
-	BEQ +checkReload
+	; ---------------------------------------------------------------------------
+	; 10 hex is hardcoded max range
+	; ---------------------------------------------------------------------------
++nextCheck:
+	LDA distanceToTarget
+	CMP #10
+	BCC +nextCheck
+	LDA #8+128									; out of range
+	STA actionMessage
+	RTS
 
-	LDA activeObjectIndex
-	CLC
-	ADC identity, X
+	; ---------------------------------------------------------------------------
+	; determine range category, used to determine damage value later
+	; ---------------------------------------------------------------------------
++nextCheck:
+	TAX													; set range category based on distance to target
+	LDA rangeCategoryMap-1, X
+	STA list3+19
 	TAX
-	LDA object+5, X
-	AND #$0F
-	BNE +continue
-	LDA #165																; "AUT OF AMMO" +128
-	STA actionMessage
-	RTS
+	LDA rangeCategoryLetter, X
+	STA list3+18
 
-+continue:
-	JSR toBCD
-	LDA par2
-	STA list3+10
-	LDA par3
-	STA list3+11
-
-+checkReload:
-	LDY selectedAction								; retrieve selected action
-	LDX actionList, Y
-	LDA activeObjectStats-1, X				; CHECK for once per turn
-	BPL +nextCheck
-	LDA #$9F													; "RELOADING" +128
-	STA actionMessage
-	RTS
-
-+nextCheck:
-	LDA list3+15
-	AND #%01000000							; b6 - range check?
+	LDA list3+15							  ; action properties
+	BIT bit4										; charge or dfa
 	BEQ +nextCheck
-	JSR checkRange							; check min / max distance for ranged attacks
-	LDA actionMessage
-	BEQ +nextCheck
-	RTS													; deny -> done
 
-+nextCheck:
-	LDA list3+15									; action properties
+	LDX 0
+	STX list3+19								; use close combat range category
+
+	; ---------------------------------------------------------------------------
+	; Check line of sight for ranged attacks
+	; ---------------------------------------------------------------------------
++nextCheck
 	AND #%00100000							; b5 - los check?
 	BEQ +nextCheck
 
@@ -117,8 +115,11 @@ checkTarget:
 	STA actionMessage
 	RTS
 
+	; ---------------------------------------------------------------------------
+	; check path availability for charge attack
+	; ---------------------------------------------------------------------------
 +nextCheck:
-	LDA list3+15									; action properties
+	LDA list3+15								; action properties
 	AND #%00010000							; b4 - charge distance check?
 	BEQ +nextCheck
 
@@ -132,7 +133,6 @@ checkTarget:
 	LDA activeObjectStats+2			; movement type | movement stat
 	STA par3										; movement type | xxxx
 	AND #$0F										; 0000 | move points
-	ASL													; move x 2
 	STA par2										; IN par2 = # moves allowed
 	INC par2										; one extra move point to account for target node itself
 	LDA activeObjectGridPos			; IN A = start node
@@ -147,6 +147,9 @@ checkTarget:
 	BPL +nextCheck
 	RTS
 
+	; ---------------------------------------------------------------------------
+	; retrieve target unit information
+	; ---------------------------------------------------------------------------
 +nextCheck:
 	LDY targetObjectIndex										; retrieve target's hit points and show in menu
 	LDA object+1, Y
@@ -159,38 +162,38 @@ checkTarget:
 	AND #%00000111
 	STA list3+24
 
-	LDX selectedAction											; retrieve selected action
-	LDA actionList, X
-	CMP #aMARKTARGET												; is action to mark target?
+	; ---------------------------------------------------------------------------
+	; checks that are specific to the MARK TARGET action
+	; ---------------------------------------------------------------------------
+	LDX list3+25
+	CPX #aMARKTARGET												; is action to mark target?
 	BNE +continue
-	LDA distanceToTarget
-	CMP #10
-	BCC +nextCheck
-	LDA #8+128															; out of range
-	STA actionMessage
-	RTS
-
-+nextCheck:
 	LDY targetObjectIndex
 	LDA object+4, Y													; check if target is not already locked
 	AND #%01000000
-	BEQ +skip
+	BEQ +setMarkTargetToolTip
 	LDA #38+128
 	STA actionMessage
 	RTS
 
-+skip:
-	LDA #3
-	JMP setTargetToolTip										; RTS
++setMarkTargetToolTip:
+	LDA #3																		; mark target tool tip
+	JMP setTargetToolTip											; RTS
 
+
+	; ---------------------------------------------------------------------------
+	; exit point for actions that do not require damage calculation
+	; ---------------------------------------------------------------------------
 +continue:
-	TAX
 	LDA actionPropertiesTable, X
 	AND #%00001000														; b3 - calculate hit % and damage?
 	BNE +continue
 	RTS																				; done, no more checks
 
-+continue:
+	; ---------------------------------------------------------------------------
+	; determine attack direction (to detect a rear attack)
+	; ---------------------------------------------------------------------------
++continue:																	; determine if attack is in rear angle
 	JSR directionToCursor
 	TAX																				; store in X
 	LDY targetObjectIndex
@@ -198,59 +201,61 @@ checkTarget:
 	AND #%00000111														; defending unit direction
 	SEC
 	SBC identity, X
-	JSR absolute
-	CMP #2
+	CMP #1
 	ROR list3+17															; set (b7) 0 rear attack 1 frontal attack
 	BMI +continue
 	LDA #16
 	STA infoMessage
 
-
+	; ---------------------------------------------------------------------------
+	; determine to hit %
+	; ---------------------------------------------------------------------------
 +continue:
-	LDY targetObjectIndex											; check and adjust to hit % for evade
-	LDA object+4, Y														; evade points?
+	LDA activeObjectStats+5										; pilot skill
+	LDY list3+19															; range category
+	CLC
+	ADC rangeCategoryModifier, Y							; adjust for range
+	STA locVar1
+
+	LDY targetObjectIndex											; adjust for target unit movement
+	LDA object+4, Y														;
 	AND #$07																	; mask evade points
-	TAX
-	LDA activeObjectStats+5
-	SEC
-	SBC evadePointEffect, X
-	STA list3+1
-	LDA evadeSpriteMap1, X
-	STA list3+33
-	LDA evadeSpriteMap2, X
-	STA list3+34
-	LDA evadeSpriteMap3, X
-	STA list3+35
-
-	LDA list3+15														; attack properties
-	AND #%00000010													; accuracy attack or piloting attack?
-	BNE +pilotingAttack											; -> piloting
-	LDA object+4, Y													; -> accuracy, check target lock
-	AND #%01000000
-	BEQ +continue
+	PHA																				; used to for the evade sprite map
 	CLC
-	LDA #10
-	ADC list3+1
-	STA list3+1
-	BNE +continue
+	ADC locVar1																;
 
-+pilotingAttack:
-	LDA activeObjectStats+4
-	STA list3+1
+	LDX list3+25
+	CPX #aATTACK
+	BNE +continue															; if action is ATTACK
+	ADC activeObjectStats+4										; adjust for attacking unit heat level
 
 +continue:
-	LDA list3+17														; HIT % increased by 20
-	BMI +continue														; for a REAR attack
-	LDA list3+1
+	LDY activeObjectStats+3										; adjust for attacking unit movement
+	BMI +jumped
+	BNE +groundMove
+	ADC #-2																		; -1 (actually -2 +1) if attacking unit is stationary
 	CLC
-	ADC #20
-	STA list3+1
 
-+continue:																; HIT % determined
-	LDA list3+1
-	CMP #96
++jumped:
+	ADC #1																		; +1 if attacking unit jumped
+
++groundMove:
+	; adjust for action
+	LDX list3+25
+	CPX #aCHARGE
+	BNE +continue
+	CLC
+	ADC #1
+
++continue:
+	TAY
+	CPY #12
 	BCC +continue
-	LDA #95
+	LDY #12
+
++continue:
+	LDA probabilityDistribution, Y
+	STA list3+1
 
 +continue:
 	JSR toBCD																; convert to BCD for display purposes
@@ -265,41 +270,80 @@ checkTarget:
 	LDA #$51
 	STA list3+30
 
-	JSR getSelectedWeaponTypeIndex					; determine damage
-	BCS +notRanged
-	LDA weaponType+1, Y											; weapon damage
-	AND #$0F
-	PHA
-	LDX weaponType+5, Y											; weapon heat inflict
+	PLA
+	TAX
 
+	LDA evadeSpriteMap1, X
+	STA list3+33
+	LDA evadeSpriteMap2, X
+	STA list3+34
+	LDA evadeSpriteMap3, X
+	STA list3+35
+
+	; ---------------------------------------------------------------------------
+	; determine applicable damage in case of hit
+	; ---------------------------------------------------------------------------
+	LDY activeObjectIndex
+	LDX list3+19														; range category
+	JSR getOverallDamageValue
+	STA list3+2															; overall damage (base + EQ1 + EQ2)
+
+	LDX #0																	;
+	STX list3+13														; expected inflicted HEAT
+
+
+	LDY list3+17														; rear arc attack -> ignore brace and add 1
+	BMI +continue
+	INC list3+2
+	BNE +ignoreBrace
+
+	; ---------------------------------------------------------------------------
+	; if target unit is bracing, reduce damage by one
+	; ---------------------------------------------------------------------------
++continue:
 	LDY targetObjectIndex
 	LDA object+4, Y													; is target braced for impact?
-	ASL																			; set carry flag
-	PLA
-	BCC +continue														; carry 0 -> target not BRACED
-	LDY list3+17
-	BPL +continue														; rear arc attack -> target BRACE ignored
-	LSR																			; half damage round up
-	ADC #0
-	LDY #18					;BUG x is reserved!
-	STY infoMessage ;BUG
+	ASL																			; set carry flag = brace indicator
+	BCC +continue														; not braced -> FULL DAMAGE
+
+	DEC list3+2															; reduce damage by 1
+
+	LDA #18																	; msg TARGET BRACED
+	STA infoMessage
+
+	; ---------------------------------------------------------------------------
+	; if attack is CHARGE, then add 1 damage for each hex beyond the 3rd
+	; ---------------------------------------------------------------------------
++ignoreBrace:
++continue:
+	LDX list3+25
+	CPX #aCHARGE
+	BNE +continue
+	LDA distanceToTarget
+	CMP #3
 	BCC +continue
+	SBC #3
+	CLC
+	ADC list3+2
+	STA list3+2
 
-+notRanged:
-	LDA activeObjectStats+7									; close combat damage ignores BRACE
-	LDX #0																	; no heat inflicted
 
-+continue:																; set inform message indicating expected damage
-	STX list3+13
-	STA list3+2															; DMG
++continue:
+	LDA list3+2															; at least 1 damage
+	BMI +floor
+	BNE +continue
 
-	LDA #$14																; DAMG X
++floor:
+	LDA #1
+	STA list3+2
+
++continue:
+	LDA #$14																; string "X DMG"
 	STA actionMessage
 
 +return:
 	LDA #15
 	JMP setTargetToolTip
-
 
 evadeSpriteMap1:
 	.hex 4C 4B 4A 4A 4A 4A
@@ -312,3 +356,12 @@ evadeSpriteMap3:
 
 evadePointEffect:
 	.db 0, 10, 20, 30, 40, 40, 40
+
+rangeCategoryMap:
+	.db 0, 1, 1, 2, 2, 2, 3, 3 ,3
+
+rangeCategoryLetter:
+	.db C, S, M, L
+
+rangeCategoryModifier:
+	.db 0, 0, 2, 4

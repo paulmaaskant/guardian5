@@ -2,7 +2,6 @@
 ; retrieves dail position address
 ; IN Y (b3-0) object Index
 ; OUT pointer1, fixed stats
-; OUT A, current dail pos
 ; ------------------------------------------
 getStatsAddress:
 	LDA object+0, Y

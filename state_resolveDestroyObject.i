@@ -1,4 +1,4 @@
-state_runEffect:
+state_resolveDestroyObject:
 
   LDA list1+2         ; timer
   AND #$3F

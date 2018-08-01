@@ -2,25 +2,19 @@
 ; game state 27: ai controls active unit
 ; -----------------------------------
 state_ai_determineAction:
-  ; to do
-  ;   what if target of choice cannot be attacked, e.g., because in base contact with another?
   ;
-  ; 1 select the most attractive player controlled target
-  ;
-  ; 2 determine available options
-  ; - ranged attack 1 on target
-  ; - ranged attack 2 on target
+  ; 1 determine available options
+  ; - ranged attack on target
   ; - close combat on target
   ; - charge target
-  ; - move / pivot towards attack position on target (this is complex)
-  ; - cool down
-  ; - move towards defensive position (this is complex)
+  ; - move / pivot towards attack position on target
+  ; - brace
   ;
-  ; 3 score all available options
+  ; 2 score all available options
   ; - based on relevant factors (tbd)
   ;
-  ; 4 some randomness: pick best option 70%, second best 20%, third best 10%
-
+  ; 3 some randomness: pick best option 70%, second best 20%, third best 10%
+  ;
   ; move / pivot towards attack position on target (most difficult action)
   ; 1 flag all nodes that
   ;       - are not blocked
@@ -31,66 +25,29 @@ state_ai_determineAction:
   ;       - try to move there
   ;       - repeat untill a move is possble
 
+  LDY targetObjectIndex
+  LDA object+3, Y
+  STA cursorGridPos             ; set cursor on target
 
-
-
-  ; ----------------------------------------
-  ; 1. select most attractive target TODO
-  ;
-  ; closest target
-  ; ----------------------------------------
-  LDA #0
-  STA list6
-
-  LDA objectListSize
-  STA list1
-
-  LDA activeObjectGridPos
-  STA par1
-
--loop:
-  DEC list1
-  BMI +endLoop
-
-  LDY list1
-  LDA objectList, Y
-  BMI -loop               ; other AI unit -> next object
-  BIT pilotBits
-  BEQ -loop               ; inanimate - > next object
-  TAX
-  AND #%01111000
-  TAY
-  LDA object+3, Y         ; object grid pos
+  LDY activeObjectGridPos
+  STY par1
   JSR distance
-  JSR addToSortedList
-  JMP -loop
-
-+endLoop:
-  LDY list6
-  LDA list6, Y
-  STA targetObjectTypeAndNumber
-  AND #%01111000
-  STA targetObjectIndex
-  TAX
-  LDA object+3, X
-  STA cursorGridPos
-  LDA list7, Y
   STA distanceToTarget
 
   LDA #0
-  STA list6
+  STA list6                     ; reset sorted list
 
   ; ----------------------------------------
-  ; 2. score all options
+  ; 1. score all action options
   ; ----------------------------------------
-  LDX #7
+  LDX #6
   STX selectedAction
 
 -loop:
   LDX selectedAction
   LDA state29_actionID, X
   STA actionList, X
-  CPX #3                    ; actions 0,1 & 2 do not require target check
+  CPX #2                    ; actions 0&1 do not require target check
   BCC +continue
   LDA #0                    ; clear msg
   STA actionMessage
@@ -109,12 +66,13 @@ state_ai_determineAction:
 +store:
   STA list5, X
 
-  CPX #aiCLOSECOMBAT          ; Adjustment #1
-  BNE +next                   ; hovering units cannot charge
-  LDA activeObjectStats+2
-  BPL +next
-  LDA #0
-  STA list5, X
+  CPX #aiCLOSECOMBAT          ; Close combat check
+  BNE +next
+  LDA activeObjectStats+2     ; hovering units cannot do close combat
+  BMI +zero
+  LDA distanceToTarget        ; close combat only if distance is 1
+  CMP #1
+  BNE +zero
 
 +next:
   CPX #aiBRACE                 ; Adjustment #2
@@ -132,6 +90,8 @@ state_ai_determineAction:
   BNE +next                    ; time to cool down
   LDA activeObjectStats+2
   BPL +next
+
++zero:
   LDA #0
   STA list5, X                 ; hovering units cannot BRACE
 
@@ -140,9 +100,9 @@ state_ai_determineAction:
   BPL -loop
 
   ; ----------------------------------------
-  ; 3. select best option
+  ; 2. select best option
   ; ----------------------------------------
-  LDX #7
+  LDX #6
   LDA #0
   STA actionMessage     ; reset
   STA locVar1           ; best score
@@ -163,34 +123,38 @@ state_ai_determineAction:
 
   LDX selectedAction
   LDA state29_nextState, X
-  JMP replaceState
+  JSR replaceState
+
+  LDA state29_actionID, X
+  STA actionList+1
+  LDA #1
+  STA selectedAction
+  STA actionList
+  RTS
 
 state29_nextState:
-  .db $14             ; AI_cooldown
-  .db $FF             ; AI_move_defensive
-  .db $28             ; AI_move_offensive
-  .db $12             ; AI_ranged_attack_1
-  .db $12             ; AI_ranged_attack_2
-  .db $17             ; AI_close_combat
-  .db $1B             ; AI_charge
-  .db $44             ; AI_aim
+  .db $14             ; aiBRACE
+  .db $28             ; aiMOVE
+  .db $28             ; aiJUMP
+  .db $12             ; aiATTACK
+  .db $17             ; aiCLOSECOMBAT
+  .db $1B             ; aiCHARGE
+  .db $44             ; aiMARK
 
 state29_actionID:
-  .db aBRACE          ; AI_cooldown
-  .db aMOVE           ; AI_move_defensive
-  .db aMOVE           ; AI_move_offensive
-  .db aRANGED1        ; AI_ranged_attack_1
-  .db aRANGED2        ; AI_ranged_attack_2
-  .db aCLOSECOMBAT    ; AI_close_combat
-  .db aCHARGE         ; AI_charge
-  .db aMARKTARGET     ; AI_aim
+  .db aBRACE          ; aiBRACE
+  .db aMOVE           ; aiMOVE
+  .db aJUMP           ; aiJUMP
+  .db aATTACK         ; aiATTACK
+  .db aCLOSECOMBAT    ; aiCLOSECOMBAT
+  .db aCHARGE         ; aiCHARGE
+  .db aMARKTARGET     ; aiMARK
 
 state29_baslineLineScore:
-  .db 1             ; AI_cooldown
-  .db 0             ; AI_move_defensive
-  .db 2             ; AI_move_offensive
-  .db 4             ; AI_ranged_attack_1
-  .db 3             ; AI_ranged_attack_2
-  .db 3             ; AI_close_combat
-  .db 0             ; AI_charge
-  .db 5             ; AI_aim
+  .db 1               ; aiBRACE
+  .db 2               ; aiMOVE
+  .db 0               ; aiJUMP
+  .db 4               ; aiATTACK
+  .db 5               ; aiCLOSECOMBAT
+  .db 0               ; aiCHARGE
+  .db 0               ; aiMARK

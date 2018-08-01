@@ -1,4 +1,4 @@
-state_initializeEffect:
+state_initializeDestroyObject:
 
   LDA #6
   STA effects
