@@ -31,9 +31,10 @@ Instructions
 
   The ACTIVE UNIT can take one the following ACTIONS:
 
-  MOVE - move the unit a number of positions up to its movement value (MOV).
-  DOUBLE MOVE - move the unit a number of positions up to twice its movement value (MOV).
-  WPN1, WPN2 - engage an enemy unit with the weapon in slot 1 or 2.
+  MOVE - move the unit a number of positions up to its movement value.
+  JUMP - move the unit a number of positions up to its movement value, ignoring obstacles
+  SPRINT - move the unit a number of positions up to its movement value + 2.
+  ATTACK - initiate a ranged attack targeting an enemy unit
   CLOSE COMBAT - engage an enemy unit with a melee attack.
   CHARGE - run towards and engage an enemy unit with a melee attack.
   MARK - marks an enemy unit. This increases the chance of hitting the enemy unit for the rest of the round
@@ -49,39 +50,48 @@ Instructions
 
   Some actions can only be performed if certain conditions are met. If the conditions are not met, the action is blocked. A message appears in the HUD that explains why the action is blocked.
 
-  - Attacking with a ranged WPN1 or WPN2 is only possible if the ACTIVE UNIT has line of sight to its target
+  - an ATTACK is only possible if the ACTIVE UNIT has line of sight to its target
   - Moving empty position is only possible if it is withing moving range
   - Attacking with a ranged WPN1 is only possible if it is not currently reloading
 
 2.5 Heat
 
-  If a unit uses an ACTION to attack, that unit will also incur a number of HEAT POINTs.
-  Once a unit reaches a total of 6 HEAT POINTS, it will sustain 2 HEAT DAMAGE after each ACTION.
-  A unit loses one HEAT POINT whenever it performs an action that is not an attack, e.g., MOVE or BRACE
+  Some actions (like JUMPing) incurs heat points
+  Once a unit reaches a total of 4 HEAT POINTS, it will sustain 2 DAMAGE after each ACTION.
+  A unit loses one HEAT POINT whenever it BRACEs
 
 2.6 Evade
 
-  If a unit moves more than 4 spaces, it gains EVADE points, making it more difficult to hit by enemy units.
+  If a unit moves far enough it gain EVADE points, making it more difficult to be hit by enemy units.
   A unit retains EVADE points until it's next turn; at the start of a unit's turn, it loses all EVADE points.
-  After being the target of an attack, a unit loses one EVADE point.
+  After being the target of an attack (regardless of its a hit or miss) a unit loses one EVADE point.
 
 2.7 Brace for impact
 
   Some units are able to to BRACE for impact, as an ACTION.
-  Bracing for impact immediately ends a units turn and lasts until that unit's next turn.
-  Units that are braced for impact reduce all incoming damage through front arc attacks by half.
+  Bracing for impact immediately ends a units turn and loses one heat point.
+  Units that are braced for impact reduce all incoming damage by 1, except damage coming in through its rear hex side
+  A unit remains BRACEd until the start of the unit's next turn.
 
 2.8 Attacking a unit
 
-  When attacking another unit, the chance of success is determined as follows
+  When attacking another unit, the to-hit % depends on the following factors
 
-  - If the attack is a ranged attack, the base to-hit % is the ACCURACY of the attacking unit
-  - If the attack is a close combat attack, the base to-hit % is the SKILL of the attacking unit
-  - The to-hit chance is reduced by 10% for every EVADE POINT that the defending unit has
-  - The to-hit change is increased by 10% if the defending unit is MARKED
-  - If the attack angle is in the REAR arc of the defending unit, the to-hit chance is increased by 20%
+  - the attacking pilot's skill level
+  - whether the attacking unit moved in the same turn
+  - the number of evade points on the targeted unit
+  - the heat level of the attack mech
+
+  The damage caused by a successful attack depends on the attacking unit's damage profile.
+  Each unit has 4 damage values, indicating it's effectiveness at different ranges:
+
+  CC - damage done in Close Combat (distance 1 hex)
+  SR - damage done at Short Range (distance 2 or 3 hex)
+  MR - damage done at Medium Range (distance 4, 5 or 6 hex)
+  LR - damage done at Long Range (distance 4, 5 or 6 hex)
 
   The angle of attack is determined by drawing a line from the attacking unit hexagon to the defending unit hexagon. This line crosses one of the 6 sides of the defending unit's hexagon.
+  When attacking a unit throug it's rear hex side, the attack causes +1 damage
   After an attack resolves, the defending unit loses one EVADE point, even if the attack missed.
 
 3.0 Unit Types & Stats
@@ -90,44 +100,44 @@ Instructions
 
   Unit Attributes
 
-  SKILL - Skill, used to determine chance of success with close combat attacks
-  ACCUR - Accuracy, used to determine chance of succes with ranged attacks
-
-  ARMOR - Number of hit points
-  SPEED - Number of movement points
-  MELEE - Melee damage in close combat
-
-  Weapon Attributes (each unit is equipped with 1 or 2 weapons)
-
-  DMG - Damage inflicted upon the target when scoring a direct hit with this weapon
-  MIN - Minimum Range (expressed in number of Map positions)
-  MAX - Maximum Range (expressed in number of Map positions)
-  AMM - Max Ammunition (maximum number times this weapon can be used)
-  RLD - Number of turns that this weapon takes to reload (or recharge)
-  HTI - Number of HEAT POINTS inflicted upon the target when scoring a direct hit with this weapon
-  HTC - The HEAT POINT cost of using this weapon
+  PL - Pilot skill, used to determine chance of success with close combat attacks
+  AR - Armor points
+  ST - Structure points
+  MV - Number of movement points
+  IN - Initiative, used to determine the sequence of turns each round
+  CC - damage done in Close Combat (distance 1 hex)
+  SR - damage done at Short Range (distance 2 or 3 hex)
+  MR - damage done at Medium Range (distance 4, 5 or 6 hex)
+  LR - damage done at Long Range (distance 4, 5 or 6 hex)
 
 4.0 Controls
 
-4.1 Player Turn mode
+4.1 Roster mode
+
+  D-PAD   Controls the position of the cursor
+  B       Toggle the value of the currently selected pilot, mech or equipment slot
+  A       Assign a new value to selected slot
+  start   Roster complete
+
+4.2 Player Turn mode
 
   D-PAD   Controls the position of the cursor
   B       Toggle to the next ACTION, de-select the selected ACTION
   A       select the current ACTION, confirm the selected ACTION
   start   Upens the HUD MENU
 
-4.2 Select Direction mode
+4.3 Select Direction mode
 
   D-PAD   Pivot left / right
   A       Confirm current direction
   B       Hold to scroll the map with D-PAD
 
-4.3 HUD Menu mode
+4.4 HUD Menu mode
 
   D-PAD   Navigate the HUD MENU
   Start   Close the HUD MENU
 
-4.4 Dialog mode
+4.5 Dialog mode
 
   A       Speed up dialog, next page
   Start   Skip dialog
