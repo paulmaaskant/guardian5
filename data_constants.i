@@ -19,6 +19,7 @@ aiBRACE = 0
 aiCLOSECOMBAT = 4
 
 
+; test 
 
 A = $10
 B = $11
