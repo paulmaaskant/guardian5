@@ -20,6 +20,7 @@ state_initializeJump:
   STA list3+61								; set for object sprite cycle in main loop
 
   LDA object+4, Y             ; set evade points
+  AND #%11111000							; clear evade points
   ORA list3+14
   STA object+4, Y
 

@@ -10,6 +10,9 @@ state_showHourGlass:
 
   JSR updateSystemMenu
 
+  LDA #emptyString
+  STA actionMessage
+
   JSR pullAndBuildStateStack
   .db 2
   .db $31, #eRefreshStatusBar

@@ -11,7 +11,7 @@ state_initializeJumpAction:
 	JSR writeToActionMenu
 
 	JSR pullAndBuildStateStack
-	.db 12								; 13 items
+	.db 14								; 13 items
 	.db $45, %00111000		; blink action menu (all lines)
 	.db $31, #eRefreshStatusBar
 	.db $3A, 16				  	; switch CHR bank 1 to bank with mech jump animation
@@ -19,6 +19,7 @@ state_initializeJumpAction:
 	.db $3A, 0						; switch CHR bank 1 back to 0
 	.db $0B								; center camera on cursor
 	.db $0A								; set direction
+	.db $58, 0						; active object evade point marker animation
 	.db $16								; show results
 	; built in RTS
 

@@ -74,7 +74,7 @@ objectType4:				; OBSTACLE
 	.db 0			  			; 04 initiative
 	.db 0							; 05 not used
 	.db 0 						; 06 not used
-	.db 13+128			  ; 07 tile BG (+128 no direction map)
+	.db 13			  		; 07 tile BG ()
 
 objectType5:			; drone: LEMUR
 	.db $28 				;

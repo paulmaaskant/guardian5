@@ -22,15 +22,15 @@ NMI:
 	JMP nextTileString
 
 	; --- unrolled loop for speed ---
-	PLA							; 32
+	PLA									; 32
 	STA #$2007					;
-	PLA							; 31
+	PLA									; 31
 	STA #$2007					;
-  PLA							; 30
+  PLA									; 30
 	STA #$2007					;
-  PLA							; 29
+  PLA									; 29
 	STA #$2007					;
-  PLA							; 28
+  PLA									; 28
 	STA #$2007					;
   PLA							; 27
 	STA #$2007					;
@@ -87,7 +87,7 @@ NMI:
 	PLA							; 01 4cycles
 	STA #$2007					; 4cycles
 
-	nextTileString:		; +/- 90 cycles to jump and 8 cycles per tile
+	nextTileString:		; +/- 90 cycles to per string and 8 cycles per tile in string
 	; --- start of loop ---
 	PLA								; contains cols/rows (b0) and length (b7-b1) (4 cycles)
 	BEQ +done					; if length == 0 then the buffer is empty, tile loading is done (2 cycles on fail)
@@ -95,36 +95,34 @@ NMI:
 	STA nmiVar2				; store the length of the buffer string (3 cycles)
 										; subtotal 11 cycles
 
-	; --- tile rows or columns? ---
-	LDA #%10010000 		; $2000 value that writes rows (b2 is 0)(2 cycles)
-	BCC +rows					; if carry is set then (3 cycles for rows)
-	ADC #$03					; set b2 to 1
+															; --- tile rows or columns? ---
+	LDA #%10010000 							; (2 cycles) $2000 value that writes rows (b2 is 0)
+	BCC +rows										; (3 cycles for rows) if carry is set then
+	ADC #$03										; set b2 to 1
 
 +rows:
-	STA $2000					; 4 cycles
-										; subtotal 20 cycles
-	; --- select name table ---
-	PLA								; (4 cycles)
-	CMP #$24					; tiles with address $2400 or higher (2 cycles)
-	STA nmiVar0				; are written to NT 1 (3 cycles)
-	LDA #%00000001		; tiles with address lower than $2400 (2 cycles)
-	ROL								; are written to NT 0	(2 cycles)
-	STA $9000					; (4cycles)
+	STA $2000										; (4 cycles)
 
-										; subtotal 35 cycles
+															; --- select name table ---
+	PLA													; (4 cycles)
+	CMP #$24										; (2 cycles) tiles with address $2400 or higher
+	STA nmiVar0									; (3 cycles) are written to NT 1
+	LDA #%00000001							; (2 cycles) tiles with address lower than $2400
+	ROL													; (2 cycles) are written to NT 0
+	STA $9000										; (4cycles)
 
-	; --- read tile address from buffer and write to VRAM ---
-	LDA $2002					; prepare to set PPU address (4 cycles)
-	LDA nmiVar0				; 3 cycles
-	STA	$2006					; set PPU address H byte (4 cycles)
-	PLA								; 4 cycles
-	STA $2006					; set PPU address L byte (4 cycles)
+															; --- read tile address from buffer and write to VRAM ---
+	LDA $2002										; prepare to set PPU address (4 cycles)
+	LDA nmiVar0									; (3 cycles)
+	STA	$2006										; (4 cycles) set PPU address H byte
+	PLA													; (4 cycles)
+	STA $2006										; (4 cycles) set PPU address L byte
 
-											; subtotal 54 cycles
+															; subtotal 54 cycles
 
 	; --- prep unrolled loop jump address ---
-	ASL nmiVar2					; each unrolled loop consists of 4 bytes of code (5 cycles)
-	ASL nmiVar2					; bytes of code to jump back from the jump point (5 cycles)
+	ASL nmiVar2									; each unrolled loop consists of 4 bytes of code (5 cycles)
+	ASL nmiVar2									; bytes of code to jump back from the jump point (5 cycles)
 	LDA #< nextTileString				; (4 cycles)
 	SEC													; (2 cycles)
 	SBC nmiVar2									; (3 cycles)

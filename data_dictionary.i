@@ -1,5 +1,5 @@
 stringListL:
-	.db #< str_JUMP											; 00
+	.db #< str_EMPTY										; 00
 	.db #< str_ATTACK										; 01
 	.db #< str_MOVE											; 02
 	.db #< str_CHARGE										; 03
@@ -55,9 +55,11 @@ stringListL:
 	.db #< str_RANGE										; 53
 	.db #< str_HEAT											; 54
 	.db #< str_FRIENDLY_UNIT						; 55
+	.db #< str_JUMP											; 56
+	.db #< str_SPEED_X									; 57
 
 stringListH:
-	.db #> str_JUMP
+	.db #> str_EMPTY
 	.db #> str_ATTACK
 	.db #> str_MOVE
 	.db #> str_CHARGE
@@ -113,7 +115,11 @@ stringListH:
 	.db #> str_RANGE										; 53
 	.db #> str_HEAT											; 54
 	.db #> str_FRIENDLY_UNIT						; 55
+	.db #> str_JUMP
+	.db #> str_SPEED_X
 
+str_EMPTY:
+	.db 0
 str_LOS_BLOCKED:
 	.db 12, L, I, N, E, space, B, L, O, C, K, E, D
 str_JUMP:
@@ -218,6 +224,8 @@ str_HEAT:
 	.db 4, H, E, A, T
 str_FRIENDLY_UNIT:
 	.db 13,F,R,I,E,N,D,L,Y,space,U,N,I,T
+str_SPEED_X:
+	.db 7, S, P, E, E, D, space, $80+26
 
 scr_UNIT_1:
 	.db 16

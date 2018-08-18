@@ -22,6 +22,8 @@
 ; list3+23				close combat sound
 ; list3+24			  target's current heat points
 ; list3+25				selected action
+; list3+26				available move points
+; list3+27				target evade modifier
 
 ; list3+30				sprite
 ; list3+31    		sprite
@@ -204,7 +206,7 @@ checkTarget:
 	CMP #1
 	ROR list3+17															; set (b7) 0 rear attack 1 frontal attack
 	BMI +continue
-	LDA #16
+	LDA #16+128																; REAR ATTACK (blinking)
 	STA infoMessage
 
 	; ---------------------------------------------------------------------------
@@ -226,8 +228,8 @@ checkTarget:
 
 	LDX list3+25
 	CPX #aATTACK
-	BNE +continue															; if action is ATTACK
-	ADC activeObjectStats+4										; adjust for attacking unit heat level
+	BNE +continue															; if action is ranged ATTACK
+	ADC activeObjectStats+4										; then adjust for attacking unit heat level
 
 +continue:
 	LDY activeObjectStats+3										; adjust for attacking unit movement
@@ -308,7 +310,7 @@ checkTarget:
 
 	DEC list3+2															; reduce damage by 1
 
-	LDA #18																	; msg TARGET BRACED
+	LDA #18+128															; msg TARGET BRACED (blink)
 	STA infoMessage
 
 	; ---------------------------------------------------------------------------

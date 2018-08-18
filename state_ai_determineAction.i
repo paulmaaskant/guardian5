@@ -49,7 +49,7 @@ state_ai_determineAction:
   STA actionList, X
   CPX #2                    ; actions 0&1 do not require target check
   BCC +continue
-  LDA #0                    ; clear msg
+  LDA #emptyString          ; clear msg
   STA actionMessage
   JSR checkTarget           ; can action be executed?
 
@@ -80,8 +80,16 @@ state_ai_determineAction:
   LDY activeObjectIndex
   LDA object+1, Y
   AND #%00000111
-  CMP #6
+  CMP #2
   BCC +next
+  CMP #3
+  BCS +forceBrace              ; if heat level is 3 -> force Brace
+  JSR random                   ; if heat level is 2
+  ASL                          ; there is a 50% change of bracing
+  BCC +next
+
+
++forceBrace:
   LDA #10                      ; set BRACE score to 10 if unit is overheating
   STA list5, X
 
@@ -102,9 +110,11 @@ state_ai_determineAction:
   ; ----------------------------------------
   ; 2. select best option
   ; ----------------------------------------
+  LDA #emptyString
+  STA actionMessage     ; reset
+
   LDX #6
   LDA #0
-  STA actionMessage     ; reset
   STA locVar1           ; best score
   STA selectedAction    ; best action
 

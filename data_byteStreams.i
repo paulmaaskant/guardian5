@@ -2,13 +2,13 @@
 ; --- byte stream to load status bar ( in reverse )	---
 hud:
 statusBar:
-	.db repeatBlank, 36 	; 2 rows + 3 blank tiles
-	.db $2B, repeatBlank, 2, $2A
+	.db repeatBlank, 35 	; 2 rows + 3 blank tiles
+	.db $2B, repeatBlank, 2, $2A, space
 	.db $2B, repeatBlank, 13, $2A
 	.db repeatBlank, 4
 	.db $2B, repeatBlank, 2, $2A
-	.db repeatBlank, 69
-	.db $2D, repeatBlank, 2, $2C
+	.db repeatBlank, 68
+	.db $2D, repeatBlank, 2, $2C, space
 	.db repeatBlank, 19
 	.db $2D, repeatBlank, 2, $2C
 	.db repeatBlank, 8, $0A, $2D, repeatBlank, 13, $2C, repeatBlank, 9
@@ -285,6 +285,9 @@ hud_activityDetected:
 	.db endOfStream
 
 hud_staySharp:
+	.db N,E,W,space,H,O,S,T,I,L,E,S, space, C,O,M,I,N,G,space,O,U,R,lineBreak
+	.db W,A,Y,waitForA
+	.db nextPage
 	.db S, T, A, Y, space, S, H, A, R, P, waitForA
 	.db endOfStream
 
@@ -384,6 +387,7 @@ resultWeaponsCriticalDamage:
 
 resultMobilityCriticalDamage:
 	.db nextPage
+	.db T,A,R,G,E,T,lineBreak
 	.db M,O,B,I,L,I,T,Y,lineBreak
 	.db R,E,D,U,C,E,D
 	.db waitForA

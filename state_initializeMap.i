@@ -34,117 +34,68 @@ state_initializeMap:
 
 +continue:
 	; -- object info ---
-	JSR getNextByte
-	STA objectListSize
+	JSR getNextByte						; number of object on map
+	STA list1+3
 
-;	STA activeObjectIndexAndPilot	; set to the last object so that the next is the first
+	LDA #3
+	STA objectListSize
 
 	LDX #0
 
 -nextObject:
 	STX list1+2
-	CPX #3
-	BCC +playerUnit
-	CPX objectListSize
+	TXA
+	ASL
+	ASL
+	ASL														; A = object index
+
+	CPX #3												; iterate over all objects
+	BCC +playerUnit								; 0-2 are player units
+	CPX list1+3										; rest are enemy / obstacles
 	BNE +continue
-	JMP +done
+	BEQ +done
 
 +playerUnit:
-	TXA
-	ASL
-	ASL
-	ASL
-	TAX
-	STA list1+3
-	JSR getNextByte
-	STA object+3, X
-	JMP +updateMap
+	TAX														; object index
+	JSR getNextByte								; grid pos
+	STA object+3, X								; set directly
+	JSR insertObjectGridPosOnly
+	JMP +temp
 
 +continue:
-	JSR getNextByte					; get pilot (b7, b2-b0)
-	STA locVar1
-	PHA
+	TAX														; object index
+	JSR getNextByte								; pilot
+	STA locVar1										;
+	JSR getNextByte								; grid pos
+	STA locVar2										;
+	JSR getNextByte								; type and facing direction
+	STA locVar3										;
+	JSR getNextByte								; equipment
+	JSR insertObject							;
 
-	TXA
-	ASL											; 8 bytes per pilot
-	ASL
-	ASL
-	ORA locVar1
-	STA objectList, X
-	STA activeObjectIndexAndPilot
-	AND #%01111000
-	TAX
-	STX list1+3								; index
-
-	JSR getNextByte
-	STA object+3, X						; set grid position
-
-	JSR getNextByte						; get type & initial facing direction
-	STA object+0, X
-
-	LDA #0
-	STA object+2,X						; set animation counter and shutdown bit
-
-	PLA
-	BEQ +updateMap							; object is obstacle -> skip weapons
-
-	JSR getNextByte						; get weapons
-	PHA												; store weapon byte
-	AND #$F0
-	STA object+6, X						; wpn 1
-	PLA												; restore weapon byte
-	ASL
-	ASL
-	ASL
-	ASL
-	STA object+7, X						; wpn 2
-
-+updateMap:
-	LDY list1+3								; index
-	JSR getStatsAddress
-	LDY #7										; BG tile offset
-	LDX list1+3
-	LDA (pointer1), Y
-	BMI +store
-
-	STA locVar1
-	LDA object+0, X
-	AND #$0F									; facing direction
-	CLC
-	ADC locVar1
-
-+store:
-	ORA #%11000000						; obscuring and blocking
-	LDY object+3, X
-	STA nodeMap, Y
-
-	LDY list1+3								; object index
-	JSR getStatsAddress				; breaks X, sets pointer1
-
-	LDX list1+3
-	LDY #1
-	LDA (pointer1), Y					; #1 armor points
-	CLC
-	LDY #2
-	ADC (pointer1), Y					; #2 structure points
-	ASL
-	ASL
-	ASL
-	STA object+1, X						; set health and heat points
-
++temp:
 	LDX list1+2
 	INX
 	JMP -nextObject
 
 +done:
-	LDA #$00
-	STA cameraY+0
-	STA cameraX+0
-	STA cameraX+1
-	STA cameraXDest+0
-	STA cameraXDest+1
-	STA cameraYDest+0
-	STA cameraYDest+1
+
+	;LDA #$00
+	;STA cameraY+0
+	;STA cameraX+0
+	;STA cameraX+1
+	;STA cameraXDest+0
+	;STA cameraXDest+1
+	;STA cameraYDest+0
+	;STA cameraYDest+1
+
+	LDY #7
+	LDA #0
+
+-loop:
+	STA cameraY, Y
+	DEY
+	BPL -loop
 
 	LDA #$F4							; start the camera one screen down
 	STA cameraY+1					; camera automatically scrolls back up, loading the tiles!

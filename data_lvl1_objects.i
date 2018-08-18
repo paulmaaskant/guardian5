@@ -37,15 +37,18 @@ levelOne:
 
 	.db $00			; object object building
 	.db $25			; object grid position
-	.db $41			; object type & facing RD
+	.db $40			; object type & facing RD
+	.db $00			;
 
 	.db $00			; object building
 	.db $45			; object grid position
-	.db $41			; object type & facing RD
+	.db $40			; object type & facing RD
+	.db $00			;
 
 	.db $00			; object building
 	.db $C7			; object grid position
-	.db $41			; object type & facing RD
+	.db $40			; object type & facing RD
+	.db $00			;
 
 	.db $80			; enemy pilot 0 (unkown)
 	.db $E5			; object grid position
@@ -67,30 +70,19 @@ levelOne:
 
 missionOneEventStream:
 ; --------------
-; byte 1			; mission event header
-;							; - no more events (b7)
-;							; - start turn event / end turn event
-;					  	; - number of bytes to the next mission event
+; byte 1			; event header
+;							; - number of bytes for this event
 
-; byte 2			; mission event type
-							; - dialog, inbound wave, wave arrival, mission accomplished, mission failed
-; byte 3			; mission event type parameter
+; byte 2			; event condition (optional)
+							; - parameter bytes
 
-; byte 4+2n		; condition type
-							; - mission round # equal or greater (check)
-							; - grid node occupied by friendly
-							; - specific pilot death
-							; - all friendlies dead
-							; - all enemies dead
-							; - no more waves
-
-; byte 5+2n		; condition parameter
-							; - missionRound #
-							; - grid node
-							; - pilot ID
+; byte 3			; event type
+							; - parameter bytes
 
 .db 2, mEventOpenDialog, 10 												 			; event 1
+
 .db 4, mConditionRound, 2,  mEventOpenDialog, 13		 			; event 2
+.db 3, mConditionRound, 2,  mEventNewUnit		 		  				; event 2B
 
 .db 3, mConditionOnlyHostiles, mEventOpenDialog, 12 			; event 3
 .db 4, mConditionOnlyHostiles, mEventEndMission, 3, 7 		; event 4

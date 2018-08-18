@@ -9,6 +9,7 @@ state_initializeActiveObjectHeatMarker:
 
     LDX #$54
     LDA list3+12
+    BEQ +noMarker
     BPL +positive
     LDX #$56
     STX list3+30
@@ -34,5 +35,6 @@ state_initializeActiveObjectHeatMarker:
 
   	LDA #2
   	STA runningEffect
-
+    
++noMarker:
     JMP pullState

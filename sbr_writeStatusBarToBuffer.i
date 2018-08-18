@@ -26,6 +26,7 @@ writeStatusBarToBuffer:
 	; --- line 1 tile 6 and 7 ---
 	LDA #$0F			; separator blank space
 	PHA
+	PHA
 	LDA menuIndicator+1
 	PHA
 
@@ -70,7 +71,7 @@ writeStatusBarToBuffer:
 	PHA
 	LDA #$24
 	PHA
-	LDA #52							; 26 * 2
+	LDA #54							; 27 * 2
 	PHA
 
 	; --- line 2 ---
@@ -95,6 +96,7 @@ writeStatusBarToBuffer:
 	LDX #$0C
 	LDA #$0F			; separator blank space
 	PHA					; twice
+	PHA
 	PHA
 
 	LDA menuFlags
@@ -132,7 +134,7 @@ writeStatusBarToBuffer:
 	PHA
 	LDA #$24
 	PHA
-	LDA #52								; 26 * 2
+	LDA #54								; 27 * 2
 	PHA
 
 	; --- line 3 ---
@@ -145,25 +147,35 @@ writeStatusBarToBuffer:
 	PHA
 
 
-	LDX #$0C
-	LDA #$0F			; separator blank space
-	PHA					;
-LDA menuFlags
+	LDX #12
+	LDA #space			; separator blank space
+	PHA							;
+	PHA
+  LDA menuFlags
 	BPL +set
 	BIT menuFlag_line3
 	BEQ +set
-	LDA #$0F
+	LDA #space
+
 -loop1:
 	PHA
 	DEX
 	BPL -loop1
-	JMP +done
+	BMI +done
+
 +set:
--loop2:
-	LDA actionMenuLine3, X
-	PHA
-	DEX
-	BPL -loop2
+	LDX #13
+	LDA actionMessage
+	AND #%01111111
+	TAY
+	JSR writeStringToBuffer
+
+	; -loop2
+	;LDA actionMenuLine3, X
+	;PHA
+	;DEX
+	;BPL -loop2
+
 +done:
 
 	LDA #space			; separator blank space
@@ -182,51 +194,48 @@ LDA menuFlags
 	PHA
 	LDA #$24
 	PHA
-	LDA #44							; 22 * 2
+	LDA #46							; 23 * 2
 	PHA
 
+;	LDX #$05
+
+;-loop:
+;	LDA targetMenuLine3, X									; target name
+;	PHA
+;	DEX
+;	BPL -loop
 
 
-	;LDA systemMenuLine3+2
-	;PHA
-	;LDA systemMenuLine3+1
-	;PHA
-	;LDA systemMenuLine3+0
-	;PHA
-	;LDA #$A3
-	;PHA
-	;LDA #$24
-	;PHA
-	;LDA #$06								;
-	;PHA
-
-	;LDA systemMenuLine2+0
-	;PHA
-	;LDA systemMenuLine2+1
-	;PHA
-	;LDA systemMenuLine2+2
-	;PHA
-	;LDA #$41
-	;PHA
-	;LDA #$24
-	;PHA
-	;LDA #$07								;
-	;PHA
-
-
-	LDX #$05
-
--loop:
-	LDA targetMenuLine3, X									; target name
-	PHA
-	DEX
-	BPL -loop
+	LDX #6
+	LDY targetMenuName
+	JSR writeStringToBuffer
 
 	LDA #$B9
 	PHA
 	LDA #$24
 	PHA
 	LDA #12								;
+	PHA
+
+
+;	LDX #5
+;
+;-loop:
+;	LDA systemMenuLine4, X
+;	PHA
+;	DEX
+;	BPL -loop
+;
+
+	LDX #6
+	LDY systemMenuName
+	JSR writeStringToBuffer
+
+	LDA #$A1
+	PHA
+	LDA #$24
+	PHA
+	LDA #12									;
 	PHA
 
 	TSX											; switch stack pointers

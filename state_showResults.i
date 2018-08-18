@@ -41,6 +41,12 @@ state_showResults:
 	CMP #$83
 	BEQ +sustainHeatDamage
 
+	CMP #$84
+	BEQ +targetDamage
+
+	CMP #$85
+	BEQ +reduceEvade
+
 	JSR buildStateStack		; opcode $80: explosion & flash
 	.db 5									; # stack items
 	.db $2C								; show effect: explosion
@@ -53,8 +59,19 @@ state_showResults:
 	JMP pushState
 
 +inflictHeat:						; opcode $82: inflicted heat modifier
-	LDA #$4C
-	JMP pushState
+	JSR buildStateStack
+	.db 2
+	.db $58, 3						;
+
++targetDamage:						; opcode $82: inflicted heat modifier
+	JSR buildStateStack
+	.db 2
+	.db $58, 4						;
+
++reduceEvade:					; opcode $82: inflicted heat modifier
+	JSR buildStateStack
+	.db 2
+	.db $58, 1						;
 
 +startGauge:
 	LDA #$42							; opcode $81: show gauge update

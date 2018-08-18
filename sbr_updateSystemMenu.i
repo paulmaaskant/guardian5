@@ -10,6 +10,11 @@ updateSystemMenu:
 	STA systemMenuLine3+1
 
 	LDA #space									; warning marker?
+	BIT activeObjectStats+0
+	BPL +continue:
+	LDA #$50
+
++continue:
 	STA systemMenuLine3+2
 
 	LDA #$0F										; REMAINING AP
@@ -18,10 +23,24 @@ updateSystemMenu:
 	CPX activeObjectStats+9
 	BNE +continue
 	LDA #$0C
+
 +continue:
 	STA systemMenuLine2-1, X
 	DEX
 	BNE -loop
+
+
+	LDY #41												; "ENEMY"
+	LDA activeObjectIndexAndPilot
+	BMI +enemy
+	AND #$07
+	ASL
+	ASL
+	TAX
+	LDY pilotTable-4, X           ; "<pilot name>""
+
++enemy:
+	STY systemMenuName
 
 	LDY activeObjectIndex
 	LDA object+1, Y

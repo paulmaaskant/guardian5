@@ -1,8 +1,10 @@
 ; constants
 
 eRefreshStatusBar = %00000100
+eCheckAction =      %00001000
 eUpdateStatusBar 	= %00010000
 eUpdateTarget = 		%00100000
+
 sysObjectSprites = %00000100
 
 aMOVE = $00
@@ -53,27 +55,25 @@ waitForA = $F3
 endOfStream = $F4
 setPortrait = $F5
 
-
-
 comma = $0E
 space = $0F
 dash = $0B
-
 enemy = #41
+emptyString = 0
 
 ; get next byte OP codes
-repeatBlank = $FF
-repeatChar = $FE
-setNumberValue = $FD
-setDictionaryString = $FC
-dict = $FC
-parameter = $FD
+  repeatBlank = $FF
+  repeatChar = $FE
+  setNumberValue = $FD
+  setDictionaryString = $FC
+  dict = $FC
+  parameter = $FD
 
 
 ; missionEvents
-
-mEventOpenDialog = 0
-mConditionRound = 1
-mConditionOnlyFriendlies = 2
-mConditionOnlyHostiles = 3
-mEventEndMission = 4
+  mEventOpenDialog = 0
+  mConditionRound = 1
+  mConditionOnlyFriendlies = 2
+  mConditionOnlyHostiles = 3
+  mEventEndMission = 4
+  mEventNewUnit = 5
