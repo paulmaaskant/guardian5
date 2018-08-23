@@ -21,13 +21,21 @@ setEvadePoints:
   CLC
   ADC activeObjectStats+3			; moves from previous action
   AND #$0F                    ; filter the jump bit
-
-+continue:
   TAY
   LDA moveToEvadePointMap-1, Y
   CLC
   ADC list3+14
   STA list3+14
+
+  ; ----------------------------------------------------
+  ; if pilot is LUCKY, add another evade point
+  ; ----------------------------------------------------
+  LDA activeObjectStats+1
+  AND #%00001000
+  BEQ +continue
+  INC list3+14
+
++continue:
   LDA #13
   STA actionMessage
 

@@ -107,6 +107,22 @@ state_newTurn:
   LDA (pointer1), Y             ;
   STA activeObjectStats+2			  ;
 
+  AND #$F0
+  STA locVar1                   ; mask movement type
+
+  LDY activeObjectIndex
+  LDA object+6, Y
+  LSR                           ; movement reduced flag
+  BCC +continue                 ; reduce movement
+
+  LDA activeObjectStats+2       ; movement type and points
+  AND #$0F                      ; mask movement points
+  LSR                           ; reduce by half
+  ADC #0                        ; rounded up
+  ORA locVar1                   ; restore movement type
+  STA activeObjectStats+2       ;
+
++continue:
   LDY #5                        ; #5 damage profile
   LDA (pointer1), Y             ;
   STA activeObjectStats+7			  ; stored
@@ -129,7 +145,10 @@ state_newTurn:
   TAY                           ; pilot number x 4
 
   LDA pilotTable-3, Y           ;
-  STA activeObjectStats+5       ; pilot skill
+  STA activeObjectStats+5       ; pilot skill level
+
+  LDA pilotTable-2, Y           ;
+  STA activeObjectStats+1       ; pilot traits
 
   LDA #$C0										  ; switch on cursor and active marker
   STA effects

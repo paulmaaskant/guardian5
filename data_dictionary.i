@@ -23,7 +23,7 @@ stringListL:
 	.db #< str_GEIST										; 21
 	.db #< str_MARU											; 22
 	.db #< str_NIKOLI										; 23
-	.db #< str_SPRINT											; 24
+	.db #< str_SPRINT										; 24
 	.db #< str_CAPT_ORTEGA							; 25
 	.db #< str_DEMON										; 26
 	.db #< str_UNKNOWN									; 27
@@ -34,9 +34,9 @@ stringListL:
 	.db #< str_UNIT											; 32
 	.db #< str_MISSILE									; 33
 	.db #< str_LASER										; 34
-	.db #< str_PRESS_A_TO_EQUIP				; 35
-	.db #< str_MECH							; 36
-	.db #< str_SLOT_X							; 37
+	.db #< str_PRESS_A_TO_EQUIP					; 35
+	.db #< str_MECH											; 36
+	.db #< str_SLOT_X										; 37
 	.db #< str_ALREADY_LOCKD						; 38
 	.db #< str_LEMUR										; 39
 	.db #< str_BURKE										; 40
@@ -57,6 +57,12 @@ stringListL:
 	.db #< str_FRIENDLY_UNIT						; 55
 	.db #< str_JUMP											; 56
 	.db #< str_SPEED_X									; 57
+	.db #< str_BRAWLER									; 58
+	.db #< str_CRACK_SHOT								; 59
+	.db #< str_SURVIVOR									; 60
+	.db #< str_LUCKY										; 61
+	.db #< str_DARE_DEVIL								; 62
+	.db #< str_SPRINTER									; 63
 
 stringListH:
 	.db #> str_EMPTY
@@ -117,6 +123,12 @@ stringListH:
 	.db #> str_FRIENDLY_UNIT						; 55
 	.db #> str_JUMP
 	.db #> str_SPEED_X
+	.db #> str_BRAWLER
+	.db #> str_CRACK_SHOT
+	.db #> str_SURVIVOR
+	.db #> str_LUCKY
+	.db #> str_DARE_DEVIL
+	.db #> str_SPRINTER
 
 str_EMPTY:
 	.db 0
@@ -226,6 +238,19 @@ str_FRIENDLY_UNIT:
 	.db 13,F,R,I,E,N,D,L,Y,space,U,N,I,T
 str_SPEED_X:
 	.db 7, S, P, E, E, D, space, $80+26
+str_BRAWLER:
+	.db 7, B, R, A, W, L, E, R
+str_CRACK_SHOT:
+	.db 10, C, R, A, C, K, space, S, H, O, T
+str_SURVIVOR:
+	.db 8, S, U, R, V, I, V, O, R
+str_LUCKY:
+	.db 5, L, U, C, K, Y
+str_DARE_DEVIL
+	.db 10, D, A, R, E, space, D, E, V, I, L
+str_SPRINTER
+	.db 8, S, P, R, I, N, T, E, R
+
 
 scr_UNIT_1:
 	.db 16

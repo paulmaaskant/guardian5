@@ -76,6 +76,25 @@ updateDetailArea:
   LDX #12
   JSR writeToList8
 
+
+  LDX locVar5
+  LDA pilotTable-2, X           ; pilot traits
+
+  LDX #7
+
+-loop:
+  ASL
+  BCS +break
+  DEX
+  BPL -loop
+  BMI +noTrait
+
++break:
+  LDY traitName, X              ; first trait
+  LDX #42
+  JSR writeToList8
+
++noTrait:
   LDY #31                       ; "pilot"
   LDX #6
   JSR writeToList8

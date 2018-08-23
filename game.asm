@@ -91,11 +91,11 @@
 	activeObjectIndex							.dsb 1	; index in objects table
 	activeObjectGridPos						.dsb 1	; position of the object that has the turn
 	activeObjectStats							.dsb 1	; 0 flags (b7) low on hitpoints (b3-0) critical damage
-																.dsb 1	; 1 ----
+																.dsb 1	; 1 pilot traits
 																.dsb 1	; 2 movement type | movement
 																.dsb 1  ; 3 current # moves
 																.dsb 1 	; 4 heat level at start of turn
-																.dsb 1 	; 5 pilot skill
+																.dsb 1 	; 5 pilot skill level
 																.dsb 1	; 6 current hit points
 																.dsb 1	; 7 damage profile
 																.dsb 1	; 8
@@ -808,7 +808,9 @@ runningEffectsH:
 	.include sbr_setTargetHeatGauge.i
 	.include sbr_checkMovement.i
 
+	.include sbr_insertObject.i
 	.include sbr_deleteObject.i
+
 	.include sbr_writeStatusBarToBuffer.i
 	.include sbr_writeToActionMenu.i
 	.include sbr_writeToList8.i

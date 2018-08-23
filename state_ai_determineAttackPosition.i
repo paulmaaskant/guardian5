@@ -118,6 +118,7 @@ firstPass:
   CMP actionList+1
   BCS +nextNode                    ; node too far away to reach
 
++continue:
   LDA cursorGridPos
   JSR distance
   CMP #10
@@ -140,8 +141,15 @@ firstPass:
 
   JSR getOverallDamageValue        ; A is damage (score)
   EOR #$0F                         ; invert sort value (so that list is sorted low to high)
+
   ASL
   ASL
+  PHA
+  JSR random
+  AND #%00000011
+  STA locVar1
+  PLA
+  ORA locVar1
 
   LDX par1                         ; C is current node (index)
   JSR addToSortedList

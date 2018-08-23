@@ -23,7 +23,7 @@ state_initializeMarker:
   TAY
   LDA modifierReverseSign, Y
   BEQ +continue
-  INC list3+30          ; 
+  INC list3+30          ;
 
 +continue:
   LDX activeObjectIndex

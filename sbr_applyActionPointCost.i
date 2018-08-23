@@ -40,7 +40,7 @@ applyActionPointCost:
 
   LDA list3+3                     ; if modifier would reduce heat below 0
   EOR #$FF                        ; then update modifier
-  STA list3+12                    ; to equal - (current heat points) 
+  STA list3+12                    ; to equal - (current heat points)
   INC list3+12                    ;
 
   LDA #0                          ; no less than 0
