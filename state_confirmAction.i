@@ -11,31 +11,11 @@ state_confirmAction:
   EOR event_updateStatusBar						;
   STA events
 
-  LDA #space
-  LDX #12                             ; clear lines 2 and 3
-
--loop:
-  STA actionMenuLine3, X
-  DEX
-  BPL -loop
-
   LDA #0
   STA menuFlags
 
-;  JSR getSelectedWeaponTypeIndex
-;  BCS +continue
-;  LDA weaponType+3, Y
-;  AND #$0F
-;  BEQ +continue
-
-;  LDY #36 ; XX uses left
-;  LDX #13
-;  JSR writeToActionMenu
-
-+continue:
-  LDY #17 ; confirm >A
-  LDX #26
-  JSR writeToActionMenu
+  LDY #17                             ; confirm >A
+  STY actionMessage
 
 +nextStep:
   LDA frameCounter
@@ -124,15 +104,22 @@ state_confirmAction:
 	JSR replaceState
 	LDY #sConfirm
 	JSR soundLoad
+
   LDA effects					   	 ; clear possible LOS block / waypoints effect
   AND #$F0							   ; cursor and active unit marker stay on, rest turned off
   STA effects
-  LDA list3+12
-  JSR setSystemHeatGauge   ; set gauge including the heat increment
+
+  ;LDA list3+12
+  ;JSR setSystemHeatGauge   ; set gauge including the heat increment
+
   LDA events
   ORA #eRefreshStatusBar   ; refresh so that the gauge is updated on the screen
   STA events
-  JMP +setTimer            ; to prevent locking a direction after move
+
+  LDA #emptyString
+  STA actionMessage
+
+  JMP +setTimer            ; to prevent locking a direction after pivot
 
 +next:
   ASL                      ; 'B' button -> cancel and go back to select action state
@@ -146,7 +133,7 @@ state_confirmAction:
 	STA blockInputCounter
   JSR pullAndBuildStateStack
   .db #3
-  .db $31, #eUpdateStatusBar
+  .db $31, #eCheckAction
   .db $06
   ; built in RTS
 

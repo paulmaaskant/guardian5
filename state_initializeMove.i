@@ -13,10 +13,6 @@ state_initializeMove:
   LDA directionLookupMoving, X
   STA list3+61								; set for object sprite cycle in main loop
 
-  LDA object+4, Y             ; set evade points
-  ORA list3+14
-  STA object+4, Y
-
   LDA list1+0
   STA activeObjectStats+3     ; keep track of # moves spent
 

@@ -90,15 +90,15 @@
 	activeObjectIndexAndPilot			.dsb 1	; active object type / number
 	activeObjectIndex							.dsb 1	; index in objects table
 	activeObjectGridPos						.dsb 1	; position of the object that has the turn
-	activeObjectStats							.dsb 1	; 0 ----
-																.dsb 1	; 1 ----
+	activeObjectStats							.dsb 1	; 0 flags (b7) low on hitpoints (b3-0) critical damage
+																.dsb 1	; 1 pilot traits
 																.dsb 1	; 2 movement type | movement
 																.dsb 1  ; 3 current # moves
 																.dsb 1 	; 4 heat level at start of turn
-																.dsb 1 	; 5 pilot skill
+																.dsb 1 	; 5 pilot skill level
 																.dsb 1	; 6 current hit points
 																.dsb 1	; 7 damage profile
-																.dsb 1	; 8 -----
+																.dsb 1	; 8
 																.dsb 1	; 9 remaining action points
 
 																				; stored memory objects
@@ -159,15 +159,16 @@
 
 	actionMenuLine1								.dsb 13	; Buffers used to render the status menu
 	actionMenuLine2								.dsb 13
-	actionMenuLine3								.dsb 13
+
 	menuIndicator									.dsb 2
 	targetMenuLine1								.dsb 3	; HP
 	targetMenuLine2								.dsb 3	; HEAT
 	targetMenuImage								.dsb 6	; image
-	targetMenuLine3								.dsb 6	; NAME
+	targetMenuName								.dsb 1
 	systemMenuLine1								.dsb 3
 	systemMenuLine2								.dsb 3
 	systemMenuLine3								.dsb 3
+	systemMenuName								.dsb 1
 
 	tileIndex											.dsb 1
 	tileGridPos										.dsb 1
@@ -197,7 +198,8 @@
 	;
 	; bbbbbbbb
 	; ||||||||
-	; ||++++++ meta tile
+	; |||+++++ meta tile #
+	; ||+----- fixed meta tile (can't be overwritten)
 	; |+------ this node blocks line of sight
 	; +------- this node is blocks movement
 	; ------------------------------------------------------------
@@ -215,7 +217,7 @@
 												.dsb 1				; +3: (b7-0) grid pos
 												.dsb 1				; +4: (b7) braced flag (b6) marked flag (b5) turn flag (b4-3) not used (b2-0) evade points
 												.dsb 1				; +5: (b5-0) background tile
-												.dsb 1				; +6: (b7-4) equipment slot 1 (b3-0) critical damage flags 
+												.dsb 1				; +6: (b7-4) equipment slot 1 (b3-0) critical damage flags
 												.dsb 1				; +7: (b7-4) equipment slot 2
 												.dsb 120			; 15 more objects (15x8)
 																			; note: code contains 6 places where index is calculated
@@ -569,7 +571,8 @@ gameStateJumpTable:
 	.dw state_clearSysFlags-1										; 32
 	.dw state_initializeMission-1								; 33
 	.dw state_startTurn-1												; 34
-	.dw state_initializeActiveObjectHeatMarker-1	; 35
+;	.dw state_initializeActiveObjectHeatMarker-1	; 35
+	.dw not_used
 	.dw state_compositeTitleMenu-1							; 36
 	.dw state_endAction-1												; 37
 	.dw state_initializeMachineGun-1						; 38
@@ -592,9 +595,11 @@ gameStateJumpTable:
 	.dw state_initializeLaser-1									; 49
 	.dw state_resolveLaser-1										; 4A
 	.dw state_setRunningEffect-1								; 4B
-	.dw state_initializeTargetObjectHeatMarker-1 ; 4C
+;	.dw state_initializeTargetObjectHeatMarker-1 ; 4C
+	.dw not_used
 	.dw state_checkMisionEvents-1								; 4D
-	.dw state_initializeEvadePointMarker-1			; 4E
+;	.dw state_initializeEvadePointMarker-1			; 4E
+	.dw not_used
 	.dw state_initializeExplosion-1							; 4F
 	.dw state_initializeUnitMenu-1							; 50
 	.dw state_unitMenu-1												; 51
@@ -603,6 +608,8 @@ gameStateJumpTable:
 	.dw state_initializeJump-1									; 54
 	.dw state_resolveJump-1											; 55
 	.dw state_startAction-1											; 56
+	.dw state_spawnUnit-1												; 57
+	.dw state_initializeMarker-1								; 58
 
 
 not_used:																			; label for depricated states
@@ -655,10 +662,11 @@ runningEffectsH:
 
 	.include state_setRunningEffect.i
 	.include state_initializeTargetLockMarker.i						; running effect
-	.include state_initializeTargetObjectHeatMarker.i			; running effect
-	.include state_initializeEvadePointMarker.i						; running effect
+;	.include state_initializeTargetObjectHeatMarker.i			; running effect
+;	.include state_initializeEvadePointMarker.i						; running effect
 	.include state_initializeExplosion.i									; running effect
-	.include state_initializeActiveObjectHeatMarker.i			; running effect
+;	.include state_initializeActiveObjectHeatMarker.i			; running effect
+	.include state_initializeMarker.i
 
 	.include state_initializeDestroyObject.i
 	.include state_resolveDestroyObject.i
@@ -667,6 +675,7 @@ runningEffectsH:
 	; event control states
 	; --------------------------------------------------
 	.include state_checkMissionEvents.i
+	.include state_spawnUnit.i
 
 	; --------------------------------------------------
 	; menu control states
@@ -799,7 +808,9 @@ runningEffectsH:
 	.include sbr_setTargetHeatGauge.i
 	.include sbr_checkMovement.i
 
+	.include sbr_insertObject.i
 	.include sbr_deleteObject.i
+
 	.include sbr_writeStatusBarToBuffer.i
 	.include sbr_writeToActionMenu.i
 	.include sbr_writeToList8.i
@@ -863,8 +874,8 @@ runningEffectsH:
 ; 01 background	 title screen light
 ; 02 background  status bar
 ; 03 background  title screen dark
-; 04 sprite desert mech
-; 05 sprite fire mech
+; 04 sprite player units
+; 05 sprite AI units
 ; 06 sprite tooltip & cursor
 ; 07 sprite effects
 ; 08 dark text
@@ -874,10 +885,10 @@ paletteColor1:
 	hex 0B 3B 0B 0B 0F 0F 09 30
 	hex 0F 1B
 paletteColor2:
-	hex 1B 1B 1B 1B 0B 0B 29 2D
+	hex 1B 1B 1B 1B 00 0A 29 2D
 	hex 2D 0A
 paletteColor3:
-	hex 2B 2B 2B 2B 3B 35 39 37
+	hex 2B 2B 2B 2B 20 3B 39 37
 	hex 3D 3B
 mirrorTable:
 	hex 00 00 40 40 00 00 00 00
@@ -910,7 +921,8 @@ event_updateStatusBar:			.db %00010000
 
 menuFlag_line3:
 sysFlag_NTSC:
-bit3:												.db %00001000
+bit3:
+event_checkAction						.db %00001000
 
 bit2:
 sysFlag_objectSprites:

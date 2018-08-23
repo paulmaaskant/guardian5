@@ -3,7 +3,7 @@ state_assignItem:
   ASL
   ASL
   ASL
-  ASL                 ; x32
+  ASL                 ; x16
   TAX
   PHA
 
@@ -50,25 +50,6 @@ state_assignItem:
   SEC
   ROR list1+16
   JMP pullState
-
-
-  ;JSR updateUnitStats
-
-  ;LDX #9                          ; store stats of assigned items
-                                  ; to compare different configurations
-;-loop:
-  ;LDA list8+196, X
-  ;STA list8+176, X
-  ;LDA #space
-  ;STA list8+196, X
-  ;STA list8+186, X
-  ;DEX
-  ;BPL -loop
-
-  ;JSR pullAndBuildStateStack
-  ;.db 2
-  ;.db $46, 14
-
 
 +done:
   LDA runningEffectCounter

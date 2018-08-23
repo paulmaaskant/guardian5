@@ -1,6 +1,6 @@
 clearActionMenu:
-	LDA #$0F
-	LDX #$26
+	LDA #space
+	LDX #25
 -	STA actionMenuLine1, X
 	DEX
 	BPL -

@@ -1,7 +1,9 @@
 clearSystemMenu:
-	LDA #$0F					; clear tile
-	LDX #8
+	LDA #space					; clear tile
+	LDX #9
 -	STA systemMenuLine1, X
 	DEX
 	BPL -
+	LDA #emptyString
+	STA systemMenuName
 	RTS

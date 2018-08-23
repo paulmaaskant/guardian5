@@ -6,23 +6,13 @@
 ; actionList+2 active unit weapon range
 ; ------------------------------
 state_ai_determineAttackPosition:
-
-  ;LDA #1
-  ;STA debug+1
-
   JSR firstPass
   JSR evaluateNodes           ; look for path
   BCC +pathFound
 
-  ;LDA #2
-  ;STA debug+1
-
   JSR secondPass
   JSR evaluateNodes
   BCC +pathFound
-
-  ;LDA #3
-  ;STA debug+1
 
                               ; if no path is found, simply face the target
   LDA #1                      ; set action point cost directly (1)
@@ -38,29 +28,40 @@ state_ai_determineAttackPosition:
   .db $16							        ; show results
 
 +pathFound:
+  ;LDA #$FF                   ; debug statement
+  ;JMP replaceState
+
   LDA par1
   STA cursorGridPos           ; put the cursor on the destination node
 
   LDA #0                      ; init results
   STA list6
 
-  LDA #1                      ; MOVE costs 1 point
+  LDA #1                      ; MOVE costs 1 AP (even when remaining stationary)
   STA list3+0
 
+  LDA distanceToTarget        ; if zero, then unit remains stationary
+  BNE +move
+
+  JSR applyActionPointCost
+  JSR setEvadePoints
+  JMP pullState               ; remain stationary
+
++move:
   LDA activeObjectStats+2     ; limit # nodes to move points
   AND #$0F
   CMP list1
   BCS +continue
   STA list1                   ;
 
-  LDA activeObjectStats+9     ; if this is the unit's second move action in the same turn
-  CMP #2
-  BCS +continue               ; then limit the movement to 2 points
++continue:
+  LDA activeObjectStats+9     ; remaining AP
+  CMP #2                      ; is less than 2
+  BCS +continue               ; sprint -> then limit the movement to 2 points
   LDA #2
-  CMP list1
+  CMP list1                   ; if the number of nodes in the path is larger than 2
   BCS +continue
-  STA list1                   ;
-
+  STA list1                   ; then cap it at 2
 
 +continue:
   LDY list1
@@ -72,13 +73,21 @@ state_ai_determineAttackPosition:
 
   JSR applyActionPointCost
   JSR setEvadePoints
+
+  LDY activeObjectIndex
+  LDA object+4, Y             ; set evade points
+  AND #%11111000							; clear evade points
+  ORA list3+14
+  STA object+4, Y
+
   JSR pullAndBuildStateStack
-	.db 8						              ; 4 items
+	.db 10						              ; 4 items
 	.db $3A, $FF						      ; switch CHR bank 1 to 1
   .db $0B								        ; center camera on cursor
 	.db $3B 							        ; init and resolve move
 	.db $3A, 0						        ; switch CHR bank 1 back to 0
 	.db $1C							          ; face target
+  .db $58, 0							; active object evade point marker animation
 	.db $16							          ; show results
 	; built in RTS
 
@@ -94,33 +103,22 @@ firstPass:
 
   LDA activeObjectStats+2          ; retrieve move stats
   AND #$0F                         ; mask to get move points
-  ASL                              ; double move points
   STA actionList+1                 ;
   INC actionList+1                 ; +1 to make compare easier
 
-  ;LDY activeObjectIndex
-  ;LDA object+5, Y
-  ;AND #$F0										     ; mask the weapon type
-  ;LSR
-  ;TAY
-  ;LDA weaponType+2, Y
-  ;LSR
-  ;LSR
-  ;LSR
-  ;LSR
-  ;STA actionList+2                 ; max range of primary weapon
-  ;INC actionList+2                 ; +1 to make compare easier
-
 -loop:
   STX par1
+  CPX activeObjectGridPos         ; implement remaining stationairy
+  BEQ +continue
   LDA nodeMap, X
-  BMI +nextNode                     ; node is blocked
+  BMI +nextNode                    ; node is blocked
 
   LDA activeObjectGridPos                                                       ;
   JSR distance
   CMP actionList+1
   BCS +nextNode                    ; node too far away to reach
 
++continue:
   LDA cursorGridPos
   JSR distance
   CMP #10
@@ -142,7 +140,17 @@ firstPass:
   LDY activeObjectIndex
 
   JSR getOverallDamageValue        ; A is damage (score)
-  EOR #$0F
+  EOR #$0F                         ; invert sort value (so that list is sorted low to high)
+
+  ASL
+  ASL
+  PHA
+  JSR random
+  AND #%00000011
+  STA locVar1
+  PLA
+  ORA locVar1
+
   LDX par1                         ; C is current node (index)
   JSR addToSortedList
   LDX par1                         ; restore X
@@ -174,7 +182,7 @@ secondPass:
   BNE +nextNode       ; not on max radius
 
   LDA cursorGridPos
-  JSR distance
+  JSR distance        ; sort value is distance to target
   JSR addToSortedList
   LDX par1            ; restore X
   BNE +nextNode
@@ -189,29 +197,33 @@ evaluateNodes:
 -nextNode:
   LDY list6
   BNE +continue
+  SEC                              ; path not found - no reachable nodes
   RTS
 
 +continue:
   LDX list6, Y
   DEC list6
 
-  LDA #$00
-  STA actionMessage                                                             ; reset action message
+  LDA #emptyString
+  STA actionMessage                ; reset action message
 
-  STX par1                                                                      ; set destination node
+  STX par1                         ; set destination node
   LDA activeObjectGridPos
   JSR distance
   STA distanceToTarget             ; update d-t-t
+  BEQ +pathFound                   ; current node is target node!
 
   LDA activeObjectStats+2          ; move type | move points
   STA par3
 
-  LDA #12                          ; fixed to 12 moves
+  AND #$0F                         ; regular movement
   STA par2                         ; set max number of moves
   LDA activeObjectGridPos          ; set start node
   JSR findPath                     ; find path
   LDA actionMessage
   BMI +continue
+
++pathFound:
   CLC                              ; path found!!
   RTS
 

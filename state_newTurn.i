@@ -59,7 +59,7 @@ state_newTurn:
   SBC #8
   TAY
   BPL -unmarkLoop
-  BMI -restartLoop			
+  BMI -restartLoop
 
 +continue:
   LDA #0
@@ -89,24 +89,51 @@ state_newTurn:
   AND #$07
   STA activeObjectStats+4       ; set current heat points
 
+  LDA object+6, Y
+  AND #$0F
+  ASL
+  STA activeObjectStats+0       ; set crit damage flags
+
   PLA
   LSR
   LSR
   LSR
   STA activeObjectStats+6       ; set current hit points
 
-
   ;-----------------------------  get object type stats
+
   JSR getStatsAddress           ; Y goes in; sets pointer1
   LDY #3                        ; #3 movement
   LDA (pointer1), Y             ;
   STA activeObjectStats+2			  ;
 
+  AND #$F0
+  STA locVar1                   ; mask movement type
+
+  LDY activeObjectIndex
+  LDA object+6, Y
+  LSR                           ; movement reduced flag
+  BCC +continue                 ; reduce movement
+
+  LDA activeObjectStats+2       ; movement type and points
+  AND #$0F                      ; mask movement points
+  LSR                           ; reduce by half
+  ADC #0                        ; rounded up
+  ORA locVar1                   ; restore movement type
+  STA activeObjectStats+2       ;
+
++continue:
   LDY #5                        ; #5 damage profile
   LDA (pointer1), Y             ;
   STA activeObjectStats+7			  ; stored
 
+  LDY #1                        ; #2 structure point threshold
+  LDA (pointer1), Y             ;
+  CMP activeObjectStats+6
+  ROR activeObjectStats+0			  ; raise flag when structure points >= current hit points
+
   ;-----------------------------  get pilot based stats
+
   LDA activeObjectIndexAndPilot ;
   ASL
   AND #%00001110
@@ -118,7 +145,10 @@ state_newTurn:
   TAY                           ; pilot number x 4
 
   LDA pilotTable-3, Y           ;
-  STA activeObjectStats+5       ; pilot skill
+  STA activeObjectStats+5       ; pilot skill level
+
+  LDA pilotTable-2, Y           ;
+  STA activeObjectStats+1       ; pilot traits
 
   LDA #$C0										  ; switch on cursor and active marker
   STA effects
@@ -144,7 +174,7 @@ state_newTurn:
   .db $0B 						; center camera
   .db $0C						  ; wait for camera to center
   .db $34             ; start of turn events
-  .db $56							; start action: ai or player
+  .db $56							; start 1st action: ai or player
   .db $37             ; end action
   .db $08             ; end turn
   ; built in RTS

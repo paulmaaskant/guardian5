@@ -22,6 +22,8 @@
 ; list3+23				close combat sound
 ; list3+24			  target's current heat points
 ; list3+25				selected action
+; list3+26				available move points
+; list3+27				target evade modifier
 
 ; list3+30				sprite
 ; list3+31    		sprite
@@ -204,52 +206,72 @@ checkTarget:
 	CMP #1
 	ROR list3+17															; set (b7) 0 rear attack 1 frontal attack
 	BMI +continue
-	LDA #16
+	LDA #16+128																; REAR ATTACK (blinking)
 	STA infoMessage
 
 	; ---------------------------------------------------------------------------
 	; determine to hit %
 	; ---------------------------------------------------------------------------
 +continue:
-	LDA activeObjectStats+5										; pilot skill
-	LDY list3+19															; range category
+	LDA activeObjectStats+5										; BASE: pilot skill
+	LDX list3+19															; range category
 	CLC
-	ADC rangeCategoryModifier, Y							; adjust for range
-	STA locVar1
+	ADC rangeCategoryModifier, X							; ADJUST for range
+	TAY
 
-	LDY targetObjectIndex											; adjust for target unit movement
-	LDA object+4, Y														;
+	LDA activeObjectStats+1
+	AND #%00000010
+	BEQ +continue
+	CPX #3
+	BNE +continue
+	DEY
+
++continue:
+	LDX targetObjectIndex											; adjust for target unit movement
+	LDA object+4, X														;
 	AND #$07																	; mask evade points
 	PHA																				; used to for the evade sprite map
 	CLC
-	ADC locVar1																;
+	ADC identity, Y
 
 	LDX list3+25
 	CPX #aATTACK
-	BNE +continue															; if action is ATTACK
-	ADC activeObjectStats+4										; adjust for attacking unit heat level
+	BNE +continue															; if action is ranged ATTACK
+	ADC activeObjectStats+4										; then adjust for attacking unit heat level
 
 +continue:
-	LDY activeObjectStats+3										; adjust for attacking unit movement
+	TAY																				; modifier so far
+
+	LDA activeObjectStats+3										; adjust for attacking unit movement
 	BMI +jumped
 	BNE +groundMove
-	ADC #-2																		; -1 (actually -2 +1) if attacking unit is stationary
-	CLC
+	DEY																				; -1 ( = -2 + 1) if attacking unit is stationary
+	DEY
 
 +jumped:
-	ADC #1																		; +1 if attacking unit jumped
+	INY																				; +1 if attacking unit jumped
 
 +groundMove:
-	; adjust for action
 	LDX list3+25
 	CPX #aCHARGE
 	BNE +continue
-	CLC
-	ADC #1
+	INY																				; +1 if charging
 
 +continue:
-	TAY
-	CPY #12
+	LDA activeObjectStats+0										; modify for critically damaged targeting
+	LSR
+	LSR																				; targeting system flag
+	BCC +continue
+	INY																				; +2 if targeting system is damaged
+	INY
+
++continue:
+	TYA																				; if Y is negative
+	BPL +continue
+	LDY #0																		; then default to 0
+
++continue:
+	CPY #12																		; and ceiling at 12
 	BCC +continue
 	LDY #12
 
@@ -258,7 +280,7 @@ checkTarget:
 	STA list3+1
 
 +continue:
-	JSR toBCD																; convert to BCD for display purposes
+	JSR toBCD																	; convert to BCD for display purposes
 	LDA par2
 	CLC
 	ADC #$40
@@ -286,35 +308,42 @@ checkTarget:
 	LDY activeObjectIndex
 	LDX list3+19														; range category
 	JSR getOverallDamageValue
-	STA list3+2															; overall damage (base + EQ1 + EQ2)
+	TAY																			; base damage
 
 	LDX #0																	;
 	STX list3+13														; expected inflicted HEAT
 
-
-	LDY list3+17														; rear arc attack -> ignore brace and add 1
-	BMI +continue
-	INC list3+2
-	BNE +ignoreBrace
+	BIT list3+17
+	BMI +continue														; rear arc attack -> ignore brace and add 1
+	INY																			; add one damage
+	BNE +ignoreBrace												; skip possible target BRACING
 
 	; ---------------------------------------------------------------------------
 	; if target unit is bracing, reduce damage by one
 	; ---------------------------------------------------------------------------
 +continue:
-	LDY targetObjectIndex
-	LDA object+4, Y													; is target braced for impact?
+	LDX targetObjectIndex
+	LDA object+4, X													; is target braced for impact?
 	ASL																			; set carry flag = brace indicator
 	BCC +continue														; not braced -> FULL DAMAGE
+	DEY																			; reduce damage by 1
 
-	DEC list3+2															; reduce damage by 1
-
-	LDA #18																	; msg TARGET BRACED
+	LDA #18+128															; msg TARGET BRACED (blink)
 	STA infoMessage
+
+	; ---------------------------------------------------------------------------
+	; if weapons are critically damaged, reduce damage by one
+	; ---------------------------------------------------------------------------
++ignoreBrace:
++continue:
+	LDA activeObjectStats+0
+	AND #%00000100
+	BEQ +continue														; if weapons are damaged
+	DEY																			; reduce damage by 1
 
 	; ---------------------------------------------------------------------------
 	; if attack is CHARGE, then add 1 damage for each hex beyond the 3rd
 	; ---------------------------------------------------------------------------
-+ignoreBrace:
 +continue:
 	LDX list3+25
 	CPX #aCHARGE
@@ -324,21 +353,34 @@ checkTarget:
 	BCC +continue
 	SBC #3
 	CLC
-	ADC list3+2
-	STA list3+2
+	ADC identity, Y
+	TAY
 
-
+	; ---------------------------------------------------------------------------
+	; if pilot is a BRAWLER, then add 1 damage if range category = 0
+	; ---------------------------------------------------------------------------
 +continue:
-	LDA list3+2															; at least 1 damage
-	BMI +floor
+	LDX list3+19
 	BNE +continue
+	LDA activeObjectStats+1
+	LSR
+	BCC +continue
+	INY											; add one damage
+
+	; ---------------------------------------------------------------------------
+	; make sure damage value isnt zero or negative
+	; ---------------------------------------------------------------------------
++continue:
+	TYA											; make sure damage that damage
+	BMI +floor							; isnt negative or zero
+	BNE +continue						;
 
 +floor:
-	LDA #1
-	STA list3+2
+	LDA #1									; minimum of 1 damage
 
 +continue:
-	LDA #$14																; string "X DMG"
+	STA list3+2
+	LDA #$14								; string "X DMG"
 	STA actionMessage
 
 +return:

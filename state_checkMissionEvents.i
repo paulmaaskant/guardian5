@@ -112,6 +112,20 @@ missionEventOpenDialog:
   .db $20, 1					              ; load menu BG 1: hud
   .db $31, #eUpdateTarget           ; raise event
 
+
+; ---------------------------------
+; new unit on map
+; ---------------------------------
+missionEventNewUnit:
+  JSR getMissionEventFlag           ; check off the event flag
+  ORA missionEvents, Y              ; Y is destroyed
+  STA missionEvents, Y
+
+  JSR buildStateStack
+  .db 2
+  .db $57				                    ; spawn unit
+  .db $0B
+
 ; ---------------------------------
 ; end the mission
 ; ---------------------------------
@@ -166,6 +180,7 @@ missionEventOpCodeHi:
   .db #> missionConditionOnlyFriendlies
   .db #> missionConditionOnlyHostiles
   .db #> missionEventEndMission
+  .db #> missionEventNewUnit
 
 missionEventOpCodeLo:
   .db #< missionEventOpenDialog
@@ -173,3 +188,4 @@ missionEventOpCodeLo:
   .db #< missionConditionOnlyFriendlies
   .db #< missionConditionOnlyHostiles
   .db #< missionEventEndMission
+  .db #< missionEventNewUnit

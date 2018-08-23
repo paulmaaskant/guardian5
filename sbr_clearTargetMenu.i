@@ -1,7 +1,11 @@
 clearTargetMenu:
-	LDA #$0F					; clear tile
-	LDX #$11
+	LDA #space					; clear tile
+	LDX #12
 -	STA targetMenuLine1, X
 	DEX
 	BPL -
+
+	LDA #emptyString
+	STA targetMenuName
+
 	RTS

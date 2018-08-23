@@ -1,11 +1,10 @@
 state_initializeEvadePointMarker:
-
   LDA cursorGridPos
   JSR gridPosToScreenPos
   JSR clearCurrentEffects
 
   LDX #$54              ; "+"
-  LDA list3+14
+  LDA list3+14          ; evade point adjustment
   BEQ +noMarker
   BPL +continue
   JSR absolute

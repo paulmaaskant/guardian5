@@ -14,5 +14,4 @@ state_initializeCharge:
 	.db $1D							; close combat animation
 	.db $3A, 0					; switch CHR bank 1 back to 0
 	.db $16							; show results
-	;.db $42							; show temp gauge change
 	; built in RTS

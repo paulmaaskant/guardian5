@@ -32,18 +32,22 @@ applyActionPointCost:
   LDA object+1, Y
   AND #$07
   STA list3+3                     ; current heat points
-  STA debug
 
   LDA list3+12                    ; calculated heat point cost
-  STA debug+1
   CLC
   ADC list3+3                     ; + current heat points
   BPL +continue
+
+  LDA list3+3                     ; if modifier would reduce heat below 0
+  EOR #$FF                        ; then update modifier
+  STA list3+12                    ; to equal - (current heat points)
+  INC list3+12                    ;
+
   LDA #0                          ; no less than 0
 
 +continue
   CMP #4
-  BCC +less                       ; less than 6
+  BCC +less                       ; less than 4
 
   LDX #$83                        ; show result: heat damage animation
   LDA #4

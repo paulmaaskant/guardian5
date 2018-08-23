@@ -3,6 +3,15 @@
 ;
 
 state_startAction:
+
+  LDA #0                             ;
+  LDX #63
+
+-loop:
+  STA list3, X                       ; reset list 3
+  DEX
+  BPL -loop
+
   LDA activeObjectIndexAndPilot       ; check if unit is AI or player
   BMI +continue
   LDA #$06                            ; state: user select action
@@ -55,5 +64,5 @@ state_startAction:
 
   JSR updateTargetMenu
 
-  LDA #$27                            ; state: AI to select action
+  LDA #$28                            ; state: AI movement
   JMP replaceState

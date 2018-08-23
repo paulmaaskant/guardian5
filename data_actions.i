@@ -2,7 +2,7 @@
 ; byte1: game state, byte2: dictionary
 actionTable:
 	.db $10, 2				; 00 MOVE
-	.db $53, 0				; 01 JUMP
+	.db $53, 56				; 01 JUMP
 	.db $12, 1				; 02 ATTACK
 	.db $14, 4				; 03 BRACE
 	.db $17, 7				; 04 CLOSE COMBAT
@@ -44,8 +44,8 @@ actionPointCostTable:
 heatCostTable:
 	.db 0            ; 00 MOVE
 	.db 1             ; 01 JUMP
-	.db 0             ; 02 ATTACK
-	.db -1            ; 03 BRACE
+	.db 1             ; 02 ATTACK
+	.db -2            ; 03 BRACE
 	.db 0             ; 04 CLOSE COMBAT
 	.db 0             ; 05 CHARGE
 	.db 0            ; 06 PIVOT TURN

@@ -9,7 +9,15 @@ state_selectAction:
 	AND #%11111000
 	STA effects
 
-	LDA events													; update status bar event																					;
+	LDA events
+	BIT event_checkAction
+	BEQ +continue
+	ORA event_updateStatusBar
+	EOR event_checkAction
+	STA events
+	JMP +toggleDone
+
++continue																	;
 	BIT event_updateStatusBar																											;
 	BNE +continue
 	JMP +nextStep
@@ -36,21 +44,26 @@ state_selectAction:
 	LDX #$00														; write to position 0
 	JSR writeToActionMenu								;
 
-	LDA actionMessage
-	BEQ +continue
-	AND #$7F														; show it on line 3
-	TAY
-	LDX #26															; line 3
-	JSR writeToActionMenu								;
+	;LDA actionMessage
+	;BEQ +continue
+	;AND #$7F														; show it on line 3
+	;TAY
+	;LDX #26															; line 3
+	;JSR writeToActionMenu								;
 
 +continue:
 	LDA infoMessage
+	ASL
+	BCC +continue
+	LDX #%0010000
+	STX menuFlags
+
++continue
+	LSR
 	BEQ +continue
 	TAY
 	LDX #13															; line 2
 	JSR writeToActionMenu								;
-	LDA #%0010000
-	STA menuFlags
 
 +continue:
 	JSR updateTargetMenu
@@ -273,8 +286,10 @@ state_selectAction:
 	STA selectedAction
 
 +toggleDone:
-	LDA #$00																																			; clear action message
+	LDA #emptyString										; clear action message
 	STA actionMessage
+
+	LDA #$00
 	STA infoMessage
 	STA menuFlags
 

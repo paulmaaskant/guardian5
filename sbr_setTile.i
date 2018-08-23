@@ -8,8 +8,13 @@ setTile:
   LDA nodeMap, Y            ; dont overwrite the tile if the tile is fixed
   AND #%00100000            ; (b5) fixed tile
   BEQ +continue             ; not fixed -> overwrite tile
-  LDA nodeMap, Y
-  ORA #%01000000            ; block LOS
+
+  LDA nodeMap, Y            ; if its a fixed tile just overwrite b7 and b6
+  AND #%00111111
+  STA locVar1
+  LDA tileIndex
+  AND #%11000000
+  ORA locVar1
   STA nodeMap, Y
   RTS
 

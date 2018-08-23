@@ -15,13 +15,17 @@ calculateAttack:
 	LDA #-1
 
 +continue:
-	STA list3+14								; to show evade modifier effect
+	STA list3+27								; to show evade modifier effect
 
-	LDY selectedAction
-	LDX actionList, Y
+	;LDY selectedAction
+	;LDX actionList, Y
 
 	LDA #0											; initialize order list result msg
 	STA list6
+
+	LDX #$85										; evade modifier
+	LDA #1											; message prio
+	JSR addToSortedList
 
 	JSR random100								; random number in A between 0 and 99
 	STA list3+5
@@ -38,6 +42,10 @@ calculateAttack:
 
 	; --- hit, apply damage ---
 +hit:
+	LDX #$84										; damage modifier
+	LDA #0											; message prio
+	JSR addToSortedList
+
 	LDX #1											; msg hit
 	LDA #1											; message prio
 	JSR addToSortedList
@@ -68,7 +76,6 @@ calculateAttack:
 
 	PHA
 	JSR random100
-	STA debug
 	LDY #3
 
 -loop:

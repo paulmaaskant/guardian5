@@ -15,6 +15,8 @@ state_initializeBrace:
 	STA object+4, Y
 
 	LDA activeObjectGridPos
+	STA cursorGridPos					; ensure that the EDVADE modifier appears above the active unit
+
 	JSR gridPosToScreenPos
 	JSR clearCurrentEffects
 
@@ -36,9 +38,9 @@ state_initializeBrace:
 	BPL -loop
 
 	JSR pullAndBuildStateStack
-	.db 3			; 3 items
-	.db $15		; resolve cool down
-	.db $35		; show modifier
-	.db $16		; show result
+	.db 4					; 3 items
+	.db $15				; resolve cool down
+	.db $58, 2		; show modifier: active unit, heat
+	.db $16				; show result
 
 	; built in RTS

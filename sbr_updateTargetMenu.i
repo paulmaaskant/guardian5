@@ -80,8 +80,8 @@ updateTargetMenu:
 	LDY pilotTable-4, X           ; "<pilot name>""
 
 +enemy:
-	LDX #53
-	JMP writeToActionMenu
+	STY targetMenuName
+	RTS
 
 +displayObstacle:
 	LDA #$36

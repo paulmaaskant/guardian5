@@ -7,8 +7,10 @@
 ; OUT   actionList
 ;---------------------------------------
 updateActionList:
-	LDA #0
+	LDA #emptyString
 	STA actionMessage					; clear message
+
+	LDA #0
 	STA infoMessage						; clear message
 	STA menuFlags
 	LDX #9										; clear list of possible actions
@@ -85,21 +87,23 @@ updateActionList:
 	; Cursor on EMPTY SPACE
 	; ----------------------------------
 +continue:
-	LDA #2
-	CMP selectedAction
-	BCS +continue
-	STA selectedAction
-
-+continue:
 	LDA #aMOVE
 	JSR addPossibleAction
+
+	LDA #1
 	BIT activeObjectStats+2			; check if unit can JUMP (b6)
 	BVC +continue
 
 	LDA #aJUMP
 	JSR addPossibleAction
+	LDA #2
 
-+continue
++continue:
+	CMP selectedAction
+	BCS +continue
+	STA selectedAction
+
++continue:
 	JMP checkMovement
 
 ;---------------------------------------
