@@ -8,10 +8,35 @@ updateSelectedItem:
   CPX #3
   BCS +updateMech     ;
 
-  STA list1, X        ; update pilot
-  CLC
-  ADC deploymentObjectMap, X
-  STA objectList, X
+  ; Pilots can only be assigned once
+  ; If the pilot is already assigned to another mech
+  ; then swap
+
+  STA locVar1
+  LDY #2
+
+-loop:
+  LDA list1, Y
+  CMP locVar1                     ; same pilot...
+  BNE +endOfLoop
+  TYA
+  CMP identity, X                 ; in another unit?
+  BEQ +endOfLoop
+  LDA list1, X
+  STA list1, Y
+  ORA deploymentObjectMap, Y      ; + the object index (b6-3)
+  STA objectList, Y               ; is the object list entry
+  LDY #0                          ; break from loop
+
++endOfLoop
+  DEY
+  BPL -loop
+
+  LDA locVar1
+  STA list1, X                    ; pilot pilot (b2-1)
+  ORA deploymentObjectMap, X      ; + the object index (b6-3)
+  STA objectList, X               ; is the object list entry
+
   RTS
 
 +updateWeapon:        ; update weapon
@@ -95,7 +120,7 @@ updateSelectedItem:
   RTS
 
 deploymentObjectMap:
-  .db  0, 8, 16, 0, 8,16
+  .db  0, 8, 16, 0, 8, 16
   .db  6, 14, 22, 7, 15, 23
 
 weaponListOffset:

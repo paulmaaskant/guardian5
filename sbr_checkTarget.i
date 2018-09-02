@@ -219,11 +219,19 @@ checkTarget:
 	ADC rangeCategoryModifier, X							; ADJUST for range
 	TAY
 
-	LDA activeObjectStats+1
-	AND #%00000010
-	BEQ +continue
-	CPX #3
+	CPX #3																		; if LONG RANGE
 	BNE +continue
+	LDA activeObjectStats+1										; and if pilot trait CRACK SHOT
+	AND #%00000010
+	BEQ +next
+	DEY																				; then - 1 modifier
+
++next:																			; if LONG RANGE
+	LDX targetObjectIndex
+	LDA object+4, X
+	AND #%01000000														; and if target is marked
+	BEQ +continue
+	DEY																				; then -2 modifier
 	DEY
 
 +continue:

@@ -98,7 +98,7 @@
 																.dsb 1 	; 5 pilot skill level
 																.dsb 1	; 6 current hit points
 																.dsb 1	; 7 damage profile
-																.dsb 1	; 8
+																.dsb 1	; 8 mech special actions
 																.dsb 1	; 9 remaining action points
 
 																				; stored memory objects
@@ -215,7 +215,7 @@
 												.dsb 1				; +1: (b7-3) hit points, (b2-0) heat points
 												.dsb 1				; +2: (b7) not used (b6-0) frame count
 												.dsb 1				; +3: (b7-0) grid pos
-												.dsb 1				; +4: (b7) braced flag (b6) marked flag (b5) turn flag (b4-3) not used (b2-0) evade points
+												.dsb 1				; +4: (b7) braced flag (b6) marked flag (b5) turn flag (b4) shutdown (b3) not used (b2-0) evade points
 												.dsb 1				; +5: (b5-0) background tile
 												.dsb 1				; +6: (b7-4) equipment slot 1 (b3-0) critical damage flags
 												.dsb 1				; +7: (b7-4) equipment slot 2

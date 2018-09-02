@@ -42,7 +42,7 @@ stringListL:
 	.db #< str_BURKE										; 40
 	.db #< str_ENEMY										; 41
 	.db #< str_GIANT_BLADE							; 42
-	.db #< str_SAI											; 43
+	.db #< str_BATTLE_ANGEL											; 43
 	.db #< str_SLINGSHOT								; 44
 	.db #< str_MEDIUM_LASER							; 45
 	.db #< scr_UNIT_1										; 46
@@ -108,7 +108,7 @@ stringListH:
 	.db #> str_BURKE
 	.db #> str_ENEMY
 	.db #> str_GIANT_BLADE
-	.db #> str_SAI
+	.db #> str_BATTLE_ANGEL
 	.db #> str_SLINGSHOT
 	.db #> str_MEDIUM_LASER
 	.db #> scr_UNIT_1
@@ -216,8 +216,8 @@ str_ENEMY:
 	.db 5, E, N, E, M, Y
 str_GIANT_BLADE:
 	.db 11, G,I,A,N,T,space,B,L,A,D,E
-str_SAI:
-	.db 3, S, A, I
+str_BATTLE_ANGEL:
+	.db 12, B, A, T, T, L, E, space, A,N,G,E,L
 str_SLINGSHOT:
 	.db 9, S, L, I, N, G, S, H, O, T
 str_MEDIUM_LASER:

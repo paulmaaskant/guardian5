@@ -41,7 +41,7 @@ state_assignItem:
   LDX list1+13
   STX list1+18
   LDA list1+12
-  STA list1, X
+  
   JSR updateSelectedItem
 
   LDA #$00

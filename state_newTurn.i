@@ -127,7 +127,11 @@ state_newTurn:
   LDA (pointer1), Y             ;
   STA activeObjectStats+7			  ; stored
 
-  LDY #1                        ; #2 structure point threshold
+  INY                           ; #6 special actions
+  LDA (pointer1), Y             ;
+  STA activeObjectStats+8			  ; stored
+
+  LDY #1                        ; #1 structure points
   LDA (pointer1), Y             ;
   CMP activeObjectStats+6
   ROR activeObjectStats+0			  ; raise flag when structure points >= current hit points

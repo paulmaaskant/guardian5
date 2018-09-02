@@ -27,50 +27,62 @@ updateActionList:
 	; ----------------------------------
 	; Cursor on SELF
 	; ----------------------------------
-	LDA #1
-	STA selectedAction
+	LDA #1													; reset
+	STA selectedAction							;
 
 	LDA activeObjectStats+2
-	BMI +hoveringUnit
-	LDA #aBRACE								; BRACE
-	JSR addPossibleAction			; tail chain
+	BMI +hoveringUnit								; hovering units can't BRACE
+	LDA #aBRACE											; add BRACE
+	JSR addPossibleAction						;
 
 +hoveringUnit:
-	LDA #aPIVOT								; PIVOT TURN
+	LDA #aPIVOT											; add PIVOT TURN
 	JMP addPossibleAction
 
+	; ----------------------------------
+	; Cursor not on SELF
+	; ----------------------------------
 +continue:
-	LDA targetObjectTypeAndNumber																									; Cursor on other UNIT?
-	BEQ +continue																																	; no -> continue
-																																								; yes ->
+	LDA targetObjectTypeAndNumber		; Cursor on other UNIT?
+	BEQ +continue										; no -> continue
+																	; yes ->
+
 	; ----------------------------------
 	; Cursor on OTHER UNIT
 	; ----------------------------------
-	LDA #1
+	LDA #1													; reset
 	STA selectedAction
 
 	LDA distanceToTarget
-	CMP #$01
-	PHP
-	BNE	+skipCloseCombat
-	BIT activeObjectStats+2			; hovering units can't initiate close combat
-	BMI +skipCloseCombat
-	LDA #aCLOSECOMBAT
+	CMP #1
+;	PHP
+	BNE	+skipCloseCombat						; no close combat if target is at more than 1 hex distance
+	BIT activeObjectStats+2
+	BMI +skipCloseCombat						; no close combat of unit is hovering
+	LDA #aCLOSECOMBAT								; add CLOSE COMBAT
 	JSR addPossibleAction
-	PLP
-	JMP checkTarget						;
+	;PLP														; clean up stack
+	JMP checkTarget									; done, tail chain
 
+	; ----------------------------------
+	; Cursor on OTHER UNIT at more than 1 hex distance
+	; ----------------------------------
 +skipCloseCombat:
-	LDA #aATTACK
+	LDA #aATTACK								; add ATTACK
 	JSR addPossibleAction
-	LDA #aMARKTARGET
+
+	BIT activeObjectStats+8			; check if unit can MARK (b6)
+	BVC +noMark
+	LDA #aMARKTARGET						; add MARK
 	JSR addPossibleAction
-	PLP
-	BEQ +skipCharge
+
++noMark:
+	;PLP
+	;BEQ +skipCharge
 	LDA activeObjectStats+9
 	CMP #2
-	BCC +skipCharge
-	BIT activeObjectStats+2			; hovering units can't charge
+	BCC +skipCharge							; no CHARGE if the unit has only 1 AP left
+	BIT activeObjectStats+2			; no CHARGE for hovering units
 	BMI +skipChargeAndBrace
 	LDA #aCHARGE
 	JSR addPossibleAction
@@ -91,8 +103,11 @@ updateActionList:
 	JSR addPossibleAction
 
 	LDA #1
-	BIT activeObjectStats+2			; check if unit can JUMP (b6)
-	BVC +continue
+	BIT activeObjectStats+8			; check if unit can JUMP (b7)
+	BPL +continue
+	LDA activeObjectStats+9
+	CMP #2
+	BCC +continue								; no JUMP if unit has only 1 AP left
 
 	LDA #aJUMP
 	JSR addPossibleAction

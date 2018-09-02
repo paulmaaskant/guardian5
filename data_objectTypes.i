@@ -21,7 +21,7 @@ objectType0:				; SLINGSHOT
 	.db 44						; 00 mech name : SLINGSHOT
 	.db 8							; 01 max hit point
 	.db 4							; 02 structure threshold
-	.db $42						; 03 movement attributes | move points
+	.db 2						  ; 03 movement attributes | move points
 	.db 2							; 04 initiative
 	.db %01010111			; 05 damage profile C/S/M/L
 	.db 0 						; 06 not used
@@ -33,22 +33,22 @@ objectType1:			 	; GEIST
 	.db 21					 	; 00 name: GEIST
 	.db 6						 	; 01 max hit points
 	.db 3							; 02 structure threshold
-	.db $45						; 03 movement attributes | move points
+	.db 5						  ; 03 movement attributes | move points
 	.db 5						 	; 04 initiative
-	.db %00010000			; 05 damage
-	.db 0 						; 06 not used
+	.db %01010101			; 05 damage profile C/S/M/L
+	.db %01000000 		; 06 special actions (b7 JUMP)
 	.db 0							; 07 tile BG offset
 
-objectType2:				; SAI
+objectType2:				; BATTLE ANGEL
 	.hex 1A 18 1B 19 	; TORSO animation
 	.hex 17 15 14 16 	; LEG animation
 	.db 43						; 00 mech name : SAI
-	.db 9						; 01 max hit points
+	.db 9							; 01 max hit points
 	.db 5							; 02 structure threshold
 	.db 3							; 03 movement points
 	.db 3							; 04 initiative
-	.db %11010100			; 05 damage
-	.db 0 						; 06 not used
+	.db %11010101			; 05 damage
+	.db %10000000  		; 06 not used
 	.db 0							; 07 tile BG offset
 
 objectType3:				; DEMON

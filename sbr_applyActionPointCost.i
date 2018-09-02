@@ -42,29 +42,37 @@ applyActionPointCost:
   EOR #$FF                        ; then update modifier
   STA list3+12                    ; to equal - (current heat points)
   INC list3+12                    ;
-
   LDA #0                          ; no less than 0
 
-+continue
-  CMP #4
-  BCC +less                       ; less than 4
++continue:
+  CMP #3                          ;
+  BCC +noHeatDamage               ; less than 4
+  CMP #5
+  BCC +heatDamage
+
+  LDY activeObjectIndex
+  LDA object+4, Y
+  ORA #%00010000
+  STA object+4, Y
+
+  LDA #4                          ; ceiling at heat 4
+
++heatDamage:
+  STA list3+3                     ;
 
   LDX #$83                        ; show result: heat damage animation
-  LDA #4
-  JSR addToSortedList
+  LDA #4                          ;
+  JSR addToSortedList             ;
 
   LDX #8                          ; show result: heat damage msg
-  LDA #5
-  JSR addToSortedList
+  LDA #5                          ;
+  JSR addToSortedList             ;
 
-  LDA #2
-  STA list3+16
-
-  LDA #4                          ; cap heat points at 4
-  STA list3+3
+  LDA #1                          ;
+  STA list3+16                    ;
   BNE +continue                   ; JMP
 
-+less:
++noHeatDamage:
   STA list3+3                     ; new heat point total
 
 +continue:

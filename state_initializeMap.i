@@ -80,6 +80,40 @@ state_initializeMap:
 
 +done:
 
+	; ---------------------------
+	; adjust initial object stats for pilot traits / equipment
+	; ---------------------------
+
+	LDX objectListSize:
+
+-loop:
+	LDA objectList-1, X
+	AND #%10000111							; pilot bits
+	BEQ +next
+	ASL
+	BCC +continue								; move b7 to b3
+	ORA #%00010000
+
++continue:
+	ASL
+	TAY
+	LDA pilotTable-2, Y					; pilot traits
+	AND #%00000100							; survivor trait (+2 armor)
+	BEQ +next
+	LDA objectList-1, X
+	AND #%01111000							; object index
+	TAY
+	LDA object+1, Y
+	CLC
+	ADC #16											; +2 (shifted left 3x)
+	STA object+1, Y
+
++next:
+	DEX
+	BNE -loop
+
+
+
 	;LDA #$00
 	;STA cameraY+0
 	;STA cameraX+0
