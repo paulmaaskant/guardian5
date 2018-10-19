@@ -2,6 +2,7 @@ initializeExplosion:
   JSR clearCurrentEffects
   LDA #0
   STA runningEffectCounter
+  STA effects
 
   LDA #$0D
   STA currentEffects+0                ; animation

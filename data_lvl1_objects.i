@@ -53,14 +53,14 @@ levelOne:
 	.db $80			; enemy pilot 0 (unkown)
 	.db $E5			; object grid position
 	.db $35			; object type 1 & facing RD
-	.db $11			; object wpns
+	.db $12			; object wpns
 
-	.db $82			; enemy pilot 1 (unkown)
+	.db $81			; enemy pilot 1 (unkown)
 	.db $E6			; object grid position
 	.db $35			; object type 1 & facing RD
-	.db $33			; object wpns
+	.db $32			; object wpns
 
-	.db $84			; enemy pilot 4 (drone)
+	.db $82			; enemy pilot 2 (drone)
 	.db $F4			; object grid position
 	.db $54			; object type 1 & facing RD
 	.db $21			; object wpns
@@ -79,10 +79,10 @@ missionOneEventStream:
 ; byte 3			; event type
 							; - parameter bytes
 
-.db 2, mEventOpenDialog, 10 												 			; event 1
+.db 2, mEventOpenDialog, 10 												 			; event 1 : dialog 10: enemy detected
 
 .db 4, mConditionRound, 2,  mEventOpenDialog, 13		 			; event 2
-.db 3, mConditionRound, 2,  mEventNewUnit		 		  				; event 2B
+.db 7, mConditionRound, 2,  mEventSpawnUnit, $83, $3E, $54, $11	 		  			; event 2B
 
 .db 3, mConditionOnlyHostiles, mEventOpenDialog, 12 			; event 3
 .db 4, mConditionOnlyHostiles, mEventEndMission, 3, 7 		; event 4

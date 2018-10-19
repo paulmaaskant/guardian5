@@ -71,8 +71,9 @@ state_titleScreen:
 	LSR									; start button
 	BCS +confirm
 	LSR									; select button
-	BCS +unitSelect
+	;BCS +unitSelect
 	LSR									; B
+
 	LSR									; A button
 	BCC +setTimer
 
@@ -98,10 +99,8 @@ state_titleScreen:
 
 	JSR buildStateStack
 	.db 3
-	.db $46, 9
-	.db $1A
-
-	;JMP writeStartMenuToBuffer
+	.db $46, 9		; refresh menu select
+	.db $1A      	; wait
 
 +startGame:
 	JSR pullAndBuildStateStack
@@ -111,10 +110,10 @@ state_titleScreen:
 	; built in RTS
 
 +unitSelect:
-	JSR pullAndBuildStateStack
-	.db 8								; # items
-	.db $0D, 0						; change brightness 0: fade out
-	.db $00, 8						; load screen: unit select
-	.db $0D, 1						; change brightness 1: fade in
-	.db $50								; init unit select menu
-	; built in RTS
+;	JSR pullAndBuildStateStack
+;	.db 7								; # items
+;	.db $0D, 0						; change brightness 0: fade out
+;	.db $00, 4						; load screen: mechbay
+;	.db $32, %00000010		; tile animation OFF
+;	.db $26								; init unit select menu
+;	; built in RTS

@@ -1,31 +1,28 @@
+; --------------------------------------------
+; detect if the action is player or AI controlled
 ;
-;
-;
-
+; --------------------------------------------
 state_startAction:
+  LDA #0                              ; clear/initialize list3
+  LDX #63                             ;
 
-  LDA #0                             ;
-  LDX #63
-
--loop:
-  STA list3, X                       ; reset list 3
-  DEX
+-loop:                                ;
+  STA list3, X                        ;
+  DEX                                 ;
   BPL -loop
 
   LDA activeObjectIndexAndPilot       ; check if unit is AI or player
-  BMI +continue
-  LDA #$06                            ; state: user select action
-  JMP replaceState
+  BMI +continue                       ; -> AI to determine action
 
-  ; ----------------------------------------
-  ; AI action, then first select AI target
-  ;
-  ; current: closest target
-  ; ----------------------------------------
-+continue:
-  LDA #0
-  STA list6               ; reset sorted list
-  STA effects             ; clear all effects
+  JSR pullAndBuildStateStack
+  .db 3
+  .db $31, eUpdateTarget              ; make sure action list is set
+  .db $06                             ; player to select action
+
++continue:                            ; AI controlled action
+  LDA #0                              ;
+  STA list6                           ; reset sorted list
+  STA effects                         ; clear all effects
 
   LDA objectListSize
   STA list1

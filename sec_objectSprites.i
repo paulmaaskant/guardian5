@@ -67,10 +67,15 @@
 
 +continue:												  ; next, determine mirror, palette & which animation
   LDA object+0, Y
+  AND #$07
+  CMP #7
+  BEQ +done                         ; hide sprites for object with direction 7
 
+  LDA object+0, Y
   PHA															  ; temp store for possible movement animation
-  AND #$07 ; #$0F									  ; TEMP
+  AND #$07 								          ; direction = index
   TAY
+
   LDA mirrorTable, Y
   STA par4													; par4 (b7-6 no mirror, b5 no mask, b4 not obscured, b0 no palette flip)
   LDA directionLookup, Y
@@ -80,7 +85,7 @@
   JSR loadAnimationFrame						; breaks every variable
 
   PLA                               ; retrieve to check if object is moving
-  BIT bit3
+  AND #%00001000
   BEQ +notMoving
   LDA list3+61                      ; movement amimation, set by resolving state
   CMP #16

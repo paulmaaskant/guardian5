@@ -8,15 +8,12 @@
 
 ; FEATURES
 
-; - heat damage at end of turn only
-; - SHUTDOWN mechanic
-; - DEPLOYMENT: unique items
-; - DEPLOYMENT: show mech special actions in deployment roster
-; - TRAITS: dare devil, sprinter
-; - EVENT: complete spawning mechamism (parameterize it), bl,ink new unit, move camera only if unit is offscreen
+; - FLAMER heat infliction
+; - ITEM: shield improves brace
+; - TRAITS: dare devil, sprinter, survivor
+; - EVENT: move camera only if unit is offscreen
 ; - MECH ability to overheat for more damage in confirm action
-; - EQUIP: Flamer
-; - remove second action pivot/ move / jump as possible actions
+
 ; - state start action contains code that should be in start turn
 ; - clear action menu indicators when showing attack results
 ; - redesign game pause menu
@@ -25,19 +22,18 @@
 
 ; - remove parameter from clearSprites (its always 63)
 ; - Sounds LASER, DRONE move
+; - consider to REMOVE second action: pivot/ move / jump as possible actions
 ; - eff_status - move code from state_selectAction to special purpose effect
 ; - rearrange map tiles (move obstacle to 2nd bank, move some static animated tiles to 1st bank)
 ; - re-arrange HUD nametable so that attributes are not in the way when expanding in game menu
 ; - cursor effect is switched on at end of "state_checkMissionEvents" because there is no 'startActionState'
 
-
-
 ;   pilot traits
 ;
-;   brawler + 1 damage in close combat
+;   brawler + 1 damage in close combat (DONE)
 ;   sprinter + 1 move point
-;   crack shot + 1 skill in long range
-;   lucky + 1 evade
+;   crack shot + 1 skill in long range (DONE)
+;   lucky + 1 evade (DONE)
 ;   survivor + 2 armor points
 ;   dare devil +1 jump
 

@@ -13,7 +13,7 @@ state_initializeTargetLockMarker:
   LDA #3
   STA currentEffects+0    ; # animation
 
-  LDA #3
+  ; LDA #3
   STA runningEffect
 
   LDA effects

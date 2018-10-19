@@ -43,10 +43,15 @@ state_newTurn:
 
   LDA list6
   BNE +continue
-
                           ; make a state out of this
   INC missionRound        ; INCREASE ROUND
 
+  LDA missionRound;
+  JSR toBCD
+  LDA par2
+  STA list3+50
+  LDA par3
+  STA list3+51
                           ; unMARK all units at the start of a new round
   LDY #120
 
@@ -59,7 +64,20 @@ state_newTurn:
   SBC #8
   TAY
   BPL -unmarkLoop
-  BMI -restartLoop
+
+  LDA #120
+  STA blockInputCounter
+
+  LDY #69
+  LDX #16										  ; write to position 0
+  JSR writeToActionMenu				;
+
+  JSR buildStateStack
+  .db 7
+  .db $45, %00111000                   ; blink all lines
+  .db $31, eRefreshStatusBar           ; set event: refresh action menu
+  .db $1A           ; wait
+  .db $45, 0                           ; switch off blinking
 
 +continue:
   LDA #0
@@ -107,6 +125,13 @@ state_newTurn:
   LDA (pointer1), Y             ;
   STA activeObjectStats+2			  ;
 
+                                ; if active unit
+  LDA #itemActuator             ; is equipped with actuator
+  JSR isEquippedOnActiveObject   ;
+  BCC +notEquipped
+  INC activeObjectStats+2	      ; then add 1 movement point
+
++notEquipped:
   AND #$F0
   STA locVar1                   ; mask movement type
 
@@ -131,7 +156,7 @@ state_newTurn:
   LDA (pointer1), Y             ;
   STA activeObjectStats+8			  ; stored
 
-  LDY #1                        ; #1 structure points
+  LDY #2                        ; #1 structure points
   LDA (pointer1), Y             ;
   CMP activeObjectStats+6
   ROR activeObjectStats+0			  ; raise flag when structure points >= current hit points
@@ -163,16 +188,17 @@ state_newTurn:
   LDA #$00
   STA targetObjectTypeAndNumber
 
-  LDA events
-  ORA #eRefreshStatusBar
-  STA events
+  ;LDA events
+  ;ORA #eRefreshStatusBar
+  ;STA events
 
   JSR clearSystemMenu
   JSR clearActionMenu
   JSR clearTargetMenu
 
   JSR buildStateStack
-  .db 8							  ; 7 items
+  .db 10							; 10 items
+  .db $31, eRefreshStatusBar
   .db $30             ; set active unit portrait
   .db $3C             ; show hourglass
   .db $0B 						; center camera

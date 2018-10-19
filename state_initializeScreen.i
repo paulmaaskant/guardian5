@@ -60,18 +60,17 @@ state_initializeScreen:
 	STA portraitYPos
 
 	JSR buildStateStack
-	.db 3 								; # items
+	.db 5 								; # items
 	.db $32, %00100100		; clear sys flags
+	.db $29, %00000010		; tile animation ON
 	.db $0E								; load screen
-
-
 
 state00_screenLo:
 	.db #> titleScreen2								; 00 title screen background
 	.db #> blankScreen								; 01 introduction story background
 	.db #> briefScreen								; 02 mission brief background
 	.db #> statusBar									; 03 status bar
-	.db #> blankScreen								; 04 instructions background
+	.db #> blankScreen								; 04 mechbay
 	.db #> animationScreen						; 05 play animation background
 	.db #> missionAccomplishedScreen	; 06 mission accomplished bg
 	.db #> blankScreen								; 07 mission failed bg
@@ -93,7 +92,7 @@ state00_sound:
 	.db $02
 	.db $C0									; silence
 	.db $04
-	.db $C0									; silence
+	.db $05									; 
 	.db $05									;
 	.db $05
 	.db $02
@@ -104,15 +103,11 @@ state00_tileBank1:
 	.db 5
 	.db 5
 	.db 5
-	.db 5
+	.db 6
 	.db 5
 	.db 5
 	.db 5
 	.db 6
-
-state00_tileBank2:
-
-state00_tileBank3:
 
 state00_tilePall0:
 	.db 0

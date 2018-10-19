@@ -16,8 +16,8 @@ actionTable:
 ; b5 check line of sight?
 ; b4 check charge distance?
 ; b3 calculate hit %?
-; b2 check for reload, ammo and recycle?
-; b1 piloting skill (1) OR accuracy (0)
+; b2 not used
+; b1 not used
 
 actionPropertiesTable:
 	.db %10000000			; 00 MOVE
@@ -33,10 +33,10 @@ actionPropertiesTable:
 actionPointCostTable:
 	.db 1				      ; 00 MOVE
 	.db 1  			      ; 01 JUMP
-	.db 1+128    		  ; 02 ATTACK (uses all remaining AP)
-	.db 1+128      	  ; 03 BRACE (uses all remaining AP)
-	.db 1+128         ; 04 CLOSE COMBAT (uses all remaining AP)
-	.db 2+128         ; 05 CHARGE
+	.db 128    		  ; 02 ATTACK (uses all remaining AP)
+	.db 128      	  ; 03 BRACE (uses all remaining AP)
+	.db 128         ; 04 CLOSE COMBAT (uses all remaining AP)
+	.db 128         ; 05 CHARGE
 	.db 1             ; 06 PIVOT TURN
 	.db 2             ; 07 SPRINT
 	.db 1             ; 08 MARK TARGET

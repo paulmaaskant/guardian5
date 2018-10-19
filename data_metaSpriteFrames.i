@@ -325,8 +325,11 @@ CS22:
 	.dw CUR4
 
 CS23:
-	.db #%10011000
+	.db %00010000
 	.dw CUR5
+  .db %10110000
+  .db 16
+  .dw CUR6
 
 CS24:
   .db %10110000
@@ -342,6 +345,40 @@ CS26:
   .db %10110000
   .db -40
   .dw CURB
+
+  CS27:
+  	.db %00010000
+  	.dw CUR5
+    .db %10110000
+    .db 8
+    .dw CUR6
+
+  CS28:
+  	.db %00010000
+  	.dw CUR5
+    .db %10110000
+    .db 24
+    .dw CUR6
+
+  CS29:
+    .db %00000000
+    .dw mech00_d4
+    .db %00100000
+    .db 32
+    .dw mech02_d4
+    .db %01000000
+    .db 24
+    .dw mech01_d4
+    .db %11100000
+    .db 24, 32
+    .dw mech03_d4
+
+
+
+
+
+
+
 
 EF00: ; explosion
 	.db #%10111000, -16

@@ -49,7 +49,7 @@ updateDetailArea:
   STA currentEffects+5
 
   LDY #35                       ; "PRESS A TO CONFIRM"
-  LDX #24
+  LDX #45
   JSR writeToList8              ;
 
 +continue:
@@ -73,8 +73,17 @@ updateDetailArea:
   TAX
   STX locVar5
   LDY pilotTable-4, X           ; pilot name
-  LDX #12
+  LDX #16
   JSR writeToList8
+
+  LDY #65                       ; "NAME"
+  LDX #11
+  JSR writeToList8
+
+  LDY #64                       ; "SPCL"
+  LDX #28
+  JSR writeToList8
+
 
 
   LDX locVar5
@@ -82,8 +91,8 @@ updateDetailArea:
 
   LDX #7
 
--loop:
-  ASL
+-loop:                          ; every bit represents an ability
+  ASL                           ; show the first ability
   BCS +break
   DEX
   BPL -loop
@@ -91,7 +100,7 @@ updateDetailArea:
 
 +break:
   LDY traitName, X              ; first trait
-  LDX #42
+  LDX #33
   JSR writeToList8
 
 +noTrait:
@@ -114,14 +123,17 @@ updateDetailArea:
   RTS
 
 +weaponDetails:
-  AND #$03
+  AND #$07
   STA list1+12                  ; index
   ASL                           ; set weapon details
   ASL
-  ASL
   TAX
   LDY weaponType+0, X          ; item name
-  LDX #12
+  LDX #16
+  JSR writeToList8
+
+  LDY #67                       ; "item"
+  LDX #11                       ; line 1
   JSR writeToList8
 
   LDY #37                      ; "slot X"
@@ -190,7 +202,15 @@ updateDetailArea:
   LDY #8
   LDA (pointer1), Y             ; mech name
   TAY
-  LDX #12                       ; line 2
+  LDX #16                       ;
+  JSR writeToList8
+
+  LDY #66                       ; "TYPE"
+  LDX #11
+  JSR writeToList8
+
+  LDY #64                       ; "SPCL"
+  LDX #28
   JSR writeToList8
 
   LDY #36                       ; "mech"
@@ -201,8 +221,16 @@ updateDetailArea:
   LDA (pointer1), Y
   STA currentEffects+4          ; set mech sprites
 
-  ;INC effects                   ; show selected mech sprites
+  LDY #14                       ; special action
+  LDA (pointer1), Y             ;
+  BEQ +noSpecialAction
+  ASL
+  TAX
+  LDY actionTable+1, X
+  LDX #33
+  JSR writeToList8
 
++noSpecialAction:
   LDX #15
 
 -loop:
@@ -229,48 +257,3 @@ currentItemTileWeapon:
   .hex 0F 0F 0F 0F
   .hex 0F 0F 0F 0F
   .hex A0 82 82 A3
-
-updateUnitStats:
-  LDA objectList+3
-  AND #$07
-  ASL
-  ASL
-  TAX
-  LDA pilotTable-3, X           ; pilot skill
-  STA list8+196
-
-  LDA objectList+3
-  AND #%01111000
-  TAY													  ; and store it in Y
-
-  JSR getStatsAddress
-  LDY #4
-
--loop:                          ; set ARmor, STructure, MoVement and INitiative
-  LDA (pointer1), Y
-  AND #$0F
-  STA list8+196, Y
-  DEY
-  BNE -loop
-
-  LDA #space
-  STA list8+201
-
-  LDX #3
-
--loop:
-  LDA objectList+3
-  AND #%01111000
-  TAY
-
-  STX locVar5                       ; save X : range category
-
-  JSR getOverallDamageValue         ; breaks X&Y
-
-  LDX locVar5                       ; restore range category
-  STA list8+202, X
-
-  DEX
-  BPL -loop
-
-  RTS

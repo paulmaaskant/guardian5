@@ -7,7 +7,7 @@ state_initializeBrace:
 	LDA #0
 	STA list1+0 							; animation frame count
 	STA list1+2								;
-	STA activeObjectStats+9		; remove all remaining APs
+	; STA activeObjectStats+9		; managed in applyActionPointCost
 
 	LDY activeObjectIndex
 	LDA object+4, Y

@@ -5,9 +5,9 @@
 ; 2 destroyed animation / target heat animation / evade animation
 ; 3 destroyed msg
 
-; 4 unit heat damage animation
-; 5 unit heat damage msg
-; 6 temp effects animation
+; 4 temp effects animation
+; 5 unit heat damage animation
+; 6 unit heat damage msg
 
 ; 7 unit destroyed animation
 ; 8 unit destroyed msg
@@ -22,7 +22,7 @@ applyActionPointCost:
   STA list3+16                    ;
 
   LDX #$81                        ; show gauge message
-  LDA #6												  ; prio
+  LDA #4												  ; prio
   JSR addToSortedList
 
   LDY selectedAction
@@ -58,18 +58,24 @@ applyActionPointCost:
   LDA #4                          ; ceiling at heat 4
 
 +heatDamage:
-  STA list3+3                     ;
+  STA list3+3                     ; store new heat level
+
+  LDA activeObjectStats+9         ; chec if this ist the last action
+  BNE +continue                   ; -> not the last action, no heat damage
 
   LDX #$83                        ; show result: heat damage animation
-  LDA #4                          ;
-  JSR addToSortedList             ;
-
-  LDX #8                          ; show result: heat damage msg
   LDA #5                          ;
   JSR addToSortedList             ;
 
-  LDA #1                          ;
-  STA list3+16                    ;
+  LDX #8                          ; show result: heat damage msg
+  LDA #6                          ;
+  JSR addToSortedList             ;
+
+  LDA list3+3                     ; damage = heat - 2
+  SEC
+  SBC #2
+
+  STA list3+16                    ; heat damage
   BNE +continue                   ; JMP
 
 +noHeatDamage:

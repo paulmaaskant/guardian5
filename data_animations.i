@@ -68,8 +68,12 @@ animationL:
 	.db #> ANIM31			; mech 01 stationary
 	.db #> ANIM32			; mech 01 stationary
 	.db #> ANIM33			; mech 01 stationary
-	.db #> ANIM34			; unit select cursor
+	.db #> ANIM34			; unit select cursor MED
 	.db #> ANIM35			; mech A jumping
+	.db #> ANIM36			; mech fronts
+	.db #> ANIM37			; unit select cursor SML
+	.db #> ANIM38			; unit select cursor LRG
+
 
 animationH:
 	.db #< ANIM00
@@ -125,7 +129,10 @@ animationH:
 	.db #< ANIM32			; mech 01 stationary
 	.db #< ANIM33			; mech 01 stationary
 	.db #< ANIM34			; unit select cursor
-	.db #< ANIM35     ; 
+	.db #< ANIM35     ;
+	.db #< ANIM36
+	.db #< ANIM37
+	.db #< ANIM38
 
 ANIM00:
 	.db 8, 3
@@ -161,10 +168,11 @@ ANIM04:
 
 ANIM05:
 	.db 4, 2
+	.dw EF08 ;1
 	.dw EF07
-	.dw EF08
+	.dw EF05 ;3
 	.dw EF00
-	.dw EF05
+
 
 ANIM06:
 	.db 1, 4
@@ -399,3 +407,15 @@ ANIM35:
 	.db 2, 2
 	.dw mechA_jumping_fr00
 	.dw mechA_jumping_fr01
+
+ANIM36:
+	db 1, 5
+	dw CS29
+
+ANIM37:
+	.db 1, 5
+	.dw CS27
+
+ANIM38:
+	.db 1, 5
+	.dw CS28

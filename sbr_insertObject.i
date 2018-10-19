@@ -53,8 +53,8 @@ insertObjectGridPosOnly:
 
   LDY #1                    ; add
   LDA (pointer1), Y					; #1 armor points
-  INY                       ; to
-  ADC (pointer1), Y					; #2 structure points
+;  INY                       ; to
+;  ADC (pointer1), Y					; #2 structure points
   ASL
   ASL
   ASL

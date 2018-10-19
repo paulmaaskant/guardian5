@@ -47,14 +47,16 @@ state_showResults:
 	CMP #$85
 	BEQ +reduceEvade
 
-	JSR buildStateStack		; opcode $80: explosion & flash
-	.db 5									; # stack items
-	.db $2C								; show effect: explosion
-	.db $0D, 2						; change brightness 2: flash out
-	.db $0D, 3						; change brightness 3: flash out
+
+
+	JSR buildStateStack			; -> opcode $80: unit explosion & flash
+	.db 5										; # stack items
+	.db $2C									; implode & explode & remove object
+	.db $0D, 2							; change brightness 2: flash out
+	.db $0D, 3							; change brightness 3: flash out
 	; built in RTS
 
-+sustainHeatDamage:
++sustainHeatDamage:			; opcode $83: active unit sustains heat damage
 	LDA #$4F
 	JMP pushState
 
@@ -63,12 +65,12 @@ state_showResults:
 	.db 2
 	.db $58, 3						;
 
-+targetDamage:						; opcode $82: inflicted heat modifier
++targetDamage:					; opcode $84: display damage modifier on target
 	JSR buildStateStack
 	.db 2
 	.db $58, 4						;
 
-+reduceEvade:					; opcode $82: inflicted heat modifier
++reduceEvade:						; opcode $85: display evasion modifier on target
 	JSR buildStateStack
 	.db 2
 	.db $58, 1						;
@@ -101,7 +103,7 @@ streamHi:
 	.db #< resultEngineCriticalDamage							; 4
 	.db #< resultUnitDestroyed							; 5
 	.db #< resultChargeDamageSustained			; 6
-	.db #< resultTargetingCriticalDamage					; 7
+	.db #< resultTargetingCriticalDamage		; 7
 	.db #< resultHeatDamageSustained				; 8
 	.db #< resultMobilityCriticalDamage						; 9
 	.db #< resultUnitRestart								; A

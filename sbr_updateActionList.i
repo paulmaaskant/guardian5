@@ -61,7 +61,6 @@ updateActionList:
 	BMI +skipCloseCombat						; no close combat of unit is hovering
 	LDA #aCLOSECOMBAT								; add CLOSE COMBAT
 	JSR addPossibleAction
-	;PLP														; clean up stack
 	JMP checkTarget									; done, tail chain
 
 	; ----------------------------------
@@ -71,14 +70,12 @@ updateActionList:
 	LDA #aATTACK								; add ATTACK
 	JSR addPossibleAction
 
-	BIT activeObjectStats+8			; check if unit can MARK (b6)
-	BVC +noMark
 	LDA #aMARKTARGET						; add MARK
+	CMP activeObjectStats+8			; special action
+	BNE +noMark
 	JSR addPossibleAction
 
 +noMark:
-	;PLP
-	;BEQ +skipCharge
 	LDA activeObjectStats+9
 	CMP #2
 	BCC +skipCharge							; no CHARGE if the unit has only 1 AP left
@@ -102,21 +99,17 @@ updateActionList:
 	LDA #aMOVE
 	JSR addPossibleAction
 
-	LDA #1
-	BIT activeObjectStats+8			; check if unit can JUMP (b7)
-	BPL +continue
-	LDA activeObjectStats+9
-	CMP #2
-	BCC +continue								; no JUMP if unit has only 1 AP left
-
+	LDX #1
 	LDA #aJUMP
+	CMP activeObjectStats+8
+	BNE +continue
 	JSR addPossibleAction
-	LDA #2
+	LDX #2
 
 +continue:
-	CMP selectedAction
+	CPX selectedAction
 	BCS +continue
-	STA selectedAction
+	STX selectedAction
 
 +continue:
 	JMP checkMovement

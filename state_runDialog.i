@@ -129,7 +129,15 @@ state_runDialog:
 	BNE +continue
 
 	JSR getNextByte
+	BIT bit6
+	BEQ +update
+	AND #7
+	TAX
+	JSR getPilot
 	JMP updatePortrait
+
++update:
+	JMP updatePortrait2
 
 +continue:
 

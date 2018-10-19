@@ -27,8 +27,30 @@ state_initializeMachineGun:
   BMI +continue
   LDX #8											; miss animation
 
+
 +continue:
-  STX list2+0
+  STX currentEffects+0
+
+  LDA #2
+  STA list1+6                 ; speed
+
+  LDY activeObjectIndex
+  LDA #itemFlamer
+  JSR isEquipped
+  BCC +no
+  LDA #5          ; flame
+  BNE +set
+
++no:
+  ASL list1+6     ; double speed
+  LDA #6          ; bullet
+
++set:
+  STA currentEffects+1
+  STA currentEffects+2
+  STA currentEffects+3
+
+
 
   LDA #$04										; switch on controlled effects
   STA effects									;
@@ -36,9 +58,6 @@ state_initializeMachineGun:
 +continue:
   LDY #sGunFire
   JSR soundLoad
-
-  ;LDA #$13                    ; resolve machine gun
-  ;JMP replaceState
 
   JSR pullAndBuildStateStack
   .db 3             ; #items

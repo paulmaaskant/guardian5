@@ -62,9 +62,9 @@ checkTarget:
 	EOR targetObjectTypeAndNumber			; then this sets b7 to 0
 	ASL
 	BCS +nextCheck
-	LDA #55+128												; friendly unit
-	STA actionMessage
-	RTS
+;	LDA #55+128												; friendly unit
+;	STA actionMessage
+;	RTS
 
 	; ---------------------------------------------------------------------------
 	; 10 hex is hardcoded max range

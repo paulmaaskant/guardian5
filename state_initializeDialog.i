@@ -42,6 +42,7 @@ state01_streamLo:
   .db #> instructionStream
   .db #> hud_missionFailed
   .db #> hud_staySharp
+  .db #> hud_playerDestroyed
 state01_streamHi:
   .db #< storyStream
   .db #< mission01prolog
@@ -53,6 +54,7 @@ state01_streamHi:
   .db #< instructionStream
   .db #< hud_missionFailed
   .db #< hud_staySharp
+  .db #< hud_playerDestroyed
 state01_positionHi:
   .db $25
   .db $25
@@ -62,6 +64,7 @@ state01_positionHi:
   .db $24
   .db $24
   .db $25
+  .db $24
   .db $24
   .db $24
 state01_positionLo:
@@ -75,6 +78,7 @@ state01_positionLo:
   .db $44
   .db $46
   .db $46
+  .db $46
 state01_lastCol:
   .db $1C
   .db $1C
@@ -84,6 +88,7 @@ state01_lastCol:
   .db $1E
   .db $1E
   .db $1C
+  .db $1E
   .db $1E
   .db $1E
 
@@ -96,5 +101,6 @@ state01_lineCount:
   .db 3
   .db 3
   .db 8
+  .db 3
   .db 3
   .db 3

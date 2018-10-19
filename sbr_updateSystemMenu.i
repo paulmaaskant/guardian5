@@ -11,8 +11,8 @@ updateSystemMenu:
 
 	LDA #space									; warning marker?
 	BIT activeObjectStats+0
-	BPL +continue:
-	LDA #$50
+	BPL +continue
+	LDA #$50										; blinking exclamation marker
 
 +continue:
 	STA systemMenuLine3+2

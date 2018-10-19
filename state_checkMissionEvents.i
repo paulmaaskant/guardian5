@@ -117,6 +117,10 @@ missionEventOpenDialog:
 ; new unit on map
 ; ---------------------------------
 missionEventNewUnit:
+  INY
+  STY list1+1                       ; store current read position of the event bytestream
+                                    ; this is needed for the spwan unit state
+
   JSR getMissionEventFlag           ; check off the event flag
   ORA missionEvents, Y              ; Y is destroyed
   STA missionEvents, Y
@@ -124,7 +128,7 @@ missionEventNewUnit:
   JSR buildStateStack
   .db 2
   .db $57				                    ; spawn unit
-  .db $0B
+  .db $0B                           ; center on cursor (back to active unit)
 
 ; ---------------------------------
 ; end the mission

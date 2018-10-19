@@ -60,65 +60,65 @@ hudMenu:		; last
 	.db $0A, repeatBlank, 24
 
 unitSelect:
-	.db repeatBlank, 6*32+11			; 6 rows
-	.db R,E,T,S,O,R,space,T,N,E,M,Y,O,L,P,E,D
-	.db repeatBlank, 32+4				; 1 row
-	.db repeatBlank, 3
-	.db $2B
-	.db repeatBlank, 6
-	.db $2A
-	.db space
+;	.db repeatBlank, 6*32+11			; 6 rows
+;	.db R,E,T,S,O,R,space,T,N,E,M,Y,O,L,P,E,D
+;	.db repeatBlank, 32+4				; 1 row
+;	.db repeatBlank, 3
+;	.db $2B
+;	.db repeatBlank, 6
+;	.db $2A
+;	.db space
 
-	.db dict, 46
-	.db repeatBlank, 8+8
-	.db dict, 47
-	.db repeatBlank, 4+8+8
-	.db dict, 48
-	.db repeatBlank, 4+8+8
-	.db dict, 49
+;	.db dict, 46
+;	.db repeatBlank, 8+8
+;	.db dict, 47
+;	.db repeatBlank, 4+8+8
+;	.db dict, 48
+;	.db repeatBlank, 4+8+8
+;	.db dict, 49
+;
+;	.db repeatBlank, 8+8
 
-	.db repeatBlank, 8+8
+;	.db dict, 46
+;	.db repeatBlank, 8+8
+;	.db dict, 47
+;	.db repeatBlank, 4+8+8
+;	.db dict, 48
+;	.db repeatBlank, 4+8+8
+;	.db dict, 49
 
-	.db dict, 46
-	.db repeatBlank, 8+8
-	.db dict, 47
-	.db repeatBlank, 4+8+8
-	.db dict, 48
-	.db repeatBlank, 4+8+8
-	.db dict, 49
+;	.db repeatBlank, 8+8
+;
+;	.db dict, 46
+;	.db repeatBlank, 8+8
+;	.db dict, 47
+;	.db repeatBlank, 4+8+8
+;	.db dict, 48
+;	.db repeatBlank, 3+8
+;
+;	.db $2D
+;	.db repeatBlank, 6
+;	.db $2C
+;	.db space
+;
+;	.db dict, 49
+;	.db repeatBlank, 4
 
-	.db repeatBlank, 8+8
+;	.db repeatBlank, 4*32		; 4 rows
 
-	.db dict, 46
-	.db repeatBlank, 8+8
-	.db dict, 47
-	.db repeatBlank, 4+8+8
-	.db dict, 48
-	.db repeatBlank, 3+8
+;	.db repeatBlank, 6*32		; 6 rows
+;	; --- palettes ---
+;	.db $00, $00, $66						;
+;	.db repeatChar, 7, $00
+;	.db $66
+;	.db repeatChar, 21, $00	;
 
-	.db $2D
-	.db repeatBlank, 6
-	.db $2C
-	.db space
-
-	.db dict, 49
-	.db repeatBlank, 4
-
-	.db repeatBlank, 4*32		; 4 rows
-
-	.db repeatBlank, 6*32		; 6 rows
-	; --- palettes ---
-	.db $00, $00, $66						;
-	.db repeatChar, 7, $00
-	.db $66
-	.db repeatChar, 21, $00	;
-
-	.db repeatChar, 8, $00		;
-	.db repeatChar, 8, $A0		;
-	.db repeatChar, 6, $05		;
-	.db repeatChar, 4, $00		;
-	.db $66
-	.db repeatChar, 5, $00		;
+;	.db repeatChar, 8, $00		;
+;	.db repeatChar, 5, $A0, $A5, $A0, $A0		;
+;	.db repeatChar, 5, $05, $55		;
+;	.db repeatChar, 4, $00		;
+;	.db $66
+;	.db repeatChar, 5, $00		;
 
 titleScreen2:
 	.db repeatBlank, 0	; 8 rows
@@ -181,10 +181,11 @@ briefScreen:
 	.db repeatBlank, $5C																																	; 3 rows and 26 tiles
 	.db $2D, repeatBlank, $02, $2C 																												; 0 rows and 6 tiles
 	.db repeatBlank, $06, $2B, repeatBlank, $18, $2A
-	.db repeatBlank, $E6			;
+	.db repeatBlank, $46			;
 	.db repeatBlank, $00			; 8 rows
 	.db $2D, repeatBlank, $18, $2C
-	.db repeatBlank, $83			; 4 rows, 3 tiles
+	.db repeatBlank, $C3			; 4 rows, 3 tiles
+	.db repeatBlank, $60			; 8 rows
 	; --- palettes ---
 	.db $FE, $16, $AA
 	.db $FE, $01, repeatBlank 				; pilot face attributes
@@ -238,7 +239,7 @@ mission01prolog:
 	.db S, T, A, N, D, space, B, Y, space, T, O, space, R, E, C, E, I, V, E, lineBreak
 	.db N, E, W, space, O, R, D, E, R, S, waitForA
 	.db nextPage
-	.db T, H, R, E, E, space, dict, enemy, space, U, N, I, T, S, space, H, A, V, E, lineBreak
+	.db S,E,V,E,R,A,L,space, dict, enemy, space, U, N, I, T, S, space, H, A, V, E, lineBreak
 	.db B, R, O, K, E, N, space, T, H, R, O, U, G, H, space, O, U, R, lineBreak
 	.db D, E, F, E, N, S, E, space, L, I, N, E, waitForA
 	.db nextPage
@@ -284,6 +285,12 @@ hud_activityDetected:
 	.db G,E,T,space,R,E,A,D,Y, space, T,O, space, E, N, G, A, G, E, waitForA
 	.db endOfStream
 
+hud_playerDestroyed:
+	db setPortrait, $40+1
+	db I, space, A, M, space, C, H, E, C, K, I, N, G, space,  O, U, T, comma, lineBreak
+	db C, O, M, M, A, N, D, E, R, waitForA
+	db endOfStream
+
 hud_staySharp:
 	.db N,E,W,space,H,O,S,T,I,L,E,S, space, C,O,M,I,N,G,space,O,U,R,lineBreak
 	.db W,A,Y,waitForA
@@ -295,7 +302,7 @@ hud_allHostilesDestroyed:
 	.db A, L, L, space, H, O, S, T, I, L, E, S, space, H, A, V, E, space, B, E, E, N, lineBreak
 	.db D, E, S, T, R, O, Y, E, D, waitForA
 	.db nextPage
-	.db setPortrait, $20
+	.db setPortrait, 0
 	.db W, E, L, L, space, D, O, N, E, comma, space, C,O,M,M,A,N,D,E,R, waitForA
 	.db nextPage
 	.db R, E, P, O, R, T, space, B, A, C, K, space, T, O, space, B, A, S, E, waitForA
@@ -329,7 +336,7 @@ resultTargetMiss:
 
 resultUnitDestroyed:
 	.db nextPage
-	.db dict, 14, lineBreak																												; [ 14 = TARGET]
+	.db dict, 32, lineBreak																												; [ 32 = UNIT]
 	.db D, E, S, T, R, O, Y, E, D, waitForA
 	.db endOfStream
 

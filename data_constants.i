@@ -20,8 +20,12 @@ aMARKTARGET = $08
 aiBRACE = 0
 aiCLOSECOMBAT = 4
 
+itemArmor = 4
+itemFlamer = 5
+itemActuator = 6
 
-; test 
+
+; test
 
 A = $10
 B = $11
@@ -77,4 +81,4 @@ emptyString = 0
   mConditionOnlyFriendlies = 2
   mConditionOnlyHostiles = 3
   mEventEndMission = 4
-  mEventNewUnit = 5
+  mEventSpawnUnit = 5

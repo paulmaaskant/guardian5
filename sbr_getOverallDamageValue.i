@@ -19,6 +19,7 @@ getOverallDamageValue:
   LDA object+6, Y													; add damage profile for EQ 1
   AND #$F0
   LSR
+  LSR
   TAY                                     ; Y = weapon type index
   LDA weaponType+1, Y
   JSR getDamageValue
@@ -31,6 +32,7 @@ getOverallDamageValue:
 
   LDA object+7, Y													; add damage profile for EQ 1
   AND #$F0
+  LSR
   LSR
   TAY                                     ; Y = weapon type index
   LDA weaponType+1, Y

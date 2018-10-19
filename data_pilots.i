@@ -1,7 +1,7 @@
 ; -----------------------------------------------
 ; traits
 ; 00000000
-; |||||||+ brawler    58 
+; |||||||+ brawler    58
 ; ||||||+- crack shot 59
 ; |||||+-- survivor   60
 ; ||||+--- lucky      61
@@ -14,18 +14,18 @@ traitName:
 
 pilotTable:
   ; -----------------------------------------------
-  ; Name, Skill level, Traits, not used
+  ; Name, Skill level, Traits, portrait
   ; -----------------------------------------------
-  .db 40, 4, %00000001, 0     ; pilot 1 BURKE
-  .db 22, 4, %00001000, 0     ; pilot 2 MARU
-  .db 23, 4, %00000100, 0     ; pilot 3 NIKOLI
-  .db 25, 3, %00000010, 0     ; pilot 4 ORTEGA
-  .db 52, 3, %00000000, 0     ; pilot 5 CASE
-  .db 27, 4, %00000000, 0     ; pilot 6 UNKNOWN
+  .db 40, 4, %00000001, 3     ; pilot 1 BURKE
+  .db 22, 4, %00001000, 4     ; pilot 2 MARU
+  .db 23, 4, %00000100, 5     ; pilot 3 NIKOLI
+  .db 25, 3, %00000010, 1     ; pilot 4 ORTEGA
+  .db 52, 3, %00000000, 2     ; pilot 5 CASE
+  .db 27, 4, %00000000, 6     ; pilot 6 UNKNOWN
+
   .db 27, 4, %00000000, 0     ; pilot 7 UNKNOWN
 
-  ; AI pilots
-  .db 27, 4, %00000000, 0     ; pilot 8 UNKNOWN
-  .db 27, 4, %00000000, 0     ; pilot 9 UNKNOWN
-  .db 27, 4, %00000000, 0     ; pilot 10 UNKNOWN
-  .db 27, 4, %00000000, 0     ; pilot 11 UNKNOWN
+  .db 27, 4, %00000000, 8     ; pilot 8 UNKNOWN Soldier female
+  .db 27, 4, %00000000, 9     ; pilot 9 UNKNOWN Soldier Male
+  .db 27, 4, %00000000, 10    ; pilot 10 UNKNOWN AI
+  .db 27, 4, %00000000, 11    ; pilot 11 UNKNOWN

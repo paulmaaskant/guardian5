@@ -216,7 +216,7 @@
 												.dsb 1				; +2: (b7) not used (b6-0) frame count
 												.dsb 1				; +3: (b7-0) grid pos
 												.dsb 1				; +4: (b7) braced flag (b6) marked flag (b5) turn flag (b4) shutdown (b3) not used (b2-0) evade points
-												.dsb 1				; +5: (b5-0) background tile
+												.dsb 1				; +5: (b7-0) background tile
 												.dsb 1				; +6: (b7-4) equipment slot 1 (b3-0) critical damage flags
 												.dsb 1				; +7: (b7-4) equipment slot 2
 												.dsb 120			; 15 more objects (15x8)
@@ -257,11 +257,18 @@
 	.include state_titleScreen.i
 	.include state_compositeTitleMenu.i
 
-	.include state_initializeUnitMenu.i
-	.include state_unitMenu.i
-	.include state_assignItem.i
+	;.include state_initializeUnitMenu.i
+	;.include state_unitMenu.i
+	;.include state_assignItem.i
+
+	.include state_initalizeMechBay.i
+	.include state_mechBay.i
+	.include state_mechBayMenu.i
+	.include state_mechBayUpdateMech.i
+	.include state_mechBayUpdateDetails.i
 
 	.include state_initializeMission.i
+	.include state_refreshMenu.i
 
 
 	; PRG page 2 and 3 (FIXED): main loop
@@ -549,14 +556,14 @@ gameStateJumpTable:
 	.dw state_faceTarget-1											; 1C
 	.dw state_closeCombatAnimation-1						; 1D
 	.dw state_initializeTitleMenu-1							; 1E
-	.dw not_used																; 1F
+	.dw state_mechBayUpdateMech-1								; 1F
 	.dw state_initializeGameMenu-1							; 20
-	.dw not_used																; 21
+	.dw state_mechBayMenu-1											; 21
 	.dw state_loadGameMenu-1										; 22
 	.dw state_expandStatusBar-1									; 23
 	.dw state_hudMenu-1													; 24
 	.dw state_collapseStatusBar-1								; 25
-	.dw not_used																; 26
+	.dw state_initalizeMechBay-1								; 26
 	.dw state_ai_determineAction-1							; 27
 	.dw state_ai_determineAttackPosition-1 			; 28
 	.dw state_setSysFlags-1											; 29
@@ -571,8 +578,7 @@ gameStateJumpTable:
 	.dw state_clearSysFlags-1										; 32
 	.dw state_initializeMission-1								; 33
 	.dw state_startTurn-1												; 34
-;	.dw state_initializeActiveObjectHeatMarker-1	; 35
-	.dw not_used
+	.dw state_mechBay-1													; 35
 	.dw state_compositeTitleMenu-1							; 36
 	.dw state_endAction-1												; 37
 	.dw state_initializeMachineGun-1						; 38
@@ -595,21 +601,21 @@ gameStateJumpTable:
 	.dw state_initializeLaser-1									; 49
 	.dw state_resolveLaser-1										; 4A
 	.dw state_setRunningEffect-1								; 4B
-;	.dw state_initializeTargetObjectHeatMarker-1 ; 4C
-	.dw not_used
+	.dw state_mechBayUpdateDetails-1						; 4C
 	.dw state_checkMisionEvents-1								; 4D
-;	.dw state_initializeEvadePointMarker-1			; 4E
-	.dw not_used
+	.dw state_resolveImplosion-1								; 4E
 	.dw state_initializeExplosion-1							; 4F
-	.dw state_initializeUnitMenu-1							; 50
-	.dw state_unitMenu-1												; 51
-	.dw state_assignItem-1											; 52
+	.dw not_used																; 50
+	.dw not_used																; 51
+	.dw not_used																; 52
 	.dw state_initializeJumpAction-1						; 53
 	.dw state_initializeJump-1									; 54
 	.dw state_resolveJump-1											; 55
 	.dw state_startAction-1											; 56
 	.dw state_spawnUnit-1												; 57
 	.dw state_initializeMarker-1								; 58
+	.dw state_initializeBlinkObject-1						; 59
+	.dw state_resolveBlinkObject-1							; 5A
 
 
 not_used:																			; label for depricated states
@@ -669,6 +675,7 @@ runningEffectsH:
 	.include state_initializeMarker.i
 
 	.include state_initializeDestroyObject.i
+	.include state_resolveImplosion.i
 	.include state_resolveDestroyObject.i
 
 	; --------------------------------------------------
@@ -676,12 +683,14 @@ runningEffectsH:
 	; --------------------------------------------------
 	.include state_checkMissionEvents.i
 	.include state_spawnUnit.i
+	.include state_initializeBlinkObject.i
+	.include state_resolveBlinkObject.i
 
 	; --------------------------------------------------
 	; menu control states
 	; --------------------------------------------------
 	.include state_updateOverview.i
-	.include state_refreshMenu.i
+
 	.include state_hudMenu.i
 	.include state_expandStatusBar.i
 	.include state_collapseStatusBar.i
@@ -807,9 +816,11 @@ runningEffectsH:
 	.include sbr_setSystemHeatGauge.i
 	.include sbr_setTargetHeatGauge.i
 	.include sbr_checkMovement.i
+	.include sbr_getPilot.i
 
 	.include sbr_insertObject.i
 	.include sbr_deleteObject.i
+	.include sbr_copyObject.i
 
 	.include sbr_writeStatusBarToBuffer.i
 	.include sbr_writeToActionMenu.i
@@ -829,13 +840,13 @@ runningEffectsH:
 	.include sbr_directionToCursor.i
 	.include sbr_updatePortrait.i
 	.include sbr_setTargetToolTip.i
-;	.include sbr_getSelectedWeaponIndex.i
 	.include sbr_setTile.i
 	.include sbr_setEffectCoordinates.i
 	.include sbr_setEvadePoints.i
-	.include sbr_updateSelectedItem.i
-	.include sbr_updateDetailArea.i
 	.include sbr_percentageGaugetoList8.i
+	.include sbr_isEquipped.i
+	.include sbr_updateUnitStats.i
+	.include sbr_numberToGauge.i
 
 	.include sbr_random.i
 	.include sbr_random100.i
@@ -846,7 +857,6 @@ runningEffectsH:
 	.include sbr_absolute.i
 	.include sbr_getCircleCoordinates.i
 	.include sbr_squareRoot.i
-
 
 	.include eff_blast.i
 	.include eff_modifier.i
@@ -928,6 +938,9 @@ bit2:
 sysFlag_objectSprites:
 event_refreshStatusBar:			.db %00000100
 
+bit1:
+sysFlag_tileAnimation				.db %00000010
+
 bit0
 sysFlag_scrollAdjustment:
 event_refreshTile:				  .db %00000001
@@ -947,13 +960,13 @@ directionLookup:
 directionLookupMoving:
 	.db 0, 4, 5, 6, 7, 6, 5, 0
 portraitBaseXPos:
-  .db 0, 8, 16
-	.db 0, 8, 16
-	.db 0, 8, 16
-portraitBaseYPos:
   .db 0, 0, 0
-  .db 8, 8, 8
-  .db 16, 16, 16
+	.db 8, 8, 8
+	.db 16, 16, 16
+portraitBaseYPos:
+  .db 0, 8, 16
+  .db 0, 8, 16
+  .db 0, 8, 16
 portraitMap:
   .hex 01 02 03
   .hex 11 12 13

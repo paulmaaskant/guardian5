@@ -50,7 +50,7 @@ stringListL:
 	.db #< scr_UNIT_3										; 48
 	.db #< scr_UNIT_4										; 49
 	.db #< str_ACCUR										; 50
-	.db #< str_ARMOR										; 51
+	.db #< str_EXTRA_ARMOR										; 51
 	.db #< str_CASE											; 52
 	.db #< str_RANGE										; 53
 	.db #< str_HEAT											; 54
@@ -63,6 +63,13 @@ stringListL:
 	.db #< str_LUCKY										; 61
 	.db #< str_DARE_DEVIL								; 62
 	.db #< str_SPRINTER									; 63
+	.db #< str_SPCL											; 64
+	.db #< str_NAME											; 65
+	.db #< str_TYPE											; 66
+	.db #< str_ITEM											; 67
+	.db #< str_FLAMER										; 68
+	.db #< str_ROUND										; 69
+	.db #< frm_TALL_LEFT								; 70
 
 stringListH:
 	.db #> str_EMPTY
@@ -116,7 +123,7 @@ stringListH:
 	.db #> scr_UNIT_3
 	.db #> scr_UNIT_4
 	.db #> str_ACCUR
-	.db #> str_ARMOR										; 51
+	.db #> str_EXTRA_ARMOR										; 51
 	.db #> str_CASE										; 52
 	.db #> str_RANGE										; 53
 	.db #> str_HEAT											; 54
@@ -129,6 +136,13 @@ stringListH:
 	.db #> str_LUCKY
 	.db #> str_DARE_DEVIL
 	.db #> str_SPRINTER
+	.db #> str_SPCL
+	.db #> str_NAME
+	.db #> str_TYPE
+	.db #> str_ITEM
+	.db #> str_FLAMER
+	.db #> str_ROUND
+	.db #> frm_TALL_LEFT
 
 str_EMPTY:
 	.db 0
@@ -195,7 +209,7 @@ str_LR_MISSILES:
 str_PILOT:
 	.db 5, P, I, L, O, T
 str_UNIT:
-	.db 6, U,N,I,T, space, dash
+	.db 4, U,N,I,T
 str_MISSILE:
 	.db 7, M, I, S, S, I, L, E
 str_LASER:
@@ -226,8 +240,8 @@ str_NIKOLI:
 	.db 6, N, I, K, O, L, I
 str_ACCUR:
 	.db 5, A, C, C, U, R
-str_ARMOR:
-	.db 5, A, R, M, O, R
+str_EXTRA_ARMOR:
+	.db 11, E, X, T, R, A, space, A, R, M, O, R
 str_CASE:
 	.db 4, C,A,S,E
 str_RANGE:
@@ -250,6 +264,18 @@ str_DARE_DEVIL
 	.db 10, D, A, R, E, space, D, E, V, I, L
 str_SPRINTER
 	.db 8, S, P, R, I, N, T, E, R
+str_SPCL
+	.db 4, S, P, C, L
+str_NAME:
+	.db 4, N, A, M, E
+str_TYPE:
+	.db 4, T, Y, P, E
+str_ITEM:
+	.db 4, I, T, E, M
+str_FLAMER:
+	.db 6, F, L, A, M, E, R
+str_ROUND:
+	.db 8, R, O, U, N, D, space, $80+50, $80+51
 
 
 scr_UNIT_1:
@@ -274,3 +300,6 @@ scr_UNIT_4:
 	.db $A3, $82, $82, $A0
 	.db $A3, $A2, $A1, $A0
 	.db $2D, space, space, $2C
+
+frm_TALL_LEFT:
+	.db 4

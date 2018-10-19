@@ -55,12 +55,12 @@ state_initializeMap:
 	BNE +continue
 	BEQ +done
 
-+playerUnit:
++playerUnit:										; player unit objects only require an update to their grid pos
 	TAX														; object index
 	JSR getNextByte								; grid pos
 	STA object+3, X								; set directly
-	JSR insertObjectGridPosOnly
-	JMP +temp
+	JSR insertObjectGridPosOnly		;
+	JMP +endOfLoop
 
 +continue:
 	TAX														; object index
@@ -73,39 +73,51 @@ state_initializeMap:
 	JSR getNextByte								; equipment
 	JSR insertObject							;
 
-+temp:
++endOfLoop:
 	LDX list1+2
 	INX
-	JMP -nextObject
+	BNE -nextObject
 
 +done:
 
-	; ---------------------------
-	; adjust initial object stats for pilot traits / equipment
-	; ---------------------------
-
-	LDX objectListSize:
-
+	LDX objectListSize:						; ---------------------------
+																; adjust initial object stats for pilot traits / equipment
+																; ---------------------------
 -loop:
 	LDA objectList-1, X
-	AND #%10000111							; pilot bits
-	BEQ +next
+	AND #%10000111								; pilot bits
+	BEQ +next											; object is an obstacle -> try next
 	ASL
-	BCC +continue								; move b7 to b3
-	ORA #%00010000
+	BCC +continue									; move b7 to b3
+	ORA #%00010000								;
 
 +continue:
 	ASL
 	TAY
-	LDA pilotTable-2, Y					; pilot traits
-	AND #%00000100							; survivor trait (+2 armor)
-	BEQ +next
+	LDA pilotTable-2, Y						; pilot traits
+	AND #%00000100								; survivor trait (+2 armor)
+	PHP														; save 0 flag
+
 	LDA objectList-1, X
-	AND #%01111000							; object index
+	AND #%01111000								; object index
 	TAY
+
+	PLP														; restore 0 flag
+	BEQ +noSurvivor
+
 	LDA object+1, Y
 	CLC
-	ADC #16											; +2 (shifted left 3x)
+	ADC #16												; +2 (shifted left 3x)
+	STA object+1, Y
+
++noSurvivor:
+	LDA #itemArmor								; object has extra armor
+	JSR isEquipped
+	BCC +next
+
+	LDA object+1, Y
+	CLC
+	ADC #16												; +2 (shifted left 3x)
 	STA object+1, Y
 
 +next:
@@ -113,23 +125,13 @@ state_initializeMap:
 	BNE -loop
 
 
-
-	;LDA #$00
-	;STA cameraY+0
-	;STA cameraX+0
-	;STA cameraX+1
-	;STA cameraXDest+0
-	;STA cameraXDest+1
-	;STA cameraYDest+0
-	;STA cameraYDest+1
-
-	LDY #7
-	LDA #0
-
--loop:
-	STA cameraY, Y
-	DEY
-	BPL -loop
+	LDY #7								; initialize camera variables
+	LDA #0								;
+												;
+-loop:									;
+	STA cameraY, Y				;
+	DEY										;
+	BPL -loop							;
 
 	LDA #$F4							; start the camera one screen down
 	STA cameraY+1					; camera automatically scrolls back up, loading the tiles!

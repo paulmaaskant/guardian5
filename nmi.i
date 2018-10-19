@@ -239,6 +239,9 @@ NMI:
 	JSR soundNextFrame
 
 	; tile animation
+	LDA sysFlags
+	AND sysFlag_tileAnimation
+	BEQ +continue
 	LDA frameCounter
 	BIT bit2to0
 	BNE +continue
