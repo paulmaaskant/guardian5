@@ -409,7 +409,7 @@ NMI:
 	CMP cameraYDest+1
 	BCC +addY
 	BNE +decY
-	JMP +doneY:
+	JMP +doneY
 
 +addY:
 	LDA cameraY+1

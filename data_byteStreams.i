@@ -319,14 +319,14 @@ pausedStream:
 
 resultTargetHit:
 	.db nextPage
-	.db dict, 14, space, H, I, T, lineBreak																				; [14 = TARGET]
+	.db targetName, space, H, I, T, lineBreak																			;
 	.db parameter, 2, space, dict, 15, lineBreak																	; [15 = DAMAGE]
 	.db I, N, F, L, I, C, T, E, D, waitForA
 	.db endOfStream
 
 resultTargetMiss:
-	.db $F2																																				; clear dialog
-	.db dict, $0E, space, M, I, S, S																							; [TARGET] MISS
+	.db nextPage																																	; clear dialog
+	.db targetName, space, E,V,A,D,E,D																				;
 	.db $F1																																				; next line
 	.db N, O, space, dict, 15																										  ; NO {DAMAGE}
 	.db $F1																																				; next line
@@ -336,7 +336,7 @@ resultTargetMiss:
 
 resultUnitDestroyed:
 	.db nextPage
-	.db dict, 32, lineBreak																												; [ 32 = UNIT]
+	.db targetName, lineBreak
 	.db D, E, S, T, R, O, Y, E, D, waitForA
 	.db endOfStream
 
@@ -394,7 +394,6 @@ resultWeaponsCriticalDamage:
 
 resultMobilityCriticalDamage:
 	.db nextPage
-	.db T,A,R,G,E,T,lineBreak
 	.db M,O,B,I,L,I,T,Y,lineBreak
 	.db R,E,D,U,C,E,D
 	.db waitForA

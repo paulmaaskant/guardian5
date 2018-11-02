@@ -18,7 +18,14 @@ insertObject:
 
   LDA #0                    ; then clear the
   STA object+2, X           ; animation counter
+
+  LDA locVar1               ; hostile? flag
+  AND #%00001000
   STA object+4, X           ; and status flags
+
+  LDA locVar1
+  AND #%10000111
+  STA locVar1               ; only pilot and AI bits
 
   LDA locVar2
   STA object+3, X           ; grid position
@@ -44,17 +51,18 @@ insertObjectGridPosOnly:
   STA locVar1
 
   LDY object+3, X           ; Y = grid position
+  LDA nodeMap, Y
+  STA object+5, X           ; store map BG tile
+
   LDA object+0, X           ; type and facing direction
   AND #$0F									; mask facing direction
   CLC                       ; and add to base BG tile
   ADC locVar1
   ORA #%11000000						; raise obscuring and blocking flags
-  STA nodeMap, Y
+  STA nodeMap, Y            ; overwrite map BG tile with object BG tile
 
   LDY #1                    ; add
   LDA (pointer1), Y					; #1 armor points
-;  INY                       ; to
-;  ADC (pointer1), Y					; #2 structure points
   ASL
   ASL
   ASL

@@ -111,7 +111,7 @@ state_selectAction:
 	LDA effects
 	AND #%00000111
 	TAY
-	LDA locVar5											; #$0E		timer sprite
+	LDA locVar5
 
 	STA currentEffects-1, Y
 	LDA currentObjectXPos
@@ -137,7 +137,7 @@ state_selectAction:
 	BEQ -done
 
 +continue:
-	LDA #$08							; button pressed -> block input for 08 frames
+	LDA #7								; button pressed -> block input for 08 frames
 	STA blockInputCounter
 	LDA cursorGridPos
 	AND #$0F							;
@@ -149,6 +149,7 @@ state_selectAction:
 	LSR
 	STA locVar1						; grid Y coor
 	LDA buttons						; process directional buttons ---
+	LDY missionMapSettings
 
 	LSR 									; read RIGHT bit
 	BCC +next							; skip if RIGHT not pressed
@@ -156,7 +157,7 @@ state_selectAction:
 	LDA locVar2						; translate 'isometric' directions
 	ADC locVar1						; to Cartesian
 	LSR
-	LDA #$0F
+	LDA mapDim, Y					; cursor cant go over map dimensions
 	BCC +xEven
 	CMP locVar1
 	BEQ +updatePos
@@ -194,7 +195,7 @@ state_selectAction:
 	LDA locVar1
 	BEQ +updatePos
 	LDA locVar2
-	CMP #$0F
+	CMP mapDim, Y
 	BEQ +updatePos
 	DEC locVar1
 	INC locVar2
@@ -206,7 +207,7 @@ state_selectAction:
 	LDA locVar2
 	BEQ +updatePos
 	LDA locVar1
-	CMP #$0F
+	CMP mapDim, Y
 	BEQ +updatePos
 	DEC locVar2
 	INC locVar1

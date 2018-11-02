@@ -156,8 +156,8 @@ state_refreshMenu:
 
 mechBayLeftCol:
     db 128+64+19,  repeatChar,6,$9C,$BC,$9C,$9C,$9C,$8C,space, $BC,$9C,$9D,$9C,$9C,$9C,$8C,                           $88,$24  ;
-    db 128+64+19,  C,S,M,L,space,H,$BD,repeatBlank,3,$8D,space,$BD,space,$AB,repeatBlank,3,$8D,      $89,$24   ;
-    db 128+64+19,  C,R,R,R,space,P,$BE,repeatBlank,3,$8E,space,$BE,space,$BB,repeatBlank,3,$8E,      $8A,$24 ;
+    db 128+64+19,  L,M,S,C,space,H,$BD,repeatBlank,3,$8D,space,$BD,space,$AB,repeatBlank,3,$8D,      $89,$24   ;
+    db 128+64+19,  R,R,R,C,space,P,$BE,repeatBlank,3,$8E,space,$BE,space,$BB,repeatBlank,3,$8E,      $8A,$24 ;
     db 128+64+13,  $BF,$AF,$AF,$9F,$8F,space,$BF,$9F,$9E,$AF,$AF,$9F,$8F,                            $8B,$24   ;
     db 0
 

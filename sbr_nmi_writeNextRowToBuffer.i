@@ -12,13 +12,8 @@
 ; OUT 		stack
 ;------------------------------------------
 writeNextRowToBuffer:
-	LDA #< level1																																	; stub (always map 1)
-	STA nmiVar0
-	LDA #> level1
-	STA nmiVar1
-	LDA #$00																																			; init temp parameters
+	LDA #0																																				; init temp parameters
 	STA nmiVar3
-	STA nmiVar4
 
 	LDA cameraY+1																																	; determine meta tile row number in top of screen
 	LSR																																						; by dividing camera Y by 8
@@ -27,63 +22,68 @@ writeNextRowToBuffer:
 	LSR																																						; meta tile row
 	ROR nmiVar3																																		; set bit 7 (upper/lower) and also clears carry flag
 
-	STA nmiVar2																																		; calculate the meta tile (metatile row nr x 48)
-	ASL																																						;
-	ADC nmiVar2																																		; x 3
-	ASL																																						; x 2
-	ASL																																						; x 2
-	ASL																																						; x 2
-	ROL nmiVar4																																		; meta tile row # high byte
-	ASL																																						; x 2
-	ROL nmiVar4
-	ADC nmiVar0																																		; set meta tile map pointer to top row on screen
-	STA nmiVar0																																		; set the pointer to the top most visible meta tile map row
-	LDA nmiVar1																																		;
-	ADC nmiVar4																																		;
-	STA nmiVar1																																		;
+	TAX																																						; meta tile row #
+	LDY missionMapSettings
+	LDA mapMetaTilesInRow, Y																											; number of meta tiles in row
+	STA debug
+	JSR multiply																																	; meta tiles in row * numer of rows
+	CLC
+	LDA par2
+	STA nmiVar0
+	LDA par1
+	STA nmiVar1
 
+	LDY missionMapSettings
 	LDA sysFlags																																	; adjust the tile map pointer for scroll direction ---
 	AND #%01000000
 	BNE +scrollDown
 																																								; --- when scrolling UP ---
 	SEC
 	LDA nmiVar0																																		;
-	SBC #$81																																			; subtract 3 meta tile rows (3*48) and add 15 = 144-15 = 129 = $81
+	SBC map03Rows15Cols, Y																												; subtract 3 meta tile rows (3*48) and add 15 = 144-15 = 129 = $81
 	STA nmiVar0																																		; (the 15 is to start at the end of the row)
 	LDA nmiVar1																																		; (remember we're loading right to left because we use the stack for buffering tiles!)
-	SBC #$00																																			;
+	SBC #0																																				;
 	STA nmiVar1																																		;
-	JMP +offsetSet																																;
-
-	; --- when scrolling DOWN ---
+	BCS +offsetSet																																;
+																																								; --- when scrolling DOWN ---
 +scrollDown:
-	CLC								;
-	LDA nmiVar0				; and then move down 12 rows in meta tile map
-	ADC #$4F					; add 12 rows (12 * 48), add 15 = 576+15 = 591 = $024F
-	STA nmiVar0				; the 15 is to start at the end of the row
-	LDA nmiVar1				;
-	ADC #$02					;
-	STA nmiVar1				;
+	CLC																;
+	LDA nmiVar0												; and then move down 12 rows in meta tile map
+	ADC map12Rows15ColsLo, Y					; add 12 rows (12 * 48), add 15 = 576+15 = 591 = $024F
+	STA nmiVar0												;	 the 15 is to start at the end of the row
+	LDA nmiVar1												;
+	ADC map12Rows15ColsHi, Y					;
+	STA nmiVar1												;
 
-+offsetSet:
-	; --- adjust for each full screen X ---
-	LDA cameraX+0			; add 16 for each screen X
-	ASL
-	ASL
-	ASL
-	ASL
-	ADC nmiVar0
-	STA nmiVar0				;
-	LDA nmiVar1				;
-	ADC #$00					;
-	STA nmiVar1				;
++offsetSet:													; --- adjust for each full screen X ---
+	LDA cameraX+0											; add 16 for each screen X
+	ASL																;
+	ASL																;
+	ASL																;
+	ASL																;
+	ADC nmiVar0												;
+	STA nmiVar0												;
+	LDA nmiVar1												;
+	ADC #$00													;
+	STA nmiVar1												;
 
-	LDA nmiVar0				; shadow pointer
-	ADC #$90
+	LDA nmiVar0
+	ADC mapShadowLo, Y
 	STA nmiVar5
+
 	LDA nmiVar1
-	ADC #$03
+	ADC mapShadowHi, Y
 	STA nmiVar6
+
+	LDA nmiVar0
+	ADC missionMap+0
+	STA nmiVar0
+
+	LDA nmiVar1
+	ADC missionMap+1
+	STA nmiVar1
+
 
 	; --- prepare loop ---
 	LDA cameraX+1			; now determine the first meta tile

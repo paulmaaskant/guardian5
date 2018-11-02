@@ -9,7 +9,7 @@
 ;
 
 
-state_initalizeMechBay:
+state_initializeMechBay:
   LDA #4+0
   STA objectList+0  ; unit 0 pilot
   LDA #2+8
@@ -34,14 +34,20 @@ state_initalizeMechBay:
 
   JSR assignEquipment ; breaks Y
 
-  LDY #17           ; assign tile sets to tile banks
-  STY $E000
+  LDY #17           ; assign tile set 17
+  STY $E000         ; over
   LDY #$1
   STY $E008
+
   LDY #8
   STY $D001
+
   LDY #6
   STY $E001
+
+  LDY #0
+  STY $E009
+  STY $D009
 
   LDX #17
 
@@ -62,7 +68,8 @@ state_initalizeMechBay:
   STA activeObjectIndex
 
   JSR pullAndBuildStateStack
-  .db 10
+  .db 12
+  .db $32, %00000010    ; clear sys flag: tile animation OFF
   .db $46, 15           ; mech legs
   .db $46, 4            ; left col frame
   .db $46, 5            ; right col frame

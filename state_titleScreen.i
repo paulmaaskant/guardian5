@@ -71,7 +71,7 @@ state_titleScreen:
 	LSR									; start button
 	BCS +confirm
 	LSR									; select button
-	;BCS +unitSelect
+	BCS +loadMap
 	LSR									; B
 
 	LSR									; A button
@@ -109,11 +109,14 @@ state_titleScreen:
 	.db $33								; initialize level
 	; built in RTS
 
-+unitSelect:
-;	JSR pullAndBuildStateStack
-;	.db 7								; # items
-;	.db $0D, 0						; change brightness 0: fade out
-;	.db $00, 4						; load screen: mechbay
-;	.db $32, %00000010		; tile animation OFF
-;	.db $26								; init unit select menu
-;	; built in RTS
++loadMap:
+	LDA #0
+	STA mission
+
+	JSR pullAndBuildStateStack
+	.db 8								; # items
+	.db $0D, 0						; change brightness 0: fade out
+	.db $00, 3						; load screen 3: status bar
+	.db $04								; load level [mission]
+	.db $0D, 1						; change brightness 1: fade in
+	.db $50								;

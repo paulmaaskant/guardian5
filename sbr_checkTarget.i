@@ -58,13 +58,21 @@ checkTarget:
 	; no friendly fire
 	; ---------------------------------------------------------------------------
 +nextCheck:
-	LDA activeObjectIndexAndPilot			; if active and target object have same value for bit7
-	EOR targetObjectTypeAndNumber			; then this sets b7 to 0
-	ASL
-	BCS +nextCheck
-;	LDA #55+128												; friendly unit
-;	STA actionMessage
-;	RTS
+	;LDA activeObjectIndexAndPilot			; if active and target object have same value for bit7
+	;EOR targetObjectTypeAndNumber			; then this sets b7 to 0
+	;ASL
+	;BCS +nextCheck
+
+
+	LDX targetObjectIndex
+	LDA object+4, X
+	LDX activeObjectIndex
+	EOR object+4, X
+	AND #%00001000										; hostile flag
+	BNE +nextCheck
+	LDA #55+128												; friendly unit
+	STA actionMessage
+	RTS
 
 	; ---------------------------------------------------------------------------
 	; 10 hex is hardcoded max range

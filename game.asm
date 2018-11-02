@@ -125,13 +125,15 @@
 	targetEffectAnimation					.dsb 1
 	runningEffect 								.dsb 1
 
-
 	mission												.dsb 1
 	missionRound									.dsb 1
 	missionEvents									.dsb 4
 	missionEventStreamPointer			.dsb 2
 	missionDialogStream						.dsb 1
 	missionEpilogScreen						.dsb 1
+	missionMapSettings						.dsb 1
+	missionMap										.dsb 2
+
 
 
 	.ende
@@ -215,12 +217,25 @@
 												.dsb 1				; +1: (b7-3) hit points, (b2-0) heat points
 												.dsb 1				; +2: (b7) not used (b6-0) frame count
 												.dsb 1				; +3: (b7-0) grid pos
-												.dsb 1				; +4: (b7) braced flag (b6) marked flag (b5) turn flag (b4) shutdown (b3) not used (b2-0) evade points
+												.dsb 1				; +4: (b7) braced flag (b6) marked flag (b5) turn flag (b4) not used (b3) hostile (b2-0) evade points
 												.dsb 1				; +5: (b7-0) background tile
 												.dsb 1				; +6: (b7-4) equipment slot 1 (b3-0) critical damage flags
-												.dsb 1				; +7: (b7-4) equipment slot 2
+												.dsb 1				; +7: (b7-4) equipment slot 2 (b3-0) not used
 												.dsb 120			; 15 more objects (15x8)
-																			; note: code contains 6 places where index is calculated
+
+																			; move evade points to +7
+																			; move pilot to +4 (b6-2) hostile to (b7)
+																			; move turn, marked and braced to list
+
+																			; list: turn + faction
+																			; object+4: pilot + braced + marked
+																			; object+7: evade points
+
+																			; move evade POINTS
+																			; move braced and marked
+																			; switch turn & faction with pilot
+
+
 
 	.ende
 
@@ -261,7 +276,7 @@
 	;.include state_unitMenu.i
 	;.include state_assignItem.i
 
-	.include state_initalizeMechBay.i
+	.include state_initializeMechBay.i
 	.include state_mechBay.i
 	.include state_mechBayMenu.i
 	.include state_mechBayUpdateMech.i
@@ -563,7 +578,7 @@ gameStateJumpTable:
 	.dw state_expandStatusBar-1									; 23
 	.dw state_hudMenu-1													; 24
 	.dw state_collapseStatusBar-1								; 25
-	.dw state_initalizeMechBay-1								; 26
+	.dw state_initializeMechBay-1								; 26
 	.dw state_ai_determineAction-1							; 27
 	.dw state_ai_determineAttackPosition-1 			; 28
 	.dw state_setSysFlags-1											; 29
@@ -605,7 +620,7 @@ gameStateJumpTable:
 	.dw state_checkMisionEvents-1								; 4D
 	.dw state_resolveImplosion-1								; 4E
 	.dw state_initializeExplosion-1							; 4F
-	.dw not_used																; 50
+	.dw state_controlCamera-1										; 50
 	.dw not_used																; 51
 	.dw not_used																; 52
 	.dw state_initializeJumpAction-1						; 53
@@ -724,6 +739,7 @@ runningEffectsH:
 	.include state_waitForCamera.i
 	.include state_centerCameraOnAttack.i
 	.include state_centerCameraOnCursor.i
+	.include state_controlCamera.i
 
 	; --------------------------------------------------
 	; setter states
@@ -989,6 +1005,39 @@ probabilityDistribution:
 	.db 17    ; 10
 	.db 8     ; 11
 	.db 5     ; 12
+
+mapDim:
+	.db 15, 7
+mapMaxCameraYLo
+	.db $70, $48
+
+mapMaxCameraXLo
+	.db $00, $80
+mapMaxCameraXHi
+	.db $02, $00
+
+mapMetaTilesInRow:
+	.db 48, 24
+map03Rows15Cols: ; 3 x #metaTiles in row - 15
+	.db 129, 57
+map12Rows15ColsLo:	;
+	.db $4F, $2F
+map12Rows15ColsHi:
+	.db $02, $01
+map14RowsLo:								; 14 * metatiles in row
+	.db $A0, $50
+map14RowsHi:
+	.db $02, $01
+map15RowsLo:								; 15 * metatiles in row
+	.db $D0, $68
+map15RowsHi:
+	.db $02, $01
+mapShadowLo:
+	.db #<shadowMap00
+	.db #<shadowMap01
+mapShadowHi:
+	.db #>shadowMap00
+	.db #>shadowMap01
 
 
 

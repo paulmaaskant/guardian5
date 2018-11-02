@@ -70,14 +70,17 @@ updateTargetMenu:
 	STA targetMenuImage+3
 
 +skip:
-	LDY #41												; "ENEMY"
 	LDA targetObjectTypeAndNumber
-	BMI +enemy
-	AND #$07
+	AND #%10000111
 	ASL
+	BCC +skip
+	ORA #%00010000
+
++skip:
 	ASL
-	TAX
-	LDY pilotTable-4, X           ; "<pilot name>""
+	TAY
+	LDA pilotTable-4, Y
+	TAY
 
 +enemy:
 	STY targetMenuName

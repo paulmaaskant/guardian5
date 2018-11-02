@@ -2,13 +2,46 @@
 ; gameState 04: Initialize level variables
 ; ------------------------------------------
 state_initializeMap:
-	LDA #< levelOne
+	; clean up events, node map & objects first
+	LDA #0
+	LDX #4
+
+-loop:
+	STA missionEvents-1, X				; 0, 1, 2, 3
+	DEX
+	BNE -loop
+
+-loop:
+	STA nodeMap, X
+	DEX
+	BNE -loop
+
+	LDY mission
+
+	LDA missionEventsLo, Y
+	STA missionEventStreamPointer+0
+	LDA missionEventsHi, Y
+	STA missionEventStreamPointer+1
+
+	LDA missionSetupLo, Y
 	STA bytePointer+0
-	LDA #> levelOne
+	LDA missionSetupHi, Y
 	STA bytePointer+1
 
 	LDA #$9			; pallete 1 for map 1
 	STA currentPalettes
+
+	JSR getNextByte
+	STA list1+4
+
+	JSR getNextByte
+	STA missionMapSettings
+
+	JSR getNextByte
+	STA missionMap+0
+
+	JSR getNextByte
+	STA missionMap+1
 
 	LDA #3
 	STA $C001                 ; set lvl 1 enemy sprites (3) in bank 3
@@ -37,7 +70,7 @@ state_initializeMap:
 	JSR getNextByte						; number of object on map
 	STA list1+3
 
-	LDA #3
+	LDA list1+4
 	STA objectListSize
 
 	LDX #0
@@ -49,8 +82,8 @@ state_initializeMap:
 	ASL
 	ASL														; A = object index
 
-	CPX #3												; iterate over all objects
-	BCC +playerUnit								; 0-2 are player units
+	CPX list1+4										; iterate over all objects
+	BCC +playerUnit								; that are player units first, then
 	CPX list1+3										; rest are enemy / obstacles
 	BNE +continue
 	BEQ +done
@@ -148,3 +181,19 @@ state_initializeMap:
 	.db 3
 	.db $05								; load map
 	.db $29, %00000100 		; set sys flag: show object sprites
+
+missionSetupHi:
+	db #>mission00Setup
+	db #>mission01Setup
+
+missionSetupLo:
+	db #<mission00Setup
+	db #<mission01Setup
+
+missionEventsHi
+	db #>mission00Events
+	db #>mission01Events
+
+missionEventsLo
+	db #<mission00Events
+	db #<mission01Events

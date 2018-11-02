@@ -28,10 +28,12 @@ getNextByte:
 	BEQ +repeatBlank
 	CMP #repeatChar
 	BEQ +repeatChar
-	CMP #setNumberValue
+	CMP #parameter
 	BEQ +numberValue
-	CMP #setDictionaryString
+	CMP #dict
 	BEQ +setDictionaryString
+	CMP #targetName
+	BEQ +setTargetName
 	RTS
 
 +repeatBlank:
@@ -59,11 +61,26 @@ getNextByte:
 	LDA par3
 	JMP incrementBytePointer	; tail chain
 
++setTargetName:
+	LDA targetObjectTypeAndNumber
+	AND #%10000111
+	ASL
+	BCC +skip
+	ORA #%00010000
+
++skip:
+	ASL
+	TAY
+	LDA pilotTable-4, Y
+	BNE +next
+
 +setDictionaryString:
 	LDA (bytePointer), Y		; string index
+	JSR incrementBytePointer
+
++next:
 	STA byteStreamVar+2
 	TAY
-	JSR incrementBytePointer
 	LDA stringListL, Y
 	STA pointer1+0
 	LDA stringListH, Y

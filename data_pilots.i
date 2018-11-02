@@ -25,7 +25,7 @@ pilotTable:
 
   .db 27, 4, %00000000, 0     ; pilot 7 UNKNOWN
 
-  .db 27, 4, %00000000, 8     ; pilot 8 UNKNOWN Soldier female
-  .db 27, 4, %00000000, 9     ; pilot 9 UNKNOWN Soldier Male
-  .db 27, 4, %00000000, 10    ; pilot 10 UNKNOWN AI
-  .db 27, 4, %00000000, 11    ; pilot 11 UNKNOWN
+  .db 41, 4, %00000000, 8     ; pilot 8 ENEMY Pilot Female
+  .db 41, 4, %00000000, 9     ; pilot 9 ENEMY Pilot Male
+  .db 41, 4, %00000000, 10    ; pilot 10 ENEMY Drone
+  .db 41, 4, %00000000, 11    ; pilot 11 ENEMY Turrit

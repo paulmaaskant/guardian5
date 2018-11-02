@@ -21,7 +21,7 @@ updateCamera:
 
 +downScrollDone:
 	LDA currentObjectXPos			; if screen pos > 224 = 128+64+32
-	CMP #$E0
+	CMP #224
 	BCC +rightScrollDone			; then skip scroll
 
 

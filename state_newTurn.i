@@ -188,10 +188,6 @@ state_newTurn:
   LDA #$00
   STA targetObjectTypeAndNumber
 
-  ;LDA events
-  ;ORA #eRefreshStatusBar
-  ;STA events
-
   JSR clearSystemMenu
   JSR clearActionMenu
   JSR clearTargetMenu

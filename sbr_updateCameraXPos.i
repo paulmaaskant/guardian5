@@ -8,6 +8,7 @@ updateCameraXPos:
 	BPL +
 	DEC cameraXDest+0
 +	CLC
+	LDY missionMapSettings
 	ADC cameraXDest+1
 	STA cameraXDest+1
 	LDA cameraXDest+0
@@ -17,16 +18,16 @@ updateCameraXPos:
 	LDA #$00
 	STA cameraXDest+0
 	STA cameraXDest+1
-+	CMP #$02
++	CMP mapMaxCameraXHi,Y												;02
 	BCC +done
 	BNE +limit
 	LDA cameraXDest+1
-	CMP #$00
+	CMP mapMaxCameraXLo,Y												; 0
 	BCC +done
 +limit:
-	LDA #$02
+	LDA mapMaxCameraXHi,Y												; 02
 	STA cameraXDest+0
-	LDA #$00
+	LDA mapMaxCameraXLo,Y												; 0
 	STA cameraXDest+1
 +done:
 	RTS

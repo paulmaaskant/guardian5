@@ -73,6 +73,7 @@ emptyString = 0
   setDictionaryString = $FC
   dict = $FC
   parameter = $FD
+  targetName = $FB
 
 
 ; missionEvents
