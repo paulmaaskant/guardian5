@@ -60,65 +60,6 @@ hudMenu:		; last
 	.db $0A, repeatBlank, 24
 
 unitSelect:
-;	.db repeatBlank, 6*32+11			; 6 rows
-;	.db R,E,T,S,O,R,space,T,N,E,M,Y,O,L,P,E,D
-;	.db repeatBlank, 32+4				; 1 row
-;	.db repeatBlank, 3
-;	.db $2B
-;	.db repeatBlank, 6
-;	.db $2A
-;	.db space
-
-;	.db dict, 46
-;	.db repeatBlank, 8+8
-;	.db dict, 47
-;	.db repeatBlank, 4+8+8
-;	.db dict, 48
-;	.db repeatBlank, 4+8+8
-;	.db dict, 49
-;
-;	.db repeatBlank, 8+8
-
-;	.db dict, 46
-;	.db repeatBlank, 8+8
-;	.db dict, 47
-;	.db repeatBlank, 4+8+8
-;	.db dict, 48
-;	.db repeatBlank, 4+8+8
-;	.db dict, 49
-
-;	.db repeatBlank, 8+8
-;
-;	.db dict, 46
-;	.db repeatBlank, 8+8
-;	.db dict, 47
-;	.db repeatBlank, 4+8+8
-;	.db dict, 48
-;	.db repeatBlank, 3+8
-;
-;	.db $2D
-;	.db repeatBlank, 6
-;	.db $2C
-;	.db space
-;
-;	.db dict, 49
-;	.db repeatBlank, 4
-
-;	.db repeatBlank, 4*32		; 4 rows
-
-;	.db repeatBlank, 6*32		; 6 rows
-;	; --- palettes ---
-;	.db $00, $00, $66						;
-;	.db repeatChar, 7, $00
-;	.db $66
-;	.db repeatChar, 21, $00	;
-
-;	.db repeatChar, 8, $00		;
-;	.db repeatChar, 5, $A0, $A5, $A0, $A0		;
-;	.db repeatChar, 5, $05, $55		;
-;	.db repeatChar, 4, $00		;
-;	.db $66
-;	.db repeatChar, 5, $00		;
 
 titleScreen2:
 	.db repeatBlank, 0	; 8 rows
@@ -193,43 +134,25 @@ briefScreen:
 	.db $FE, $20, $AA
 
 storyStream:
-	; A DARK WARLORD HAS RISEN
-	; TO POWER, BRINGING WAR
-	; TO THE COLONIES OF STAR
-	; SYSTEM J340-2
-	.db $10, $0F, $13, $10, $21, $1A, $0F, $26, $10, $21, $1B, $1E, $21, $13, $0F, $17, $10, $22, $0F, $21, $18, $22, $14, $1D, $F1
-	.db $23, $1E, $0F, $1F, $1E, $26, $14, $21, $0E, $0F, $11, $21, $18, $1D, $16, $18, $1D, $16, $0F, $26, $10, $21, $F1
-	.db $23, $1E, $0F, $23, $17, $14, $0F, $12, $1E, $1B, $1E, $1D, $18, $14, $22, $0F, $1E, $15, $0F, $22, $23, $10, $21, $F1
-	.db $22, $28, $22, $23, $14, $1C, $0F, $19, $03, $04, $00, $0B, $02
-	.db $F3	; wait for A button
-	.db $F2	; clear & reset box
+	.db T, H, E, space, A, T, T, A, C, K, space, O, N, space, O, U, R, space, C, O, L, O, N, Y, lineBreak
+	.db S, T, A, R, T, E, D, space , F, I, V, E, space, D, A, Y, S, space, A, G, O, waitForA
 
-	; HER ARMY OF MERCENARIES
-	; IS PILLAGING ONE COLONY
-	; AFTER THE OTHER
-	; ---
-	; LEAVING BEHIND A TRAIL
-	; OF DEATH AND DESTRUCTION
-	.db H, E, R, space, A, R, M, Y, space, O, F, space, M, E, R, C, E, N, A, R, I, E, S, lineBreak
-	.db I, S, space, P, I, L, L, A, G, I, N, G, space, O, N, E, space, C, O, L, O, N, Y, lineBreak
-	.db $10, $15, $23, $14, $21, $0F, $23, $17, $14, $0F, $1E, $23, $17, $14, $21, $0E, $F1, $F1
-	.db $1B, $14, $10, $25, $18, $1D, $16, $0F, $11, $14, $17, $18, $1D, $13, $0F, $10, $0F, $23, $21, $10, $18, $1B, $F1
-	.db $1E, $15, $0F, $13, $14, $10, $23, $17, $0F, $10, $1D, $13, $0F, $13, $14, $22, $23, $21, $24, $12, $23, $18, $1E, $1D
-	.db $F3	; wait for A button
-	.db $F2	; clear & reset box
+	.db nextPage
+	.db A, L, L, space, A, T, T, E, M, P, T, S, space, T, O, space, D, I, S, C, U, S, S, lineBreak
+	.db T, E, R, M, S, space, O, F, space, S, U, R, R, E, N, D, E, R, space, H, A, V, E, lineBreak
+	.db F, A, I, L, E, D, waitForA
 
-	; OUR COLONY WAS INVADED
-	; FIVE DAYS AGO
-	; ---
-	; ALL ATTEMPTS TO DISCUSS
-	; TERMS OF SURRENDER HAVE
-	; FAILED
-	.db $1E, $24, $21, $0F, $12, $1E, $1B, $1E, $1D, $28, $0F, $26, $10, $22, $0F, $18, $1D, $25, $10, $13, $14, $13, $F1
-	.db $15, $18, $25, $14, $0F, $13, $10, $28, $22, $0F, $10, $16, $1E, $0E, $F1, $F1
-	.db $10, $1B, $1B, $0F, $10, $23, $23, $14, $1C, $1F, $23, $22, $0F, $23, $1E, $0F, $13, $18, $22, $12, $24, $22, $22, $F1
-	.db $23, $14, $21, $1C, $22, $0F, $1E, $15, $0F, $22, $24, $21, $21, $14, $1D, $13, $14, $21, $0F, $17, $10, $25, $14, $F1
-	.db $15, $10, $18, $1B, $14, $13
-	.db $F3	; wait for A button
+	.db nextPage
+	.db T, H, E, space, E, N, E, M, Y, space, L, A, U, N, C, H, E, D, space, A, lineBreak
+	.db V, I, O, L, E, N, T, space, O, F, F, E, N, S, I, V, E, comma, lineBreak
+	.db lineBreak
+	.db O, V, E, R, W, H, E, L, M, I, N, G, space, T, H, E, space, C, O, L, O, N, Y, lineBreak
+	.db D, E, F, E, N, S, I, V, E, space, F, O, R, C, E, S, waitForA
+
+	.db nextPage
+	.db Y, O, U, R, space, U, N, I, T, space, I, S, space, A, M, O, N, G, space, T, H, E, lineBreak
+	.db L, A, S, T, space, T, H, A, T, space, A, R, E, space, S, T, I, L, L, lineBreak
+	.db S, T, A, N, D, I, N, G, waitForA
 	.db endOfStream
 
 instructionStream:
@@ -319,18 +242,18 @@ pausedStream:
 
 resultTargetHit:
 	.db nextPage
-	.db targetName, space, H, I, T, lineBreak																			;
-	.db parameter, 2, space, dict, 15, lineBreak																	; [15 = DAMAGE]
-	.db I, N, F, L, I, C, T, E, D, waitForA
+	.db targetName, space, I, S, space, H, I, T, lineBreak																			;
+	.db F, O, R, space, parameter, 2, space, dict, 15, waitForA																	; [15 = DAMAGE]
 	.db endOfStream
 
 resultTargetMiss:
 	.db nextPage																																	; clear dialog
 	.db targetName, space, E,V,A,D,E,D																				;
-	.db $F1																																				; next line
-	.db N, O, space, dict, 15																										  ; NO {DAMAGE}
-	.db $F1																																				; next line
-	.db I,N,F,L,I,C,T,E,D																													; INFLICTED
+	.db $F1
+	.db T, H, E, space, A, T, T, A, C, K																				; next line
+	;.db N, O, space, dict, 15																										  ; NO {DAMAGE}
+	;.db $F1																																				; next line
+	;.db I,N,F,L,I,C,T,E,D																													; INFLICTED
 	.db waitForA
 	.db endOfStream
 

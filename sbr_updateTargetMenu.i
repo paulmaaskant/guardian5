@@ -50,7 +50,7 @@ updateTargetMenu:
 
 +done:
 	LDA targetObjectTypeAndNumber
-	AND #%10000111
+	AND #%00000011
 	BEQ +displayObstacle
 
 	LDA #$30
@@ -70,20 +70,12 @@ updateTargetMenu:
 	STA targetMenuImage+3
 
 +skip:
-	LDA targetObjectTypeAndNumber
-	AND #%10000111
-	ASL
-	BCC +skip
-	ORA #%00010000
-
-+skip:
-	ASL
+	LDY targetObjectIndex
+	LDA object+4, Y
+	AND #%01111100
 	TAY
-	LDA pilotTable-4, Y
-	TAY
-
-+enemy:
-	STY targetMenuName
+	LDA pilotTable, Y
+	STA targetMenuName
 	RTS
 
 +displayObstacle:

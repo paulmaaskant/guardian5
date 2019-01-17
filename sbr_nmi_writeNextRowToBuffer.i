@@ -25,7 +25,6 @@ writeNextRowToBuffer:
 	TAX																																						; meta tile row #
 	LDY missionMapSettings
 	LDA mapMetaTilesInRow, Y																											; number of meta tiles in row
-	STA debug
 	JSR multiply																																	; meta tiles in row * numer of rows
 	CLC
 	LDA par2

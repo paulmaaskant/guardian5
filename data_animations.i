@@ -73,6 +73,14 @@ animationL:
 	.db #> ANIM36			; mech fronts
 	.db #> ANIM37			; unit select cursor SML
 	.db #> ANIM38			; unit select cursor LRG
+	.db #> ANIM39			; APC d1
+	.db #> ANIM3A			; APC d4
+	.db #> ANIM3B			; APC d5
+	.db #> ANIM3C			; APC d6
+	.db #> ANIM3D			; TRT d1
+	.db #> ANIM3E			; TRT d4
+	.db #> ANIM3F			; TRT d5
+	.db #> ANIM40			; TRT d6
 
 
 animationH:
@@ -133,6 +141,14 @@ animationH:
 	.db #< ANIM36
 	.db #< ANIM37
 	.db #< ANIM38
+	.db #< ANIM39			; APC d1
+	.db #< ANIM3A			; APC d4
+	.db #< ANIM3B			; APC d5
+	.db #< ANIM3C			; APC d6
+	.db #< ANIM3D			; TRT d1
+	.db #< ANIM3E			; TRT d4
+	.db #< ANIM3F			; TRT d5
+	.db #< ANIM40			; TRT d6
 
 ANIM00:
 	.db 8, 3
@@ -419,3 +435,35 @@ ANIM37:
 ANIM38:
 	.db 1, 5
 	.dw CS28
+
+ANIM39:
+	.db 1, 5
+	.dw apc_d1_f0
+
+ANIM3A:
+	.db 1, 5
+	.dw apc_d4_f0
+
+ANIM3B:
+	.db 1, 5
+	.dw apc_d5_f0
+
+ANIM3C:
+	.db 1, 5
+	.dw apc_d6_f0
+
+ANIM3D:
+	.db 1, 5
+	.dw trt_d1_f0
+
+ANIM3E:
+	.db 1, 5
+	.dw trt_d4_f0
+
+ANIM3F:
+	.db 1, 5
+	.dw trt_d5_f0
+
+ANIM40:
+	.db 1, 5
+	.dw trt_d6_f0

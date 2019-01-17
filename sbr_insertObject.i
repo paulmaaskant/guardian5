@@ -19,13 +19,13 @@ insertObject:
   LDA #0                    ; then clear the
   STA object+2, X           ; animation counter
 
-  LDA locVar1               ; hostile? flag
-  AND #%00001000
-  STA object+4, X           ; and status flags
+  LDA locVar1               ; set pilot
+  AND #%01111100
+  STA object+4, X           ;
 
   LDA locVar1
-  AND #%10000111
-  STA locVar1               ; only pilot and AI bits
+  AND #%10000011
+  STA locVar1               ; only AI + faction bits
 
   LDA locVar2
   STA object+3, X           ; grid position
@@ -46,19 +46,28 @@ insertObjectGridPosOnly:
   JSR getStatsAddress       ; sets pointer1
   PLA
   TAX
-  LDY #7							      ; # for BG tile offset
-  LDA (pointer1), Y
-  STA locVar1
 
   LDY object+3, X           ; Y = grid position
   LDA nodeMap, Y
   STA object+5, X           ; store map BG tile
 
+  LDY #7
+  LDA (pointer1), Y
+  STA locVar1               ; # for BG tile offset
+
+  LDY #3
+  LDA (pointer1), Y         ; movement properties
+  BEQ +continue             ; no movement points -> skip direction offset
+
   LDA object+0, X           ; type and facing direction
   AND #$0F									; mask facing direction
+
++continue:
   CLC                       ; and add to base BG tile
   ADC locVar1
   ORA #%11000000						; raise obscuring and blocking flags
+
+  LDY object+3, X
   STA nodeMap, Y            ; overwrite map BG tile with object BG tile
 
   LDY #1                    ; add

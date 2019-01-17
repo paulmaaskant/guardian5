@@ -19,10 +19,10 @@ state_initializeJump:
   LDA #$35                    ; MECH jump leg animation
   STA list3+61								; set for object sprite cycle in main loop
 
-  LDA object+4, Y             ; set evade points
+  LDA object+7, Y             ; set evade points
   AND #%11111000							; clear evade points
   ORA list3+14
-  STA object+4, Y
+  STA object+7, Y
 
   LDA distanceToTarget        ;
   ORA #$80                    ; set jump bit

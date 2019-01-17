@@ -42,15 +42,15 @@ stringListL:
 	.db #< str_BURKE										; 40
 	.db #< str_ENEMY										; 41
 	.db #< str_GIANT_BLADE							; 42
-	.db #< str_BATTLE_ANGEL											; 43
+	.db #< str_BATTLE_ANGEL							; 43
 	.db #< str_SLINGSHOT								; 44
 	.db #< str_MEDIUM_LASER							; 45
-	.db #< scr_UNIT_1										; 46
-	.db #< scr_UNIT_2										; 47
-	.db #< scr_UNIT_3										; 48
-	.db #< scr_UNIT_4										; 49
+	.db #< str_APC											; 46
+	.db #< str_ACTUATOR									; 47
+	.db #< str_TURRET										; 48
+	.db #< str_CONVOY										; 49
 	.db #< str_ACCUR										; 50
-	.db #< str_EXTRA_ARMOR										; 51
+	.db #< str_EXTRA_ARMOR							; 51
 	.db #< str_CASE											; 52
 	.db #< str_RANGE										; 53
 	.db #< str_HEAT											; 54
@@ -118,10 +118,10 @@ stringListH:
 	.db #> str_BATTLE_ANGEL
 	.db #> str_SLINGSHOT
 	.db #> str_MEDIUM_LASER
-	.db #> scr_UNIT_1
-	.db #> scr_UNIT_2
-	.db #> scr_UNIT_3
-	.db #> scr_UNIT_4
+	.db #> str_APC
+	.db #> str_ACTUATOR									; 47
+	.db #> str_TURRET
+	.db #> str_CONVOY
 	.db #> str_ACCUR
 	.db #> str_EXTRA_ARMOR										; 51
 	.db #> str_CASE										; 52
@@ -276,30 +276,15 @@ str_FLAMER:
 	.db 6, F, L, A, M, E, R
 str_ROUND:
 	.db 8, R, O, U, N, D, space, $80+50, $80+51
+str_APC
+	.db 3, A, P, C
+str_ACTUATOR:
+	.db 8, A, C, T, U, A, T, O, R
+str_TURRET:
+	.db 6, T, U, R, R, E, T
 
-
-scr_UNIT_1:
-	.db 16
-	.db $83, $81, $81, $80
-	.db $83, $81, $81, $80
-	.db $83, $81, $81, $80
-	.db $2B, space, space, $2A
-scr_UNIT_2:
-	.db 12
-	.db $93, $B0, $B0, $90
-	.db $93, $B0, $B0, $90
-	.db $93, $B0, $B0, $90
-scr_UNIT_3:
-	.db 12
-	.db $93, $B0, $B0, $90
-	.db $93, $B0, $B0, $90
-	.db $93, $92, $91, $90
-scr_UNIT_4:
-	.db 16
-	.db $A3, $82, $82, $A0
-	.db $A3, $82, $82, $A0
-	.db $A3, $A2, $A1, $A0
-	.db $2D, space, space, $2C
+str_CONVOY:
+	.db 6, C, O, N, V, O, Y
 
 frm_TALL_LEFT:
 	.db 4

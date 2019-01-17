@@ -4,8 +4,10 @@ objectTypeL:
 	.db #< objectType1 ; mech: GEIST
 	.db #< objectType2 ; mech: SAI
 	.db #< objectType3 ; mech: DEMON
-	.db #< objectType4 ; obstacle: BUILDING
+	.db #< objectType4 ; building: BUILD
 	.db #< objectType5 ; vtol: LEMUR
+	.db #< objectType6 ; vtol: APC
+	.db #< objectType7 ; building: TURRET
 
 objectTypeH:
 	.db #> objectType0
@@ -14,12 +16,14 @@ objectTypeH:
 	.db #> objectType3
 	.db #> objectType4
 	.db #> objectType5
+	.db #> objectType6
+	.db #> objectType7
 
 objectType0:				; SLINGSHOT
 	.hex 1E 1C 1F 1D	; TORSO animation
 	.hex 17 15 14 16 	; LEG animation
 	.db 44						; 00 mech name : SLINGSHOT
-	.db 12							; 01 max hit point
+	.db 12						; 01 max hit point
 	.db 6							; 02 structure threshold
 	.db 2						  ; 03 movement attributes | move points
 	.db 2							; 04 initiative
@@ -66,7 +70,7 @@ objectType3:				; DEMON
 objectType4:				; OBSTACLE
 	.hex 26 26 26 26	; obstacle sprite
 	.hex 26 26 26 26	; obstacle sprite
-
+										; -----
 	.db 0						  ; 00 object name
 	.db 3						  ; 01 max hit points
 	.db 0						  ; 02 melee
@@ -74,23 +78,43 @@ objectType4:				; OBSTACLE
 	.db 0			  			; 04 initiative
 	.db 0							; 05 not used
 	.db 0 						; 06 not used
-	.db 13			  		; 07 tile BG ()
+	.db 13			  		; 07 tile BG
 
-objectType5:			; drone: LEMUR
-	.db $28 				;
-	.db $2A 				;
-	.db $29 				;
-	.db $27 				;
-	.db $09 				; shadow
-	.db $09 				; shadow
-	.db $09 				; shadow
-	.db $09 				; shadow
-									; ------
-	.db 39					; 00 drone name: LEMUR
-	.db 5						; 01 max hit points
-	.db 4						; 02 hit point structure threshold
-	.db 128+4			  ; 03 movement points + type
-	.db 4					  ; 04 initiative
-	.db %01010101		; 05 damage
-	.db 0						; 06
-	.db 13					; 07 tile BG offset
+objectType5:			; hover: LEMUR
+	.hex 28 2A 29 27	; lemur
+	.hex 09 09 09 09	; shadow
+										; ------
+	.db 39						; 00 drone name: LEMUR
+	.db 5							; 01 max hit points
+	.db 4							; 02 hit point structure threshold
+	.db 128+4			  	; 03 movement points + type
+	.db 4					  	; 04 initiative
+	.db %01010101			; 05 damage
+	.db 0							; 06 special action: none
+	.db 13						; 07 tile BG offset
+
+objectType6:				; hover: APC
+	.hex 39 3C 3B 3A	; apc
+	.hex 09 09 09 09	; shadow
+										; ------
+	.db 46						; 00 name: APC
+	.db 8							; 01 max hit points
+	.db 0							; 02 hp structure threshold
+	.db 128+1					; 03 movement points + type
+	.db 5							; 04 initiative
+	.db %00010000			; 05 damage
+	.db 0 						; 06 special action: none
+	.db 13						; 07 tile BG offset
+
+objectType7:				; building: turret
+	.hex 3D 40 3F 3E	; turretn sprites
+	.hex 00 00 00 00	; n/a
+										; ------
+	.db 46						; 00 name: Turret
+	.db 8							; 01 max hit points
+	.db 0							; 02 hp structure threshold
+	.db 0							; 03 movement points + type
+	.db 4							; 04 initiative
+	.db %10101010			; 05 damage
+	.db 0 						; 06 special action: none
+	.db 21						; 07 tile BG offset

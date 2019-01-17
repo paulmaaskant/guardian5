@@ -27,7 +27,7 @@ state_faceTarget:
   LDA object+3, Y
   STA cursorGridPos             ; temp abuse/overwrite cursorGridPos with targetGridPos
                                 ; so that we can leverage sbr direction to cursor
-                            
+
   JSR directionToCursor
   STA locVar1
 
@@ -43,6 +43,12 @@ state_faceTarget:
   LDY activeObjectIndex   ; parameter for getStatsAddress
   JSR getStatsAddress
 
+  LDY #3
+  LDA (pointer1), Y       ; movement properties
+  BNE +continue           ; if object is stationary (zero movement)
+  STA locVar1             ; reset direction offset to 0
+
++continue:
   LDY #7
   LDA (pointer1), Y       ; base tile
   CLC

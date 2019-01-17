@@ -85,22 +85,14 @@ state_selectAction:
 -loop:
 	LDA objectList-1, X
 	CMP targetObjectTypeAndNumber
-	BEQ +nextObject									; no markers on the current target unit, next unit
-	AND #%01111000									; is shutdown?
+	BEQ +nextObject									; ignore current target unit -> go to next unit
+	AND #%01111000									;
 	TAY															; index of iterated object
 	LDA object+4, Y
-	AND #%01000000
-	BNE +targetLockMarker
+	AND #%00000001									; marked?
+	BEQ +nextObject
 
-	LDA object+2, Y
-	BPL +nextObject									; unit not shutdown, next unit
-	LDA #14													; shut down marker anim #
-	BNE +showMarker
-
-+targetLockMarker:
 	LDA #3													; 'MARK'
-
-+showMarker:
 	STA locVar5
 
 	LDA object+3, Y
@@ -216,18 +208,18 @@ state_selectAction:
 +next:
 	LSR 									; start
 	BCC +next
-
-	JSR buildStateStack		; open start menu
-	.db 12
-	.db $32, %00100100		; clear sys flag: portrait & object sprites
-	.db $45, %00000000		; blink action menu (switch off)
-	.db $20, 2						; load hud menu background
-	.db $47, 0						; set target object as hud objec
-	.db $3D								; load hud menu values
-	.db $23								; expand menu
-	.db $41								; reload portrait
-	.db $24								;
-	; RTS built in
+;
+;	JSR buildStateStack		; open start menu
+;	.db 12
+;	.db $32, %00100100		; clear sys flag: portrait & object sprites
+;	.db $45, %00000000		; blink action menu (switch off)
+;	.db $20, 2						; load hud menu background
+;	.db $47, 0						; set target object as hud objec
+;	.db $3D								; load hud menu values
+;	.db $23								; expand menu
+;	.db $41								; reload portrait
+;	.db $24								;
+;	; RTS built in
 
 +next:
 	LSR 									; select

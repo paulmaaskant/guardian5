@@ -5,15 +5,8 @@
 ;
 
 updatePortrait:
-  AND #%10000111
-  ASL
-  BCC +skip
-  ORA #%00010000
-
-+skip:
-  ASL
   TAY
-  LDA pilotTable-1, Y
+  LDA pilotTable+3, Y
 
 updatePortrait2:
   LDY #8

@@ -12,11 +12,11 @@ getPilot:
   BMI +target
   DEX
   BMI +firstPlayer
-  LDA #%10100000       ; firstEnemy
+  LDA #%00000010       ; firstEnemy
   BNE +findPilot
 
 +firstPlayer:
-  LDA #0
+  LDA #%00000001
 
 +findPilot:
   STA locVar1
@@ -24,27 +24,27 @@ getPilot:
 
 -loop:
   LDA objectList-1, X
-  AND #%11111000
-  CMP locVar1
+  AND locVar1
   BEQ +found
   DEX
   BNE -loop
 
-  LDX objectListSize
-  LDA #%00001000
-  CLC
-  ADC locVar1
-  STA locVar1
-  BNE -loop
-
 +found:
   LDA objectList-1, X
+  AND #%01111000
+  TAX
+  LDA object+4, X
+  AND #%01111100  
   RTS
 
 +active:
-  LDA activeObjectIndexAndPilot
+  LDX activeObjectIndex
+  LDA object+4, X
+  AND #%01111100
   RTS
 
 +target:
-  LDA targetObjectTypeAndNumber
+  LDA targetObjectIndex
+  LDA object+4, X
+  AND #%01111100
   RTS

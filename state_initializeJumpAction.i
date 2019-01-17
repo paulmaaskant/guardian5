@@ -7,7 +7,7 @@ state_initializeJumpAction:
 	JSR clearActionMenu					; clear the menu
 
 	LDX #13											; line 2
-	LDY #12											; "too close"
+	LDY #12											; "jumping"
 	JSR writeToActionMenu
 
 	JSR pullAndBuildStateStack

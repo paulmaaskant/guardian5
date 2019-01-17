@@ -58,17 +58,9 @@ checkTarget:
 	; no friendly fire
 	; ---------------------------------------------------------------------------
 +nextCheck:
-	;LDA activeObjectIndexAndPilot			; if active and target object have same value for bit7
-	;EOR targetObjectTypeAndNumber			; then this sets b7 to 0
-	;ASL
-	;BCS +nextCheck
-
-
-	LDX targetObjectIndex
-	LDA object+4, X
-	LDX activeObjectIndex
-	EOR object+4, X
-	AND #%00001000										; hostile flag
+	LDA activeObjectIndexAndPilot
+	EOR targetObjectTypeAndNumber
+	AND #%00000011
 	BNE +nextCheck
 	LDA #55+128												; friendly unit
 	STA actionMessage
@@ -180,7 +172,7 @@ checkTarget:
 	BNE +continue
 	LDY targetObjectIndex
 	LDA object+4, Y													; check if target is not already locked
-	AND #%01000000
+	AND #%00000001
 	BEQ +setMarkTargetToolTip
 	LDA #38+128
 	STA actionMessage
@@ -237,14 +229,14 @@ checkTarget:
 +next:																			; if LONG RANGE
 	LDX targetObjectIndex
 	LDA object+4, X
-	AND #%01000000														; and if target is marked
+	AND #%00000001														; and if target is marked
 	BEQ +continue
 	DEY																				; then -2 modifier
 	DEY
 
 +continue:
 	LDX targetObjectIndex											; adjust for target unit movement
-	LDA object+4, X														;
+	LDA object+7, X														;
 	AND #$07																	; mask evade points
 	PHA																				; used to for the evade sprite map
 	CLC

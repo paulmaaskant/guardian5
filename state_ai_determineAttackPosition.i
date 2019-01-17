@@ -6,31 +6,28 @@
 ; actionList+2 active unit weapon range
 ; ------------------------------
 state_ai_determineAttackPosition:
-  JSR firstPass
-  JSR evaluateNodes           ; look for path
-  BCC +pathFound
+  LDX activeObjectIndex
+  LDA object+4, X
+  AND #%01111100
+  CMP #24                     ; if pilot is LUCKY
+  BNE +continue
 
-  JSR secondPass
+  LDA missionTargetNode
+  STA cursorGridPos
+
+  JSR moveToCursorGridPos     ; look for best node to move to destination
   JSR evaluateNodes
   BCC +pathFound
 
-                              ; if no path is found, simply face the target
-  LDA #1                      ; set action point cost directly (1)
-  STA list3+0
-  JSR applyActionPointCost
++continue:
+  JSR moveToAttackPosition    ; sort nodes based on best attack position
+  JSR evaluateNodes           ; look for path
+  BCC +pathFound
 
-  LDA #0                      ; initilize results
-  STA list6
-
-  JSR pullAndBuildStateStack
-  .db $02							        ; 2 states
-  .db $1C							        ; face target
-  .db $16							        ; show results
+  JSR moveToCursorGridPos     ; sort nodes based on closest to target
+  JSR evaluateNodes
 
 +pathFound:
-  ;LDA #$FF                   ; debug statement
-  ;JMP replaceState
-
   LDA par1
   STA cursorGridPos           ; put the cursor on the destination node
 
@@ -75,10 +72,10 @@ state_ai_determineAttackPosition:
   JSR setEvadePoints
 
   LDY activeObjectIndex
-  LDA object+4, Y             ; set evade points
+  LDA object+7, Y             ; set evade points
   AND #%11111000							; clear evade points
   ORA list3+14
-  STA object+4, Y
+  STA object+7, Y
 
   JSR pullAndBuildStateStack
 	.db 10						              ; 4 items
@@ -91,10 +88,11 @@ state_ai_determineAttackPosition:
 	.db $16							          ; show results
 	; built in RTS
 
-firstPass:
+moveToAttackPosition:
   ; ------------------
   ; first pass,
-  ; find all reachable nodes that have clear line of sight to target and are withing weapon range
+  ; sort reachable nodes that have clear line of sight to target and are within weapon range
+  ; the most attractive node is the one that allows to deal the most damage
   ; ------------------
 
   LDX #0
@@ -108,10 +106,17 @@ firstPass:
 
 -loop:
   STX par1
-  CPX activeObjectGridPos         ; implement remaining stationairy
-  BEQ +continue
-  LDA nodeMap, X
-  BMI +nextNode                    ; node is blocked
+  CPX activeObjectGridPos          ; implement remaining stationary
+  BEQ +continue                    ; (ignore that node is blocked if the unit itself is blocking it)
+
+  LDA nodeMap, X                   ;
+  BIT activeObjectStats+2
+  BPL +unitNotHovering             ; CHECK if unit can hover!
+  ASL                              ; nodeMap b6 becomes nodeMap b7
+
++unitNotHovering:
+  AND #%10000000                   ; reset NEG flag based on A
+  BMI +nextNode                    ; node is blocked, so try the next node
 
   LDA activeObjectGridPos                                                       ;
   JSR distance
@@ -142,56 +147,64 @@ firstPass:
   JSR getOverallDamageValue        ; A is damage (score)
   EOR #$0F                         ; invert sort value (so that list is sorted low to high)
 
-  ASL
-  ASL
-  PHA
-  JSR random
-  AND #%00000011
-  STA locVar1
-  PLA
-  ORA locVar1
-
   LDX par1                         ; C is current node (index)
   JSR addToSortedList
   LDX par1                         ; restore X
 
 +nextNode:
-  INX
-  BNE -loop
-  RTS
+  TXA                              ; of all nodes with the same score, AI will always pick the first in the array
+  CLC                              ; which, if we increment X by 1, would always be the lowest number node
+  ADC #97                          ; this gives AI a tendency to always move towards node 0 if possible
+  TAX
+  BNE -loop                        ; to prevent this we increment by 97, which will still loop over all nodes
+  RTS                              ; but gives us a better distribution
 
-secondPass:
+moveToCursorGridPos:
+  ; ------------------
+  ; sort all potentially reachable nodes
+  ; the one that is closest to the cursor node is the most attractive
+  ; ------------------
+
   LDX #0
-  STX list6							             ; reset sorted list
-  STX actionList+0
+  STX list6									       ; reset sorted list
+  LDA activeObjectStats+2          ; retrieve move stats
+  AND #$0F                         ; mask to get move points
+  STA par2                         ;
+  INC par2                         ; +1 to make compare easier
 
-  LDA activeObjectStats+2
-  AND #$0F
-  STA actionList+1
+-loop:                             ; loop over all nodes on the map
+  STX par1                         ; store X, par1 is an IN parameter for sbr distance
+  CPX activeObjectGridPos          ; implement remaining stationary
+  BEQ +continue                    ; (ignore that node is blocked if the unit itself is blocking it)
 
-  LDX #0
+  LDA nodeMap, X                   ;
+  BIT activeObjectStats+2
+  BPL +unitNotHovering             ; CHECK if unit can hover!
+  ASL                              ; nodeMap b6 becomes nodeMap b7
 
--loop:
-  STX par1
-  LDA nodeMap, X
-  BMI +nextNode       ; node is blocked
++unitNotHovering:
+  AND #%10000000                   ; reset NEG flag based on A
+  BMI +nextNode                    ; node is blocked, so try the next node
 
++continue:
   LDA activeObjectGridPos                                                       ;
-  JSR distance
-  CMP actionList+1
-  BNE +nextNode       ; not on max radius
+  JSR distance                     ; distance between current node (par1) and start node (A)
+  CMP par2
+  BCS +nextNode                    ; node too far away to reach, so try next node
 
-  LDA cursorGridPos
-  JSR distance        ; sort value is distance to target
+  LDA cursorGridPos                ;
+  JSR distance                     ; distance between current node (par1) and start node (A)
+                                   ; the lower the value, the more attractive the candidate node is
   JSR addToSortedList
-  LDX par1            ; restore X
-  BNE +nextNode
+  LDX par1                         ; restore X
 
 +nextNode:
-  INX
-  BNE -loop
-  RTS
-
+  TXA                              ; of all nodes with the same score, AI will always pick the first in the array
+  CLC                              ; which, if we increment X by 1, would always be the lowest number node
+  ADC #97                          ; this gives AI a tendency to always move towards node 0 if possible
+  TAX
+  BNE -loop                        ; to prevent this we increment by 97, which will still loop over all nodes
+  RTS                              ; but gives us a better distribution
 
 evaluateNodes:
 -nextNode:
@@ -211,8 +224,7 @@ evaluateNodes:
   LDA activeObjectGridPos
   JSR distance
   STA distanceToTarget             ; update d-t-t
-  BEQ +pathFound                   ; current node is target node!
-
+  BEQ +stayPut
   LDA activeObjectStats+2          ; move type | move points
   STA par3
 
@@ -223,7 +235,7 @@ evaluateNodes:
   LDA actionMessage
   BMI +continue
 
-+pathFound:
++stayPut:
   CLC                              ; path found!!
   RTS
 

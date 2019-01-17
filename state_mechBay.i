@@ -5,6 +5,7 @@
 ; 1 unit
 ; 2 secondary cursor position
 ; 3 maxitems in menu
+; 4
 
 
 state_mechBay:
@@ -192,17 +193,15 @@ state_mechBay:
 
 -loop:
   LDA list3+10, X
+  LSR
+  LSR
   TAY
-  DEY
   LDA pilotMenuAssignedTile, Y
   TAY
   LDA assignmentPilotTile, X
   STA list8, Y
   DEX
   BPL -loop
-
-  ;LDA #0
-  ;STA list1+3           ; pilot menu
 
   JSR buildStateStack
   db 5

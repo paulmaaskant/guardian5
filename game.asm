@@ -1,6 +1,6 @@
 ;; 1 - iNes header
 	.db "NES", $1A	; iNes Identifier
-	.db $02			; number of PRG-Rom (16kb) blocks the game has
+	.db $04			; number of PRG-Rom (16kb) blocks the game has
 	.db $04			; number of CHR-Rom (8kb) blocks the game has
 	; mapper 25
 	.db $90 		; left nyble = mapper low nyble
@@ -104,7 +104,7 @@
 																				; stored memory objects
 																				; object grid position is stored separately as it will be sorted regularly
 	objectListSize								.dsb 1	; number of objects presently in memory
-	objectList										.dsb 16	; (b7) hostile (b6-4) pilot (b3-0) object index
+	objectList										.dsb 16	; (b7) AI / player (b6-3) object index (b2) turn flag (b1-0) faction
 																				; the rest of the object information is stored (4 bytes each) so that it does not require sorting whenever the object's position changes
 
 	actionList										.dsb 10	; ------------------------------------------------------
@@ -132,6 +132,7 @@
 	missionDialogStream						.dsb 1
 	missionEpilogScreen						.dsb 1
 	missionMapSettings						.dsb 1
+	missionTargetNode							.dsb 1
 	missionMap										.dsb 2
 
 
@@ -139,7 +140,8 @@
 	.ende
 	.enum $0300														; sound variables
 
-	soundFlags										.dsb 1	; (b7) sound enabled (b6) silence event raised
+	soundHeader										.dsb 1	; sound header index (played when flag b5 is raised)
+	soundFlags										.dsb 1	; (b7) sound enabled (b6) silence event raised (b5) load sound header
 	soundStreamChannel						.dsb 6	; (b7) stream active? (b1-0) APU channel that the stream using
 	soundStreamDutyVolume					.dsb 6	; (b7-6) Duty (b4-0) Volume Offset
 	soundStreamPeriodLo						.dsb 6	; (b7-0) Note current (lo)
@@ -217,34 +219,53 @@
 												.dsb 1				; +1: (b7-3) hit points, (b2-0) heat points
 												.dsb 1				; +2: (b7) not used (b6-0) frame count
 												.dsb 1				; +3: (b7-0) grid pos
-												.dsb 1				; +4: (b7) braced flag (b6) marked flag (b5) turn flag (b4) not used (b3) hostile (b2-0) evade points
+												.dsb 1				; +4: (b7) braced flag (b6-2) pilot (b1) not used (b0) marked flag
 												.dsb 1				; +5: (b7-0) background tile
 												.dsb 1				; +6: (b7-4) equipment slot 1 (b3-0) critical damage flags
-												.dsb 1				; +7: (b7-4) equipment slot 2 (b3-0) not used
+												.dsb 1				; +7: (b7-4) equipment slot 2 (b3) not used  (b2-0) evade points
 												.dsb 120			; 15 more objects (15x8)
 
 																			; move evade points to +7
 																			; move pilot to +4 (b6-2) hostile to (b7)
 																			; move turn, marked and braced to list
 
-																			; list: turn + faction
+																			; list: ai+index+turn+faction
 																			; object+4: pilot + braced + marked
 																			; object+7: evade points
 
-																			; move evade POINTS
 																			; move braced and marked
 																			; switch turn & faction with pilot
 
 
 
 	.ende
-
-	; PRG page 0: tiles
 	.org $8000
+
+	; --------------------------------------------------------
+	; PRG bank 0:
+	; --------------------------------------------------------
+	.base $8000
+
 	.include data_tiles.i
 	.include sbr_nmi_writeNextRowToBuffer.i
 	.include sbr_nmi_writeNextColumnToBuffer.i
+
+	.org $A000
+
+	; --------------------------------------------------------
+	; PRG bank 1:
+	; --------------------------------------------------------
+	.base $A000
+
+	.org $C000
+
+	; --------------------------------------------------------
+	; PRG bank 2:
+	; --------------------------------------------------------
+	.base $8000
+
 	.include sbr_nmi_soundNextFrame.i
+	.include sbr_nmi_seLoadSound.i
 	.include sbr_nmi_seNextByte.i
 	.include sbr_nmi_seWriteToSoftApu.i
 	.include sbr_nmi_seWriteToApu.i
@@ -257,37 +278,51 @@
 	.include sound06.i
 	.include soundEffects.i
 
-	; PRG page 1: byteStreams
-	.org $A000
+  .org $A000
+
+	; --------------------------------------------------------
+	; PRG bank 3: byte streams & animation sequence
+	; --------------------------------------------------------
+	.base $A000
 	.include data_dictionary.i
 	.include data_byteStreams.i
 	.include data_lvl1_objects.i
 	.include sbr_getNextByte.i
-
 	.include data_spriteFrames.i
 	.include data_metaSpriteFrames.i
 	.include data_animations.i
-
 	.include state_initializeTitleMenu.i
 	.include state_titleScreen.i
 	.include state_compositeTitleMenu.i
-
-	;.include state_initializeUnitMenu.i
-	;.include state_unitMenu.i
-	;.include state_assignItem.i
-
 	.include state_initializeMechBay.i
 	.include state_mechBay.i
 	.include state_mechBayMenu.i
 	.include state_mechBayUpdateMech.i
 	.include state_mechBayUpdateDetails.i
-
 	.include state_initializeMission.i
 	.include state_refreshMenu.i
 
-
-	; PRG page 2 and 3 (FIXED): main loop
 	.org $C000
+
+	; --------------------------------------------------------
+	; PRG bank 4: -
+	; --------------------------------------------------------
+	.base $8000
+
+	;	.org $A000
+
+	; --------------------------------------------------------
+	; PRG bank 5: -
+	; --------------------------------------------------------
+	;.base $A000
+
+	.org $C000
+
+
+	; --------------------------------------------------------
+	; PRG fixed banks 6 & 7
+	; --------------------------------------------------------
+	.base $C000
 
 	;-----------------------------------------------------------
 	; main loop
@@ -621,7 +656,7 @@ gameStateJumpTable:
 	.dw state_resolveImplosion-1								; 4E
 	.dw state_initializeExplosion-1							; 4F
 	.dw state_controlCamera-1										; 50
-	.dw not_used																; 51
+	.dw not_used 																; 51
 	.dw not_used																; 52
 	.dw state_initializeJumpAction-1						; 53
 	.dw state_initializeJump-1									; 54
@@ -657,6 +692,7 @@ runningEffectsH:
 	; -------------------------
 	.include state_ai_determineAction.i
 	.include state_ai_determineAttackPosition.i
+	;.include state_ai_moveTowardsTargetNode.i
 
 	;.include state_playAnimation.i
 	;.include state_initializePlayAnimation.i
@@ -1038,6 +1074,33 @@ mapShadowLo:
 mapShadowHi:
 	.db #>shadowMap00
 	.db #>shadowMap01
+
+; object tile tables
+
+objectTiles:
+.hex 81 82 91 92 ; 00 plain ground
+.hex 68 69 78 79 ; 01 mech legs d1
+.hex 6A 6B 7A 7B ; 02 mech legs d2
+.hex 4A 4B 5A 5B ; 03 mech legs d3
+.hex 48 49 58 59 ; 04 mech legs d4
+.hex 46 47 56 57 ; 05 mech legs d5
+.hex 66 67 76 77 ; 06 mech legs d6
+.hex A6 A6 B6 B7 ; 07 plain ground alternative
+.hex A1 A2 B1 B2 ; 08 road
+.hex A3 A4 B3 B4 ; 09 road
+.hex A1 A4 B3 B2 ; 10 road
+.hex 42 43 52 53 ; 11 ground fan (decorative)
+.hex 6E 6F 7E 7F ; 12 burning debris
+.hex C7 70 B9 BA ; 13 building base, with fan
+.hex 4C 4D BE BF ; 14 shadow d1
+.hex AE 4F BE BF ; 15 shadow d2
+.hex AE AF BE 5F ; 16 shadow d3
+.hex AE AF 5C 5D ; 17 shadow d4
+.hex AE AF 5E BF ; 18 shadow d5
+.hex 4E AF BE BF ; 19 shadow d6
+.hex A3 A2 B1 B4 ; 20 road square
+.hex 6C 6D 88 8B ; 13 turret base
+
 
 
 

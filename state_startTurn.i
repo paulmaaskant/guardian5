@@ -6,9 +6,14 @@ state_startTurn:
   JSR updateSystemMenu
 
   LDY activeObjectIndex
+
   LDA object+4, Y
-  AND #%01111000                     ; remove BRACE effect, remove all EVADE points
+  AND #%01111111                     ; remove BRACE effect
   STA object+4, Y
+
+  LDA object+7, Y
+  AND #%11111000                     ; remove all EVADE points
+  STA object+7, Y
 
   JSR pullAndBuildStateStack
   .db 3

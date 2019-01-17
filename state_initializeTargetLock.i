@@ -3,7 +3,7 @@ state_initializeTargetLock:
 
   LDY targetObjectIndex
   LDA object+4, Y
-  ORA #%01000000
+  ORA #%00000001
   STA object+4, Y
 
   LDA #0

@@ -14,16 +14,6 @@ state_ai_determineAction:
   ; - based on relevant factors (tbd)
   ;
   ; 3 some randomness: pick best option 70%, second best 20%, third best 10%
-  ;
-  ; move / pivot towards attack position on target (most difficult action)
-  ; 1 flag all nodes that
-  ;       - are not blocked
-  ;       - are within attacker's shooting range to target
-  ;       - are within move distance of the attacker
-  ;       - have line of sight to the target
-  ; 2 randomly pick a flagged node
-  ;       - try to move there
-  ;       - repeat untill a move is possble
 
   LDY targetObjectIndex
   LDA object+3, Y
@@ -88,20 +78,21 @@ state_ai_determineAction:
   ASL                          ; there is a 50% change of bracing
   BCC +next
 
-
 +forceBrace:
   LDA #10                      ; set BRACE score to 10 if unit is overheating
   STA list5, X
 
-+next:
-  CPX #aiBRACE                 ; Adjustment #3
-  BNE +next                    ; time to cool down
-  LDA activeObjectStats+2
-  BPL +next
+  BNE +next
+
+;+next:
+;  CPX #aiBRACE                 ; Adjustment #3 hovering units cannot BRACE
+;  BNE +next                    ;
+;  LDA activeObjectStats+2      ;
+;  BPL +next                    ;
 
 +zero:
   LDA #0
-  STA list5, X                 ; hovering units cannot BRACE
+  STA list5, X
 
 +next:
   DEC selectedAction

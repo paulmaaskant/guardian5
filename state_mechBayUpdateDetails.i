@@ -11,7 +11,6 @@ state_mechBayUpdateDetails:
   BNE +continue             ; -> cursor on mech or on item
 
   LDA list1+2
-  CLC
   ASL
   ASL
   TAY

@@ -32,21 +32,21 @@ NMI:
 	STA #$2007					;
   PLA									; 28
 	STA #$2007					;
-  PLA							; 27
+  PLA									; 27
 	STA #$2007					;
-  PLA							; 26
+  PLA									; 26
 	STA #$2007					;
-  PLA							; 25
+  PLA									; 25
 	STA #$2007					;
-  PLA							; 24
+  PLA									; 24
 	STA #$2007					;
-	PLA							; 23
+	PLA									; 23
 	STA #$2007					;
-	PLA							; 22
+	PLA									; 22
 	STA #$2007					;
-	PLA							; 21
+	PLA									; 21
 	STA #$2007					;
-  PLA							; 20
+  PLA									; 20
 	STA #$2007					;
   PLA							; 19
 	STA #$2007					;
@@ -191,7 +191,7 @@ NMI:
 											; bit that falls on left goes into the carry flag
 	BCC -loop						; stop looping if carry flag is 1
 
-	LDA softCHRBank1
+	LDA softCHRBank1		; assign CHR bank
 	STA $B001
 	LSR
 	LSR
@@ -235,7 +235,18 @@ NMI:
 	; !!! unused processor time, waiting for sprite 0
 	;-------------------------------------------
 
-	; music
+	; sound
+	LDA #2				; bank 2: sound & sound subroutines
+	STA $8000			; in bank slot 1
+
+	LDA soundFlags
+	BIT bit5								; if raised, load in soundHeader
+	BEQ +continue
+	EOR bit5
+	STA soundFlags					; unflag b5
+	JSR seLoadSound
+
++continue:
 	JSR soundNextFrame
 
 	; tile animation
@@ -251,6 +262,7 @@ NMI:
 	AND #$03
 	ADC #12
 	STA $D001
+
 
 	; tile blinking
 	;---------------------------
@@ -280,7 +292,7 @@ NMI:
 +done:
 
 	;-------------------------------------------
-	; !!! unused processor time, waiting for sprite 0
+	; END !!! unused processor time, waiting for sprite 0
 	;-------------------------------------------
 
 	LDA sysFlags
@@ -340,6 +352,9 @@ NMI:
 
 +skip:
 
+	LDA #0				; bank 0: mission map tiles & subroutines
+	STA $8000			; in bank slot 1
+
 	LDA cameraX+1			; detect if horizontal scrolling is needed
 	AND #%00000111
 	CMP #$04
@@ -353,10 +368,6 @@ NMI:
 	JSR writeNextRowToBuffer
 
 +continue:
-
-
-
-
 
 
 ; --- update camera position ---
@@ -439,9 +450,6 @@ NMI:
 	;STA events
 
 +doneY:
-
-
-
 
 
 								; restore A, X & Y to values before NMI

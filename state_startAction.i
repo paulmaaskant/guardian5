@@ -36,15 +36,30 @@ state_startAction:
 
   LDY list1
   LDA objectList, Y
-  BMI -loop               ; other AI unit -> next object
-  BIT pilotBits
-  BEQ -loop               ; inanimate - > next object
   TAX
+  BIT bit1to0
+  BEQ -loop               ; faction 00: obstacle -> next object
+  EOR activeObjectIndexAndPilot
+  AND #%00000011
+  BEQ -loop               ; same faction as active unit -> next object
+  TXA
   AND #%01111000
   TAY
   LDA object+3, Y         ; object grid pos
-  JSR distance
-  JSR addToSortedList
+  JSR distance            ;
+
+  STA locVar1
+
+  LDA object+1, Y         ; hit point & heat
+  LSR
+  LSR
+  LSR                     ; target's hit points
+  LSR                     ; * 0.5
+  CLC
+  ADC locVar1             ; Score is DISTANCE to target + 0.5 * target's HIT POINTS
+                          ; go for the closest, weakest target
+
+  JSR addToSortedList     ; IN A (score) and X (item)
   JMP -loop
 
 +endLoop:
@@ -61,5 +76,5 @@ state_startAction:
 
   JSR updateTargetMenu
 
-  LDA #$28                            ; state: AI movement
+  LDA #$28                            ; state: AI movement to attack target
   JMP replaceState

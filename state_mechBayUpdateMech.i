@@ -7,10 +7,16 @@ state_mechBayUpdateMech:
   DEX
   BNE -loop
 
-  LDA objectList+3             ; pilot object 3
-  AND #%00000111
+;  LDA objectList+3             ; pilot object 3
+;  AND #%00000111
+;  TAX
+;  DEX
+
+  LDA object+28
+  LSR
+  LSR
   TAX
-  DEX
+
   STX list1+4
   LDA pilotTileIndex, X
   TAX
@@ -208,12 +214,14 @@ unitNumberTiles:
   .hex DD DE FD FE
 
 calculateUnitStats:
-  LDA objectList+3
-  AND #$07
-  ASL
-  ASL
+  ;LDA objectList+3
+  ;AND #$07
+  ;ASL
+  ;ASL
+  LDA object+28
   TAX
-  LDA pilotTable-3, X           ; pilot skill
+  ;LDA pilotTable-3, X           ; pilot skill
+  LDA pilotTable+1, X
   STA list3+0
 
   LDY #24													  ; and store it in Y

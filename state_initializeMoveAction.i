@@ -10,10 +10,10 @@ state_initializeMoveAction:
 	JSR writeToActionMenu
 
 	LDY activeObjectIndex
-	LDA object+4, Y             ; set evade points
+	LDA object+7, Y             ; set evade points
 	AND #%11111000							; clear evade points
 	ORA list3+14
-	STA object+4, Y
+	STA object+7, Y
 
 	JSR pullAndBuildStateStack
 	.db 14								; 13 items

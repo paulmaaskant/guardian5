@@ -8,10 +8,10 @@
 
 calculateAttack:
 	LDX targetObjectIndex				; remove one evasion point
-	LDA object+4, X							; of target unit
+	LDA object+7, X							; of target unit
 	AND #%00000111							; unless target has no evasion points left
 	BEQ +continue
-	DEC object+4, X
+	DEC object+7, X
 	LDA #-1
 
 +continue:

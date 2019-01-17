@@ -10,14 +10,14 @@
 
 
 state_initializeMechBay:
-  LDA #4+0
-  STA objectList+0  ; unit 0 pilot
-  LDA #2+8
-  STA objectList+1  ; unit 1 pilot
-  LDA #1+16
-  STA objectList+2  ; unit 2 pilot
+  LDA #0+1
+  STA objectList+0  ; unit 0 index & faction
+  LDA #8+1
+  STA objectList+1  ; unit 1 index & faction
+  LDA #16+1
+  STA objectList+2  ; unit 2 index & faction
 
-  LDX #8
+  LDX #11
 
 -loop:
   LDA initialObjectIndex, X
@@ -68,8 +68,7 @@ state_initializeMechBay:
   STA activeObjectIndex
 
   JSR pullAndBuildStateStack
-  .db 12
-  .db $32, %00000010    ; clear sys flag: tile animation OFF
+  .db 10
   .db $46, 15           ; mech legs
   .db $46, 4            ; left col frame
   .db $46, 5            ; right col frame
@@ -83,6 +82,6 @@ currentEffectValues:
   .db  117, 35, 35, 37,  0,  0
 
 initialObjectValue:
-  .hex 04 30 30 14 10 20 24 00 10
+  .hex 04 0C 30 30 14 04 10 20 24 00 00 10
 initialObjectIndex:
-  .hex 00 06 07 08 0E 0F 10 16 17
+  .hex 00 04 06 07 08 0C 0E 0F 10 14 16 17

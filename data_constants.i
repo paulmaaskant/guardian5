@@ -83,3 +83,4 @@ emptyString = 0
   mConditionOnlyHostiles = 3
   mEventEndMission = 4
   mEventSpawnUnit = 5
+  mConditionNodeReached = 6

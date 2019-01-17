@@ -4,6 +4,8 @@
 ; IN				A = start node
 ; IN				par1 = destination node
 ; IN				par2 = moves available
+; IN 				par3 b7 = movement type
+;
 ; LOCAL     par3 = current node
 ; LOCAL			par4 = cost: start node -> current node (b7-b4)
 ; LOCAL			locVar1, locVar2, locVar3, locVar4, locVar5
@@ -54,10 +56,6 @@ oppositeDirection:
 	TAY
 	LDA list8, Y
 	AND #$07											; direction to get to preceding node
-	;TAY
-	;LDA oppositeDirection-1, Y		; determine opposite direction
-	;STA list2, X									; and store in list 2 (used for animation)
-	;TYA
 	DEX
 	BEQ +done										; Y holds node
 	TAY
@@ -77,6 +75,7 @@ oppositeDirection:
 	;---------------------------------
 	; path does not exist or not enough moves available: done
 	;---------------------------------
+-noMoreNodes:
 -outOfRange:									; no path found
 	LDA #$88										; deny (b7) + out of range (b6-b0)
 	STA actionMessage
@@ -110,6 +109,7 @@ findPath:
 	STA list8, x								;
 	INX													;
 	BNE -loop										; temp node map initialized
+
 	LDA #1											; 1 open node
 	STA list3										; open node stack size
 	TAY													;
@@ -118,12 +118,11 @@ findPath:
 	; process (next) open node with lowest score
 	;---------------------------------
 -tryNexOpenNode:
-	BEQ -outOfRange							; open node stack size == 0? no more nodes to try! Done
+	BEQ -noMoreNodes						; open node stack size == 0? no more nodes to try! Done
 	LDX list3, Y								; otherwise, take next most promising open node from top of open node stack
 	STX par3										; and make it the current node
 	CPX par1										; is destination node?
 	BEQ -pathFound							; then wrap up!
-
 	LDA list4, Y								; otherwise, take the score
 	AND leftNyble								; mask to get the...
 	STA par4										; actual cost: start node -> current node
@@ -387,33 +386,34 @@ getOpenNode:
 ; -----------
 ; take item at position X in list and bubble it to the start of the list, based on F score (stored in b3-b0)
 ; -----------
-sweepUp:
--loop:
-	LDA list4+1, X
-	AND rightNyble
-	STA locVar1
-	LDA list4+0, X
-	AND rightNyble
-	CMP locVar1
-	BCS +noSwap
+;sweepUp:
+;-loop:
+;	LDA list4+1, X
+;	AND rightNyble
+;	STA locVar1
+;	LDA list4+0, X
+;	AND rightNyble
+;	CMP locVar1
+;	BCS +noSwap
 
-	LDA list4+1, X			; swap
-	PHA
-	LDA list4+0, X
-	STA list4+1, X
-	PLA
-	STA list4+0, X
-	LDA list3+1, X
-	PHA
-	LDA list3+0, X
-	STA list3+1, X
-	PLA
-	STA list3+0, X
+;	LDA list4+1, X			; swap
+;	PHA
+;	LDA list4+0, X
+;	STA list4+1, X
+;	PLA
+;	STA list4+0, X
+;	LDA list3+1, X
+;	PHA
+;	LDA list3+0, X
+;	STA list3+1, X
+;	PLA
+;	STA list3+0, X
 
-+noSwap:
-	INX
-	CPX list3
-	BCC -loop
+;+noSwap:
+;	INX
+;	CPX list3
+;	BCC -loop
+;	RTS
 
 ; -------------------------------------------------
 ; checkCharge
@@ -422,40 +422,40 @@ sweepUp:
 ; check all adjacent grid positions for hostile units
 ; if there is exactly one, then that unit can be charged
 ; -------------------------------------------------
-isChargePossible:
-	LDA cursorGridPos
-	STA par1							; parameter for 'distance' sr
-
-	LDX #$00
-	STX par2
-
--nextObject:
-	; --- set current object attributes --
-	LDA objectList, X
-	AND #%00000111
-	ASL
-	ASL
-	TAY												; FIX exclude current object (or implement hostile!)
-	LDA object+3, Y						; object position
-	JSR distance
-	CMP #$01
-	BNE +continue
-	CPY activeObjectIndex
-	BEQ +continue
-	INC par2
-+continue
-	INX									; next object
-	CPX objectListSize				; number of objects presently in memory
-	BNE -nextObject
-
-	LDA par2
-
-	CMP #$01
-	BCC +done					; return with carry clear
-	SEC
-	BEQ +done					; return with carry flag set
-
-	LDA #$92					; deny (b7) + not possible (b6-b0)
-	STA actionMessage
-+done:
-	RTS
+;isChargePossible:
+;	LDA cursorGridPos
+;	STA par1							; parameter for 'distance' sr
+;
+;	LDX #$00
+;	STX par2
+;
+; nextObject:
+;	; --- set current object attributes --
+;	LDA objectList, X
+;	AND #%00000111
+;	ASL
+;	ASL
+;	TAY												; FIX exclude current object (or implement hostile!)
+;	LDA object+3, Y						; object position
+;	JSR distance
+;	CMP #$01
+;	BNE +continue
+;	CPY activeObjectIndex
+;	BEQ +continue
+;	INC par2
+;+;continue
+;	INX									; next object
+;	CPX objectListSize				; number of objects presently in memory
+;	BNE -nextObject
+;
+;	LDA par2
+;
+;	CMP #$01
+;	BCC +done					; return with carry clear
+;	SEC
+;	BEQ +done					; return with carry flag set
+;
+;	LDA #$92					; deny (b7) + not possible (b6-b0)
+;	STA actionMessage
+;+;done:
+;	RTS

@@ -54,7 +54,7 @@ missionConditionRound:
   INY
   LDA missionRound
   CMP (bytePointer), Y
-  BCC -nextEvent
+  BCC -nextEvent       ; condition not satisfied
   INY
   BNE -nextOpCode
 
@@ -63,34 +63,50 @@ missionConditionRound:
   ; ---------------------------------
 missionConditionOnlyFriendlies:
   LDX objectListSize
-  LDA #00
+  LDA #0
 
 -loop:
   ORA objectList-1, X
   DEX
   BNE -loop
-  ASL
-  BCS -nextEvent    ; failed -> go to next event
+  AND #%00000011
+  CMP #1
+  BNE -nextEvent      ; condition not satisfied
   INY
-  BNE -nextOpCode   ; success -> check next condition
+  BNE -nextOpCode     ; success
+
 
   ; ---------------------------------
   ; check if only hostiles remain
   ; ---------------------------------
 missionConditionOnlyHostiles:
   LDX objectListSize
+  LDA #0
 
 -loop:
-  LDA objectList-1, X
-  BMI +next
-  AND #7
-  BNE -nextEvent
-
-+next:
+  ORA objectList-1, X
   DEX
   BNE -loop
+  AND #%00000011
+  CMP #2
+  BNE -nextEvent      ; condition not satisfied
   INY
-  BNE -nextOpCode
+  BNE -nextOpCode     ; success
+
+  ; ------------------------------
+  ; check if pilot 6 reached the mission target node
+  ; ------------------------------
+missionConditionNodeReached:
+  LDX activeObjectIndex
+  LDA object+4, X
+  AND #%01111100
+  CMP #24
+  BNE -nextEvent      ; condition not satisfied
+  LDA object+3, X
+  CMP missionTargetNode
+  BNE -nextEvent      ; condition not satisfied
+  INY
+  BNE -nextOpCode     ; success
 
 ; ---------------------------------
 ; open a HUD dialog
@@ -179,12 +195,13 @@ getMissionEventFlag:
   ; opCode jump table
   ; ---------------------------------
 missionEventOpCodeHi:
-  .db #> missionEventOpenDialog
-  .db #> missionConditionRound
-  .db #> missionConditionOnlyFriendlies
-  .db #> missionConditionOnlyHostiles
-  .db #> missionEventEndMission
-  .db #> missionEventNewUnit
+  .db #> missionEventOpenDialog                   ; 0
+  .db #> missionConditionRound                    ; 1
+  .db #> missionConditionOnlyFriendlies           ; 2
+  .db #> missionConditionOnlyHostiles             ; 3
+  .db #> missionEventEndMission                   ; 4
+  .db #> missionEventNewUnit                      ; 5
+  .db #> missionConditionNodeReached              ; 6
 
 missionEventOpCodeLo:
   .db #< missionEventOpenDialog
@@ -193,3 +210,4 @@ missionEventOpCodeLo:
   .db #< missionConditionOnlyHostiles
   .db #< missionEventEndMission
   .db #< missionEventNewUnit
+  .db #< missionConditionNodeReached

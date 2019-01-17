@@ -29,8 +29,8 @@ weaponType:
   .db %00000000		; 2 target inflicted heat profile
   .db 0           ; 3 heat cost
 
-  .db 67			    ; 0 name: ITEM
-  .db %00000000   ; 1 damage profile (+1 long range)
+  .db 47			    ; 0 name: ACTUATOR
+  .db %00000000   ; 1 damage profile (+1 move point)
   .db %00000000		; 2 target inflicted heat profile
   .db 0           ; 3 heat cost
 

@@ -9,16 +9,22 @@ state_mechBayMenu:
   LDY #2
 
 -loop:
-  LDA objectList+3
-  AND #%00000111                  ; if new pilot for unit X
+  ; LDA objectList+3
+  LDA object+28
+  ;AND #%00000111                  ; if new pilot for unit X
+  AND #%01111100
   CMP list3+10, Y                 ; is same pilot as new pilot for Y
   BNE +endOfLoop
   TYA
   CMP identity, X                 ; in another unit (X<>Y)
   BEQ +endOfLoop
+
+
+  LDA itemIndex, Y                ;
+  TAY
   LDA list3+10, X                 ; then take current pilot in X
-  ORA itemIndex, Y                ;
-  STA objectList, Y               ; and assign it to unit Y
+  STA object, Y                   ; and assign pilot to unit Y
+
   LDY #0                          ; break from loop
 
 +endOfLoop
@@ -178,10 +184,14 @@ state_mechBayMenu:
   BCS +itemMenu
 
 +pilotMenu:
-  LDA #%00011000
-  SEC
-  ADC identity, Y
-  STA objectList+3
+  ;LDA #%00011000
+  ;SEC
+  ;ADC identity, Y
+  ;STA objectList+3
+  TYA
+  ASL
+  ASL
+  STA object+28
   BPL +setCursor
 
 +mechMenu:
@@ -272,10 +282,11 @@ assignEquipment:
   LDX #8
 
 -loop:
-  CPX #3
-  BCC +pilot
   LDA itemIndex, X
   TAY
+
+  CPX #3
+  BCC +pilot
   LDA object, Y
   LSR
   LSR
@@ -285,8 +296,7 @@ assignEquipment:
   BPL +nextLoop
 
 +pilot:
-  LDA objectList, X
-  AND #%00000111
+  LDA object, Y
   STA list3+10, X
 
 +nextLoop:
@@ -295,9 +305,9 @@ assignEquipment:
   RTS
 
 itemIndex:
-  db %00000000
-  db %00001000
-  db %00010000
+  db 4
+  db 12
+  db 20
   db 6,7,14,15,22,23
 
 itemToObject:

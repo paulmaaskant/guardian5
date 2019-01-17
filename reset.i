@@ -94,14 +94,21 @@ RESET:
 	LDA #$20			; show behind background tiles
 	STA $0202			; show behind background tiles
 
-	; ---  iNES mapper 23 ---
-	LDA #$00			; page 0: tiles
-	STA $8000			; in switch bank 0
-	LDA #$01			; page 1: byte streams
-	STA $A000			; in switch bank 1
+	; ---  iNES mapper 25 ---
+	; set swap mode so that
+	; register $8000 controls the bank in slot 1 at PRG $8000-$9FFF
+	; register $A000 controls the bank in slot 2 at PRG $A000-$BFFF
+	LDA #0
+	STA $9002
 
+	; assign PRG banks to bank slots
+	LDA #2				; PRG bank 0: sound
+	STA $8000			; in bank slot 0
 
+	LDA #3				; PRG bank 3: byte streams
+	STA $A000			; in bank slot 1
 
+	; assign CHR banks to bank slots
 	LDA #3			;
 	STA $B000			; into CHR slot 0
 	LDA #0

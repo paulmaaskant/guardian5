@@ -2,11 +2,18 @@
 
 ; - BUG sprite 0 can be overwritten
 ; - BUG ground shake sometimes affects diag scrolling
-; - BUG close combat explosion is wrong (bank issue)
+; - BUG close combat explosion is wrong (wrong bank)
 ; - BUG set Tile overwrites tiles on other side of the screen (movement from LEMUR overwrite preceding tile or 0 tile)
 ; - BUG face target doesnt work when range is beyond 255 pix
+; - BUG AI move to node. Hovering unit does not want to end movement in water
+; - BUG TURRET not in round 0?
+
 
 ; FEATURES
+
+;  todo slow down musix for NTSC mode
+
+; - make nodes that are not in map inaccessible, so that they can't be used for pathing finding
 
 ; - FLAMER heat infliction
 ; - ITEM: shield improves brace
@@ -52,3 +59,112 @@
 ;   SHIELD (-2 damage when bracing)
 ;   ACTUATOR (+1 movement)
 ;   ARMOR (+2 armor)
+
+------------------------------------------------------------
+mission 1: DIVERSION ATTACK
+VICTORY CONDITION: all enemy units destroyed
+FAIL CONDITION: all player units destroyed
+------------------------------------------------------------
+>>>>>>>>>>>>>>>>>>>>>>>>
+COMMANDER, I REGRET TO
+INFORM YOU WE HAVE LOST
+THE CITY
+--
+OUR PRIORITY NOW IS TO
+ENSURE THAT OUR CONSUL
+LADY NOVEMBER IS MOVED
+OFF PLANET
+--
+WE NEED HER CONVOY TO
+GET OUT OF THE CITY
+PERIMETER UNDETECTED
+--
+TO MAKE THIS POSSIBLE,
+YOU ARE TO CREATE A
+DISTRACTION BY ENGAGING
+AND DESTROYING THE ENEMY
+FORCES IN SECTOR 3
+--
+GOOD LUCK COMMANDER
+
+AND STAY ALIVE
+>>>>>>>>>>>>>>>>>>>>>>>>
+COMMANDER, IT LOOKS LIKE WE ARE ABOUT TO GET MORE COMPANY
+STAY SHARP
+
+COMMANDER, CONVOY ONE HAS MADE IT OUT OF THE CITY SAFELY
+FALL BACK IMMEDIATLY BEFORE MORE ENEMY FORCES ARRIVE
+>>>>>>>>>>>>>>>>>>>>>>>>
+WELL DONE COMMANDER
+
+THE CONVOY WAS ABLE TO
+REACH THE CITY PERIMITER
+UNDETECTED
+
+HAVE YOUR TECH TEAM DO
+EMERGENCY REPEARS AND
+REPORT TO WAYPOINT DELTA
+>>>>>>>>>>>>>>>>>>>>>>>>
+LADY NOVEMBER HAS BEEN
+APPREHENDED BY THE ENEMY
+
+ALL IS LOST
+>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+
+------------------------------------------------------------
+mission 1: DIVERSION ATTACK
+VICTORY CONDITION: all enemy units destroyed
+FAIL CONDITION: all player units destroyed
+------------------------------------------------------------
+mission 2: CONVOY ESCORT
+VICTORY: convoy reach designated node
+>>>>>>>>>>>>>>>>>>>>>>>>
+WE HAVE PICKED UP NEW
+ENEMY FORCES ON A DIRECT
+INCERCEPT COURSE WITH
+LADY NOVEMBERS CONVOY
+--
+>>>>>>>>>>>>>>>>>>>>>>>>
+THE LAST OFF WORLD
+TRANSPORT LEAVES IN
+78 MINUTES. THERE IS NO
+TIME FOR AN ALTERNATIVE
+ROUTE.
+--
+YOU ARE TO DEPLOY
+IMMEDIATLY AND ENGAGE
+THE INTERCEPTING FORCE
+HEAD ON
+--
+COMMANDER,
+MAKE SURE THE CONVOY
+ESCAPES THE BATTLEFIELD
+IN ONE PIECE
+
+>>>>>>>>>>>>>>>>>>>>>>>>
+mission 3: DESTROY OUTPOST
+VICTORY: destroy enemy base in X rounds
+>>>>>>>>>>>>>>>>>>>>>>>>
+OUR SCOUTS HAVE LOCATED
+A NEW FORTIFIED ENEMY
+OUTPOST NEAR THE
+SPACEPORT
+--
+WE HAVE NO TIME TO GO
+GO AROUND BUT WE HAVE NO
+HOPE OF EVADING THE
+LONG RANGE TURRETS
+--
+COMMANDER, YOU HAVE TO
+MOVE TO AHEAD AND TAKE
+OUT THE ENEMY BASE
+BEFORE THE CONVOY
+ARRIVES
+>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+mission 4: GARRISON DUTY
+VICTORY: protect launchpad for X turns
+>>>>>>>>>>>>>>>>>>>>>>>>

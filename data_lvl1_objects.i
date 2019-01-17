@@ -55,11 +55,16 @@ mission01Setup:
 	.hex 30 40 50 60 70 80 90
 
 	.db 0
-	.db	9			; number of objects
+	.db	10		; number of objects
 
 	.db $01			; object grid position
 	.db $03			; object grid position
 	.db $05			; object grid position
+
+	.db 128+24+1		; (b7) AI (b6-2) pilot (b1-0) player team
+	.db $5F			; (b7-0) object grid position
+	.db $64			; (b7-4) object type (b2-0) facing direction
+	.db $21			; (b7-4) equipment 1 (b3-0) equiment 2
 
 	.db $00			; object object building
 	.db $25			; object grid position
@@ -76,17 +81,17 @@ mission01Setup:
 	.db $40			; object type & facing RD
 	.db $00			;
 
-	.db 128+8+0			; enemy pilot 0 (unkown)
+	.db 128+32+2; enemy pilot 0 (unkown)
 	.db $E5			; object grid position
 	.db $35			; object type 1 & facing RD
 	.db $12			; object wpns
 
-	.db 128+8+1			; enemy pilot 1 (unkown)
+	.db 128+36+2;			; enemy pilot 1 (unkown)
 	.db $E6			; object grid position
 	.db $35			; object type 1 & facing RD
 	.db $32			; object wpns
 
-	.db 128+8+2			; (b7) AI (b3) hostile (b2-0) pilot
+	.db 128+40+2; (b7) AI (b6-2) pilot (b1-0) faction
 	.db $F4			; (b7-0) object grid position
 	.db $54			; (b7-4) object type (b2-0) facing direction
 	.db $21			; (b7-4) equipment 1 (b3-0) equiment 2
@@ -107,16 +112,18 @@ mission01Events:
 
 .db 2, mEventOpenDialog, 10 												 												; event 1 : dialog 10: enemy detected
 .db 4, mConditionRound, 2,  mEventOpenDialog, 13		 												; event 2
-.db 7, mConditionRound, 2,  mEventSpawnUnit, $8A, $F2, $54, $11	 		  			; event 3
+.db 7, mConditionRound, 2,  mEventSpawnUnit, 128+40+2, $F2, $54, $11	 		  			; event 3
 .db 3, mConditionOnlyHostiles, mEventOpenDialog, 12 												; event 4
 .db 4, mConditionOnlyHostiles, mEventEndMission, 3, 7 											; event 5
-.db 3, mConditionOnlyFriendlies, mEventOpenDialog, 9 												; event 6
-.db 4, mConditionOnlyFriendlies, mEventEndMission, 2, 6											; event 7
+.db 3, mConditionOnlyFriendlies, mEventOpenDialog, 9 												; event 4
+.db 4, mConditionOnlyFriendlies, mEventEndMission, 2, 6
+;.db 3, mConditionNodeReached, mEventOpenDialog, 9 													; event 6
+;.db 4, mConditionNodeReached, mEventEndMission, 2, 6												; event 7
 .db 0																								 												; end of stream
 
 mission00Events:
 .db 2, mEventOpenDialog, 10 												 												; event 1 : dialog 10: enemy detected
-.db 7, mConditionRound, 1,  mEventSpawnUnit, $80, $72, $35, $12
+.db 7, mConditionRound, 1,  mEventSpawnUnit, 128+32+2, $72, $35, $12
 .db 5, mConditionRound, 1, mConditionOnlyHostiles, mEventOpenDialog, 12 												; event 4
 .db 6, mConditionRound, 1, mConditionOnlyHostiles, mEventEndMission, 3, 7 											; event 5
 .db 5, mConditionRound, 1, mConditionOnlyFriendlies, mEventOpenDialog, 9 												; event 6

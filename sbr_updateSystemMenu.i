@@ -29,20 +29,13 @@ updateSystemMenu:
 	DEX
 	BNE -loop
 
-
-	LDY #41												; "ENEMY"
-	LDA activeObjectIndexAndPilot
-	BMI +enemy
-	AND #$07
-	ASL
-	ASL
-	TAX
-	LDY pilotTable-4, X           ; "<pilot name>""
-
-+enemy:
-	STY systemMenuName
-
 	LDY activeObjectIndex
+	LDA object+4, Y
+	AND #%01111100
+	TAX
+	LDA pilotTable+0, X           ; "<pilot name>""
+	STA systemMenuName
+
 	LDA object+1, Y
 	AND #$07
 	CMP #3

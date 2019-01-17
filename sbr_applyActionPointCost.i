@@ -49,12 +49,6 @@ applyActionPointCost:
   BCC +noHeatDamage               ; less than 4
   CMP #5
   BCC +heatDamage
-
-  LDY activeObjectIndex
-  LDA object+4, Y
-  ORA #%00010000
-  STA object+4, Y
-
   LDA #4                          ; ceiling at heat 4
 
 +heatDamage:

@@ -13,18 +13,16 @@ state_newTurn:
   PHA
 
   LDA objectList-1, X
-  BIT pilotBits
-  BEQ +endOfLoop
+  BIT bit2                ; turn flag
+  BNE +endOfLoop          ; unit already had a turn this round
+
+  BIT bit1to0
+  BEQ +endOfLoop          ; obstacle object
+
+  PHA
 
   AND #%01111000
   TAY
-  LDA object+4, Y
-  AND #%00100000
-  BNE +endOfLoop
-
-  LDA objectList-1, X
-  PHA
-
   JSR getStatsAddress     ; takes Y
 
   PLA
@@ -53,17 +51,21 @@ state_newTurn:
   LDA par3
   STA list3+51
                           ; unMARK all units at the start of a new round
-  LDY #120
 
--unmarkLoop:
-  LDA object+4, Y
-  AND #%10011111          ; reset mark flag & turn flag
-  STA object+4, Y
-  TYA
-  SEC
-  SBC #8
+  LDX objectListSize
+
+-loop:
+  LDA objectList-1, X
+  AND #%11111011            ; reset turn flag
+  STA objectList-1, X
+  AND #%01111000
   TAY
-  BPL -unmarkLoop
+  LDA object+4, Y
+  AND #%11111110            ; reset marked flag
+  STA object+4, Y
+  DEX
+  BNE -loop
+
 
   LDA #120
   STA blockInputCounter
@@ -163,20 +165,23 @@ state_newTurn:
 
   ;-----------------------------  get pilot based stats
 
-  LDA activeObjectIndexAndPilot ;
-  ASL
-  AND #%00001110
-  BCC +continue
-  ORA #%00010000
+;  LDA activeObjectIndexAndPilot ;
+;  ASL
+;  AND #%00001110
+;  BCC +continue
+;  ORA #%00010000
 
-+continue:
-  ASL
+;+continue:
+;  ASL
+  LDY activeObjectIndex
+  LDA object+4, Y
+  AND #%01111100
   TAY                           ; pilot number x 4
 
-  LDA pilotTable-3, Y           ;
+  LDA pilotTable+1, Y           ;
   STA activeObjectStats+5       ; pilot skill level
 
-  LDA pilotTable-2, Y           ;
+  LDA pilotTable+2, Y           ;
   STA activeObjectStats+1       ; pilot traits
 
   LDA #$C0										  ; switch on cursor and active marker

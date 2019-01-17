@@ -4,6 +4,9 @@ copyObject:
   LDA object+0, Y
   STA object+0, X
 
+  LDA object+4, Y
+  STA object+4, X
+
   LDA object+6, Y
   STA object+6, X
 

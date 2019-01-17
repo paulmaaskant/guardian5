@@ -62,16 +62,11 @@ getNextByte:
 	JMP incrementBytePointer	; tail chain
 
 +setTargetName:
-	LDA targetObjectTypeAndNumber
-	AND #%10000111
-	ASL
-	BCC +skip
-	ORA #%00010000
-
-+skip:
-	ASL
+	LDY targetObjectIndex
+	LDA object+4, Y
+	AND #%01111100
 	TAY
-	LDA pilotTable-4, Y
+	LDA pilotTable+0, Y
 	BNE +next
 
 +setDictionaryString:

@@ -1,28 +1,3 @@
-
-; object tile tables
-objectTiles:
-.hex 81 82 91 92 ; 00 plain ground
-.hex 68 69 78 79 ; 01 mech legs d1
-.hex 6A 6B 7A 7B ; 02 mech legs d2
-.hex 4A 4B 5A 5B ; 03 mech legs d3
-.hex 48 49 58 59 ; 04 mech legs d4
-.hex 46 47 56 57 ; 05 mech legs d5
-.hex 66 67 76 77 ; 06 mech legs d6
-.hex A6 A6 B6 B7 ; 07 plain ground alternative
-.hex A1 A2 B1 B2 ; 08 road
-.hex A3 A4 B3 B4 ; 09 road
-.hex A1 A4 B3 B2 ; 10 road
-.hex 42 43 52 53 ; 11 ground fan (decorative)
-.hex 6E 6F 7E 7F ; 12 burning debris
-.hex C7 70 B9 BA ; 13 building base, with fan
-.hex 4C 4D BE BF ; 14 shadow d1
-.hex AE 4F BE BF ; 15 shadow d2
-.hex AE AF BE 5F ; 16 shadow d3
-.hex AE AF 5C 5D ; 17 shadow d4
-.hex AE AF 5E BF ; 18 shadow d5
-.hex 4E AF BE BF ; 19 shadow d6
-.hex A3 A2 B1 B4 ; 20 road square
-
 metaTileBlock00:
 	.hex 62 89 99 89 99 BC 01 9C 01 AE 01 80 01 64 8C 01
 	.hex 80 01 06 85 84 83 80 83 85 84 87 87 01 01 01 97
@@ -40,7 +15,6 @@ metaTileBlock01:
 	.hex DD DD 00 F0 FB C2 00 E0 65 C5 BA D4 F6 FA CC F5
 	.hex 65 B8 FA BA ED DD 65 D5 65 D6 DD DA DA CB AD D4
 	.hex DA 96 00 90 95 00 A5 00 94 E2 B2 B2 B0 00 B4 65
-
 
 metaTileBlock02:
 	.hex 72 04 04 04 04 B8 03 AD 03 BE 03 93 92 74 98 03

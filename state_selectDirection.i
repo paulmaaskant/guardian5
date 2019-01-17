@@ -70,6 +70,13 @@ state_selectDirection:
 
 	LDY activeObjectIndex
 	JSR getStatsAddress
+
+	LDY #3
+	LDA (pointer1), Y       ; movement properties
+	BNE +continue           ; if object is stationary (zero movement)
+	STA locVar1             ; reset direction offset to 0
+
++continue:
 	LDY #7									; index for base tile
 	LDA (pointer1), Y				; base tile
 	CLC
