@@ -177,6 +177,7 @@ ANIM02:
 ANIM03:
 	.db 1, 6
 	.dw CS22
+
 ANIM04:
 	.db 2, 2
 	.dw EF07

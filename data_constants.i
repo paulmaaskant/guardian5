@@ -1,5 +1,19 @@
 ; constants
 
+typeNoHeat = #64
+
+dTHE =50
+dUNIT =32
+dCONVOY = 49
+dENEMY = 41
+dCOMMANDER = 72
+dMISSION_ACCOMPLISHED = 70
+dTURRET= 48
+dRANGE = 53
+dMINUTES = 73
+dDAMAGE = 15
+dHEAT = 54
+
 eRefreshStatusBar = %00000100
 eCheckAction =      %00001000
 eUpdateStatusBar 	= %00010000
@@ -18,6 +32,7 @@ aRUN = $07
 aMARKTARGET = $08
 
 aiBRACE = 0
+aiMOVE = 1
 aiCLOSECOMBAT = 4
 
 itemArmor = 4
@@ -84,3 +99,4 @@ emptyString = 0
   mEventEndMission = 4
   mEventSpawnUnit = 5
   mConditionNodeReached = 6
+  mConditionPilotNotPresent = 7

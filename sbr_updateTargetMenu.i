@@ -15,11 +15,7 @@ updateTargetMenu:
 	;--- determine the target type (unit or empty node)
 	LDA targetObjectTypeAndNumber
 	BNE +displayTarget
-	LDA #$34												; show empty hex
-	STA targetMenuImage+2
-	LDA #$35
-	STA targetMenuImage+3
-	RTS
+	JMP setTargetIcon
 
 +displayTarget:
 	; --- target stats ---
@@ -49,27 +45,16 @@ updateTargetMenu:
 	STA targetMenuLine1+1
 
 +done:
-	LDA targetObjectTypeAndNumber
-	AND #%00000011
-	BEQ +displayObstacle
-
-	LDA #$30
-	STA targetMenuImage+0
-	LDA #$31
-	STA targetMenuImage+1
-
 	LDY targetObjectIndex
 	JSR getStatsAddress
-	LDY #7
+	LDY #4
 	LDA (pointer1), Y
-	BNE +skip
+	LSR
+	LSR
+	LSR
+	LSR
+	JSR setTargetIcon
 
-	LDA #$32
-	STA targetMenuImage+2
-	LDA #$33
-	STA targetMenuImage+3
-
-+skip:
 	LDY targetObjectIndex
 	LDA object+4, Y
 	AND #%01111100
@@ -78,13 +63,33 @@ updateTargetMenu:
 	STA targetMenuName
 	RTS
 
-+displayObstacle:
-	LDA #$36
+; -------
+
+setTargetIcon:
+	TAX
+	LDA targetIcon0, X
 	STA targetMenuImage+0
-	LDA #$37
+	LDA targetIcon1, X
 	STA targetMenuImage+1
-	LDA #$38
+	LDA targetIcon2, X
 	STA targetMenuImage+2
-	LDA #$39
+	LDA targetIcon3, X
 	STA targetMenuImage+3
 	RTS
+
+; 00 empty hex
+; 01 strctr
+; 02 big mech
+; 03 small mech
+; 04 lemur
+; 05 convoy
+; 06 turret
+
+targetIcon0:
+	.hex 0F 36 30 3D 30 3D 3D
+targetIcon1:
+	.hex 0F 37 31 3E 31 3E 3E
+targetIcon2:
+	.hex 34 38 32 32 0F 0F 38
+targetIcon3:
+	.hex 35 39 33 33 0F 0F 39

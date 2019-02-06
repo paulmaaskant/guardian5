@@ -149,14 +149,15 @@ state_selectAction:
 	LDA locVar2						; translate 'isometric' directions
 	ADC locVar1						; to Cartesian
 	LSR
-	LDA mapDim, Y					; cursor cant go over map dimensions
 	BCC +xEven
+	LDA mapDimL, Y				; cursor cant go over map dimensions
 	CMP locVar1
 	BEQ +updatePos
 	INC locVar1
 	JMP +updatePos
 
 +xEven:
+	LDA mapDimW, Y				; cursor cant go over map dimensions
 	CMP locVar2
 	BEQ +updatePos
 	INC locVar2
@@ -187,7 +188,7 @@ state_selectAction:
 	LDA locVar1
 	BEQ +updatePos
 	LDA locVar2
-	CMP mapDim, Y
+	CMP mapDimW, Y
 	BEQ +updatePos
 	DEC locVar1
 	INC locVar2
@@ -199,7 +200,7 @@ state_selectAction:
 	LDA locVar2
 	BEQ +updatePos
 	LDA locVar1
-	CMP mapDim, Y
+	CMP mapDimL, Y
 	BEQ +updatePos
 	DEC locVar2
 	INC locVar1

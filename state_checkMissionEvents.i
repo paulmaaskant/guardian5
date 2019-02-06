@@ -1,3 +1,6 @@
+; --------------------------------------------------------
+; evaluate all untriggered mission events
+; --------------------------------------------------------
 state_checkMisionEvents:
   LDA missionEventStreamPointer+0
   STA bytePointer+0
@@ -59,6 +62,33 @@ missionConditionRound:
   BNE -nextOpCode
 
   ; ---------------------------------
+  ; check if pilot is not present
+  ; ---------------------------------
+missionConditionPilotNotPresent:
+  INY
+  LDX objectListSize
+
+-loop:
+  STX locVar3
+
+  LDA objectList-1, X
+  AND #%01111000
+  TAX
+  LDA object+4, X
+  AND #%01111100              ; pilot ID
+  LSR
+  LSR
+  CMP (bytePointer), Y        ; compare to event parameter
+  BEQ -nextEvent              ; pilot found -> condition not satisfied
+
+  LDX locVar3
+  DEX
+  BNE -loop
+
+  INY
+  BNE -nextOpCode             ; success
+
+  ; ---------------------------------
   ; check if only friendlies remain
   ; ---------------------------------
 missionConditionOnlyFriendlies:
@@ -106,7 +136,7 @@ missionConditionNodeReached:
   CMP missionTargetNode
   BNE -nextEvent      ; condition not satisfied
   INY
-  BNE -nextOpCode     ; success
+  JMP -nextOpCode     ; success
 
 ; ---------------------------------
 ; open a HUD dialog
@@ -157,6 +187,12 @@ missionEventEndMission:
   LDA (bytePointer), Y
   STA missionEpilogScreen
 
+  CMP #6
+  BNE +continue
+  LDY #6
+  JSR soundLoad
+
++continue:
   JSR pullAndBuildStateStack
   .db 11								; # items
   .db $0D, 0						; change brightness 0: fade out
@@ -202,6 +238,7 @@ missionEventOpCodeHi:
   .db #> missionEventEndMission                   ; 4
   .db #> missionEventNewUnit                      ; 5
   .db #> missionConditionNodeReached              ; 6
+  .db #> missionConditionPilotNotPresent          ; 7
 
 missionEventOpCodeLo:
   .db #< missionEventOpenDialog
@@ -211,3 +248,4 @@ missionEventOpCodeLo:
   .db #< missionEventEndMission
   .db #< missionEventNewUnit
   .db #< missionConditionNodeReached
+  .db #< missionConditionPilotNotPresent

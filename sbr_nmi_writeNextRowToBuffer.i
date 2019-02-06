@@ -152,7 +152,7 @@ writeNextRowToBuffer:
 
 +upperRight:
 	LDA metaTileBlock01, X
-	JMP +done
+	;JMP +done
 
 +done:
 	CMP #64

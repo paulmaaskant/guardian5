@@ -57,6 +57,7 @@ insertObjectGridPosOnly:
 
   LDY #3
   LDA (pointer1), Y         ; movement properties
+  AND #$0F
   BEQ +continue             ; no movement points -> skip direction offset
 
   LDA object+0, X           ; type and facing direction

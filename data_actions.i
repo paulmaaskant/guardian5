@@ -7,8 +7,8 @@ actionTable:
 	.db $14, 4				; 03 BRACE
 	.db $17, 7				; 04 CLOSE COMBAT
 	.db $1B, 3				; 05 CHARGE
-	.db $19, 19				; 06 PIVOT TURN
-	.db $10, 24				; 07 SPRINT
+	.db $19, 19				; 06 PIVOT TURN		; remove from AI?
+	.db $10, 24				; 07 SPRINT				; remove from AI?
 	.db $44, 28				; 08 MARK TARGET
 
 ; b7 show waypoints when confirming action?

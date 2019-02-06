@@ -32,75 +32,115 @@ state_initializeDialog:
   JMP pushState
 
 state01_streamLo:
-  .db #> storyStream
-  .db #> mission01prolog
-  .db #> mission01epilogSuccess
-  .db #> mission01epilogFailed
-  .dsb 5
-  .db #> hud_allHostilesDestroyed
-  .db #> hud_activityDetected
-  .db #> instructionStream
-  .db #> hud_missionFailed
-  .db #> hud_staySharp
-  .db #> hud_playerDestroyed
+  .db #> storyStream                ; 00
+  .db #> mission01prologue          ; 01
+  .db #> mission01epilogSuccess     ; 02
+  .db #> mission01epilogFailed      ; 03
+  .db #> mission00prologue          ; 04
+  .db #> mission00epilogSuccess     ; 05
+  .db #> mission00epilogFailed      ; 06
+  .dsb 2                            ;
+  .db #> hud_allHostilesDestroyed   ; 09
+  .db #> hud_activityDetected       ; 10
+  .db #> instructionStream          ; 11
+  .db #> hud_missionFailed          ; 12
+  .db #> hud_staySharp              ; 13
+  .db #> hud_playerDestroyed        ; 14
+  .db #> hud_convoyDestroyed        ; 15
+  .db #> mission02prologue          ; 16
+  .db #> mission03prologue          ; 17
+
 state01_streamHi:
   .db #< storyStream
-  .db #< mission01prolog
+  .db #< mission01prologue
   .db #< mission01epilogSuccess
   .db #< mission01epilogFailed
-  .dsb 5
+  .db #< mission00prologue
+  .db #< mission00epilogSuccess
+  .db #< mission00epilogFailed
+  .dsb 2
   .db #< hud_allHostilesDestroyed
   .db #< hud_activityDetected
   .db #< instructionStream
   .db #< hud_missionFailed
   .db #< hud_staySharp
   .db #< hud_playerDestroyed
+  .db #< hud_convoyDestroyed
+  .db #< mission02prologue          ; 16
+  .db #< mission03prologue          ; 16
+
 state01_positionHi:
   .db $25
   .db $25
   .db $25
   .db $25
-  .dsb 5
+  .db $25
+  .db $25
+  .db $25
+  .dsb 2
   .db $24
   .db $24
   .db $25
   .db $24
   .db $24
   .db $24
+  .db $24
+  .db $25
+  .db $25
+
 state01_positionLo:
   .db $44
   .db $64
   .db $88
   .db $64
-  .dsb 5
+  .db $64
+  .db $88
+  .db $64
+  .dsb 2
   .db $46
   .db $46
   .db $44
   .db $46
   .db $46
   .db $46
+  .db $46
+  .db $64
+  .db $64
+
 state01_lastCol:
   .db $1C
   .db $1C
   .db $1E
   .db $1E
-  .dsb 5
+  .db $1C
+  .db $1E
+  .db $1E
+  .dsb 2
   .db $1E
   .db $1E
   .db $1C
   .db $1E
   .db $1E
   .db $1E
+  .db $1E
+  .db $1C
+  .db $1C
 
 state01_lineCount:
   .db 6
   .db 13
   .db 8
   .db 13
-  .dsb 5
+  .db 13
+  .db 8
+  .db 13
+  .dsb 2
   .db 3
   .db 3
   .db 8
   .db 3
   .db 3
   .db 3
+  .db 3
+  .db 13
+  .db 13

@@ -41,6 +41,13 @@ checkMovement:
   JSR findPath								; A* search path, may take more than 1 frame
   LDA actionMessage						; if move is allowed
   BPL +checkForSprint
+  CMP #$88                    ; out of range?
+  BNE +continue
+  LDA #aRUN                   ; if node is out of range
+  STA actionList+1            ; that means node is to far to run
+  INC list3+26                ; so change MOVE to RUN
+  INC list3+26
++continue:
   RTS                         ; no path found
 
 +checkForSprint:

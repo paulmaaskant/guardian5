@@ -134,55 +134,173 @@ briefScreen:
 	.db $FE, $20, $AA
 
 storyStream:
-	.db T, H, E, space, A, T, T, A, C, K, space, O, N, space, O, U, R, space, C, O, L, O, N, Y, lineBreak
-	.db S, T, A, R, T, E, D, space , F, I, V, E, space, D, A, Y, S, space, A, G, O, waitForA
+	db dict, dTHE, space, A, T, T, A, C, K, space, O, N, space, O, U, R, space, C, O, L, O, N, Y, lineBreak
+	db S, T, A, R, T, E, D, space , F, I, V, E, space, D, A, Y, S, space, A, G, O, waitForA
+	db nextPage
+	db dict, dTHE, R, E, space, W, E, R, E, space, N, O, lineBreak
+	db N, E, G, O, T, I, A, T, I, O, N, S, waitForA
 
 	.db nextPage
-	.db A, L, L, space, A, T, T, E, M, P, T, S, space, T, O, space, D, I, S, C, U, S, S, lineBreak
-	.db T, E, R, M, S, space, O, F, space, S, U, R, R, E, N, D, E, R, space, H, A, V, E, lineBreak
-	.db F, A, I, L, E, D, waitForA
-
-	.db nextPage
-	.db T, H, E, space, E, N, E, M, Y, space, L, A, U, N, C, H, E, D, space, A, lineBreak
+	.db dict, dTHE, space, dict, dENEMY, space, L, A, U, N, C, H, E, D, space, A, lineBreak
 	.db V, I, O, L, E, N, T, space, O, F, F, E, N, S, I, V, E, comma, lineBreak
 	.db lineBreak
-	.db O, V, E, R, W, H, E, L, M, I, N, G, space, T, H, E, space, C, O, L, O, N, Y, lineBreak
+	.db O, V, E, R, W, H, E, L, M, I, N, G, space, dict, dTHE, space, C, O, L, O, N, Y, lineBreak
 	.db D, E, F, E, N, S, I, V, E, space, F, O, R, C, E, S, waitForA
 
 	.db nextPage
-	.db Y, O, U, R, space, U, N, I, T, space, I, S, space, A, M, O, N, G, space, T, H, E, lineBreak
+	.db Y, O, U, R, space, dict, dUNIT, space, I, S, space, A, M, O, N, G, space, dict, dTHE, lineBreak
 	.db L, A, S, T, space, T, H, A, T, space, A, R, E, space, S, T, I, L, L, lineBreak
 	.db S, T, A, N, D, I, N, G, waitForA
 	.db endOfStream
 
 instructionStream:
 
-mission01prolog:
-	.db setPortrait, 0
-	.db S, T, A, N, D, space, B, Y, space, T, O, space, R, E, C, E, I, V, E, lineBreak
-	.db N, E, W, space, O, R, D, E, R, S, waitForA
-	.db nextPage
-	.db S,E,V,E,R,A,L,space, dict, enemy, space, U, N, I, T, S, space, H, A, V, E, lineBreak
-	.db B, R, O, K, E, N, space, T, H, R, O, U, G, H, space, O, U, R, lineBreak
-	.db D, E, F, E, N, S, E, space, L, I, N, E, waitForA
-	.db nextPage
-	.db T, H, E, Y, space, M, U, S, T, space, B, E, space, S, T, O, P, P, E, D, lineBreak
-	.db B, E, F, O, R, E, space, R, E, A, C, H, I, N, G, space, T, H, E, lineBreak
-	.db C, I, T, Y, lineBreak
-	.db lineBreak
-	.db Y, O, U, R, space, O, R, D, E, R, S, space, A, R, E, space, T, O, space, F, I, N, D, lineBreak
-	.db A, N, D, space, E, L, I, M, I, N, A, T, E, space, T, H, E, space, dict, enemy, waitForA
-	.db endOfStream
+
+mission00prologue:
+	db setPortrait, 0
+	db dict, dCOMMANDER, comma, lineBreak, lineBreak
+	db O, U, R, space, L, A, S, T, space, D, E, F, E, N, C, E, S, space, H, A, V, E, lineBreak
+	db F, A, I, L, E, D, lineBreak
+	db lineBreak
+	db W, I, T, H, I, N, space, A, space, F, E, W, space, H, O, U, R, S, space, W, E, lineBreak
+	db W, I, L, L, space, H, A, V, E, space, L, O, S, T, space, dict, dTHE, space, C, I, T, Y, waitForA
+	db nextPage
+	db O, U, R, space, O, N, L, Y, space, R, E, M, A, I, N, I, N, G, lineBreak
+	db O, B, J, E, C, T, I, V, E, space, I, S, space, T, O, space, E, N, S, U, R, E, lineBreak
+	db T, H, A, T, space, L, A, D, Y, space, N, O, V, E, M, B, E, R, lineBreak
+	db L, E, A, V, E, S, space, T, H, I, S, space, P, L, A, N, E, T, lineBreak
+	db S, A, F, E, L, Y, waitForA
+	db nextPage
+	db W, E, space, N, E, E, D, space, H, E, R, space, dict, dCONVOY, space, T, O, lineBreak
+	db G, E, T, space, O, U, T, space, O, F, space, dict, dTHE, space, C, I, T, Y, lineBreak
+	db I, M, M, E, D, I, A, T, L, Y, comma, space, S, O, space, T, H, A, T, space, S, H, E, lineBreak
+	db R, E, A, C, H, E, S, space, dict, dTHE, space, L, A, S, T, lineBreak
+	db O, P, E, R, A, T, I, O, N, A, L, space, S, P, A, C, E, P, O, R, T, lineBreak
+	db U, N, N, O, T, I, C, E, D, waitForA
+	db nextPage
+	db T, O, space, M, A, K, E, space, T, H, I, S, space, P, O, S, S, I, B, L, E, comma, lineBreak
+	db Y, O, U, space, A, R, E, space, T, O, space, C, R, E, A, T, E, space, A, lineBreak
+	db D, I, S, T, R, A, C, T, I, O, N, space, B, Y, space, E, N, G, A, G, I, N, G, lineBreak
+  db A, N, D, space, D, E, S, T, R, O, Y, I, N, G, space, dict, dTHE, space, dict, dENEMY, lineBreak
+	db F, O, R, C, E, S, space, I, N, space, S, E, C, T, O, R, space, 3, waitForA
+	db nextPage
+	db G, O, O, D, space, L, U, C, K, space, dict, dCOMMANDER, comma, lineBreak
+	db lineBreak
+	db A, N, D, space, S, T, A, Y, space, A, L, I, V, E, waitForA
+	db endOfStream
+
+mission01prologue:
+	db setPortrait, 0
+	db W, E, space, H, A, V, E, space, P, I, C, K, E, D, space, U, P, space, N, E, W, lineBreak
+	db dict, dENEMY, space, U, N, I, T, S, space, O, N, space, O, U, R, lineBreak
+	db L, O, N, G, space, dict, dRANGE, space, S, E, N, S, O, R, S, lineBreak
+	db lineBreak
+	db dict, dTHE, Y, space, A, R, E, space, O, N, space,	A, space, D, I, R, E, C, T, lineBreak
+	db I, N, T, E, R, C, E, P, T, space, C, O, U, R, S, E, space, W, I, T, H, lineBreak
+	db dict, dCONVOY, space, O, N, E, waitForA
+	db nextPage
+	db dict, dTHE, space, L, A, S, T, space, O, F, F, dash, W, O, R, L, D, lineBreak
+	db T, R, A, N, S, P, O, R, T, space, L, E, A, V, E, S, space, I, N, lineBreak
+	db 9, 0, space, dict, dMINUTES, comma, lineBreak
+	db lineBreak
+	db T, H, I, S, space, M, E, A, N, S, space, W, E, space, D, O, N, T, space, H, A, V, E, lineBreak
+	db T, I, M, E, space, T, O, space, A, L, T, E, R, space, C, O, U, R, S, E
+	db waitForA
+	db nextPage
+	db Y, O, U, R, space, O, R, D, E, R, S, space, A, R, E, space, T, O, lineBreak
+  db D, E, P, L, O, Y, space, I, M, M, E, D, I, A, T, L, Y, space, A, N, D, lineBreak
+	db P, R, O, T, E, C, T, space, dict, dCONVOY, space, O, N, E, space, F, R, O, M, lineBreak
+	db dict, dTHE, space, I, N, T, E, R, C, E, P, T, I, N, G, space, F, O, R, C, E, S, waitForA
+	db nextPage
+	db dict, dCOMMANDER, comma, lineBreak, lineBreak
+	db M, A, K, E, space, S, U, R, E, space, dict, dCONVOY, space, O, N, E, lineBreak
+	db S, U, R, V, I, V, E, S, space, T, H, I, S, space, E, N, C, O, U, N, T, E, R
+	db waitForA
+	db endOfStream
+
+mission02prologue:
+	db setPortrait, 0
+	db dict, dCOMMANDER, comma, lineBreak, lineBreak
+	db dict, dTHE, space, S,P,A,C,E, P, O, R, T, space, I,S, space, S, T, I, L, L, lineBreak
+	db U, N, D, E, R, space, O, U, R, space, C, O, N, T, R, O, L, comma, space, B, U, T, lineBreak
+	db T, I, M, E, space, I, S, space, R, U, N, N, I, N, G, space, O, U, T
+	db waitForA
+	db lineBreak, lineBreak
+	db A, N, D, space, W, E, space, H, A, V, E, space, A, N, O, T, H, E, R, lineBreak
+	db P,R, O, B, L, E, M, waitForA
+	db nextPage
+	db W, E, space, H, A, V, E, space, D, E, T, E, C, T, E, D, space, A, space, N, E, W, lineBreak
+	db F, O, R, T, I, F, I, E, D, space, dict, dENEMY, space, O, U, T, P, O, S, T, lineBreak
+	db lineBreak
+	db I, T, space, I, S, space, B, L, O, C, K, I, N, G, space, A, C, C, E, S, S, lineBreak
+	db T, O, space, dict, dTHE, space, S, P, A, C, E, P, O, R, T
+	db waitForA
+	db nextPage
+	db W, E, space, D, O, N, T, space, H, A, V, E, space, T, I, M, E, space, T, O, lineBreak
+	db G, O, space, A, R, O, U, N, D, lineBreak
+	db lineBreak
+	db A, N, D, space, W, E, space, C, A, N, T, space, A, F, F, O, R, D, space, T, O, lineBreak
+	db D, E, L, A, Y, space, dict, dCONVOY, space, O, N, E, space, B, Y, space, M, O, R, E, lineBreak
+	db T, H, A, N, space, A, space, F, E, W, space, dict, dMINUTES, waitForA
+	db nextPage
+	db dict, dTHE, space, O, U, T, P, O, S, T, space, H, A, S, space, M, O, U, N, T, E, D, lineBreak
+	db 4, space, H, E, A, V, I, L, Y, space, A, R, M, E, D, space, dict, dTURRET, S, lineBreak
+	db lineBreak
+	db T, A, K, E, space, dict, dTHE, M, space, O, U, T, space, B, E, F, O, R, E, lineBreak
+	db dict, dCONVOY, space, O, N, E, space, A, R, R, I, V, E, S
+	db waitForA
+	db endOfStream
+
+mission03prologue:
+	db setPortrait, 0
+	db dict, dCOMMANDER, comma, lineBreak
+	db lineBreak
+	db dict, dCONVOY, space, O, N, E, space, H, A, S, space, R, E, A, C, H, E, D, lineBreak
+	db dict, dTHE, space, S, P, A, C, E, P, O, R, T, lineBreak
+	db lineBreak
+	db L, A, D, Y, space, N, O, V, E, M, B, E, R, space, H, A, S, lineBreak
+	db B, O, A, R, D, E, D, space, dict, dTHE, space, L, A, S, T, lineBreak
+	db T, R, A, N, S, P, O, R, T, space, S, H, I, P, waitForA
+	db nextPage
+	db dict, dTHE, space, S, H, I, P, space, I, S, space, C, U, R, R, E, N, T, L, Y, lineBreak
+	db S, T, A, R, T, I, N, G, space, U, P, space, I, T, S, space, F, L, I, G, H, T, lineBreak
+	db S, Y, S, T, E, M, S, lineBreak
+	db lineBreak
+	db dict, dTHE, space, L, A, U, N, C, H, space, T, I, M, E, space, I, S, space, S, E, T, lineBreak
+	db A, T, space, T, dash, 1, 0, space, dict, dMINUTES, waitForA
+	db nextPage
+	db dict, dCOMMANDER, comma, space, T, H, I, S, space, I, S, space, Y, O, U, R, lineBreak
+	db F, I, N, A, L, space, M, I, S, S, I, O, N, lineBreak
+	db lineBreak
+	db Y, O, U, space, H, A, V, E, space, T, O, space, P, R, O, T, E, C, T, space, dict, dTHE, lineBreak
+	db S, H, I, P, space, W, H, I, L, E, space , I, T, space, I, S, lineBreak
+	db P, O, W, E, R, I, N, G, space, U, P, waitForA
+	db nextPage
+	db P, R, O, T, E, C, T, space, I, T, space, A, T, space, A, L, L, space, C, O, S, T, S, waitForA
+	db endOfStream
+
+mission00epilogSuccess:
+	db dict, dMISSION_ACCOMPLISHED, waitForA
+	db nextPage
+	db dict, dCONVOY, space, O, N, E, space, W, A, S, space, A, B, L, E, lineBreak
+	db T, O, space, E, S, C, A, P, E, space, dict, dTHE, space, C, I, T, Y, lineBreak
+	db U, N, D, E, T, E, C, T, E, D, waitForA
+	db nextPage
+	db H, A, V, E, space, Y, O, U, R, space, S, U, P, P, O, R, T, space, T, E, A, M, lineBreak
+	db D, O, space, E, M, E, R, G, E, N, C, Y, space, R, E, P, A, I, R, S, lineBreak
+	db A, N, D, space, P, R, O, C, E, E, D, space, T, O, lineBreak
+	db R, E, N, D, E, Z, V, O, U, S, space, P, O, I, N, T, space, B, E, T, A
+	db waitForA
+	db endOfStream
 
 mission01epilogSuccess:
-	.db M, I, S, S, I, O, N, space, A, C, C, O, M, P, L, I, S, H, E, D
-	.db waitForA
+	db dict, dMISSION_ACCOMPLISHED, waitForA
 	.db nextPage
 	.db Y, O, U, space, H, A, V, E, space, E, L, I, M, I, N, A, T, E, D, lineBreak
-	.db T, H, E, space,  E, N, E, M, Y, space, T, H, R, E, A, T
+	.db dict, dTHE, space, dict, dENEMY, space, T, H, R, E, A, T
 	.db waitForA
 	.db nextPage
-	.db T, H, E, space, C, I, T, Y, space, I, S, space, S, A, F, E
+	.db dict, dTHE, space, C, I, T, Y, space, I, S, space, S, A, F, E
 	.db waitForA
 	.db nextPage
 	.db F, O, R, space, N, O, W, waitForA
@@ -190,8 +308,12 @@ mission01epilogSuccess:
 	.db T, H, A, N, K, S, space, F, O, R, space, P, L, A, Y, I, N, G, waitForA
 	.db endOfStream
 
+mission00epilogFailed:
+	db T, R, Y, space, A, G, A, I, N, waitForA
+	db endOfStream
+
 mission01epilogFailed:
-	.db Y, O, U, R, space, U, N, I, T, space, H, A, S, space, B, E, E, N, lineBreak
+	.db Y, O, U, R, space, dict, dUNIT, S, space, H, A, S, space, B, E, E, N, lineBreak
 	.db D, E, S, T, R, O, Y, E, D
 	.db waitForA
 	.db nextPage
@@ -203,30 +325,39 @@ mission01epilogFailed:
 
 
 hud_activityDetected:
-	.db H, O, S, T, I, L, E, space, U,N,I,T,S, lineBreak, D, E, T, E, C, T, E, D, waitForA
+	.db H, O, S, T, I, L, E, space, dict, dUNIT, S, space, D, E, T, E, C, T, E, D, waitForA
 	.db nextPage
-	.db G,E,T,space,R,E,A,D,Y, space, T,O, space, E, N, G, A, G, E, waitForA
+	.db G, E, T, space, R, E, A, D, Y, space, T, O, space, E, N, G, A, G, E, waitForA
 	.db endOfStream
 
 hud_playerDestroyed:
 	db setPortrait, $40+1
-	db I, space, A, M, space, C, H, E, C, K, I, N, G, space,  O, U, T, comma, lineBreak
-	db C, O, M, M, A, N, D, E, R, waitForA
+	db dict, dCOMMANDER, comma, lineBreak
+	db I, space, H, A, V, E, space, T, A, K, E, N, space, C, R, I, T, I, C, A, L, lineBreak
+	db dict, dDAMAGE, waitForA
+	db nextPage
+	db E, J, E, C, T, I, N, G, space, N, O, W, waitForA
 	db endOfStream
 
 hud_staySharp:
-	.db N,E,W,space,H,O,S,T,I,L,E,S, space, C,O,M,I,N,G,space,O,U,R,lineBreak
-	.db W,A,Y,waitForA
+	.db N, E, W, space, H, O, S, T, I, L, E, S, space, C, O, M, I, N, G, space, O, U, R, lineBreak
+	.db W, A, Y, waitForA
 	.db nextPage
 	.db S, T, A, Y, space, S, H, A, R, P, waitForA
 	.db endOfStream
+
+hud_convoyDestroyed:
+	.db dict, dCONVOY, space, O, N, E, space, H, A, S, space, B, E, E, N, lineBreak
+	.db D, E, S, T, R, O, Y, E, D, waitForA
+	.db endOfStream
+
 
 hud_allHostilesDestroyed:
 	.db A, L, L, space, H, O, S, T, I, L, E, S, space, H, A, V, E, space, B, E, E, N, lineBreak
 	.db D, E, S, T, R, O, Y, E, D, waitForA
 	.db nextPage
 	.db setPortrait, 0
-	.db W, E, L, L, space, D, O, N, E, comma, space, C,O,M,M,A,N,D,E,R, waitForA
+	.db W, E, L, L, space, D, O, N, E, comma, space, dict, dCOMMANDER, waitForA
 	.db nextPage
 	.db R, E, P, O, R, T, space, B, A, C, K, space, T, O, space, B, A, S, E, waitForA
 	.db endOfStream
@@ -247,14 +378,9 @@ resultTargetHit:
 	.db endOfStream
 
 resultTargetMiss:
-	.db nextPage																																	; clear dialog
-	.db targetName, space, E,V,A,D,E,D																				;
-	.db $F1
-	.db T, H, E, space, A, T, T, A, C, K																				; next line
-	;.db N, O, space, dict, 15																										  ; NO {DAMAGE}
-	;.db $F1																																				; next line
-	;.db I,N,F,L,I,C,T,E,D																													; INFLICTED
-	.db waitForA
+	.db nextPage
+	.db targetName, space, E, V, A, D, E, D, lineBreak
+	.db dict, dTHE, space, A, T, T, A, C, K, waitForA
 	.db endOfStream
 
 resultUnitDestroyed:
@@ -265,7 +391,7 @@ resultUnitDestroyed:
 
 resultChargeDamageSustained:
 	.db nextPage
-	.db parameter, 21, space, dict, 15, lineBreak																	; [15 = DAMAGE]
+	.db parameter, 21, space, dict, dDAMAGE, lineBreak
 	.db S, U, S, T, A, I, N, E, D, waitForA
 	.db endOfStream
 
@@ -275,12 +401,12 @@ resultHeatDamageSustained:
 	.db C, R, I, T, I, C, A, L, waitForA
 	.db nextPage
 	.db S, U, S, T, A, I, N, E, D, lineBreak
-	.db parameter, 16, space, H, E, A, T, space, dict, 15, waitForA
+	.db parameter, 16, space, dict, dHEAT, space, dict, dDAMAGE, waitForA
 	.db endOfStream
 
 resultUnitOffline:
 	.db nextPage
-	.db U, N, I, T, space, O, F, F, L, I, N, E, waitForA
+	.db dict, dUNIT, space, O, F, F, L, I, N, E, waitForA
 	.db endOfStream
 
 resultTargetOffline:
@@ -296,28 +422,27 @@ resultUnitRestart:
 
 resultEngineCriticalDamage:
 	.db nextPage
-	.db C,O,O,L,I,N,G,lineBreak
-	.db S,Y,S,T,E,M,lineBreak
-	.db M,A,L,F,U,N,C,T,I,O,N,waitForA
+	.db C, O, O, L, I, N, G, lineBreak
+	.db S, Y, S, T, E, M, lineBreak
+	.db M, A, L, F, U, N, C, T, I, O, N, waitForA
 	.db endOfStream
 
 resultTargetingCriticalDamage:
 	.db nextPage
-	.db T,A,R,G,E,T,I,N,G,lineBreak
-	.db S,Y,S,T,E,M,lineBreak
-	.db M,A,L,F,U,N,C,T,I,O,N,waitForA
+	.db T, A, R, G, E, T, I, N, G, lineBreak
+	.db S, Y, S, T, E, M, lineBreak
+	.db M, A, L, F, U, N, C, T, I, O, N, waitForA
 	.db endOfStream
 
 resultWeaponsCriticalDamage:
 	.db nextPage
-	.db W,E,A,P,O,N,S,lineBreak
-	.db S,Y,S,T,E,M,lineBreak
-	.db M,A,L,F,U,N,C,T,I,O,N,waitForA
+	.db W, E, A, P, O, N, S, lineBreak
+	.db S, Y, S, T, E, M, lineBreak
+	.db M, A, L, F, U, N, C, T, I, O, N, waitForA
 	.db endOfStream
 
 resultMobilityCriticalDamage:
 	.db nextPage
-	.db M,O,B,I,L,I,T,Y,lineBreak
-	.db R,E,D,U,C,E,D
-	.db waitForA
+	.db M, O, B, I, L, I, T, Y, lineBreak
+	.db R, E, D, U, C, E, D, waitForA
 	.db endOfStream

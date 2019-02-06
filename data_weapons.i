@@ -1,6 +1,6 @@
 weaponType:
-  .db 42			    ; 0 name: GIANT BLADE
-  .db %01000000   ; 1 damage profile (+1 close combat)
+  .db 74			    ; 0 name: EMPTY SLOT
+  .db %00000000   ; 1 damage profile (+1 close combat)
   .db %00000000		; 2 target inflicted heat profile
   .db 0           ; 3 heat cost
 
@@ -25,7 +25,7 @@ weaponType:
   .db 0           ; 3 heat cost
 
   .db 68			    ; 0 name: FLAMER
-  .db %00000000   ; 1 damage profile (+1 long range)
+  .db %00000000   ; 1 damage profile (n/a)
   .db %00000000		; 2 target inflicted heat profile
   .db 0           ; 3 heat cost
 
@@ -34,7 +34,7 @@ weaponType:
   .db %00000000		; 2 target inflicted heat profile
   .db 0           ; 3 heat cost
 
-  .db 67			    ; 0 name: ITEM
-  .db %00000000   ; 1 damage profile (+1 long range)
+  .db 42			    ; 0 name: GIANT BLADE
+  .db %01000000   ; 1 damage profile (+1 close combat)
   .db %00000000		; 2 target inflicted heat profile
   .db 0           ; 3 heat cost

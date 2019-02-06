@@ -1,4 +1,6 @@
 state_initializeDestroyObject:
+  LDA #0                        ; make sure none of the effects interfere with state 4E (implosion)
+  STA runningEffect
 
   LDA #6
   STA effects

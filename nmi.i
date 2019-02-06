@@ -451,6 +451,9 @@ NMI:
 
 +doneY:
 
+	LDA #4				; bank 4: bytestreams
+	STA $8000			; in bank slot 1
+
 
 								; restore A, X & Y to values before NMI
 	PLA 					; pull 1st value of the stack

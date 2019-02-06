@@ -9,7 +9,17 @@ calculateActionPointCost:
 +continue:
   LDY selectedAction
   LDX actionList, Y						    ;
+
+  LDA activeObjectStats+2
+  AND #typeNoHeat
+  BEQ +continue
+  LDA #0                          ; no heat cost applied
+  BEQ +store
+
++continue:
   LDA heatCostTable, X            ; heat cost
+
++store:
   STA list3+12                    ; store heat cost
   LDA actionPointCostTable, X     ; load action point cost
   BPL +store

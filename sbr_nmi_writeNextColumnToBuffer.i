@@ -167,7 +167,7 @@ writeNextColumnToBuffer:
 
 +lowerLeft:
 	LDA metaTileBlock02, X	; lower left
-	JMP +done
+	;JMP +done
 
 +done:
 	CMP #64

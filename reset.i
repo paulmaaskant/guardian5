@@ -152,4 +152,7 @@ RESET:
 	LDA #63													; clear up to (including) sprite 63
 	JSR clearSprites
 
+	LDA #$FF
+	STA mission
+
 	JMP mainGameLoop

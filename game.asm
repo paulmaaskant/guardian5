@@ -105,7 +105,7 @@
 																				; object grid position is stored separately as it will be sorted regularly
 	objectListSize								.dsb 1	; number of objects presently in memory
 	objectList										.dsb 16	; (b7) AI / player (b6-3) object index (b2) turn flag (b1-0) faction
-																				; the rest of the object information is stored (4 bytes each) so that it does not require sorting whenever the object's position changes
+																				; the rest of the object information is stored (8 bytes each) so that it does not require sorting whenever the object's position changes
 
 	actionList										.dsb 10	; ------------------------------------------------------
 	selectedAction								.dsb 1	; various
@@ -276,6 +276,7 @@
 	.include sound04.i
 	.include sound05.i
 	.include sound06.i
+	.include sound07.i
 	.include soundEffects.i
 
   .org $A000
@@ -285,12 +286,13 @@
 	; --------------------------------------------------------
 	.base $A000
 	.include data_dictionary.i
-	.include data_byteStreams.i
-	.include data_lvl1_objects.i
+	.include data_missions.i
 	.include sbr_getNextByte.i
+
 	.include data_spriteFrames.i
 	.include data_metaSpriteFrames.i
 	.include data_animations.i
+
 	.include state_initializeTitleMenu.i
 	.include state_titleScreen.i
 	.include state_compositeTitleMenu.i
@@ -308,7 +310,7 @@
 	; PRG bank 4: -
 	; --------------------------------------------------------
 	.base $8000
-
+	.include data_byteStreams.i
 	;	.org $A000
 
 	; --------------------------------------------------------
@@ -443,6 +445,10 @@ mainGameLoop:
 	LDA effects
 	AND #%00000111										; mask to get number of effect animations
 	BEQ +nextEvent
+	CMP #6
+	BCC +continue	
+	LDA #6
+ +continue:
 	TAX
 	DEX
 
@@ -1042,38 +1048,17 @@ probabilityDistribution:
 	.db 8     ; 11
 	.db 5     ; 12
 
-mapDim:
-	.db 15, 7
+mapDimL:
+	.db 15, 7, 15
+mapDimW:
+	.db 15, 7, 7
 mapMaxCameraYLo
-	.db $70, $48
-
+	.db $70, $38, $38
 mapMaxCameraXLo
-	.db $00, $80
+	.db $00, $80, $40
 mapMaxCameraXHi
-	.db $02, $00
+	.db $02, $00, $01
 
-mapMetaTilesInRow:
-	.db 48, 24
-map03Rows15Cols: ; 3 x #metaTiles in row - 15
-	.db 129, 57
-map12Rows15ColsLo:	;
-	.db $4F, $2F
-map12Rows15ColsHi:
-	.db $02, $01
-map14RowsLo:								; 14 * metatiles in row
-	.db $A0, $50
-map14RowsHi:
-	.db $02, $01
-map15RowsLo:								; 15 * metatiles in row
-	.db $D0, $68
-map15RowsHi:
-	.db $02, $01
-mapShadowLo:
-	.db #<shadowMap00
-	.db #<shadowMap01
-mapShadowHi:
-	.db #>shadowMap00
-	.db #>shadowMap01
 
 ; object tile tables
 
@@ -1086,8 +1071,8 @@ objectTiles:
 .hex 46 47 56 57 ; 05 mech legs d5
 .hex 66 67 76 77 ; 06 mech legs d6
 .hex A6 A6 B6 B7 ; 07 plain ground alternative
-.hex A1 A2 B1 B2 ; 08 road
-.hex A3 A4 B3 B4 ; 09 road
+.hex A1 A2 B1 B2 ; 08 road \
+.hex A3 A4 B3 B4 ; 09 road /
 .hex A1 A4 B3 B2 ; 10 road
 .hex 42 43 52 53 ; 11 ground fan (decorative)
 .hex 6E 6F 7E 7F ; 12 burning debris
@@ -1099,7 +1084,10 @@ objectTiles:
 .hex AE AF 5E BF ; 18 shadow d5
 .hex 4E AF BE BF ; 19 shadow d6
 .hex A3 A2 B1 B4 ; 20 road square
-.hex 6C 6D 88 8B ; 13 turret base
+.hex 6C 6D 88 8B ; 21 turret base
+.hex A1 A4 B1 B4 ; 22 road turn v
+.hex A1 A4 B3 B4 ; 23 road turn T all but Rd
+.hex A3 A2 B3 B2 ; 24 road turn ^
 
 
 

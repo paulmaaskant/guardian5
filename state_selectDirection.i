@@ -73,6 +73,7 @@ state_selectDirection:
 
 	LDY #3
 	LDA (pointer1), Y       ; movement properties
+	AND #$0F
 	BNE +continue           ; if object is stationary (zero movement)
 	STA locVar1             ; reset direction offset to 0
 

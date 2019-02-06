@@ -60,9 +60,18 @@ state_ai_determineAction:
   BNE +next
   LDA activeObjectStats+2     ; hovering units cannot do close combat
   BMI +zero
+  AND #$0F                    ; stationary units can also not do close
+  BEQ +zero
   LDA distanceToTarget        ; close combat only if distance is 1
   CMP #1
   BNE +zero
+
+
++next:
+  CPX #aiMOVE                 ; second move
+  BNE +next
+  LDA activeObjectStats+2     ; hovering units cannot sprint
+  BMI +zero
 
 +next:
   CPX #aiBRACE                 ; Adjustment #2
@@ -81,14 +90,7 @@ state_ai_determineAction:
 +forceBrace:
   LDA #10                      ; set BRACE score to 10 if unit is overheating
   STA list5, X
-
   BNE +next
-
-;+next:
-;  CPX #aiBRACE                 ; Adjustment #3 hovering units cannot BRACE
-;  BNE +next                    ;
-;  LDA activeObjectStats+2      ;
-;  BPL +next                    ;
 
 +zero:
   LDA #0

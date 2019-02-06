@@ -110,7 +110,7 @@ state_titleScreen:
 	; built in RTS
 
 +loadMap:
-	LDA #0
+	LDA #2
 	STA mission
 
 	JSR pullAndBuildStateStack

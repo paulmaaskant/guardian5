@@ -30,6 +30,7 @@ state_newTurn:
 
   LDY #4                  ; initiative score
   LDA (pointer1), Y       ;
+  AND #$0F
 
   JSR addToSortedList     ; input: X item, A score
 

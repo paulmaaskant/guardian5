@@ -9,7 +9,8 @@ soundsLo:
   .db #< sound04
   .db #< sound05
   .db #< sound06
-  .dsb 9, #< sound15
+  .db #< sound07
+  .dsb 8, #< sound15
   .db #< sound10
   .db #< sound11
   .db #< sound12
@@ -33,7 +34,8 @@ soundsHi:
   .db #> sound04
   .db #> sound05
   .db #> sound06
-  .dsb 9, #> sound15
+  .db #> sound07
+  .dsb 8, #> sound15
   .db #> sound10
   .db #> sound11
   .db #> sound12

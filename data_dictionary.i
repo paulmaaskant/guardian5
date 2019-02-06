@@ -19,7 +19,7 @@ stringListL:
 	.db #< str_CONFIRM									; 17
 	.db #< str_TARGET_BRACED						; 18
 	.db #< str_PIVOT_TURN								; 19
-	.db #< str_DAMG_ICONS								; 20
+	.db #< str_DAMG_ICONS								; 20 ??
 	.db #< str_GEIST										; 21
 	.db #< str_MARU											; 22
 	.db #< str_NIKOLI										; 23
@@ -49,7 +49,7 @@ stringListL:
 	.db #< str_ACTUATOR									; 47
 	.db #< str_TURRET										; 48
 	.db #< str_CONVOY										; 49
-	.db #< str_ACCUR										; 50
+	.db #< str_THE											; 50
 	.db #< str_EXTRA_ARMOR							; 51
 	.db #< str_CASE											; 52
 	.db #< str_RANGE										; 53
@@ -69,7 +69,11 @@ stringListL:
 	.db #< str_ITEM											; 67
 	.db #< str_FLAMER										; 68
 	.db #< str_ROUND										; 69
-	.db #< frm_TALL_LEFT								; 70
+	.db #< str_MISSION_ACCOMPLISHED			; 70
+	.db #< str_BUILD										; 71
+	.db #< str_COMMANDER								; 72
+	.db #< str_MINUTES									; 73
+	.db #< str_NONE								; 74
 
 stringListH:
 	.db #> str_EMPTY
@@ -119,15 +123,15 @@ stringListH:
 	.db #> str_SLINGSHOT
 	.db #> str_MEDIUM_LASER
 	.db #> str_APC
-	.db #> str_ACTUATOR									; 47
+	.db #> str_ACTUATOR
 	.db #> str_TURRET
 	.db #> str_CONVOY
-	.db #> str_ACCUR
-	.db #> str_EXTRA_ARMOR										; 51
-	.db #> str_CASE										; 52
-	.db #> str_RANGE										; 53
-	.db #> str_HEAT											; 54
-	.db #> str_FRIENDLY_UNIT						; 55
+	.db #> str_THE
+	.db #> str_EXTRA_ARMOR
+	.db #> str_CASE
+	.db #> str_RANGE
+	.db #> str_HEAT
+	.db #> str_FRIENDLY_UNIT
 	.db #> str_JUMP
 	.db #> str_SPEED_X
 	.db #> str_BRAWLER
@@ -142,7 +146,11 @@ stringListH:
 	.db #> str_ITEM
 	.db #> str_FLAMER
 	.db #> str_ROUND
-	.db #> frm_TALL_LEFT
+	.db #> str_MISSION_ACCOMPLISHED
+	.db #> str_BUILD
+	.db #> str_COMMANDER
+	.db #> str_MINUTES
+	.db #> str_NONE
 
 str_EMPTY:
 	.db 0
@@ -238,8 +246,8 @@ str_MEDIUM_LASER:
 	.db 12, M, E, D, I, U, M, space, L, A, S, E, R
 str_NIKOLI:
 	.db 6, N, I, K, O, L, I
-str_ACCUR:
-	.db 5, A, C, C, U, R
+str_THE:
+	.db 3, T, H, E
 str_EXTRA_ARMOR:
 	.db 11, E, X, T, R, A, space, A, R, M, O, R
 str_CASE:
@@ -282,9 +290,15 @@ str_ACTUATOR:
 	.db 8, A, C, T, U, A, T, O, R
 str_TURRET:
 	.db 6, T, U, R, R, E, T
-
 str_CONVOY:
 	.db 6, C, O, N, V, O, Y
-
-frm_TALL_LEFT:
-	.db 4
+str_BUILD
+	.db 5, B, U, I, L, D
+str_COMMANDER
+	db 9, C, O, M, M, A, N, D, E, R
+str_MISSION_ACCOMPLISHED
+	db 20, M, I, S, S, I, O, N, space, A, C, C, O, M, P, L, I, S, H, E, D
+str_MINUTES
+	db 7, M, I, N, U, T, E, S
+str_NONE
+	db 4, N, O, N, E

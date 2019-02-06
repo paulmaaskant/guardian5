@@ -17,7 +17,6 @@ state_initializeMap:
 	BNE -loop
 
 	LDY mission
-
 	LDA missionEventsLo, Y
 	STA missionEventStreamPointer+0
 	LDA missionEventsHi, Y
@@ -66,6 +65,42 @@ state_initializeMap:
 	BEQ -outterLoop
 
 +continue:
+	; ---------------------------------
+	; block nodes outside of map's dimensions
+	; ---------------------------------
+	LDY missionMapSettings
+	LDA mapDimL, Y
+	ASL
+	ASL
+	ASL
+	ASL
+	STA locVar1
+
+	LDX #0
+
+-loop:
+	TXA
+	AND #$F0
+	CMP locVar1
+	BEQ +continue
+	BCS +blocked
+
++continue:
+	TXA
+	AND #$0F
+	CMP mapDimW, Y
+	BEQ +nextNode
+	BCS +blocked
+	BCC +nextNode
+
++blocked:
+	LDA #$FF
+	STA nodeMap, X
+
++nextNode:
+	DEX
+	BNE -loop
+
 	; -- object info ---
 	JSR getNextByte						; number of object on map
 	STA list1+3
@@ -157,7 +192,6 @@ state_initializeMap:
 	DEX
 	BNE -loop
 
-
 	LDY #7								; initialize camera variables
 	LDA #0								;
 												;
@@ -185,15 +219,19 @@ state_initializeMap:
 missionSetupHi:
 	db #>mission00Setup
 	db #>mission01Setup
+	db #>mission02Setup
 
 missionSetupLo:
 	db #<mission00Setup
 	db #<mission01Setup
+	db #<mission02Setup
 
 missionEventsHi
 	db #>mission00Events
 	db #>mission01Events
+	db #>mission02Events
 
 missionEventsLo
 	db #<mission00Events
 	db #<mission01Events
+	db #<mission02Events

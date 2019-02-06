@@ -34,7 +34,7 @@ getPilot:
   AND #%01111000
   TAX
   LDA object+4, X
-  AND #%01111100  
+  AND #%01111100
   RTS
 
 +active:
@@ -44,7 +44,7 @@ getPilot:
   RTS
 
 +target:
-  LDA targetObjectIndex
+  LDX targetObjectIndex
   LDA object+4, X
   AND #%01111100
   RTS

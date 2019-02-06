@@ -82,6 +82,6 @@ currentEffectValues:
   .db  117, 35, 35, 37,  0,  0
 
 initialObjectValue:
-  .hex 04 0C 30 30 14 04 10 20 24 00 00 10
+  .hex 04 0C 30 30 14 04 10 20 24 00 70 10
 initialObjectIndex:
   .hex 00 04 06 07 08 0C 0E 0F 10 14 16 17
