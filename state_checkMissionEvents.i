@@ -62,29 +62,40 @@ missionConditionRound:
   BNE -nextOpCode
 
   ; ---------------------------------
-  ; check if pilot is not present
+  ; satisfied if number of pilot Y occurrences == X
   ; ---------------------------------
-missionConditionPilotNotPresent:
+missionConditionPilotCount:
+  INC debug
   INY
+  LDA (bytePointer), Y
+  ASL
+  ASL
+  STA locVar4                 ; parameter 1 (pilot index)
+  INY
+  LDA #0
+  STA locVar5                 ; occurance count
+
   LDX objectListSize
 
 -loop:
   STX locVar3
-
   LDA objectList-1, X
   AND #%01111000
   TAX
   LDA object+4, X
   AND #%01111100              ; pilot ID
-  LSR
-  LSR
-  CMP (bytePointer), Y        ; compare to event parameter
-  BEQ -nextEvent              ; pilot found -> condition not satisfied
+  CMP locVar4                 ; object pilot index == parameter pilot index?
+  BNE +skip                   ; no -> try next object
+  INC locVar5                 ; yes -> increase counter
 
++skip:
   LDX locVar3
   DEX
   BNE -loop
 
+  LDA locVar5
+  CMP (bytePointer), Y
+  BNE -nextEvent              ; fail
   INY
   BNE -nextOpCode             ; success
 
@@ -104,7 +115,6 @@ missionConditionOnlyFriendlies:
   BNE -nextEvent      ; condition not satisfied
   INY
   BNE -nextOpCode     ; success
-
 
   ; ---------------------------------
   ; check if only hostiles remain
@@ -134,7 +144,10 @@ missionConditionNodeReached:
   BNE -nextEvent      ; condition not satisfied
   LDA object+3, X
   CMP missionTargetNode
-  BNE -nextEvent      ; condition not satisfied
+  BEQ +success
+  JMP -nextEvent      ; condition not satisfied
+
++success:
   INY
   JMP -nextOpCode     ; success
 
@@ -177,9 +190,25 @@ missionEventNewUnit:
   .db $0B                           ; center on cursor (back to active unit)
 
 ; ---------------------------------
-; end the mission
+; play sound
 ; ---------------------------------
-missionEventEndMission:
+missionEventPlaySound:
+  INY
+  LDA (bytePointer), Y
+  TAY
+  JSR soundSilence
+  JSR soundLoad
+
+  JSR getMissionEventFlag           ; check off the event flag
+  ORA missionEvents, Y              ; Y is destroyed
+  STA missionEvents, Y
+
+  JMP -nextEvent
+
+; ---------------------------------
+; mission accomplished
+; ---------------------------------
+missionEventMissionAccomplished:
   INY
   LDA (bytePointer), Y
   STA missionDialogStream
@@ -187,12 +216,27 @@ missionEventEndMission:
   LDA (bytePointer), Y
   STA missionEpilogScreen
 
-  CMP #6
-  BNE +continue
-  LDY #6
-  JSR soundLoad
+  JSR pullAndBuildStateStack
+  .db 11								; # items
+  .db $0D, 0						; change brightness 0: fade out
+  .db $00, 255					; load screen 255: missionEpilogScreen
+  .db $0D, 1						; change brightness 1: fade in
+  .db $01, 255					; load stream 255: missionDialogStream
+  .db $0D, 0						; change brightness 0: fade out
+  .db $36						    ; title menu
+  ; built in RTS
 
-+continue:
+; ---------------------------------
+; mission failed
+; ---------------------------------
+missionEventMissionFailed:
+  INY
+  LDA (bytePointer), Y
+  STA missionDialogStream
+  INY
+  LDA (bytePointer), Y
+  STA missionEpilogScreen
+
   JSR pullAndBuildStateStack
   .db 11								; # items
   .db $0D, 0						; change brightness 0: fade out
@@ -231,21 +275,25 @@ getMissionEventFlag:
   ; opCode jump table
   ; ---------------------------------
 missionEventOpCodeHi:
-  .db #> missionEventOpenDialog                   ; 0
-  .db #> missionConditionRound                    ; 1
-  .db #> missionConditionOnlyFriendlies           ; 2
-  .db #> missionConditionOnlyHostiles             ; 3
-  .db #> missionEventEndMission                   ; 4
-  .db #> missionEventNewUnit                      ; 5
-  .db #> missionConditionNodeReached              ; 6
-  .db #> missionConditionPilotNotPresent          ; 7
+  db #> missionEventOpenDialog                   ; 0
+  db #> missionConditionRound                    ; 1
+  db #> missionConditionOnlyFriendlies           ; 2
+  db #> missionConditionOnlyHostiles             ; 3
+  db #> missionEventMissionAccomplished          ; 4
+  db #> missionEventNewUnit                      ; 5
+  db #> missionConditionNodeReached              ; 6
+  db #> missionConditionPilotCount               ; 7
+  db #> missionEventPlaySound                    ; 8
+  db #> missionEventMissionFailed                ; 9
 
 missionEventOpCodeLo:
-  .db #< missionEventOpenDialog
-  .db #< missionConditionRound
-  .db #< missionConditionOnlyFriendlies
-  .db #< missionConditionOnlyHostiles
-  .db #< missionEventEndMission
-  .db #< missionEventNewUnit
-  .db #< missionConditionNodeReached
-  .db #< missionConditionPilotNotPresent
+  db #< missionEventOpenDialog
+  db #< missionConditionRound
+  db #< missionConditionOnlyFriendlies
+  db #< missionConditionOnlyHostiles
+  db #< missionEventMissionAccomplished
+  db #< missionEventNewUnit
+  db #< missionConditionNodeReached
+  db #< missionConditionPilotCount
+  db #< missionEventPlaySound                    ; 8
+  db #< missionEventMissionFailed                ; 9

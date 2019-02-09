@@ -7,14 +7,14 @@
 ; - BUG face target doesnt work when range is beyond 255 pix
 ; - BUG player can move twice which is further than a sprint
 ; - BUG unit on 00 blocks line of sight attacker at 03, target at 70
+; - BUG spawn on non overwritable tiles goes wrong
 ; - BUG unique items are not swapped within the same mech
 ; - BUG occasionally the action menu shows strange tiles if the AI unit is unable to fire at its target
 
 
 ; FEATURES
 
-
-; - AI targeting: if target is blocked by another non-friendly unit, target the blocking unit instead
+; - add parameter to pilot condition: number of occurances
 ; - AI targeting: new variable = preferred target. The unit that is the preferred target will get an increased weight in the target alghorithm
 ; - create additional tiles
 

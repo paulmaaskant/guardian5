@@ -88,7 +88,7 @@ objectType5:			; hover: LEMUR
 										; ------
 	.db 39						; 00 drone name: LEMUR
 	.db 3							; 01 max hit points
-	.db 3							; 02 hit point structure threshold
+	.db 2							; 02 hit point structure threshold
 	.db 128+4			  	; 03 type settings | movement points
 	.db 4*16+4				; 04 icon | initiative
 	.db %01010101			; 05 damage
@@ -117,7 +117,7 @@ objectType7:				; building: turret
 	.db 0							; 02 hp structure threshold
 	.db typeNoHeat+0	; 03 movement points + type
 	.db 6*16 + 1			; 04 icon | initiative
-	.db %10101010			; 05 damage
+	.db %00011010			; 05 damage
 	.db 0 						; 06 special action: none
 	.db 21						; 07 tile BG offset
 

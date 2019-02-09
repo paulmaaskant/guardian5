@@ -33,27 +33,69 @@ state_ai_determineAction:
   LDX #6
   STX selectedAction
 
--loop:
+-actionLoop:
   LDX selectedAction
   LDA state29_actionID, X
   STA actionList, X
   CPX #2                    ; actions 0&1 do not require target check
   BCC +continue
+
+-reCheckTarget:
   LDA #emptyString          ; clear msg
   STA actionMessage
   JSR checkTarget           ; can action be executed?
 
-  LDX selectedAction
   LDA actionMessage
   BPL +continue             ; yes -> continue
 
+  ; --------------------------------------------------------
+  ; AI behavior:
+  ; if target is blocked (message $85)
+  ; by node (list1+9) and that node holds a another unit
+  ; then target the blocking unit instead
+  ; and check if it can be attacked
+  ; --------------------------------------------------------
+  CMP #$85
+  BNE +zeroScore
+
+  LDX objectListSize
+
+-objectLoop:
+  LDA objectList-1, X
+  AND #%01111000
+  TAY
+  LDA object+3, Y
+  CMP list1+9
+  BNE +tryNext
+
+  STA cursorGridPos
+  STA par1
+  LDA activeObjectGridPos
+  JSR distance
+  STA distanceToTarget        ; does not break X or Y
+
+  LDA objectList-1, X
+  STA targetObjectTypeAndNumber
+  STY targetObjectIndex
+
+  JSR updateTargetMenu        ; breaks x and y
+  JMP -reCheckTarget
+
++tryNext:
+  DEX
+  BNE -objectLoop
+  ; -------------------------------------------------------
+
++zeroScore:
   LDA #0                    ; no -> zero score
   BEQ +store
 
 +continue:
+  LDX selectedAction
   LDA state29_baslineLineScore, X
 
 +store:
+  LDX selectedAction
   STA list5, X
 
   CPX #aiCLOSECOMBAT          ; Close combat check
@@ -65,7 +107,6 @@ state_ai_determineAction:
   LDA distanceToTarget        ; close combat only if distance is 1
   CMP #1
   BNE +zero
-
 
 +next:
   CPX #aiMOVE                 ; second move
@@ -98,8 +139,10 @@ state_ai_determineAction:
 
 +next:
   DEC selectedAction
-  BPL -loop
+  BMI +continue
+  JMP -actionLoop
 
++continue:
   ; ----------------------------------------
   ; 2. select best option
   ; ----------------------------------------

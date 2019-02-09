@@ -2,8 +2,8 @@
 ; X
 ; 0 active object
 ; 1 target object
-; 2 first player unit
-; 3 first enemy unit
+; 2 first enemy unit in list
+; 3 first player unit in list
 
 getPilot:
   DEX

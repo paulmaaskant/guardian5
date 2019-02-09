@@ -136,9 +136,6 @@ briefScreen:
 storyStream:
 	db dict, dTHE, space, A, T, T, A, C, K, space, O, N, space, O, U, R, space, C, O, L, O, N, Y, lineBreak
 	db S, T, A, R, T, E, D, space , F, I, V, E, space, D, A, Y, S, space, A, G, O, waitForA
-	db nextPage
-	db dict, dTHE, R, E, space, W, E, R, E, space, N, O, lineBreak
-	db N, E, G, O, T, I, A, T, I, O, N, S, waitForA
 
 	.db nextPage
 	.db dict, dTHE, space, dict, dENEMY, space, L, A, U, N, C, H, E, D, space, A, lineBreak
@@ -151,6 +148,13 @@ storyStream:
 	.db Y, O, U, R, space, dict, dUNIT, space, I, S, space, A, M, O, N, G, space, dict, dTHE, lineBreak
 	.db L, A, S, T, space, T, H, A, T, space, A, R, E, space, S, T, I, L, L, lineBreak
 	.db S, T, A, N, D, I, N, G, waitForA
+
+	db nextPage
+	db O, U, R, space, O, N, L, Y, space, R, E, M, A, I, N, I, N, G, lineBreak
+	db O, B, J, E, C, T, I, V, E, space, I, S, space, T, O, space, E, N, S, U, R, E, lineBreak
+	db T, H, A, T, space, L, A, D, Y, space, N, O, V, E, M, B, E, R, lineBreak
+	db L, E, A, V, E, S, space, T, H, I, S, space, P, L, A, N, E, T, lineBreak
+	db S, A, F, E, L, Y, waitForA
 	.db endOfStream
 
 instructionStream:
@@ -300,7 +304,7 @@ mission01epilogSuccess:
 	.db dict, dTHE, space, dict, dENEMY, space, T, H, R, E, A, T
 	.db waitForA
 	.db nextPage
-	.db dict, dTHE, space, C, I, T, Y, space, I, S, space, S, A, F, E
+	.db dict, dTHE, space, dict, dCONVOY, space, O, N, E, space, I, S, space, S, A, F, E
 	.db waitForA
 	.db nextPage
 	.db F, O, R, space, N, O, W, waitForA
@@ -323,12 +327,36 @@ mission01epilogFailed:
 	.db T, H, A, N, K, S, space, F, O, R, space, P, L, A, Y, I, N, G, waitForA
 	.db endOfStream
 
+mission02epilogFailed:
+	; >>>>>>>>>>>>>>>>>>>>>>
+	; YOU HAVE FAILED TO
+	; PROTECT LADY NOVEMBER
+	; --
+	; GAME OVER
+	db Y, O, U, space, H, A, V, E, space, F, A, I, L, E, D, space, T, O, lineBreak
+	db P, R, O, T, E, C, T, space, L, A, D, Y, space, N, O, V, E ,M, B, E, R, waitForA
+	db nextPage
+	db G, A, M, E, space, O, V, E, R, waitForA
+	db endOfStream
 
 hud_activityDetected:
 	.db H, O, S, T, I, L, E, space, dict, dUNIT, S, space, D, E, T, E, C, T, E, D, waitForA
 	.db nextPage
 	.db G, E, T, space, R, E, A, D, Y, space, T, O, space, E, N, G, A, G, E, waitForA
 	.db endOfStream
+
+hud_takeOutTurrets:
+	; >>>>>>>>>>>>>>>>>>>>>>>>
+	; COMMANDER, WE ARE READY
+	; TO TAKE OUT SOME TURRETS
+	; --
+	; LETS GO
+	db setPortrait, $40+3
+	db dict, dCOMMANDER, comma, space, W, E, space, A, R, E, space, R, E, A, D, Y, lineBreak
+	db T, O, space, T, A, K, E, space, O, U, T, space, S, O, M, E, space, dict, dTURRET, S, waitForA
+	db nextPage
+	db L, E, T, S, space, D, O, space, I, T, waitForA
+	db endOfStream
 
 hud_playerDestroyed:
 	db setPortrait, $40+1
@@ -366,6 +394,66 @@ hud_missionFailed:
 	.db M, I, S, S, I, O, N, lineBreak
 	.db F, A, I, L, E, D, waitForA
 	.db endOfStream
+
+hud_threeTurretsLeft:
+	; >>>>>>>>>>>>>>>>>>>>>>
+	; FIRST TURRET DOWN,
+	; THREE MORE TO GO
+	db F, I, R, S, T, space, dict, dTURRET, space, I, S, space, D, O, W, N, comma, lineBreak
+	db T, H, R, E, E, space, M, O, R, E, space, T, O, space, G, O, waitForA
+	db endOfStream
+
+hud_twoTurretsLeft:
+	; >>>>>>>>>>>>>>>>>>>>>>>>
+	; SECOND TURRET IS HISTORY
+	; --
+	; TWO MORE TO GO
+	db S, E, C, O, N, D, space, dict, dTURRET, space, I, S, lineBreak
+	db H, I, S, T, O, R, Y, waitForA
+	db nextPage
+	db T, W, O, space, M, O, R, E, space, T, O, space, G, O, waitForA
+	db endOfStream
+
+hud_oneTurretLeft:
+	; >>>>>>>>>>>>>>>>>>>>>>>>
+	; TURRET NUMBER 3 IS GONE
+	; JUST ONE MORE TO GO
+	; -
+	; LETS FINISH THIS
+	db dict, dTURRET, space, N, U, M, B, E, R, space, 3, space, I, S, space, G, O, N, E, lineBreak
+	db J, U, S, T, space, O, N, E, space, M, O, R, E, space, T, O, space, G, O, waitForA
+	db nextPage
+	db L, E, T, S, space, F, I, N, I, S, H, space, T, H, I, S, waitForA
+	db endOfStream
+
+hud_allTurretsDestroyed:
+	; >>>>>>>>>>>>>>>>>>>>>>>>
+	; COMMANDER, ALL TURRETS
+	; HAVE BEEN NEUTRALIZED
+	; --
+	; EXCELLENT JOB, COMMANDER
+	; --
+	; CONVOY ONE IS NOW ABLE
+	; TO PROCEED TO THE
+	; LAUNCH PAD
+	; --
+	; >>>>>>>>>>>>>>>>>>>>>>>>
+	; STAND BY FOR FURTHER
+	; ORDERS
+	db dict, dCOMMANDER, comma, space, A, L, L, space, dict, dTURRET, S, lineBreak
+	db H, A, V, E, space, B, E, E, N, space, N, E, U, T, R, A, L, I, Z, E, D, waitForA
+	db nextPage
+	db setPortrait, 0
+	db E, X, C, E, L, L, E, N, T, space, J, O, B, comma, space, dict, dCOMMANDER, waitForA
+	db nextPage
+	db dict, dCONVOY, space, O, N, E, space, I, S, space, N, O, W, space, A, B, L, E, lineBreak
+	db T, O, space, P, R, O, C, E, E, D, space, T, O, space, T, H, E, lineBreak
+	db L, A, U, N, C, H, P, A, D, waitForA
+	db nextPage
+	db S, T, A, N, D, space, B, Y, space, F, O, R, space, F, U, R, T, H, E, R, lineBreak
+	db O, R, D, E, R, S, waitForA
+	db endOfStream
+
 
 pausedStream:
 	.db G, A, M, E, space, P, A, U, S, E, D, waitForA

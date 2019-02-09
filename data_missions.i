@@ -142,6 +142,10 @@ mission02Setup:
 	.hex 90 91 92 99 9A 9B
 	.hex A0 A1 A2 A3 A4 A5 A7 A8 A9 AA AB
 
+	.db 4, 128+32 ; (b7) impassable (b6) blocked
+	.hex 30 40 50 60
+
+
 	.db 0
 	.db	7				; number of objects
 
@@ -152,22 +156,22 @@ mission02Setup:
 	.db 128+11*4+2;			; enemy pilot 1 (unkown)
 	.db $70			; object grid position
 	.db $74			; object type 1 & facing RD
-	.db $32			; object wpns
+	.db $30			; object wpns
 
 	.db 128+11*4+2;			; enemy pilot 1 (unkown)
 	.db $7A			; object grid position
 	.db $75			; object type 1 & facing RD
-	.db $32			; object wpns
+	.db $30			; object wpns
 
 	.db 128+11*4+2;			; enemy pilot 1 (unkown)
 	.db $98			; object grid position
 	.db $75			; object type 1 & facing RD
-	.db $32			; object wpns
+	.db $50			; object wpns
 
 	.db 128+11*4+2;			; enemy pilot 1 (unkown)
 	.db $66			; object grid position
 	.db $75			; object type 1 & facing RD
-	.db $32			; object wpns
+	.db $30			; object wpns
 
 
 
@@ -185,9 +189,9 @@ mission00Events:
 .db 2, mEventOpenDialog, 10 												 												; event 1 : dialog 10: enemy detected
 .db 7, mConditionRound, 1,  mEventSpawnUnit, 128+32+2, $72, $35, $12
 .db 5, mConditionRound, 1, mConditionOnlyHostiles, mEventOpenDialog, 12 												; event 4
-.db 6, mConditionRound, 1, mConditionOnlyHostiles, mEventEndMission, 6, 7 											; event 5
+.db 6, mConditionRound, 1, mConditionOnlyHostiles, mEventMissionFailed, 6, 7 											; event 5
 .db 5, mConditionRound, 1, mConditionOnlyFriendlies, mEventOpenDialog, 9 												; event 6
-.db 6, mConditionRound, 1, mConditionOnlyFriendlies, mEventEndMission, 5, 6											; event 7
+.db 6, mConditionRound, 1, mConditionOnlyFriendlies, mEventMissionAccomplished, 5, 6											; event 7
 .db 0																								 												; end of stream
 
 mission01Events:
@@ -195,24 +199,27 @@ mission01Events:
 .db 4, mConditionRound, 2,  mEventOpenDialog, 13		 												; event 2
 .db 7, mConditionRound, 2,  mEventSpawnUnit, 128+40+2, $F2, $54, $11	 		 	; event 3
 .db 3, mConditionOnlyHostiles, mEventOpenDialog, 12 												; event 4
-.db 4, mConditionOnlyHostiles, mEventEndMission, 3, 7 											; event 5
+.db 4, mConditionOnlyHostiles, mEventMissionFailed, 3, 7 											; event 5
 .db 3, mConditionOnlyFriendlies, mEventOpenDialog, 9 												; event 4
-.db 4, mConditionOnlyFriendlies, mEventEndMission, 2, 6
-.db 4, mConditionPilotNotPresent, 6, mEventOpenDialog, 15
+.db 4, mConditionOnlyFriendlies, mEventMissionAccomplished, 2, 6
+.db 5, mConditionPilotCount, 6, 0, mEventOpenDialog, 15
 .db 0																								 												; end of stream
 
 mission02Events:
-.db 2, mEventOpenDialog, 10 												 												; event 1 : dialog 10: enemy detected
-.db 7, mConditionRound, 4,  mEventSpawnUnit, 128+32+2, $3E, $55, $12
-.db 7, mConditionRound, 4,  mEventSpawnUnit, 128+32+2, $2D, $55, $12
-.db 5, mConditionRound, 1, mConditionOnlyHostiles, mEventOpenDialog, 12 												; event 4
-.db 6, mConditionRound, 1, mConditionOnlyHostiles, mEventEndMission, 3, 7 											; event 5
-.db 6, mConditionRound, 1, mConditionPilotNotPresent, 11, mEventOpenDialog, 9 												; event 6
-.db 7, mConditionRound, 1, mConditionPilotNotPresent, 11, mEventEndMission, 2, 6											; event 7
-.db 0																								 												; end of stream
-
+	db 2, mEventOpenDialog, 21												 											  	; event
+	db 5, mConditionPilotCount, 11, 3, mEventOpenDialog, 7 											; event
+	db 5, mConditionPilotCount, 11, 2, mEventOpenDialog, 8 											; event
+	db 5, mConditionPilotCount, 11, 1, mEventOpenDialog, 18 										; event
+	db 7, mConditionRound, 3,  mEventSpawnUnit, 128+32+2, $3E, $56, $10
+	db 7, mConditionRound, 3,  mEventSpawnUnit, 128+32+2, $2E, $56, $10
+	db 3, mConditionOnlyHostiles, mEventOpenDialog, 12
+	db 4, mConditionOnlyHostiles, mEventMissionFailed, 3, 7
+	db 5, mConditionPilotCount, 11, 0, mEventPlaySound, 6
+	db 5, mConditionPilotCount, 11, 0, mEventOpenDialog, 19
+	db 6, mConditionPilotCount, 11, 0, mEventMissionAccomplished, 2, 6
+	db 0																								 												; end of stream
 
 
 ; examples
 ;.db 3, mConditionNodeReached, mEventOpenDialog, 9 													; event 6
-;.db 4, mConditionNodeReached, mEventEndMission, 2, 6												; event 7
+;.db 4, mConditionNodeReached, mEventMissionAccomplished, 2, 6												; event 7

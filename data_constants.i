@@ -93,10 +93,13 @@ emptyString = 0
 
 ; missionEvents
   mEventOpenDialog = 0
+  mEventMissionAccomplished = 4
+  mEventSpawnUnit = 5
+  mEventPlaySound = 8
+  mEventMissionFailed =9
+
   mConditionRound = 1
   mConditionOnlyFriendlies = 2
   mConditionOnlyHostiles = 3
-  mEventEndMission = 4
-  mEventSpawnUnit = 5
   mConditionNodeReached = 6
-  mConditionPilotNotPresent = 7
+  mConditionPilotCount = 7

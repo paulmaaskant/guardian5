@@ -31,5 +31,5 @@ pilotTable:
   .db 41, 4, %00000000, 8     ; pilot 8 Generic Pilot 1
   .db 41, 4, %00000000, 9     ; pilot 9 Generic Pilot 2
   .db 41, 4, %00000000, 10    ; pilot 10 Drone
-  .db 48, 2, %00000000, 11    ; pilot 11 ENEMY Turret
+  .db 48, 3, %00000000, 11    ; pilot 11 ENEMY Turret
   .db 71, 0, %00000000, 11    ; pilot 12 BUILD

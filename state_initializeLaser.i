@@ -50,6 +50,9 @@ state_initializeLaser:
   STX list2+0
 ; STY list2+1
 
+  LDY #sGunFire
+  JSR soundLoad
+
   JSR pullAndBuildStateStack
   .db 3             ; #items
   .db $4B, 4        ; set running effect 4: gun fire

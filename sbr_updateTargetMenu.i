@@ -1,7 +1,6 @@
 ;------------------------------------------
 ; Update Target Menu
 ; called when cursor has moved
-; still very messy
 ; -----------------------------------------
 updateTargetMenu:
 	;---- show distance to target ---

@@ -70,6 +70,7 @@ state_newTurn:
 
   LDA #120
   STA blockInputCounter
+  JSR clearActionMenu
 
   LDY #69
   LDX #16										  ; write to position 0

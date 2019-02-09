@@ -231,7 +231,8 @@ checkTarget:
 	LDA object+4, X
 	AND #%00000001														; and if target is marked
 	BEQ +continue
-	DEY																				; then -2 modifier
+	DEY																				; then -3 modifier
+	DEY
 	DEY
 
 +continue:

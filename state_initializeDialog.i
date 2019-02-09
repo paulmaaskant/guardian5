@@ -39,7 +39,8 @@ state01_streamLo:
   .db #> mission00prologue          ; 04
   .db #> mission00epilogSuccess     ; 05
   .db #> mission00epilogFailed      ; 06
-  .dsb 2                            ;
+  .db #> hud_threeTurretsLeft       ; 07
+  .db #> hud_twoTurretsLeft         ; 08
   .db #> hud_allHostilesDestroyed   ; 09
   .db #> hud_activityDetected       ; 10
   .db #> instructionStream          ; 11
@@ -49,6 +50,10 @@ state01_streamLo:
   .db #> hud_convoyDestroyed        ; 15
   .db #> mission02prologue          ; 16
   .db #> mission03prologue          ; 17
+  .db #> hud_oneTurretLeft          ; 18
+  .db #> hud_allTurretsDestroyed    ; 19
+  .db #> mission02epilogFailed      ; 20
+  .db #> hud_takeOutTurrets         ; 21
 
 state01_streamHi:
   .db #< storyStream
@@ -58,7 +63,8 @@ state01_streamHi:
   .db #< mission00prologue
   .db #< mission00epilogSuccess
   .db #< mission00epilogFailed
-  .dsb 2
+  .db #< hud_threeTurretsLeft       ; 07
+  .db #< hud_twoTurretsLeft         ; 08
   .db #< hud_allHostilesDestroyed
   .db #< hud_activityDetected
   .db #< instructionStream
@@ -68,6 +74,10 @@ state01_streamHi:
   .db #< hud_convoyDestroyed
   .db #< mission02prologue          ; 16
   .db #< mission03prologue          ; 16
+  .db #< hud_oneTurretLeft          ; 18
+  .db #< hud_allTurretsDestroyed    ; 19
+  .db #< mission02epilogFailed
+  .db #< hud_takeOutTurrets         ; 21
 
 state01_positionHi:
   .db $25
@@ -77,16 +87,21 @@ state01_positionHi:
   .db $25
   .db $25
   .db $25
-  .dsb 2
-  .db $24
-  .db $24
-  .db $25
   .db $24
   .db $24
   .db $24
   .db $24
   .db $25
+  .db $24
+  .db $24
+  .db $24
+  .db $24
   .db $25
+  .db $25
+  .db $24
+  .db $24
+  .db $25
+  .db $24
 
 state01_positionLo:
   .db $44
@@ -96,7 +111,8 @@ state01_positionLo:
   .db $64
   .db $88
   .db $64
-  .dsb 2
+  .db $46
+  .db $46
   .db $46
   .db $46
   .db $44
@@ -106,6 +122,10 @@ state01_positionLo:
   .db $46
   .db $64
   .db $64
+  .db $46
+  .db $46
+  .db $64
+  .db $46
 
 state01_lastCol:
   .db $1C
@@ -115,16 +135,21 @@ state01_lastCol:
   .db $1C
   .db $1E
   .db $1E
-  .dsb 2
-  .db $1E
-  .db $1E
-  .db $1C
   .db $1E
   .db $1E
   .db $1E
   .db $1E
   .db $1C
+  .db $1E
+  .db $1E
+  .db $1E
+  .db $1E
   .db $1C
+  .db $1C
+  .db $1E
+  .db $1E
+  .db $1E
+  .db $1E
 
 state01_lineCount:
   .db 6
@@ -134,7 +159,8 @@ state01_lineCount:
   .db 13
   .db 8
   .db 13
-  .dsb 2
+  .db 3
+  .db 3
   .db 3
   .db 3
   .db 8
@@ -144,3 +170,7 @@ state01_lineCount:
   .db 3
   .db 13
   .db 13
+  .db 3
+  .db 3
+  .db 13
+  .db 3

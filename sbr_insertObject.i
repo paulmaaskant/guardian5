@@ -49,6 +49,12 @@ insertObjectGridPosOnly:
 
   LDY object+3, X           ; Y = grid position
   LDA nodeMap, Y
+  BIT bit5                  ; can BG tile be overwritten?
+  BEQ +continue             ; yes -> continue
+  ORA #%11000000            ; no, then skip tile logic and just block the node
+  BNE +writeToMap           ; JMP
+
++continue:
   STA object+5, X           ; store map BG tile
 
   LDY #7
@@ -67,8 +73,9 @@ insertObjectGridPosOnly:
   CLC                       ; and add to base BG tile
   ADC locVar1
   ORA #%11000000						; raise obscuring and blocking flags
-
   LDY object+3, X
+
++writeToMap:
   STA nodeMap, Y            ; overwrite map BG tile with object BG tile
 
   LDY #1                    ; add
